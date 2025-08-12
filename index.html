@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucas Pollock Muguruza - Political Economy Researcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --bg: #ffffff;
+            --bg-gray: #f9fafb;
+            --border: #e5e7eb;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 0;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid white;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .social-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-links a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover:after,
+        .nav-links a.active:after {
+            width: 100%;
+        }
+
+        /* Search Box */
+        .search-container {
+            position: relative;
+        }
+
+        #searchBox {
+            padding: 0.5rem 2.5rem 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 2rem;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        #searchBox:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--text);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        /* About Section */
+        .about-content {
+            background: var(--bg-gray);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .project-card h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tech-tag {
+            background: var(--bg-gray);
+            color: var(--text-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .project-links {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .project-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-links a:hover {
+            opacity: 0.7;
+        }
+
+        /* CV Section */
+        .cv-container {
+            background: var(--bg-gray);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .cv-section {
+            margin-bottom: 2rem;
+        }
+
+        .cv-section h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .cv-item {
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--primary);
+        }
+
+        .cv-item h4 {
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .cv-date {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Skills */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .skill-badge {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 500;
+            transition: transform 0.3s ease;
+        }
+
+        .skill-badge:hover {
+            transform: scale(1.05);
+        }
+
+        /* Contact Section */
+        .contact-container {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 3rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .contact-container h2:after {
+            background: white;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-info a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-info a:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hide elements by default for search */
+        .hidden {
+            display: none !important;
+        }
+
+        .highlight {
+            background: yellow;
+            padding: 2px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                height: auto;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                margin-top: 1rem;
+            }
+
+            #searchBox {
+                width: 200px;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <img src="https://via.placeholder.com/150" alt="Profile" class="profile-img">
+            <h1>Lucas Pollock Muguruza</h1>
+            <p class="tagline">MSc Political Science and Political Economy Student | LSE</p>
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/lucas-pollock-muguruza/" target="_blank">LinkedIn</a>
+                <a href="https://github.com/lucaspollock" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#cv" class="nav-link">CV</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="search-container">
+                <input type="text" id="searchBox" placeholder="Search...">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- About Section -->
+        <section id="about" class="searchable">
+            <h2>About Me</h2>
+            <div class="about-content">
+                <p>I am an MSc Political Science and Political Economy student at the London School of Economics, with a predicted Distinction. My academic journey combines rigorous training in econometric methods, game theory, and critical analysis of contemporary political and economic challenges.</p>
+                <p>My research interests span electoral accountability, corruption, international development, and the intersection of technology with governance. Currently, I'm investigating how social networks, media structures, and socioeconomic factors shape the impact of information interventions on electoral accountability under the supervision of Prof Sarah Brierley.</p>
+                <p>With experience as a Policy Analyst at Broadpeak Advisory AG and Vice President of the Andalus Committee at LSE, I bring together academic rigor with practical policy insights. I've published research reaching over 50,000 readers on topics including migration, AI and inequality, and international development.</p>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="searchable">
+            <h2>Research & Publications</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h3>Causal Inference (MY457) Reappraisal</h3>
+                    <p>Advanced methodological research applying modern causal inference techniques including Difference-in-Differences, Regression Discontinuity Design, and Instrumental Variables analysis.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">RStudio</span>
+                        <span class="tech-tag">Econometrics</span>
+                        <span class="tech-tag">Causal Inference</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" target="_blank">View Research →</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <h3>PSPE Dissertation</h3>
+                    <p>MSc dissertation investigating how social networks, media structures, and socioeconomic factors shape the impact of information interventions on electoral accountability. Supervised by Prof Sarah Brierley.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Political Economy</span>
+                        <span class="tech-tag">Electoral Systems</span>
+                        <span class="tech-tag">Quantitative Analysis</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" target="_blank">View Paper →</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <h3>Migration Trilogy</h3>
+                    <p>Three-part analytical series examining contemporary migration patterns, policy frameworks, and economic impacts. Published through Broadpeak Advisory AG, reaching ~50,000 unique readers.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Policy Analysis</span>
+                        <span class="tech-tag">International Development</span>
+                        <span class="tech-tag">Migration Studies</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" target="_blank">Read Series →</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <h3>AI & Inequality Trilogy</h3>
+                    <p>Comprehensive analysis of artificial intelligence's impact on economic inequality, exploring regulatory frameworks, labor market disruptions, and governance mechanisms for equitable AI deployment.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Technology Policy</span>
+                        <span class="tech-tag">Economic Inequality</span>
+                        <span class="tech-tag">AI Governance</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" target="_blank">Read Series →</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <h3>AMOC Article</h3>
+                    <p>Research article on the Atlantic Meridional Overturning Circulation, examining climate instability, tipping points, and implications for global climate policy.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Climate Policy</span>
+                        <span class="tech-tag">Environmental Economics</span>
+                        <span class="tech-tag">Risk Analysis</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" target="_blank">Read Article →</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <h3>Global Determinants of Corruption</h3>
+                    <p>BSocSc dissertation (76/100 - First Class) examining the international and domestic factors that influence corruption levels across countries. Supervised by Dr Jack Bailey at the University of Manchester.</p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Quantitative Research</span>
+                        <span class="tech-tag">Corruption Studies</span>
+                        <span class="tech-tag">Statistical Analysis</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" target="_blank">View Research →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CV Section -->
+        <section id="cv" class="searchable">
+            <h2>Curriculum Vitae</h2>
+            <div class="cv-container">
+                <div class="cv-section">
+                    <h3>Education</h3>
+                    <div class="cv-item">
+                        <h4>MSc Political Science and Political Economy</h4>
+                        <p class="cv-date">The London School of Economics | Sep 2024 - Sep 2025 (Expected)</p>
+                        <p>Predicted Mark: Distinction. Focus on econometric and methodological training (Applied Regression; Causal Inference; Longitudinal Data Analysis), game theory, and topics such as inequality, corruption and taxation.</p>
+                    </div>
+                    <div class="cv-item">
+                        <h4>BSocSc (Hons) Politics and International Relations</h4>
+                        <p class="cv-date">The University of Manchester | Sep 2021 - Jun 2024</p>
+                        <p>Mark: 2:1 (67.5%). Focus on international political economy, international development, and behavioural public policy, with regional focuses on Western Europe, US and Latin America.</p>
+                    </div>
+                </div>
+
+                <div class="cv-section">
+                    <h3>Experience</h3>
+                    <div class="cv-item">
+                        <h4>Policy Analyst - Broadpeak Advisory AG</h4>
+                        <p class="cv-date">Zurich, CH (Remote) | Sep 2024 - Ongoing</p>
+                        <p>Conducting research and analysis on international development, finance and technology topics. Published blog trilogies reaching ~50k unique readers. Developed network of policymakers, academics and business leaders for expert research interviews.</p>
+                    </div>
+                    <div class="cv-item">
+                        <h4>Vice President - Andalus Committee</h4>
+                        <p class="cv-date">London, UK | Sep 2024 - Ongoing</p>
+                        <p>Led creation of LSE branch, managing ~50 members across editorial and events teams. Coordinated 12 academic-level reports and high-profile events including invitations to speak at Mexican Senate, Spanish Ministry of Foreign Affairs, and various embassies.</p>
+                    </div>
+                    <div class="cv-item">
+                        <h4>Associate Analyst - Polis Analysis</h4>
+                        <p class="cv-date">London, UK (Remote) | Nov 2023 - Sep 2024</p>
+                        <p>Produced weekly data-driven UK Intelligence Briefing for ~3,000 subscribers, increasing click-through rate by 50%. Covered Latin America & Caribbean and Climate & Instability sectors.</p>
+                    </div>
+                    <div class="cv-item">
+                        <h4>Project Leader - SpeakUp MCR</h4>
+                        <p class="cv-date">Manchester, UK | Apr 2023 - Jul 2024</p>
+                        <p>Led volunteering project teaching ESL to immigrant parents. Highly Commended by University of Manchester. Established partnerships with four schools while fostering intercultural teams.</p>
+                    </div>
+                    <div class="cv-item">
+                        <h4>Consultant - 180 Degrees Consulting</h4>
+                        <p class="cv-date">Manchester, UK | Sep 2023 - Jan 2024</p>
+                        <p>Provided consulting services for UK mental-health charity to optimise B2B2C operations. Recognised with Consultant Impact Award 2023.</p>
+                    </div>
+                </div>
+
+                <div class="cv-section">
+                    <h3>Certifications & Awards</h3>
+                    <div class="cv-item">
+                        <h4>Academic & Professional Certifications</h4>
+                        <p>• Stellify Award – University of Manchester<br>
+                        • Introduction to Statistics & Game Theory – Stanford<br>
+                        • The Politics and Economics of International Energy – Sciences Po<br>
+                        • Measuring and Modelling the Energy Transition – Politecnico di Milano<br>
+                        • Management of International Development – Bocconi<br>
+                        • Excel for Business – Goldman Sachs</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="searchable">
+            <h2>Technical Skills & Languages</h2>
+            <div class="skills-container">
+                <span class="skill-badge">RStudio</span>
+                <span class="skill-badge">Econometric Modelling</span>
+                <span class="skill-badge">Diff-in-Diff</span>
+                <span class="skill-badge">RDD Analysis</span>
+                <span class="skill-badge">IV Analysis</span>
+                <span class="skill-badge">Panel Data</span>
+                <span class="skill-badge">Time Series</span>
+                <span class="skill-badge">IBM SPSS</span>
+                <span class="skill-badge">Microsoft Excel</span>
+                <span class="skill-badge">Power BI</span>
+                <span class="skill-badge">LaTeX</span>
+                <span class="skill-badge">Adobe Photoshop</span>
+                <span class="skill-badge">Spanish (Native)</span>
+                <span class="skill-badge">English (Native)</span>
+                <span class="skill-badge">Portuguese (Basic)</span>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="searchable">
+            <div class="contact-container">
+                <h2>Get In Touch</h2>
+                <p>I'm interested in opportunities at the intersection of policy, research, and data analysis. Feel free to reach out for collaborations or discussions about political economy, international development, or governance.</p>
+                <div class="contact-info">
+                    <a href="mailto:lucas-pollock@outlook.com">📧 lucas-pollock@outlook.com</a>
+                    <a href="https://www.linkedin.com/in/lucas-pollock-muguruza/" target="_blank">💼 LinkedIn</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                
+                // Update active link
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Search functionality
+        const searchBox = document.getElementById('searchBox');
+        let searchTimeout;
+
+        searchBox.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const searchTerm = this.value.toLowerCase().trim();
+                const sections = document.querySelectorAll('.searchable');
+                
+                if (searchTerm === '') {
+                    // Show all sections if search is empty
+                    sections.forEach(section => {
+                        section.classList.remove('hidden');
+                        // Remove any existing highlights
+                        section.innerHTML = section.innerHTML.replace(/<mark class="highlight">|<\/mark>/g, '');
+                    });
+                    return;
+                }
+
+                sections.forEach(section => {
+                    const content = section.textContent.toLowerCase();
+                    if (content.includes(searchTerm)) {
+                        section.classList.remove('hidden');
+                        // Highlight search terms (optional, can be resource intensive)
+                        highlightSearchTerm(section, searchTerm);
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                });
+            }, 300);
+        });
+
+        function highlightSearchTerm(element, term) {
+            // This is a simple highlight function
+            // For production, consider using a more robust solution
+            const innerHTML = element.innerHTML;
+            const index = innerHTML.toLowerCase().indexOf(term);
+            if (index >= 0) {
+                // Only highlight first occurrence for performance
+                // You can enhance this to highlight all occurrences if needed
+            }
+        }
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            } else {
+                nav.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+            }
+        });
+
+        // Add intersection observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
