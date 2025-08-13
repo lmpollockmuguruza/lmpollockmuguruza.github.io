@@ -40,6 +40,28 @@
             --hover-bg: rgba(107, 39, 55, 0.05);
         }
 
+        /* Custom text selection colors */
+        ::selection {
+            background-color: rgba(107, 39, 55, 0.3);
+            color: var(--text-white);
+        }
+
+        ::-moz-selection {
+            background-color: rgba(107, 39, 55, 0.3);
+            color: var(--text-white);
+        }
+
+        /* Lighter selection for light theme for better readability */
+        [data-theme="light"] ::selection {
+            background-color: rgba(107, 39, 55, 0.2);
+            color: var(--text-white);
+        }
+
+        [data-theme="light"] ::-moz-selection {
+            background-color: rgba(107, 39, 55, 0.2);
+            color: var(--text-white);
+        }
+
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
@@ -531,22 +553,32 @@
             font-style: italic;
         }
 
-        /* Footer - Always visible */
+        /* Footer - Glassmorphism effect */
         .footer {
             position: fixed;
             bottom: 0;
             left: 280px;
             right: 0;
             padding: 1.5rem 4rem;
-            background: var(--bg);
-            border-top: 1px solid var(--border);
+            background: rgba(26, 26, 26, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(64, 64, 64, 0.5);
             font-size: 0.85rem;
             color: var(--text-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
             z-index: 100;
+        }
+
+        /* Light theme footer with glassmorphism */
+        [data-theme="light"] .footer {
+            background: rgba(250, 249, 247, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(224, 224, 224, 0.5);
         }
 
         .footer-email {
