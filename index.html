@@ -19,6 +19,21 @@
             --text-white: #f5f5f5;
             --border: #404040;
             --bg: #1a1a1a;
+            --sidebar-bg: #2b2b2b;
+            --hover-bg: rgba(107, 39, 55, 0.1);
+        }
+
+        /* Light theme */
+        [data-theme="light"] {
+            --charcoal: #faf9f7;
+            --charcoal-light: #f5f3f0;
+            --burgundy: #6b2737;
+            --text-light: #5a5a5a;
+            --text-white: #2b2b2b;
+            --border: #e0e0e0;
+            --bg: #faf9f7;
+            --sidebar-bg: #f5f3f0;
+            --hover-bg: rgba(107, 39, 55, 0.05);
         }
 
         body {
@@ -28,22 +43,70 @@
             background: var(--bg);
             display: flex;
             min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Theme Switcher */
+        .theme-switcher {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            display: flex;
+            background: var(--sidebar-bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .theme-btn:not(:last-child) {
+            border-right: 1px solid var(--border);
+        }
+
+        .theme-btn:hover {
+            background: var(--hover-bg);
+            color: var(--text-white);
+        }
+
+        .theme-btn.active {
+            background: var(--burgundy);
+            color: #fff;
+        }
+
+        .theme-btn svg {
+            width: 14px;
+            height: 14px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 4px;
         }
 
         /* Sidebar */
         .sidebar {
             width: 280px;
-            background: var(--charcoal);
+            background: var(--sidebar-bg);
             padding: 3rem 2rem;
             position: fixed;
             height: 100vh;
             border-right: 1px solid var(--border);
             overflow-y: auto;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            transition: background-color 0.3s ease;
         }
 
-        /* Hide scrollbar for Chrome, Safari and Opera */
         .sidebar::-webkit-scrollbar {
             display: none;
         }
@@ -112,6 +175,7 @@
             border-left: 2px solid transparent;
             padding-left: 1rem;
             margin-left: -1rem;
+            transition: all 0.2s ease;
         }
 
         .nav-menu a:hover,
@@ -125,6 +189,7 @@
             margin-left: 280px;
             width: calc(100% - 280px);
             padding: 4rem;
+            padding-top: 6rem;
             max-width: 900px;
         }
 
@@ -159,6 +224,11 @@
             line-height: 1.8;
         }
 
+        /* Links styling */
+        a {
+            transition: all 0.2s ease;
+        }
+
         /* About Section */
         .about-content {
             font-size: 1rem;
@@ -170,15 +240,25 @@
             color: var(--text-light);
         }
 
-        .playlist-note a {
+        .playlist-note a,
+        .about-content a {
             color: var(--burgundy);
             text-decoration: none;
             border-bottom: 1px solid transparent;
         }
 
-        .playlist-note a:hover {
-            color: var(--text-white);
+        .playlist-note a:hover,
+        .about-content a:hover {
+            color: var(--burgundy);
             border-bottom-color: var(--burgundy);
+            opacity: 0.8;
+        }
+
+        .research-interest {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.95rem;
         }
 
         /* Projects Section */
@@ -195,6 +275,17 @@
         .project-item h3 {
             color: var(--burgundy);
             margin-top: 0;
+        }
+
+        .project-item a {
+            color: var(--burgundy);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+        }
+
+        .project-item a:hover {
+            border-bottom-color: var(--burgundy);
+            opacity: 0.8;
         }
 
         .project-link {
@@ -220,11 +311,16 @@
             padding: 0.8rem 1.5rem;
             border: 1px solid var(--burgundy);
             margin-top: 1rem;
+            transition: all 0.2s ease;
         }
 
         .cv-link:hover {
             background: var(--burgundy);
-            color: var(--text-white);
+            color: #fff;
+        }
+
+        [data-theme="light"] .cv-link:hover {
+            color: #fff;
         }
 
         .cv-update {
@@ -280,6 +376,28 @@
             font-style: italic;
         }
 
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 280px;
+            right: 0;
+            padding: 1.5rem 4rem;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .footer-email {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.05em;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -287,6 +405,24 @@
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
+            .theme-switcher {
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .theme-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .theme-btn span {
+                display: none;
+            }
+
+            .theme-btn svg {
+                margin-right: 0;
+            }
+
             .sidebar {
                 width: 100%;
                 height: auto;
@@ -294,21 +430,59 @@
                 border-right: none;
                 border-bottom: 1px solid var(--border);
                 padding: 2rem;
+                padding-top: 4rem;
             }
 
             .main-content {
                 margin-left: 0;
                 width: 100%;
                 padding: 2rem;
+                padding-bottom: 6rem;
+                padding-top: 2rem;
+            }
+
+            .footer {
+                left: 0;
+                padding: 1rem 2rem;
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
             }
 
             body {
                 flex-direction: column;
             }
         }
+
+        /* Smooth transition for theme switching */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
     </style>
 </head>
 <body>
+    <!-- Theme Switcher -->
+    <div class="theme-switcher">
+        <button class="theme-btn" data-theme="light" title="Light mode">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/>
+            </svg>
+            <span>Light</span>
+        </button>
+        <button class="theme-btn active" data-theme="dark" title="Dark mode">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+            </svg>
+            <span>Dark</span>
+        </button>
+        <button class="theme-btn" data-theme="auto" title="System preference">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM10 18V2a8 8 0 010 16z"/>
+            </svg>
+            <span>Auto</span>
+        </button>
+    </div>
+
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="profile-section">
@@ -337,9 +511,11 @@
         <section id="about" class="content-section active">
             <h2>About</h2>
             <div class="about-content">
-                <p>I am currently pursuing an <a href="https://www.lse.ac.uk/study-at-lse/graduate/msc-political-science-political-science-and-political-economy" target="_blank" style="color: var(--burgundy); text-decoration: none; border-bottom: 1px solid transparent;">MSc in Political Science and Political Economy</a> at the London School of Economics and Political Science, with a predicted Distinction (74.6%), graduating in December 2025. My work focuses on causal inference, corruption, and inequality, with extensive training in quantitative political economy. I work primarily in R for data analysis and visualisation. You can find here examples of my projects (assignments, reappraisals) and my CV.</p>
+                <p>I am currently pursuing an <a href="https://www.lse.ac.uk/study-at-lse/graduate/msc-political-science-political-science-and-political-economy" target="_blank">MSc in Political Science and Political Economy</a> at the London School of Economics and Political Science, with a predicted Distinction (74.6%), graduating in December 2025. My work focuses on causal inference, corruption, and inequality, with extensive training in quantitative political economy. I work primarily in R for data analysis and visualisation. You can find here examples of my projects (assignments, reappraisals) and my CV.</p>
                 
                 <p class="playlist-note">If you click <a href="https://open.spotify.com/playlist/6bJhVqSw0TZwtVDpK2ADuU?si=a1d5046e150d4749" target="_blank">here</a>, you can also listen to a great playlist I've been creating for the past few years. I'm also an avid film watcher and am currently writing a short film — check out my <a href="https://letterboxd.com/LucasPollock/" target="_blank">Letterboxd</a> for my film diary. Also, try this <a href="https://letterboxd.samlearner.com/" target="_blank">movie recommendation tool</a> I found.</p>
+
+                <p class="research-interest">I am currently seeking Research Assistant positions in Political Economy. Please feel free to contact me via email if you have any opportunities or would like to discuss potential collaboration.</p>
             </div>
         </section>
 
@@ -356,7 +532,7 @@
             
             <div class="project-item">
                 <h3>Tellez, 2022 - Empirical Reappraisal</h3>
-                <p>Empirical reappraisal of <i>Land, Opportunism, and Displacement in Civil Wars: Evidence from Colombia</i> by Tellez (<a href="https://doi.org/10.1017/S0003055421001003" target="_blank" style="color: var(--burgundy); text-decoration: none; border-bottom: 1px solid transparent;">2022</a>) with modern difference-in-differences estimators. Completed as part of MSc programme.</p>
+                <p>Empirical reappraisal of <i>Land, Opportunism, and Displacement in Civil Wars: Evidence from Colombia</i> by Tellez (<a href="https://doi.org/10.1017/S0003055421001003" target="_blank">2022</a>) with modern difference-in-differences estimators. Completed as part of MSc programme.</p>
                 <a href="https://www.dropbox.com/scl/fi/g0fbfja11ap88opqcif2p/Causal-Inference-Summative-Reappraisal-Lucas-Pollock-Muguruza.pdf?rlkey=898y2dgp8mcdx3v90w13jruxb&st=bz5k03g2&dl=0" class="project-link" target="_blank">→ View Paper</a>
             </div>
 
@@ -441,7 +617,55 @@
         </section>
     </main>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <span class="footer-email">lucas-pollock[at]outlook[dot]com</span>
+        <span id="last-updated">Last updated: August 2025</span>
+    </footer>
+
     <script>
+        // Theme Management
+        const themeButtons = document.querySelectorAll('.theme-btn');
+        const html = document.documentElement;
+        
+        // Get saved theme or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        
+        // Apply saved theme
+        function applyTheme(theme) {
+            if (theme === 'auto') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            } else {
+                html.setAttribute('data-theme', theme);
+            }
+            
+            // Update button states
+            themeButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-theme') === theme);
+            });
+            
+            localStorage.setItem('theme', theme);
+        }
+        
+        // Initialize theme
+        applyTheme(savedTheme);
+        
+        // Theme button clicks
+        themeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const theme = btn.getAttribute('data-theme');
+                applyTheme(theme);
+            });
+        });
+        
+        // Listen for system theme changes when in auto mode
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (localStorage.getItem('theme') === 'auto') {
+                html.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+            }
+        });
+
         // Simple navigation
         const navLinks = document.querySelectorAll('.nav-link');
         const sections = document.querySelectorAll('.content-section');
@@ -460,6 +684,17 @@
                 document.getElementById(targetId).classList.add('active');
             });
         });
+
+        // Update date dynamically to current month/year
+        const updateDate = () => {
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+            const now = new Date();
+            const monthYear = `${months[now.getMonth()]} ${now.getFullYear()}`;
+            document.getElementById('last-updated').textContent = `Last updated: ${monthYear}`;
+        };
+        
+        updateDate();
     </script>
 </body>
 </html>
