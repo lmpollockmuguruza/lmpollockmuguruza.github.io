@@ -51,6 +51,7 @@
             border-radius: 50%;
             margin-bottom: 1rem;
             border: 2px solid var(--border);
+            object-fit: cover;
         }
 
         .sidebar h1 {
@@ -208,6 +209,38 @@
             font-style: italic;
         }
 
+        .coursework-section {
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .coursework-section h3 {
+            font-size: 1.1rem;
+            color: var(--text-white);
+            font-weight: 400;
+            margin-bottom: 1rem;
+            margin-top: 0;
+        }
+
+        .coursework-list {
+            list-style: none;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .coursework-list li {
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .coursework-note {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -240,7 +273,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="profile-section">
-            <img src="https://via.placeholder.com/120" alt="Lucas Pollock Muguruza" class="profile-img">
+            <img src="profile.jpg" alt="Lucas Pollock Muguruza" class="profile-img">
             <h1>Lucas Pollock Muguruza</h1>
             <p class="title">MSc Political Science and Political Economy<br>London School of Economics</p>
         </div>
@@ -265,9 +298,7 @@
         <section id="about" class="content-section active">
             <h2>About</h2>
             <div class="about-content">
-                <p>I am currently pursuing an MSc in Political Science and Political Economy at the London School of Economics, where I focus on the intersection of economic methods and political analysis.</p>
-                
-                <p>My research interests center on political economy, with particular emphasis on corruption and inequality. I apply quantitative methods to understand how institutional factors shape economic and political outcomes across different contexts.</p>
+                <p>I am currently pursuing an MSc in Political Science and Political Economy at the London School of Economics and Political Science, with a predicted mark of Distinction (74.6%), graduating in December 2025. I have focused on causal inference, and on the topics of corruption and inequality.</p>
                 
                 <p>I hold dual nationality (Spanish and American) and work part-time as a Policy Analyst at Broadpeak Advisory AG, where I conduct research on international development, technology policy, and governance.</p>
             </div>
@@ -278,39 +309,38 @@
             <h2>Research & Publications</h2>
             
             <div class="project-item">
-                <h3>Causal Inference (MY457) Reappraisal</h3>
-                <p>Advanced methodological research applying modern causal inference techniques including Difference-in-Differences, Regression Discontinuity Design, and Instrumental Variables analysis.</p>
+                <h3>Tellez, 2022 - Empirical Reappraisal</h3>
+                <p>Empirical reappraisal of 'Land, Opportunism, and Displacement in Civil Wars: Evidence from Colombia' by Tellez (2022) with modern difference-in-differences estimators. Completed as part of MSc programme.</p>
+                <a href="https://www.dropbox.com/scl/fi/g0fbfja11ap88opqcif2p/Causal-Inference-Summative-Reappraisal-Lucas-Pollock-Muguruza.pdf?rlkey=898y2dgp8mcdx3v90w13jruxb&st=bz5k03g2&dl=0" class="project-link" target="_blank">→ View Paper</a>
+            </div>
+
+            <div class="project-item">
+                <h3>MSc PSPE Dissertation (Department of Government, LSE, 2024-25)</h3>
                 <span class="project-link">→ Coming Soon</span>
             </div>
 
             <div class="project-item">
-                <h3>PSPE Dissertation</h3>
-                <p>Research investigating how social networks, media structures, and socioeconomic factors shape the impact of information interventions on electoral accountability.</p>
-                <span class="project-link">→ Coming Soon</span>
+                <h3>Cultural Backlash Theory - Empirical Assessment</h3>
+                <p>Empirical assessment of cultural backlash theory with European data and modern difference-in-differences estimators. Completed as part of MSc programme.</p>
+                <a href="https://www.dropbox.com/scl/fi/j4znmv9oylg1ydkpx7760/PSPE-Current-Issues-Summative-Essay-Lucas-Pollock-Muguruza.pdf?rlkey=pcrn8hv4h7ej10chxn1regtwz&st=4x5qtvvq&dl=0" class="project-link" target="_blank">→ View Paper</a>
             </div>
 
             <div class="project-item">
-                <h3>PSPE Current Issues Essay</h3>
-                <p>Analysis of contemporary challenges in political science and political economy through quantitative and theoretical frameworks.</p>
-                <span class="project-link">→ Coming Soon</span>
-            </div>
-
-            <div class="project-item">
-                <h3>Migration Trilogy</h3>
-                <p>Three-part analytical series examining contemporary migration patterns, policy frameworks, and economic impacts. Published through Broadpeak Advisory AG.</p>
+                <h3>Migration Trilogy (Broadpeak)</h3>
+                <p>Completed as part of Policy Analyst role at Broadpeak.</p>
                 <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">→ Read on Broadpeak</a>
             </div>
 
             <div class="project-item">
-                <h3>AI & Inequality Trilogy</h3>
-                <p>Analysis of artificial intelligence's impact on economic inequality, exploring regulatory frameworks and governance mechanisms for equitable AI deployment.</p>
+                <h3>AI & Inequality Trilogy (Broadpeak)</h3>
+                <p>Completed as part of Policy Analyst role at Broadpeak.</p>
                 <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">→ Read on Broadpeak</a>
             </div>
 
             <div class="project-item">
-                <h3>AMOC Article</h3>
-                <p>Research on the Atlantic Meridional Overturning Circulation, examining climate instability and implications for global climate policy.</p>
-                <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">→ View Article</a>
+                <h3>AMOC Article (Broadpeak)</h3>
+                <p>Completed as part of Policy Analyst role at Broadpeak.</p>
+                <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">→ Read on Broadpeak</a>
             </div>
         </section>
 
@@ -318,8 +348,26 @@
         <section id="cv" class="content-section">
             <h2>Curriculum Vitae</h2>
             <p>Download my complete CV for details on education, experience, and research.</p>
-            <a href="https://www.dropbox.com/scl/fi/a2i3uomsixqq0s0y5x3sz/CV-2-page-June-2025-Lucas-Pollock-Muguruza.pdf?rlkey=6vqw6kzv5hqmyzmz1xh2ylqvb&dl=0" class="cv-link" target="_blank">Download CV (PDF)</a>
+            <a href="https://www.dropbox.com/scl/fi/l49ytdfd9hccvs873xvia/CV-2-page-June-2025-Lucas-Pollock-Muguruza.pdf?rlkey=8lvkau1bsgf3vllvchizgcvbv&st=cvfxurlc&dl=0" class="cv-link" target="_blank">Download CV (PDF)</a>
             <p class="cv-update">Last updated: June 2025</p>
+
+            <div class="coursework-section">
+                <h3>MSc Coursework</h3>
+                <p>During my MSc studies I have undertaken the following coursework:</p>
+                <ul class="coursework-list">
+                    <li>MY452 Applied Regression Analysis (R) - 82</li>
+                    <li>MY457 Causal Inference for Observational and Experimental Studies (R) - 74</li>
+                    <li>ST442 Longitudinal Data Analysis* (R)</li>
+                    <li>GV481 Quantitative Analysis for Political Science (R) - 77</li>
+                    <li>GV4C8 Game Theory for Political Science - 76</li>
+                    <li>GV4L6 Political Economy of Inequality - 69</li>
+                    <li>GV482 Political Science and Political Economy: Current Issues (R) - 70</li>
+                    <li>GV499 Dissertation (Department of Government) - supervised by Prof Sarah Brierley</li>
+                    <li>PP440 Micro and Macro Economics (for Public Policy)*</li>
+                    <li>GV4L8/9 Intro to Maths/R for Political Science*</li>
+                </ul>
+                <p class="coursework-note">(* Indicates audited or non-assessed courses)</p>
+            </div>
         </section>
     </main>
 
