@@ -15,6 +15,8 @@
             --charcoal: #2b2b2b;
             --charcoal-light: #3a3a3a;
             --burgundy: #6b2737;
+            --burgundy-light: #8b3747;
+            --burgundy-dark: #4a1825;
             --text-light: #b0b0b0;
             --text-white: #f5f5f5;
             --border: #404040;
@@ -28,6 +30,8 @@
             --charcoal: #faf9f7;
             --charcoal-light: #f5f3f0;
             --burgundy: #6b2737;
+            --burgundy-light: #8b3747;
+            --burgundy-dark: #4a1825;
             --text-light: #5a5a5a;
             --text-white: #2b2b2b;
             --border: #e0e0e0;
@@ -46,37 +50,77 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Theme Switcher */
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--burgundy);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--burgundy-light);
+        }
+
+        /* Theme Switcher - Dynamic Style */
         .theme-switcher {
             position: fixed;
             top: 2rem;
             right: 2rem;
             z-index: 1000;
             display: flex;
-            background: var(--sidebar-bg);
-            border: 1px solid var(--border);
-            border-radius: 4px;
+            background: rgba(43, 43, 43, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="light"] .theme-switcher {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .theme-btn {
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem;
             background: transparent;
             border: none;
             color: var(--text-light);
             cursor: pointer;
             font-size: 0.85rem;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            overflow: hidden;
         }
 
-        .theme-btn:not(:last-child) {
-            border-right: 1px solid var(--border);
+        .theme-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: var(--burgundy);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .theme-btn:hover::before {
+            width: 100px;
+            height: 100px;
         }
 
         .theme-btn:hover {
-            background: var(--hover-bg);
             color: var(--text-white);
         }
 
@@ -91,6 +135,13 @@
             display: inline-block;
             vertical-align: middle;
             margin-right: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .theme-btn span {
+            position: relative;
+            z-index: 1;
         }
 
         /* Sidebar */
@@ -132,6 +183,11 @@
             margin-bottom: 0.5rem;
         }
 
+        /* Darker burgundy for name in light mode */
+        [data-theme="light"] .sidebar h1 {
+            color: var(--burgundy-dark);
+        }
+
         .sidebar .title {
             font-size: 0.85rem;
             color: var(--text-light);
@@ -151,10 +207,28 @@
             text-decoration: none;
             margin-bottom: 0.8rem;
             font-size: 0.9rem;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding-left: 0;
+        }
+
+        /* Arrow animation for contact links */
+        .contact-info a::before {
+            content: '→';
+            position: absolute;
+            left: -20px;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .contact-info a:hover {
             color: var(--text-white);
+            padding-left: 25px;
+        }
+
+        .contact-info a:hover::before {
+            left: 0;
+            opacity: 1;
         }
 
         /* Navigation */
@@ -190,6 +264,7 @@
             width: calc(100% - 280px);
             padding: 4rem;
             padding-top: 6rem;
+            padding-bottom: 6rem;
             max-width: 900px;
         }
 
@@ -224,34 +299,46 @@
             line-height: 1.8;
         }
 
-        /* Links styling */
+        /* Enhanced link styling with underline animation */
         a {
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* About Section */
-        .about-content {
-            font-size: 1rem;
+        /* About Section Links */
+        .about-content a,
+        .playlist-note a {
+            color: var(--burgundy);
+            text-decoration: none;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .about-content a::after,
+        .playlist-note a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--burgundy);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .about-content a:hover::after,
+        .playlist-note a:hover::after {
+            width: 100%;
+        }
+
+        .about-content a:hover,
+        .playlist-note a:hover {
+            color: var(--burgundy-light);
         }
 
         .playlist-note {
             margin-top: 2rem;
             font-size: 0.95rem;
             color: var(--text-light);
-        }
-
-        .playlist-note a,
-        .about-content a {
-            color: var(--burgundy);
-            text-decoration: none;
-            border-bottom: 1px solid transparent;
-        }
-
-        .playlist-note a:hover,
-        .about-content a:hover {
-            color: var(--burgundy);
-            border-bottom-color: var(--burgundy);
-            opacity: 0.8;
         }
 
         .research-interest {
@@ -266,28 +353,46 @@
             margin-bottom: 2rem;
             padding-bottom: 2rem;
             border-bottom: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .project-item:last-child {
             border-bottom: none;
         }
 
+        /* Light up effect on hover for project names */
         .project-item h3 {
             color: var(--burgundy);
             margin-top: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .project-item:hover h3 {
+            color: var(--burgundy-light);
         }
 
         .project-item a {
             color: var(--burgundy);
             text-decoration: none;
-            border-bottom: 1px solid transparent;
+            position: relative;
         }
 
-        .project-item a:hover {
-            border-bottom-color: var(--burgundy);
-            opacity: 0.8;
+        .project-item a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--burgundy);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        .project-item a:hover::after {
+            width: 100%;
+        }
+
+        /* Project link with arrow animation */
         .project-link {
             display: inline-block;
             color: var(--text-light);
@@ -295,12 +400,25 @@
             font-size: 0.9rem;
             margin-top: 0.5rem;
             padding: 0.3rem 0;
-            border-bottom: 1px solid transparent;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding-left: 20px;
+        }
+
+        .project-link::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .project-link:hover {
             color: var(--text-white);
-            border-bottom-color: var(--burgundy);
+            padding-left: 30px;
+        }
+
+        .project-link:hover::before {
+            left: 10px;
         }
 
         /* CV Section */
@@ -309,18 +427,30 @@
             color: var(--burgundy);
             text-decoration: none;
             padding: 0.8rem 1.5rem;
-            border: 1px solid var(--burgundy);
             margin-top: 1rem;
-            transition: all 0.2s ease;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding-left: 35px;
+        }
+
+        .cv-link::before {
+            content: '→';
+            position: absolute;
+            left: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .cv-link:hover {
-            background: var(--burgundy);
-            color: #fff;
+            color: var(--burgundy-light);
+            padding-left: 45px;
+        }
+
+        .cv-link:hover::before {
+            left: 25px;
         }
 
         [data-theme="light"] .cv-link:hover {
-            color: #fff;
+            color: var(--burgundy-light);
         }
 
         .cv-update {
@@ -344,10 +474,24 @@
             margin-top: 0;
         }
 
+        /* Enhanced coursework section with dynamic styling */
         .coursework-section {
             margin-top: 2.5rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(43, 43, 43, 0.2), transparent);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] .coursework-section {
+            background: linear-gradient(135deg, rgba(43, 43, 43, 0.02), transparent);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .coursework-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
         .coursework-section h3 {
@@ -367,6 +511,17 @@
         .coursework-list li {
             margin-bottom: 0.5rem;
             color: var(--text-light);
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        /* Dynamic bullet points */
+        .coursework-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--burgundy);
+            font-weight: bold;
         }
 
         .coursework-note {
@@ -376,7 +531,7 @@
             font-style: italic;
         }
 
-        /* Footer */
+        /* Footer - Always visible */
         .footer {
             position: fixed;
             bottom: 0;
@@ -391,11 +546,26 @@
             justify-content: space-between;
             align-items: center;
             transition: background-color 0.3s ease;
+            z-index: 100;
         }
 
         .footer-email {
             font-family: 'Courier New', monospace;
             letter-spacing: 0.05em;
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 280px;
+            right: 0;
+            height: 3px;
+            background: rgba(107, 39, 55, 0.2);
+            z-index: 1000;
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes fadeIn {
@@ -408,6 +578,7 @@
             .theme-switcher {
                 top: 1rem;
                 right: 1rem;
+                border-radius: 8px;
             }
 
             .theme-btn {
@@ -437,7 +608,7 @@
                 margin-left: 0;
                 width: 100%;
                 padding: 2rem;
-                padding-bottom: 6rem;
+                padding-bottom: 8rem;
                 padding-top: 2rem;
             }
 
@@ -449,8 +620,16 @@
                 text-align: center;
             }
 
+            .scroll-indicator {
+                left: 0;
+            }
+
             body {
                 flex-direction: column;
+            }
+
+            .coursework-section:hover {
+                transform: none;
             }
         }
 
@@ -461,6 +640,9 @@
     </style>
 </head>
 <body>
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+
     <!-- Theme Switcher -->
     <div class="theme-switcher">
         <button class="theme-btn" data-theme="light" title="Light mode">
@@ -527,19 +709,19 @@
             
             <div class="project-item">
                 <h3>MSc PSPE Dissertation (Department of Government, LSE, 2024-25)</h3>
-                <span class="project-link">→ Coming Soon</span>
+                <span class="project-link">Coming Soon</span>
             </div>
             
             <div class="project-item">
                 <h3>Tellez, 2022 - Empirical Reappraisal</h3>
                 <p>Empirical reappraisal of <i>Land, Opportunism, and Displacement in Civil Wars: Evidence from Colombia</i> by Tellez (<a href="https://doi.org/10.1017/S0003055421001003" target="_blank">2022</a>) with modern difference-in-differences estimators. Completed as part of MSc programme.</p>
-                <a href="https://www.dropbox.com/scl/fi/g0fbfja11ap88opqcif2p/Causal-Inference-Summative-Reappraisal-Lucas-Pollock-Muguruza.pdf?rlkey=898y2dgp8mcdx3v90w13jruxb&st=bz5k03g2&dl=0" class="project-link" target="_blank">→ View Paper</a>
+                <a href="https://www.dropbox.com/scl/fi/g0fbfja11ap88opqcif2p/Causal-Inference-Summative-Reappraisal-Lucas-Pollock-Muguruza.pdf?rlkey=898y2dgp8mcdx3v90w13jruxb&st=bz5k03g2&dl=0" class="project-link" target="_blank">View Paper</a>
             </div>
 
             <div class="project-item">
                 <h3>Cultural Backlash Theory - Empirical Assessment</h3>
                 <p>Empirical assessment of cultural backlash theory with European data and modern difference-in-differences estimators. Completed as part of MSc programme.</p>
-                <a href="https://www.dropbox.com/scl/fi/j4znmv9oylg1ydkpx7760/PSPE-Current-Issues-Summative-Essay-Lucas-Pollock-Muguruza.pdf?rlkey=pcrn8hv4h7ej10chxn1regtwz&st=4x5qtvvq&dl=0" class="project-link" target="_blank">→ View Paper</a>
+                <a href="https://www.dropbox.com/scl/fi/j4znmv9oylg1ydkpx7760/PSPE-Current-Issues-Summative-Essay-Lucas-Pollock-Muguruza.pdf?rlkey=pcrn8hv4h7ej10chxn1regtwz&st=4x5qtvvq&dl=0" class="project-link" target="_blank">View Paper</a>
             </div>
 
             <div class="section-divider">Publications</div>
@@ -547,19 +729,19 @@
             <div class="project-item">
                 <h3>AI & Inequality Trilogy (Broadpeak)</h3>
                 <p>Completed as part of Policy Analyst role at Broadpeak.</p>
-                <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">→ Read on Broadpeak</a>
+                <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">Read on Broadpeak</a>
             </div>
 
             <div class="project-item">
                 <h3>Migration Trilogy (Broadpeak)</h3>
                 <p>Completed as part of Policy Analyst role at Broadpeak.</p>
-                <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">→ Read on Broadpeak</a>
+                <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">Read on Broadpeak</a>
             </div>
 
             <div class="project-item">
                 <h3>AMOC Article (Broadpeak)</h3>
                 <p>Completed as part of Policy Analyst role at Broadpeak.</p>
-                <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">→ Read on Broadpeak</a>
+                <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">Read on Broadpeak</a>
             </div>
         </section>
 
@@ -682,8 +864,24 @@
                 this.classList.add('active');
                 const targetId = this.getAttribute('href').substring(1);
                 document.getElementById(targetId).classList.add('active');
+                
+                // Reset scroll position for each section
+                window.scrollTo(0, 0);
             });
         });
+
+        // Scroll progress indicator
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        
+        function updateScrollIndicator() {
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrolled = window.pageYOffset;
+            const progress = Math.min(scrolled / scrollHeight, 1);
+            scrollIndicator.style.transform = `scaleX(${progress})`;
+        }
+        
+        window.addEventListener('scroll', updateScrollIndicator);
+        window.addEventListener('resize', updateScrollIndicator);
 
         // Update date dynamically to current month/year
         const updateDate = () => {
@@ -695,6 +893,9 @@
         };
         
         updateDate();
+        
+        // Initialize scroll indicator
+        updateScrollIndicator();
     </script>
 </body>
 </html>
