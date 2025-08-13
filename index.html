@@ -196,6 +196,13 @@
             margin-bottom: 1rem;
             border: 2px solid var(--border);
             object-fit: cover;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+        }
+
+        /* Profile image hover effect - subtle grow */
+        .profile-img:hover {
+            transform: scale(1.05);
         }
 
         .sidebar h1 {
@@ -272,12 +279,31 @@
             padding-left: 1rem;
             margin-left: -1rem;
             transition: all 0.2s ease;
+            position: relative;
+        }
+
+        /* Animated border that grows from center */
+        .nav-menu a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 2px;
+            height: 0;
+            background: var(--burgundy);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(-50%);
+        }
+
+        .nav-menu a:hover::before,
+        .nav-menu a.active::before {
+            height: 100%;
         }
 
         .nav-menu a:hover,
         .nav-menu a.active {
             color: var(--text-white);
-            border-left-color: var(--burgundy);
+            border-left-color: transparent;
         }
 
         /* Main Content */
@@ -298,6 +324,25 @@
         .content-section.active {
             display: block;
         }
+
+        /* Scroll animation classes */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger animation for multiple elements */
+        .scroll-animate:nth-child(1) { transition-delay: 0s; }
+        .scroll-animate:nth-child(2) { transition-delay: 0.1s; }
+        .scroll-animate:nth-child(3) { transition-delay: 0.2s; }
+        .scroll-animate:nth-child(4) { transition-delay: 0.3s; }
+        .scroll-animate:nth-child(5) { transition-delay: 0.4s; }
 
         h2 {
             font-size: 1.8rem;
@@ -485,7 +530,7 @@
         .section-divider {
             font-size: 1.4rem;
             color: var(--text-white);
-            font-weight: 600;
+            font-weight: 400; /* Changed from 600 to remove bold */
             margin-top: 3rem;
             margin-bottom: 2rem;
             padding-bottom: 0.8rem;
@@ -553,14 +598,14 @@
             font-style: italic;
         }
 
-        /* Footer - Glassmorphism effect */
+        /* Footer - Glassmorphism effect with reduced opacity */
         .footer {
             position: fixed;
             bottom: 0;
             left: 280px;
             right: 0;
             padding: 1.5rem 4rem;
-            background: rgba(26, 26, 26, 0.7);
+            background: rgba(26, 26, 26, 0.65); /* Reduced from 0.7 to 0.65 */
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-top: 1px solid rgba(64, 64, 64, 0.5);
@@ -573,9 +618,9 @@
             z-index: 100;
         }
 
-        /* Light theme footer with glassmorphism */
+        /* Light theme footer with glassmorphism - reduced opacity */
         [data-theme="light"] .footer {
-            background: rgba(250, 249, 247, 0.7);
+            background: rgba(250, 249, 247, 0.65); /* Reduced from 0.7 to 0.65 */
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-top: 1px solid rgba(224, 224, 224, 0.5);
@@ -634,6 +679,11 @@
                 border-bottom: 1px solid var(--border);
                 padding: 2rem;
                 padding-top: 4rem;
+            }
+
+            /* Ensure profile image hover doesn't cause layout issues on mobile */
+            .profile-img:hover {
+                transform: scale(1.03); /* Slightly smaller scale on mobile */
             }
 
             .main-content {
@@ -706,8 +756,9 @@
         </div>
 
         <div class="contact-info">
-            <a href="mailto:lucas-pollock@outlook.com">lucas-pollock@outlook.com</a>
             <a href="https://www.linkedin.com/in/lucaspollockmuguruza/" target="_blank">LinkedIn</a>
+            <a href="https://github.com/lmpollockmuguruza" target="_blank">GitHub</a>
+            <a href="https://lucaspollockmuguruza.substack.com/?utm_campaign=profile_chips" target="_blank">Substack</a>
         </div>
 
         <nav>
@@ -725,11 +776,11 @@
         <section id="about" class="content-section active">
             <h2>About</h2>
             <div class="about-content">
-                <p>I am currently pursuing an <a href="https://www.lse.ac.uk/study-at-lse/graduate/msc-political-science-political-science-and-political-economy" target="_blank">MSc in Political Science and Political Economy</a> at the London School of Economics and Political Science, with a predicted Distinction (74.6%), graduating in December 2025. My work focuses on causal inference, corruption, and inequality, with extensive training in quantitative political economy. I work primarily in R for data analysis and visualisation. You can find here examples of my projects (assignments, reappraisals) and my CV.</p>
+                <p class="scroll-animate">I am currently pursuing an <a href="https://www.lse.ac.uk/study-at-lse/graduate/msc-political-science-political-science-and-political-economy" target="_blank">MSc in Political Science and Political Economy</a> at the London School of Economics and Political Science, with a predicted Distinction (74.6%), graduating in December 2025. My work focuses on causal inference, corruption, and inequality, with extensive training in quantitative political economy. I work primarily in R for data analysis and visualisation. You can find here examples of my projects (assignments, reappraisals) and my CV.</p>
                 
-                <p class="playlist-note">If you click <a href="https://open.spotify.com/playlist/6bJhVqSw0TZwtVDpK2ADuU?si=a1d5046e150d4749" target="_blank">here</a>, you can also listen to a great playlist I've been creating for the past few years. I'm also an avid film watcher and am currently writing a short film — check out my <a href="https://letterboxd.com/LucasPollock/" target="_blank">Letterboxd</a> for my film diary. Also, try this <a href="https://letterboxd.samlearner.com/" target="_blank">movie recommendation tool</a> I found.</p>
+                <p class="playlist-note scroll-animate">If you click <a href="https://open.spotify.com/playlist/6bJhVqSw0TZwtVDpK2ADuU?si=a1d5046e150d4749" target="_blank">here</a>, you can also listen to a great playlist I've been creating for the past few years. I'm also an avid film watcher and am currently writing a short film — check out my <a href="https://letterboxd.com/LucasPollock/" target="_blank">Letterboxd</a> for my film diary. Also, try this <a href="https://letterboxd.samlearner.com/" target="_blank">movie recommendation tool</a> I found.</p>
 
-                <p class="research-interest">I am currently seeking Research Assistant positions in Political Economy. Please feel free to contact me via email if you have any opportunities or would like to discuss potential collaboration.</p>
+                <p class="research-interest scroll-animate">I am currently seeking Research Assistant positions in Political Economy. Please feel free to contact me via email if you have any opportunities or would like to discuss potential collaboration.</p>
             </div>
         </section>
 
@@ -737,40 +788,40 @@
         <section id="projects" class="content-section">
             <h2>Research & Publications</h2>
             
-            <div class="section-divider">Personal Papers</div>
+            <div class="section-divider scroll-animate">Personal Papers</div>
             
-            <div class="project-item">
+            <div class="project-item scroll-animate">
                 <h3>MSc PSPE Dissertation (Department of Government, LSE, 2024-25)</h3>
                 <span class="project-link">Coming Soon</span>
             </div>
             
-            <div class="project-item">
+            <div class="project-item scroll-animate">
                 <h3>Tellez, 2022 - Empirical Reappraisal</h3>
                 <p>Empirical reappraisal of <i>Land, Opportunism, and Displacement in Civil Wars: Evidence from Colombia</i> by Tellez (<a href="https://doi.org/10.1017/S0003055421001003" target="_blank">2022</a>) with modern difference-in-differences estimators. Completed as part of MSc programme.</p>
                 <a href="https://www.dropbox.com/scl/fi/g0fbfja11ap88opqcif2p/Causal-Inference-Summative-Reappraisal-Lucas-Pollock-Muguruza.pdf?rlkey=898y2dgp8mcdx3v90w13jruxb&st=bz5k03g2&dl=0" class="project-link" target="_blank">View Paper</a>
             </div>
 
-            <div class="project-item">
+            <div class="project-item scroll-animate">
                 <h3>Cultural Backlash Theory - Empirical Assessment</h3>
                 <p>Empirical assessment of cultural backlash theory with European data and modern difference-in-differences estimators. Completed as part of MSc programme.</p>
                 <a href="https://www.dropbox.com/scl/fi/j4znmv9oylg1ydkpx7760/PSPE-Current-Issues-Summative-Essay-Lucas-Pollock-Muguruza.pdf?rlkey=pcrn8hv4h7ej10chxn1regtwz&st=4x5qtvvq&dl=0" class="project-link" target="_blank">View Paper</a>
             </div>
 
-            <div class="section-divider">Publications</div>
+            <div class="section-divider scroll-animate">Publications</div>
 
-            <div class="project-item">
+            <div class="project-item scroll-animate">
                 <h3>AI & Inequality Trilogy (Broadpeak)</h3>
                 <p>Completed as part of Policy Analyst role at Broadpeak.</p>
                 <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">Read on Broadpeak</a>
             </div>
 
-            <div class="project-item">
+            <div class="project-item scroll-animate">
                 <h3>Migration Trilogy (Broadpeak)</h3>
                 <p>Completed as part of Policy Analyst role at Broadpeak.</p>
                 <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">Read on Broadpeak</a>
             </div>
 
-            <div class="project-item">
+            <div class="project-item scroll-animate">
                 <h3>AMOC Article (Broadpeak)</h3>
                 <p>Completed as part of Policy Analyst role at Broadpeak.</p>
                 <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">Read on Broadpeak</a>
@@ -780,11 +831,11 @@
         <!-- CV Section -->
         <section id="cv" class="content-section">
             <h2>Curriculum Vitae</h2>
-            <p>Download my complete CV for details on education, experience, and research.</p>
-            <a href="https://www.dropbox.com/scl/fi/l49ytdfd9hccvs873xvia/CV-2-page-June-2025-Lucas-Pollock-Muguruza.pdf?rlkey=8lvkau1bsgf3vllvchizgcvbv&st=cvfxurlc&dl=0" class="cv-link" target="_blank">Download CV (PDF)</a>
-            <p class="cv-update">Last updated: June 2025</p>
+            <p class="scroll-animate">Download my complete CV for details on education, experience, and research.</p>
+            <a href="https://www.dropbox.com/scl/fi/l49ytdfd9hccvs873xvia/CV-2-page-June-2025-Lucas-Pollock-Muguruza.pdf?rlkey=8lvkau1bsgf3vllvchizgcvbv&st=cvfxurlc&dl=0" class="cv-link scroll-animate" target="_blank">Download CV (PDF)</a>
+            <p class="cv-update scroll-animate">Last updated: June 2025</p>
 
-            <div class="coursework-section">
+            <div class="coursework-section scroll-animate">
                 <h3>MSc Coursework</h3>
                 <p>During my MSc studies I have undertaken the following coursework:</p>
                 <ul class="coursework-list">
@@ -802,7 +853,7 @@
                 <p class="coursework-note">(* Indicates audited or non-assessed courses)</p>
             </div>
 
-            <div class="coursework-section">
+            <div class="coursework-section scroll-animate">
                 <h3>Skills</h3>
                 <p><strong>Quantitative & Statistical Methods:</strong></p>
                 <ul class="coursework-list">
@@ -899,6 +950,18 @@
                 
                 // Reset scroll position for each section
                 window.scrollTo(0, 0);
+                
+                // Reset scroll animations for the newly active section
+                const newSection = document.getElementById(targetId);
+                const animatedElements = newSection.querySelectorAll('.scroll-animate');
+                animatedElements.forEach(el => {
+                    el.classList.remove('visible');
+                });
+                
+                // Trigger animations after a brief delay
+                setTimeout(() => {
+                    observeElements();
+                }, 100);
             });
         });
 
@@ -914,6 +977,34 @@
         
         window.addEventListener('scroll', updateScrollIndicator);
         window.addEventListener('resize', updateScrollIndicator);
+
+        // Scroll animation observer
+        const observeElements = () => {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            // Only observe elements in the active section
+            const activeSection = document.querySelector('.content-section.active');
+            if (activeSection) {
+                const elements = activeSection.querySelectorAll('.scroll-animate');
+                elements.forEach(el => observer.observe(el));
+            }
+        };
+
+        // Initialize scroll animations
+        document.addEventListener('DOMContentLoaded', () => {
+            observeElements();
+        });
 
         // Update date dynamically to current month/year
         const updateDate = () => {
