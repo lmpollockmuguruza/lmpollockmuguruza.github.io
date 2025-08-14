@@ -43,6 +43,126 @@
             --hover-bg: rgba(107, 39, 55, 0.05);
         }
 
+        /* Loading Screen Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 26, 26, 0.90);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                        visibility 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] .loading-screen {
+            background: rgba(250, 249, 247, 0.90);
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loading-content {
+            text-align: center;
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .greeting {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--text-white);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .loading-name {
+            font-size: 1rem;
+            color: var(--burgundy);
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            opacity: 0;
+            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+        }
+
+        .loading-dots {
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        .loading-dots span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--burgundy);
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0; }
+
+        @keyframes bounce {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Particle Canvas */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            animation: fadeIn 1s ease-in 0.5s forwards;
+        }
+
+        /* Main content should be above particles */
+        .sidebar,
+        .main-content,
+        .footer,
+        .theme-switcher,
+        .scroll-indicator {
+            position: relative;
+            z-index: 1;
+        }
+
         /* Custom text selection colors */
         ::selection {
             background-color: rgba(107, 39, 55, 0.3);
@@ -677,6 +797,18 @@
             letter-spacing: 0.05em;
         }
 
+        .footer-info {
+            transition: opacity 0.6s ease;
+        }
+
+        .footer-info.fade-out {
+            opacity: 0;
+        }
+
+        .footer-info.fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+
         /* Scroll indicator */
         .scroll-indicator {
             position: fixed;
@@ -765,6 +897,10 @@
             .coursework-section:hover {
                 transform: none;
             }
+
+            .greeting {
+                font-size: 2rem;
+            }
         }
 
         /* Smooth transition for theme switching */
@@ -774,6 +910,23 @@
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <h1 class="greeting" id="greeting">Good evening</h1>
+            <p class="loading-name">Welcome to Lucas' portfolio
+                <span class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Particle Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
     <!-- Scroll Progress Indicator -->
     <div class="scroll-indicator" id="scrollIndicator"></div>
 
@@ -963,10 +1116,173 @@
     <!-- Footer -->
     <footer class="footer">
         <span class="footer-email">lucas-pollock[at]outlook[dot]com</span>
-        <span id="last-updated">Last updated: August 2025</span>
+        <span class="footer-info" id="footerInfo">Last updated: August 2025</span>
     </footer>
 
     <script>
+        // Time-based greeting function
+        function getTimeBasedGreeting() {
+            const hour = new Date().getHours();
+            if (hour >= 5 && hour < 12) {
+                return "Good morning";
+            } else if (hour >= 12 && hour < 18) {
+                return "Good afternoon";
+            } else {
+                return "Good evening";
+            }
+        }
+
+        // Set initial greeting
+        document.getElementById('greeting').textContent = getTimeBasedGreeting();
+
+        // Loading screen management
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 1500); // Show loading screen for 1.5 seconds
+        });
+
+        // Particle system
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouseX = 0;
+        let mouseY = 0;
+        let animationId;
+
+        // Resize canvas
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Particle class
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = (Math.random() * 30) + 1;
+                this.distance = 100;
+                // Add floating motion
+                this.angle = Math.random() * Math.PI * 2;
+                this.angleSpeed = (Math.random() * 0.01) + 0.005;
+                this.floatRadius = Math.random() * 2 + 1;
+            }
+
+            update() {
+                // Floating animation
+                this.angle += this.angleSpeed;
+                
+                // Calculate mouse interaction
+                let dx = mouseX - this.x;
+                let dy = mouseY - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                let forceDirectionX = dx / distance;
+                let forceDirectionY = dy / distance;
+                let maxDistance = this.distance;
+                let force = (maxDistance - distance) / maxDistance;
+                let directionX = forceDirectionX * force * this.density * 0.5;
+                let directionY = forceDirectionY * force * this.density * 0.5;
+
+                if (distance < this.distance) {
+                    this.x -= directionX;
+                    this.y -= directionY;
+                } else {
+                    // Float back to base position with oscillation
+                    if (this.x !== this.baseX) {
+                        let dx = this.x - this.baseX;
+                        this.x -= dx / 20;
+                    }
+                    if (this.y !== this.baseY) {
+                        let dy = this.y - this.baseY;
+                        this.y -= dy / 20;
+                    }
+                    
+                    // Add floating motion
+                    this.x += Math.cos(this.angle) * this.floatRadius * 0.1;
+                    this.y += Math.sin(this.angle) * this.floatRadius * 0.1;
+                }
+            }
+
+            draw() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const opacity = currentTheme === 'light' ? 0.15 : 0.25;
+                ctx.fillStyle = `rgba(107, 39, 55, ${opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        // Initialize particles
+        function initParticles() {
+            particles = [];
+            const numberOfParticles = (canvas.width * canvas.height) / 15000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        // Animate particles
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            
+            animationId = requestAnimationFrame(animateParticles);
+        }
+
+        // Mouse movement - fix event coordinates
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // Handle theme changes to update particle opacity
+        const observer = new MutationObserver(() => {
+            // Particles will update their opacity on next draw
+        });
+        observer.observe(document.documentElement, { 
+            attributes: true, 
+            attributeFilter: ['data-theme'] 
+        });
+
+        // Initialize and start particle animation
+        initParticles();
+        animateParticles();
+
+        // Footer alternating text
+        let showGreeting = false;
+        const footerInfo = document.getElementById('footerInfo');
+        
+        setInterval(() => {
+            footerInfo.classList.add('fade-out');
+            
+            setTimeout(() => {
+                if (showGreeting) {
+                    footerInfo.textContent = 'Last updated: August 2025';
+                } else {
+                    footerInfo.textContent = getTimeBasedGreeting();
+                }
+                showGreeting = !showGreeting;
+                footerInfo.classList.remove('fade-out');
+                footerInfo.classList.add('fade-in');
+                
+                setTimeout(() => {
+                    footerInfo.classList.remove('fade-in');
+                }, 600);
+            }, 600);
+        }, 7500); // Switch every 7.5 seconds
+
         // Theme Management
         const themeButtons = document.querySelectorAll('.theme-btn');
         const html = document.documentElement;
@@ -1102,7 +1418,11 @@
                           'July', 'August', 'September', 'October', 'November', 'December'];
             const now = new Date();
             const monthYear = `${months[now.getMonth()]} ${now.getFullYear()}`;
-            document.getElementById('last-updated').textContent = `Last updated: ${monthYear}`;
+            
+            // Update the alternating footer text if it's showing the date
+            if (footerInfo.textContent.includes('Last updated')) {
+                footerInfo.textContent = `Last updated: ${monthYear}`;
+            }
         };
         
         updateDate();
