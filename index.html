@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lucas Pollock Muguruza</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -63,7 +66,7 @@
         }
 
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
             color: var(--text-light);
             background: var(--bg);
@@ -122,6 +125,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            font-family: 'Inter', sans-serif;
         }
 
         .theme-btn::before {
@@ -200,9 +204,9 @@
             cursor: default;
         }
 
-        /* Profile image hover effect - subtle grow */
+        /* Profile image hover effect - increased to 10% growth */
         .profile-img:hover {
-            transform: scale(1.05);
+            transform: scale(1.10);
         }
 
         .sidebar h1 {
@@ -240,13 +244,25 @@
             color: var(--text-light);
             text-decoration: none;
             font-size: 0.95rem;
-            display: block;
+            display: flex;
+            align-items: center;
             padding: 0.5rem 0;
             border-left: 2px solid transparent;
             padding-left: 1rem;
             margin-left: -1rem;
             transition: all 0.2s ease;
             position: relative;
+        }
+
+        /* Custom SVG icons for navigation */
+        .nav-icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            stroke: var(--burgundy);
+            fill: none;
+            stroke-width: 1.5;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Animated border that grows from center */
@@ -271,6 +287,12 @@
         .nav-menu a.active {
             color: var(--text-white);
             border-left-color: transparent;
+        }
+
+        .nav-menu a:hover .nav-icon,
+        .nav-menu a.active .nav-icon {
+            stroke: var(--text-white);
+            transform: translateX(2px);
         }
 
         /* Contact info - moved down */
@@ -490,7 +512,7 @@
             left: 10px;
         }
 
-        /* CV Section */
+        /* CV Section - Fixed arrow animation */
         .cv-link {
             display: inline-block;
             color: var(--burgundy);
@@ -499,23 +521,23 @@
             margin-top: 1rem;
             position: relative;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            padding-left: 35px;
+            padding-left: 20px;
         }
 
         .cv-link::before {
             content: '→';
             position: absolute;
-            left: 15px;
+            left: 0;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .cv-link:hover {
             color: var(--burgundy-light);
-            padding-left: 45px;
+            padding-left: 30px;
         }
 
         .cv-link:hover::before {
-            left: 25px;
+            left: 10px;
         }
 
         [data-theme="light"] .cv-link:hover {
@@ -691,7 +713,7 @@
 
             /* Ensure profile image hover doesn't cause layout issues on mobile */
             .profile-img:hover {
-                transform: scale(1.03); /* Slightly smaller scale on mobile */
+                transform: scale(1.08); /* Slightly smaller scale on mobile */
             }
 
             .main-content {
@@ -765,9 +787,35 @@
 
         <nav>
             <ul class="nav-menu">
-                <li><a href="#about" class="nav-link active">About</a></li>
-                <li><a href="#projects" class="nav-link">Research & Publications</a></li>
-                <li><a href="#cv" class="nav-link">CV</a></li>
+                <li>
+                    <a href="#about" class="nav-link active">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="8" r="3"/>
+                            <path d="M16 14c0-2.21-1.79-4-4-4s-4 1.79-4 4v6h8v-6z"/>
+                        </svg>
+                        About
+                    </a>
+                </li>
+                <li>
+                    <a href="#projects" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M4 6h16M4 10h16M4 14h16M4 18h12"/>
+                            <circle cx="20" cy="18" r="1.5"/>
+                        </svg>
+                        Research & Publications
+                    </a>
+                </li>
+                <li>
+                    <a href="#cv" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="8" y1="13" x2="16" y2="13"/>
+                            <line x1="8" y1="17" x2="16" y2="17"/>
+                        </svg>
+                        CV
+                    </a>
+                </li>
             </ul>
         </nav>
 
