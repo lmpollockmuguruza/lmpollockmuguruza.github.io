@@ -122,7 +122,7 @@
             color: var(--text-light);
             cursor: pointer;
             font-size: 0.85rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             font-family: 'Inter', sans-serif;
@@ -200,7 +200,7 @@
             margin-bottom: 1rem;
             border: 2px solid var(--border);
             object-fit: cover;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: default;
         }
 
@@ -250,7 +250,7 @@
             border-left: 2px solid transparent;
             padding-left: 1rem;
             margin-left: -1rem;
-            transition: all 0.2s ease;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
 
@@ -262,7 +262,7 @@
             stroke: var(--burgundy);
             fill: none;
             stroke-width: 1.5;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Animated border that grows from center */
@@ -274,7 +274,7 @@
             width: 2px;
             height: 0;
             background: var(--burgundy);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             transform: translateY(-50%);
         }
 
@@ -307,7 +307,7 @@
             margin-bottom: 0.8rem;
             font-size: 0.9rem;
             position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             padding-left: 0;
         }
 
@@ -317,7 +317,7 @@
             position: absolute;
             left: -20px;
             opacity: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .contact-info a:hover {
@@ -342,18 +342,18 @@
 
         .content-section {
             display: none;
-            animation: fadeIn 0.3s ease-in;
+            animation: fadeIn 0.4s ease-in;
         }
 
         .content-section.active {
             display: block;
         }
 
-        /* Scroll animation classes */
+        /* Enhanced scroll animation with longer duration */
         .scroll-animate {
             opacity: 0;
             transform: translateY(30px);
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .scroll-animate.visible {
@@ -363,11 +363,12 @@
 
         /* Stagger animation for multiple elements */
         .scroll-animate:nth-child(1) { transition-delay: 0s; }
-        .scroll-animate:nth-child(2) { transition-delay: 0.1s; }
-        .scroll-animate:nth-child(3) { transition-delay: 0.2s; }
-        .scroll-animate:nth-child(4) { transition-delay: 0.3s; }
-        .scroll-animate:nth-child(5) { transition-delay: 0.4s; }
+        .scroll-animate:nth-child(2) { transition-delay: 0.15s; }
+        .scroll-animate:nth-child(3) { transition-delay: 0.3s; }
+        .scroll-animate:nth-child(4) { transition-delay: 0.45s; }
+        .scroll-animate:nth-child(5) { transition-delay: 0.6s; }
 
+        /* Parallax effect for section headings */
         h2 {
             font-size: 1.8rem;
             color: var(--text-white);
@@ -375,6 +376,16 @@
             margin-bottom: 2rem;
             padding-bottom: 1rem;
             border-bottom: 1px solid var(--border);
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+            animation: parallaxEntrance 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes parallaxEntrance {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         h3 {
@@ -392,7 +403,7 @@
 
         /* Enhanced link styling with underline animation */
         a {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* About Section Links */
@@ -413,7 +424,7 @@
             width: 0;
             height: 2px;
             background: var(--burgundy);
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .about-content a:hover::after,
@@ -444,7 +455,7 @@
             margin-bottom: 2rem;
             padding-bottom: 2rem;
             border-bottom: 1px solid var(--border);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .project-item:last-child {
@@ -455,7 +466,7 @@
         .project-item h3 {
             color: var(--burgundy);
             margin-top: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .project-item:hover h3 {
@@ -476,7 +487,7 @@
             width: 0;
             height: 2px;
             background: var(--burgundy);
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .project-item a:hover::after {
@@ -492,7 +503,7 @@
             margin-top: 0.5rem;
             padding: 0.3rem 0;
             position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             padding-left: 20px;
         }
 
@@ -500,7 +511,7 @@
             content: '→';
             position: absolute;
             left: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .project-link:hover {
@@ -520,7 +531,7 @@
             padding: 0.8rem 1.5rem;
             margin-top: 1rem;
             position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             padding-left: 20px;
         }
 
@@ -528,7 +539,7 @@
             content: '→';
             position: absolute;
             left: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .cv-link:hover {
@@ -551,14 +562,25 @@
             font-style: italic;
         }
 
+        /* Section divider with parallax effect */
         .section-divider {
             font-size: 1.4rem;
             color: var(--text-white);
-            font-weight: 400; /* Changed from 600 to remove bold */
+            font-weight: 400;
             margin-top: 3rem;
             margin-bottom: 2rem;
             padding-bottom: 0.8rem;
             border-bottom: 1px solid var(--border);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: subtleParallax 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+        }
+
+        @keyframes subtleParallax {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .section-divider:first-child {
@@ -572,7 +594,7 @@
             background: linear-gradient(135deg, rgba(43, 43, 43, 0.2), transparent);
             border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         [data-theme="light"] .coursework-section {
@@ -629,7 +651,7 @@
             left: 280px;
             right: 0;
             padding: 1.5rem 4rem;
-            background: rgba(26, 26, 26, 0.65); /* Reduced from 0.7 to 0.65 */
+            background: rgba(26, 26, 26, 0.65);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-top: 1px solid rgba(64, 64, 64, 0.5);
@@ -644,7 +666,7 @@
 
         /* Light theme footer with glassmorphism - reduced opacity */
         [data-theme="light"] .footer {
-            background: rgba(250, 249, 247, 0.65); /* Reduced from 0.7 to 0.65 */
+            background: rgba(250, 249, 247, 0.65);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border-top: 1px solid rgba(224, 224, 224, 0.5);
@@ -713,7 +735,7 @@
 
             /* Ensure profile image hover doesn't cause layout issues on mobile */
             .profile-img:hover {
-                transform: scale(1.08); /* Slightly smaller scale on mobile */
+                transform: scale(1.08);
             }
 
             .main-content {
@@ -987,7 +1009,7 @@
             }
         });
 
-        // Simple navigation
+        // Enhanced navigation with smooth scrolling for mobile
         const navLinks = document.querySelectorAll('.nav-link');
         const sections = document.querySelectorAll('.content-section');
 
@@ -1002,14 +1024,26 @@
                 // Add active class to clicked
                 this.classList.add('active');
                 const targetId = this.getAttribute('href').substring(1);
-                document.getElementById(targetId).classList.add('active');
+                const targetSection = document.getElementById(targetId);
+                targetSection.classList.add('active');
                 
-                // Reset scroll position for each section
-                window.scrollTo(0, 0);
+                // Mobile-specific scroll to top behavior
+                if (window.innerWidth <= 768) {
+                    // Calculate the offset to account for fixed elements
+                    const sidebarHeight = document.querySelector('.sidebar').offsetHeight;
+                    
+                    // Smooth scroll to the main content area
+                    window.scrollTo({
+                        top: sidebarHeight,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    // Desktop: just reset scroll position
+                    window.scrollTo(0, 0);
+                }
                 
                 // Reset scroll animations for the newly active section
-                const newSection = document.getElementById(targetId);
-                const animatedElements = newSection.querySelectorAll('.scroll-animate');
+                const animatedElements = targetSection.querySelectorAll('.scroll-animate');
                 animatedElements.forEach(el => {
                     el.classList.remove('visible');
                 });
@@ -1034,7 +1068,7 @@
         window.addEventListener('scroll', updateScrollIndicator);
         window.addEventListener('resize', updateScrollIndicator);
 
-        // Scroll animation observer
+        // Enhanced scroll animation observer with longer duration
         const observeElements = () => {
             const observerOptions = {
                 threshold: 0.1,
