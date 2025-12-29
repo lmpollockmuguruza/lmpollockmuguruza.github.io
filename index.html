@@ -585,6 +585,63 @@
             font-size: 0.95rem;
         }
 
+        /* Of Interest Section */
+        .interests-intro {
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+        }
+
+        .interests-intro a {
+            color: var(--burgundy);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .interests-intro a:hover {
+            color: var(--burgundy-light);
+        }
+
+        .interest-item {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .interest-item:last-child {
+            border-bottom: none;
+        }
+
+        .interest-header {
+            margin-bottom: 0.5rem;
+        }
+
+        .interest-title {
+            color: var(--burgundy);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+
+        .interest-title:hover {
+            color: var(--burgundy-light);
+        }
+
+        .interest-meta {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.3rem;
+        }
+
+        .interest-description {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
         /* Projects Section */
         .project-item {
             margin-bottom: 2rem;
@@ -1030,6 +1087,14 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#interests" class="nav-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24">
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                        </svg>
+                        Of interest
+                    </a>
+                </li>
+                <li>
                     <a href="#cv" class="nav-link">
                         <svg class="nav-icon" viewBox="0 0 24 24">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -1134,6 +1199,20 @@
                 <h3>AMOC Article (Broadpeak)</h3>
                 <p>Exploring socioeconomic impacts and political considerations of the Atlantic Meridional Overturning Circulation's (AMOC) weakening, making use of the most recent evidence on its potential collapse. Completed as part of Policy Analyst role at Broadpeak.</p>
                 <a href="https://broadpeak.ch/amoc/" class="project-link" target="_blank">Read on Broadpeak</a>
+            </div>
+        </section>
+
+        <!-- Of Interest Section -->
+        <section id="interests" class="content-section">
+            <h2>Of interest</h2>
+            <p class="scroll-animate interests-intro">As any human being, I am not just my work, so here are a few things I find interesting, and do not want to gatekeep. For gatekept interesting things, explore the world :)</p>
+            
+            <div class="interest-item scroll-animate">
+                <div class="interest-header">
+                    <a href="https://danioffline.substack.com/p/everyone-wants-to-be-a-dj-no-one" target="_blank" class="interest-title">everyone wants to be a DJ, no one wants to dance</a>
+                    <span class="interest-meta">by Dani Offline (2025) · 29/12/2025</span>
+                </div>
+                <p class="interest-description">A wonderful essay I have interpreted as a call to enjoy art rather than use it for the well-intentioned goal of being artists.</p>
             </div>
         </section>
 
