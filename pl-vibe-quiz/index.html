@@ -32,6 +32,10 @@
       color: #0a0a0a;
     }
     
+    button {
+      font-family: inherit;
+    }
+    
     button:hover {
       transform: translateY(-1px);
     }
@@ -54,33 +58,87 @@
     
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       background: #0a0a0a;
       border-radius: 50%;
       cursor: pointer;
-      margin-top: -10px;
+      margin-top: -12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     
     input[type="range"]::-webkit-slider-runnable-track {
       height: 4px;
-      background: #e5e5e5;
+      background: linear-gradient(to right, #e5e5e5 0%, #d0d0d0 100%);
       border-radius: 2px;
     }
     
     input[type="range"]::-moz-range-thumb {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       background: #0a0a0a;
       border-radius: 50%;
       cursor: pointer;
       border: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
     
     input[type="range"]::-moz-range-track {
       height: 4px;
-      background: #e5e5e5;
+      background: linear-gradient(to right, #e5e5e5 0%, #d0d0d0 100%);
       border-radius: 2px;
+    }
+
+    /* Text selection */
+    ::selection {
+      background: #0a0a0a;
+      color: #FAFAF8;
+    }
+    ::-moz-selection {
+      background: #0a0a0a;
+      color: #FAFAF8;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #d0d0d0;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #b0b0b0;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
     }
   </style>
 </head>
@@ -90,7 +148,7 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script type="text/babel">
-    const { useState, useEffect, useCallback } = React;
+    const { useState, useEffect, useCallback, useMemo } = React;
 
     // =============================================================================
     // TEAMS DATA
@@ -106,7 +164,17 @@
         energy: ["manifestation", "gallery dates", "vintage finds", "long-term thinking"],
         traitVector: { creativity: 0.85, optimism: 0.8, patience: 0.9, sophistication: 0.75, tradition: 0.5, loyalty: 0.7, ambition: 0.7, analytical: 0.3, grit: 0.4, passion: 0.7, authenticity: 0.6, community: 0.5, underdog: 0.3, glamour: 0.5, chaos: 0.3, mystery: 0.4, reinvention: 0.4, pride: 0.6 },
         interactionBonuses: [{ traits: ['creativity', 'patience'], multiplier: 1.4 }, { traits: ['optimism', 'sophistication'], multiplier: 1.3 }],
-        contradictionTolerance: 0.3
+        contradictionTolerance: 0.3,
+        reactions: {
+          whenFavorite: {
+            match: "A perfect alignment. The algorithm agrees with your heart—you've been an Arsenal person all along, you just needed data to prove it.",
+            different: "Interesting. You say {predicted} is your vibe but your heart says Arsenal. Classic case of knowing what you *should* want versus what you *actually* want."
+          },
+          whenLeast: {
+            match: "This is genuinely hilarious. You ARE Arsenal coded but you hate them? The enemy within. You're basically Judas in an Adidas jacket.",
+            different: "So you're a {predicted} at heart but Arsenal is your nemesis. The patient process types do seem to annoy the chaos merchants."
+          }
+        }
       },
       manchesterCity: {
         name: "Manchester City",
@@ -117,7 +185,17 @@
         energy: ["spreadsheets", "morning routines", "aesthetic everything", "main character mindset"],
         traitVector: { analytical: 0.95, ambition: 0.95, sophistication: 0.8, patience: 0.6, creativity: 0.5, tradition: 0.3, loyalty: 0.4, optimism: 0.5, grit: 0.5, passion: 0.5, authenticity: 0.4, community: 0.3, underdog: 0.05, glamour: 0.7, chaos: 0.1, mystery: 0.3, reinvention: 0.5, pride: 0.8 },
         interactionBonuses: [{ traits: ['analytical', 'ambition'], multiplier: 1.5 }, { traits: ['sophistication', 'glamour'], multiplier: 1.2 }],
-        contradictionTolerance: 0.2
+        contradictionTolerance: 0.2,
+        reactions: {
+          whenFavorite: {
+            match: "Obviously. You're wired for excellence and you found the excellence club. This is like a spreadsheet confirming what the spreadsheet already knew.",
+            different: "The quiz says {predicted} but you're pledging City. Aspirational. You love the winners even if your soul is a bit more... complicated."
+          },
+          whenLeast: {
+            match: "You test as City-coded but despise them? That's called self-loathing, mate. You hate what you are. Therapy might help.",
+            different: "A {predicted} soul who hates City. Yeah that checks out. Perfectionism is annoying when you're not the one being perfect."
+          }
+        }
       },
       liverpool: {
         name: "Liverpool",
@@ -128,7 +206,17 @@
         energy: ["found family", "concert queues", "matching tattoos", "emotional playlists"],
         traitVector: { loyalty: 0.95, community: 0.95, passion: 0.9, tradition: 0.8, grit: 0.7, authenticity: 0.8, optimism: 0.6, pride: 0.7, creativity: 0.4, analytical: 0.3, sophistication: 0.3, patience: 0.5, underdog: 0.5, glamour: 0.3, chaos: 0.4, mystery: 0.3, reinvention: 0.3, ambition: 0.7 },
         interactionBonuses: [{ traits: ['loyalty', 'community'], multiplier: 1.6 }, { traits: ['passion', 'tradition'], multiplier: 1.3 }],
-        contradictionTolerance: 0.4
+        contradictionTolerance: 0.4,
+        reactions: {
+          whenFavorite: {
+            match: "You never walk alone and the algorithm never lies. A perfect match. Your people are your people forever.",
+            different: "The data says {predicted} but your heart beats Liverpool. That's kind of beautiful—loyalty overriding logic. Very on brand actually."
+          },
+          whenLeast: {
+            match: "WAIT. You're Liverpool coded but hate Liverpool? You literally embody their values while despising them. This is Shakespearean.",
+            different: "A {predicted} who can't stand Liverpool's intensity. Fair. All that emotion and community can feel like a cult from the outside."
+          }
+        }
       },
       chelsea: {
         name: "Chelsea",
@@ -139,7 +227,17 @@
         energy: ["rebrand", "impulsive decisions", "expensive taste", "plot twists"],
         traitVector: { reinvention: 0.95, glamour: 0.9, chaos: 0.8, ambition: 0.8, creativity: 0.6, sophistication: 0.6, pride: 0.7, passion: 0.6, loyalty: 0.2, tradition: 0.1, patience: 0.2, community: 0.4, analytical: 0.4, authenticity: 0.4, grit: 0.5, underdog: 0.2, mystery: 0.5, optimism: 0.5 },
         interactionBonuses: [{ traits: ['reinvention', 'glamour'], multiplier: 1.5 }, { traits: ['chaos', 'ambition'], multiplier: 1.3 }],
-        contradictionTolerance: 0.8
+        contradictionTolerance: 0.8,
+        reactions: {
+          whenFavorite: {
+            match: "You're literally Chelsea personified and you know it. Chaos recognizes chaos. This was destiny in a tracksuit.",
+            different: "Quiz says {predicted} but Chelsea has your heart. You're more chaotic than you think, or maybe you just like drama."
+          },
+          whenLeast: {
+            match: "Testing as Chelsea but hating Chelsea is the most Chelsea thing possible. You contain multitudes (and contradictions).",
+            different: "A {predicted} who despises Chelsea's chaos. The constant reinvention probably gives you hives. You want stability; they want content."
+          }
+        }
       },
       manchesterUnited: {
         name: "Manchester United",
@@ -150,7 +248,17 @@
         energy: ["vintage jerseys", "family traditions", "documentary binges", "comeback arcs"],
         traitVector: { tradition: 0.95, pride: 0.9, ambition: 0.7, loyalty: 0.7, passion: 0.7, glamour: 0.6, community: 0.5, creativity: 0.4, analytical: 0.3, patience: 0.4, sophistication: 0.5, underdog: 0.2, grit: 0.5, chaos: 0.4, mystery: 0.3, reinvention: 0.3, authenticity: 0.5, optimism: 0.5 },
         interactionBonuses: [{ traits: ['tradition', 'pride'], multiplier: 1.5 }, { traits: ['ambition', 'glamour'], multiplier: 1.3 }],
-        contradictionTolerance: 0.5
+        contradictionTolerance: 0.5,
+        reactions: {
+          whenFavorite: {
+            match: "Glory, glory. You're heritage coded and United is your birthright. Probably watched Class of 92 three times.",
+            different: "The algorithm says {predicted} but you're pledging United. Respect for the legacy. You romanticize the past, don't you?"
+          },
+          whenLeast: {
+            match: "You ARE United coded but can't stand them. Living with the weight of expectation you've built yourself. Poetic.",
+            different: "A {predicted} who hates United. The arrogance of past glory probably grates. Fair."
+          }
+        }
       },
       tottenham: {
         name: "Tottenham",
@@ -161,7 +269,17 @@
         energy: ["manifestation boards", "almost moments", "dramatic monologues", "clown makeup tutorials"],
         traitVector: { optimism: 0.95, passion: 0.85, loyalty: 0.8, creativity: 0.6, authenticity: 0.7, community: 0.6, tradition: 0.5, pride: 0.6, analytical: 0.3, grit: 0.4, patience: 0.3, sophistication: 0.4, underdog: 0.6, glamour: 0.4, chaos: 0.5, mystery: 0.3, reinvention: 0.4, ambition: 0.7 },
         interactionBonuses: [{ traits: ['optimism', 'passion'], multiplier: 1.5 }, { traits: ['loyalty', 'authenticity'], multiplier: 1.2 }],
-        contradictionTolerance: 0.7
+        contradictionTolerance: 0.7,
+        reactions: {
+          whenFavorite: {
+            match: "The algorithm matched you with serial heartbreak and you embrace it. Respect. You're an optimism machine.",
+            different: "Data says {predicted} but you chose Spurs. You're either a glutton for punishment or genuinely built different."
+          },
+          whenLeast: {
+            match: "You're optimism-coded but hate Spurs? You've seen what relentless hope leads to and you've chosen violence instead.",
+            different: "A {predicted} who can't stand Spurs. The perpetual 'almost' narrative gets old. You prefer results, not potential."
+          }
+        }
       },
       newcastle: {
         name: "Newcastle",
@@ -172,7 +290,17 @@
         energy: ["gym arc", "new money", "regional pride", "underrated taste"],
         traitVector: { ambition: 0.9, pride: 0.85, grit: 0.85, community: 0.8, loyalty: 0.75, passion: 0.7, authenticity: 0.75, tradition: 0.6, optimism: 0.7, reinvention: 0.6, underdog: 0.5, creativity: 0.4, analytical: 0.4, sophistication: 0.4, glamour: 0.5, chaos: 0.4, mystery: 0.5, patience: 0.5 },
         interactionBonuses: [{ traits: ['ambition', 'grit'], multiplier: 1.4 }, { traits: ['pride', 'community'], multiplier: 1.3 }],
-        contradictionTolerance: 0.5
+        contradictionTolerance: 0.5,
+        reactions: {
+          whenFavorite: {
+            match: "Glow up recognizes glow up. You're Newcastle coded AND Newcastle loyal. Main character energy.",
+            different: "Quiz says {predicted} but Newcastle has your heart. You love a transformation arc, even if it's not quite your vibe."
+          },
+          whenLeast: {
+            match: "You ARE the glow up energy but hate Newcastle? Success story hating success story. Interesting self-sabotage.",
+            different: "A {predicted} who can't stand Newcastle. The new money energy bothers you. You either prefer old money or no money."
+          }
+        }
       },
       brighton: {
         name: "Brighton",
@@ -183,7 +311,17 @@
         energy: ["alt algorithms", "niche obsessions", "coastal grandmother", "being right"],
         traitVector: { analytical: 0.9, creativity: 0.8, authenticity: 0.8, sophistication: 0.7, patience: 0.7, mystery: 0.6, reinvention: 0.6, optimism: 0.5, underdog: 0.5, community: 0.5, grit: 0.5, ambition: 0.6, tradition: 0.2, loyalty: 0.5, passion: 0.5, glamour: 0.3, chaos: 0.4, pride: 0.5 },
         interactionBonuses: [{ traits: ['analytical', 'creativity'], multiplier: 1.5 }, { traits: ['authenticity', 'sophistication'], multiplier: 1.3 }],
-        contradictionTolerance: 0.6
+        contradictionTolerance: 0.6,
+        reactions: {
+          whenFavorite: {
+            match: "You're data-driven AND you chose the data-driven club. This is extremely on brand. Probably have opinions about xG.",
+            different: "Algorithm says {predicted} but Brighton speaks to you. You appreciate intelligence over brute force. Respect."
+          },
+          whenLeast: {
+            match: "Testing as Brighton-coded but hating Brighton is... a choice. You dislike yourself when you're being clever, apparently.",
+            different: "A {predicted} who can't stand Brighton. The 'smarter than you' energy grates. Sometimes you just want vibes, not analytics."
+          }
+        }
       },
       astonVilla: {
         name: "Aston Villa",
@@ -194,7 +332,17 @@
         energy: ["glow up", "old soul", "proving people wrong", "european summer"],
         traitVector: { tradition: 0.8, ambition: 0.8, pride: 0.8, patience: 0.7, loyalty: 0.7, grit: 0.7, optimism: 0.7, community: 0.6, authenticity: 0.6, passion: 0.6, reinvention: 0.5, creativity: 0.5, analytical: 0.4, sophistication: 0.5, underdog: 0.5, glamour: 0.5, chaos: 0.3, mystery: 0.4 },
         interactionBonuses: [{ traits: ['tradition', 'ambition'], multiplier: 1.4 }, { traits: ['patience', 'optimism'], multiplier: 1.3 }],
-        contradictionTolerance: 0.5
+        contradictionTolerance: 0.5,
+        reactions: {
+          whenFavorite: {
+            match: "Renaissance recognizes renaissance. You're Villa coded and Villa loyal. Your comeback era is immaculate.",
+            different: "Data says {predicted} but Villa has your heart. You appreciate a good redemption story even if you're wired differently."
+          },
+          whenLeast: {
+            match: "You're comeback-coded but hate Villa? You're in denial about your own redemption arc. Let it happen.",
+            different: "A {predicted} who dislikes Villa. The 'we're back' energy might feel premature. You'll believe it when you see it."
+          }
+        }
       },
       westHam: {
         name: "West Ham",
@@ -205,7 +353,17 @@
         energy: ["family groupchat", "local spots", "ride or die", "no cap ever"],
         traitVector: { authenticity: 0.95, loyalty: 0.9, grit: 0.9, community: 0.9, passion: 0.8, pride: 0.75, tradition: 0.7, underdog: 0.6, patience: 0.5, optimism: 0.5, creativity: 0.3, analytical: 0.2, sophistication: 0.2, glamour: 0.1, chaos: 0.4, mystery: 0.3, reinvention: 0.3, ambition: 0.5 },
         interactionBonuses: [{ traits: ['authenticity', 'loyalty'], multiplier: 1.5 }, { traits: ['grit', 'community'], multiplier: 1.4 }],
-        contradictionTolerance: 0.3
+        contradictionTolerance: 0.3,
+        reactions: {
+          whenFavorite: {
+            match: "East London energy confirmed. You're authentic to your core and the algorithm sees it. Forever blowing bubbles.",
+            different: "Quiz says {predicted} but West Ham has your heart. You value keeping it real even if your vibe is more complex."
+          },
+          whenLeast: {
+            match: "You're authenticity-coded but hate West Ham? You reject your true nature. Perhaps too real for you to handle.",
+            different: "A {predicted} who can't stand West Ham. Maybe the working class hero thing feels performative to you. Or you're just posh."
+          }
+        }
       },
       crystalPalace: {
         name: "Crystal Palace",
@@ -216,7 +374,17 @@
         energy: ["art school", "thrift finds", "main stage energy", "unapologetically you"],
         traitVector: { creativity: 0.95, chaos: 0.85, authenticity: 0.85, passion: 0.8, community: 0.7, pride: 0.65, grit: 0.6, loyalty: 0.6, mystery: 0.5, underdog: 0.5, optimism: 0.5, reinvention: 0.5, analytical: 0.2, sophistication: 0.3, patience: 0.4, tradition: 0.4, glamour: 0.4, ambition: 0.5 },
         interactionBonuses: [{ traits: ['creativity', 'chaos'], multiplier: 1.5 }, { traits: ['authenticity', 'passion'], multiplier: 1.3 }],
-        contradictionTolerance: 0.7
+        contradictionTolerance: 0.7,
+        reactions: {
+          whenFavorite: {
+            match: "Creative chaos meets creative chaos. South London made you and you know it. Holmesdale Road is your spiritual home.",
+            different: "Algorithm says {predicted} but Palace has your heart. You're more chaotic than the data suggests. Embrace it."
+          },
+          whenLeast: {
+            match: "You're creativity-coded but hate Palace? You fear your own artistic chaos. Let the eagle fly, mate.",
+            different: "A {predicted} who can't stand Palace. The drum-banging ultras aren't for everyone. You prefer structure to chaos."
+          }
+        }
       },
       fulham: {
         name: "Fulham",
@@ -227,7 +395,17 @@
         energy: ["old money aesthetic", "farmers market", "natural wine", "being unbothered"],
         traitVector: { sophistication: 0.95, patience: 0.85, authenticity: 0.75, mystery: 0.7, creativity: 0.6, analytical: 0.6, tradition: 0.6, loyalty: 0.5, pride: 0.5, community: 0.5, ambition: 0.5, optimism: 0.4, passion: 0.3, grit: 0.4, underdog: 0.3, glamour: 0.4, chaos: 0.1, reinvention: 0.3 },
         interactionBonuses: [{ traits: ['sophistication', 'patience'], multiplier: 1.5 }, { traits: ['mystery', 'authenticity'], multiplier: 1.3 }],
-        contradictionTolerance: 0.2
+        contradictionTolerance: 0.2,
+        reactions: {
+          whenFavorite: {
+            match: "Quiet luxury confirmed. You're Fulham coded and Fulham loyal. Probably know a great wine bar no one's heard of.",
+            different: "Data says {predicted} but Fulham speaks to you. You aspire to an understated elegance. We see you."
+          },
+          whenLeast: {
+            match: "You're sophistication-coded but hate Fulham? You reject your own refined nature. Too much for you?",
+            different: "A {predicted} who dislikes Fulham. Maybe the quiet confidence reads as smugness. Valid."
+          }
+        }
       },
       brentford: {
         name: "Brentford",
@@ -238,7 +416,17 @@
         energy: ["life hacks", "local hero", "punching up", "efficiency"],
         traitVector: { analytical: 0.85, underdog: 0.9, community: 0.85, authenticity: 0.8, grit: 0.75, creativity: 0.7, patience: 0.7, loyalty: 0.7, optimism: 0.6, pride: 0.5, ambition: 0.6, mystery: 0.4, tradition: 0.4, sophistication: 0.4, passion: 0.5, glamour: 0.1, chaos: 0.3, reinvention: 0.5 },
         interactionBonuses: [{ traits: ['analytical', 'underdog'], multiplier: 1.5 }, { traits: ['community', 'authenticity'], multiplier: 1.3 }],
-        contradictionTolerance: 0.4
+        contradictionTolerance: 0.4,
+        reactions: {
+          whenFavorite: {
+            match: "Smart underdog loves smart underdog. You probably explain Moneyball to people at parties. Keep winning.",
+            different: "Quiz says {predicted} but Brentford has your heart. You love an intelligent David vs Goliath story."
+          },
+          whenLeast: {
+            match: "You're underdog-coded but hate Brentford? You reject the scrappy genius energy. Interesting.",
+            different: "A {predicted} who can't stand Brentford. Maybe the 'we're smarter than everyone' vibe grates. Fair."
+          }
+        }
       },
       wolves: {
         name: "Wolves",
@@ -249,7 +437,17 @@
         energy: ["wolf pack", "international friends", "midnight energy", "enigmatic"],
         traitVector: { mystery: 0.9, loyalty: 0.85, grit: 0.8, community: 0.8, patience: 0.7, authenticity: 0.7, pride: 0.65, tradition: 0.6, creativity: 0.5, ambition: 0.6, analytical: 0.5, sophistication: 0.5, underdog: 0.5, passion: 0.5, optimism: 0.4, glamour: 0.3, chaos: 0.3, reinvention: 0.4 },
         interactionBonuses: [{ traits: ['mystery', 'loyalty'], multiplier: 1.5 }, { traits: ['grit', 'community'], multiplier: 1.3 }],
-        contradictionTolerance: 0.5
+        contradictionTolerance: 0.5,
+        reactions: {
+          whenFavorite: {
+            match: "The pack recognizes its own. You're mystery-coded and Wolves loyal. Moving in silence, as intended.",
+            different: "Algorithm says {predicted} but Wolves speaks to you. You appreciate the enigmatic continental energy."
+          },
+          whenLeast: {
+            match: "You're mystery-coded but hate Wolves? You fear your own enigmatic nature. Embrace the gold and black.",
+            different: "A {predicted} who can't stand Wolves. Maybe the mysterious vibe feels like they're trying too hard. You prefer clarity."
+          }
+        }
       },
       bournemouth: {
         name: "Bournemouth",
@@ -260,7 +458,17 @@
         energy: ["beach walks", "underestimated", "steady wins", "vitamin sea"],
         traitVector: { patience: 0.9, underdog: 0.8, authenticity: 0.8, community: 0.7, grit: 0.7, optimism: 0.6, loyalty: 0.65, mystery: 0.5, creativity: 0.5, pride: 0.4, tradition: 0.5, analytical: 0.4, passion: 0.4, sophistication: 0.4, ambition: 0.4, glamour: 0.2, chaos: 0.3, reinvention: 0.4 },
         interactionBonuses: [{ traits: ['patience', 'underdog'], multiplier: 1.4 }, { traits: ['authenticity', 'community'], multiplier: 1.3 }],
-        contradictionTolerance: 0.4
+        contradictionTolerance: 0.4,
+        reactions: {
+          whenFavorite: {
+            match: "Beach vibes confirmed. You're patience-coded and Bournemouth loyal. Vitamin sea for the soul.",
+            different: "Data says {predicted} but Bournemouth has your heart. You appreciate the chill resilience energy."
+          },
+          whenLeast: {
+            match: "You're patience-coded but hate Bournemouth? The beach life isn't for you apparently. Too zen?",
+            different: "A {predicted} who dislikes Bournemouth. Maybe the laid-back vibe reads as lacking ambition. You want fire."
+          }
+        }
       },
       nottinghamForest: {
         name: "Nottingham Forest",
@@ -271,7 +479,17 @@
         energy: ["old glory", "patience", "european nights", "written in the stars"],
         traitVector: { tradition: 0.95, patience: 0.85, pride: 0.85, loyalty: 0.8, optimism: 0.7, community: 0.7, grit: 0.65, passion: 0.65, authenticity: 0.6, ambition: 0.6, mystery: 0.5, underdog: 0.5, creativity: 0.4, analytical: 0.3, sophistication: 0.4, glamour: 0.4, chaos: 0.3, reinvention: 0.3 },
         interactionBonuses: [{ traits: ['tradition', 'patience'], multiplier: 1.5 }, { traits: ['pride', 'loyalty'], multiplier: 1.3 }],
-        contradictionTolerance: 0.4
+        contradictionTolerance: 0.4,
+        reactions: {
+          whenFavorite: {
+            match: "Two European Cups never leave you. You're tradition-coded and Forest loyal. The giant awakens.",
+            different: "Quiz says {predicted} but Forest has your heart. You respect heritage and the patience of legends."
+          },
+          whenLeast: {
+            match: "You're tradition-coded but hate Forest? Rejecting your own reverence for history. Curious.",
+            different: "A {predicted} who can't stand Forest. Maybe living in past glories gets old. You prefer building new ones."
+          }
+        }
       },
       everton: {
         name: "Everton",
@@ -282,7 +500,17 @@
         energy: ["survival mode", "community", "against all odds", "unconditional"],
         traitVector: { grit: 0.95, loyalty: 0.9, underdog: 0.9, community: 0.85, authenticity: 0.85, passion: 0.8, pride: 0.7, tradition: 0.7, patience: 0.6, optimism: 0.3, creativity: 0.3, analytical: 0.3, sophistication: 0.2, glamour: 0.1, chaos: 0.4, mystery: 0.4, reinvention: 0.3, ambition: 0.5 },
         interactionBonuses: [{ traits: ['grit', 'underdog'], multiplier: 1.6 }, { traits: ['loyalty', 'community'], multiplier: 1.4 }],
-        contradictionTolerance: 0.3
+        contradictionTolerance: 0.3,
+        reactions: {
+          whenFavorite: {
+            match: "Born fighter energy confirmed. You're grit-coded and Everton loyal. NSNO forever.",
+            different: "Algorithm says {predicted} but Everton has your heart. You respect the endless fight against the odds."
+          },
+          whenLeast: {
+            match: "You're grit-coded but hate Everton? You reject the fighting spirit. Interesting self-denial.",
+            different: "A {predicted} who dislikes Everton. Maybe the suffering gets tiring to watch. You prefer winners."
+          }
+        }
       },
       leicester: {
         name: "Leicester City",
@@ -293,7 +521,17 @@
         energy: ["manifestation", "diversity", "once in a lifetime", "believers"],
         traitVector: { optimism: 0.9, community: 0.85, underdog: 0.85, passion: 0.8, loyalty: 0.75, authenticity: 0.75, grit: 0.7, pride: 0.6, creativity: 0.5, patience: 0.5, tradition: 0.5, mystery: 0.4, analytical: 0.3, sophistication: 0.3, glamour: 0.3, chaos: 0.5, reinvention: 0.4, ambition: 0.6 },
         interactionBonuses: [{ traits: ['optimism', 'underdog'], multiplier: 1.6 }, { traits: ['community', 'passion'], multiplier: 1.3 }],
-        contradictionTolerance: 0.6
+        contradictionTolerance: 0.6,
+        reactions: {
+          whenFavorite: {
+            match: "5000-1 energy. You believe in miracles because you've seen one. Leicester coded and Leicester loyal.",
+            different: "Data says {predicted} but Leicester has your heart. You're a believer in impossible things. Beautiful."
+          },
+          whenLeast: {
+            match: "You're miracle-coded but hate Leicester? You've seen magic and rejected it. Cold.",
+            different: "A {predicted} who can't stand Leicester. Maybe the fairytale narrative feels played out. Cynic."
+          }
+        }
       },
       southampton: {
         name: "Southampton",
@@ -304,7 +542,17 @@
         energy: ["growth mindset", "spotting potential", "patient", "developer"],
         traitVector: { patience: 0.9, community: 0.8, authenticity: 0.8, loyalty: 0.7, creativity: 0.6, analytical: 0.6, optimism: 0.6, tradition: 0.6, grit: 0.55, pride: 0.5, mystery: 0.5, underdog: 0.5, passion: 0.5, sophistication: 0.5, ambition: 0.4, glamour: 0.2, chaos: 0.3, reinvention: 0.4 },
         interactionBonuses: [{ traits: ['patience', 'community'], multiplier: 1.4 }, { traits: ['authenticity', 'creativity'], multiplier: 1.2 }],
-        contradictionTolerance: 0.4
+        contradictionTolerance: 0.4,
+        reactions: {
+          whenFavorite: {
+            match: "Academy energy confirmed. You spot potential and nurture it. Southampton coded and loyal.",
+            different: "Quiz says {predicted} but Southampton has your heart. You appreciate the development over instant results."
+          },
+          whenLeast: {
+            match: "You're nurture-coded but hate Southampton? You reject your own developmental nature. Weird.",
+            different: "A {predicted} who dislikes Southampton. Watching talent leave constantly probably frustrates you. Fair."
+          }
+        }
       },
       ipswich: {
         name: "Ipswich Town",
@@ -315,7 +563,17 @@
         energy: ["new era", "humble beginnings", "hungry", "proving ground"],
         traitVector: { underdog: 0.9, ambition: 0.85, authenticity: 0.85, grit: 0.8, optimism: 0.8, community: 0.75, loyalty: 0.7, passion: 0.7, patience: 0.6, pride: 0.5, creativity: 0.5, reinvention: 0.6, tradition: 0.4, analytical: 0.4, mystery: 0.4, sophistication: 0.3, glamour: 0.2, chaos: 0.4 },
         interactionBonuses: [{ traits: ['underdog', 'ambition'], multiplier: 1.5 }, { traits: ['authenticity', 'grit'], multiplier: 1.3 }],
-        contradictionTolerance: 0.5
+        contradictionTolerance: 0.5,
+        reactions: {
+          whenFavorite: {
+            match: "Fresh start energy everywhere. You're Ipswich coded and Ipswich loyal. Tractor Boys era.",
+            different: "Algorithm says {predicted} but Ipswich has your heart. You love a clean slate and hungry underdog."
+          },
+          whenLeast: {
+            match: "You're fresh-start-coded but hate Ipswich? You fear new beginnings. Interesting psychological block.",
+            different: "A {predicted} who can't stand Ipswich. Maybe the newness feels unearned? You prefer established order."
+          }
+        }
       }
     };
 
@@ -482,8 +740,8 @@
         traitConfidence[trait] = 0;
       });
       
-      responses.forEach(response => {
-        if (response.traits) {
+      Object.values(responses).forEach(response => {
+        if (response && response.traits) {
           Object.entries(response.traits).forEach(([trait, score]) => {
             const confidence = response.confidence || 1;
             traitScores[trait] = (traitScores[trait] || 0) + (score * confidence);
@@ -602,42 +860,66 @@
       const [screen, setScreen] = useState('intro');
       const [introStep, setIntroStep] = useState(0);
       const [currentQuestion, setCurrentQuestion] = useState(0);
-      const [responses, setResponses] = useState([]);
+      const [responses, setResponses] = useState({});
       const [results, setResults] = useState(null);
       const [transitioning, setTransitioning] = useState(false);
+      const [favoriteTeam, setFavoriteTeam] = useState(null);
+      const [leastFavoriteTeam, setLeastFavoriteTeam] = useState(null);
 
       const startQuiz = useCallback(() => {
         setCurrentQuestion(0);
-        setResponses([]);
+        setResponses({});
         setResults(null);
+        setFavoriteTeam(null);
+        setLeastFavoriteTeam(null);
         setScreen('quiz');
       }, []);
 
-      const handleResponse = useCallback((response) => {
+      const handleResponse = useCallback((questionId, response) => {
         if (transitioning) return;
         setTransitioning(true);
         
         setTimeout(() => {
-          const newResponses = [...responses, response];
+          const newResponses = { ...responses, [questionId]: response };
           setResponses(newResponses);
           
           if (currentQuestion >= QUESTIONS.length - 1) {
             setResults(calculateResults(newResponses));
-            setScreen('results');
+            setScreen('teamSelect');
           } else {
             setCurrentQuestion(prev => prev + 1);
           }
           setTransitioning(false);
-        }, 400);
+        }, 350);
       }, [transitioning, responses, currentQuestion]);
+
+      const goBack = useCallback(() => {
+        if (currentQuestion > 0 && !transitioning) {
+          setTransitioning(true);
+          setTimeout(() => {
+            setCurrentQuestion(prev => prev - 1);
+            setTransitioning(false);
+          }, 200);
+        }
+      }, [currentQuestion, transitioning]);
+
+      const handleTeamSelectComplete = () => {
+        setScreen('results');
+      };
 
       const restart = () => {
         setScreen('intro');
         setIntroStep(0);
+        setCurrentQuestion(0);
+        setResponses({});
+        setResults(null);
+        setFavoriteTeam(null);
+        setLeastFavoriteTeam(null);
       };
 
       const question = QUESTIONS[currentQuestion];
-      const progress = (currentQuestion / QUESTIONS.length) * 100;
+      const progress = ((currentQuestion + 1) / QUESTIONS.length) * 100;
+      const currentResponse = responses[question?.id];
 
       return (
         <div style={styles.app}>
@@ -648,15 +930,32 @@
             {screen === 'quiz' && question && (
               <QuestionView
                 question={question}
-                onResponse={handleResponse}
+                onResponse={(response) => handleResponse(question.id, response)}
+                onBack={goBack}
                 progress={progress}
                 index={currentQuestion}
                 total={QUESTIONS.length}
                 transitioning={transitioning}
+                existingResponse={currentResponse}
+              />
+            )}
+            {screen === 'teamSelect' && (
+              <TeamSelect
+                results={results}
+                favoriteTeam={favoriteTeam}
+                setFavoriteTeam={setFavoriteTeam}
+                leastFavoriteTeam={leastFavoriteTeam}
+                setLeastFavoriteTeam={setLeastFavoriteTeam}
+                onComplete={handleTeamSelectComplete}
               />
             )}
             {screen === 'results' && results && (
-              <Results results={results} onRestart={restart} />
+              <Results 
+                results={results} 
+                onRestart={restart}
+                favoriteTeam={favoriteTeam}
+                leastFavoriteTeam={leastFavoriteTeam}
+              />
             )}
           </div>
         </div>
@@ -777,23 +1076,37 @@
       );
     };
 
-    const QuestionView = ({ question, onResponse, progress, index, total, transitioning }) => {
+    const QuestionView = ({ question, onResponse, onBack, progress, index, total, transitioning, existingResponse }) => {
       const [visible, setVisible] = useState(false);
-      const [sliderValue, setSliderValue] = useState(50);
-      const [selectedId, setSelectedId] = useState(null);
+      const [sliderValue, setSliderValue] = useState(existingResponse?.sliderValue ?? 50);
+      const [selectedId, setSelectedId] = useState(existingResponse?.selectedId ?? null);
+      const [hasInteracted, setHasInteracted] = useState(!!existingResponse);
       
       useEffect(() => {
         setVisible(false);
-        setSliderValue(50);
-        setSelectedId(null);
+        // Restore previous answer if going back
+        if (existingResponse) {
+          setSliderValue(existingResponse.sliderValue ?? 50);
+          setSelectedId(existingResponse.selectedId ?? null);
+          setHasInteracted(true);
+        } else {
+          setSliderValue(50);
+          setSelectedId(null);
+          setHasInteracted(false);
+        }
         const timer = setTimeout(() => setVisible(true), 50);
         return () => clearTimeout(timer);
-      }, [question.id]);
+      }, [question.id, existingResponse]);
 
       const handleChoice = (answer) => {
         if (transitioning) return;
         setSelectedId(answer.id);
-        onResponse({ traits: answer.traits, confidence: 1 });
+        setHasInteracted(true);
+        onResponse({ 
+          traits: answer.traits, 
+          confidence: 1,
+          selectedId: answer.id 
+        });
       };
 
       const handleSliderSubmit = () => {
@@ -809,7 +1122,12 @@
           traits[trait] = (traits[trait] || 0) + weight * normalized;
         });
         
-        onResponse({ traits, confidence });
+        setHasInteracted(true);
+        onResponse({ 
+          traits, 
+          confidence,
+          sliderValue 
+        });
       };
 
       const isBinary = question.type === 'binary';
@@ -823,6 +1141,13 @@
           transform: visible ? 'translateY(0)' : 'translateY(16px)',
         }}>
           <div style={styles.progressWrap}>
+            {index > 0 && (
+              <button onClick={onBack} style={styles.backButton} aria-label="Go back">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M12 5L7 10L12 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            )}
             <div style={styles.progressBar}>
               <div style={{ ...styles.progressFill, width: `${progress}%` }} />
             </div>
@@ -836,8 +1161,8 @@
           {isSlider ? (
             <div style={styles.sliderContainer}>
               <div style={styles.sliderLabels}>
-                <span style={styles.sliderLabel}>{question.leftLabel}</span>
-                <span style={styles.sliderLabel}>{question.rightLabel}</span>
+                <span style={{ ...styles.sliderLabel, opacity: sliderValue < 50 ? 1 : 0.5 }}>{question.leftLabel}</span>
+                <span style={{ ...styles.sliderLabel, textAlign: 'right', opacity: sliderValue > 50 ? 1 : 0.5 }}>{question.rightLabel}</span>
               </div>
               <div style={styles.sliderWrapper}>
                 <input
@@ -845,12 +1170,15 @@
                   min="0"
                   max="100"
                   value={sliderValue}
-                  onChange={(e) => setSliderValue(Number(e.target.value))}
+                  onChange={(e) => {
+                    setSliderValue(Number(e.target.value));
+                    setHasInteracted(true);
+                  }}
                   style={styles.sliderInput}
                 />
               </div>
               <button onClick={handleSliderSubmit} style={styles.sliderSubmit}>
-                that's me
+                {existingResponse ? 'update & continue' : "that's me"}
               </button>
             </div>
           ) : (
@@ -871,10 +1199,11 @@
                       ...styles.answer,
                       ...(isBinary ? styles.answerBinary : {}),
                       ...(isGrid ? styles.answerGrid : {}),
-                      opacity: isFaded ? 0.3 : 1,
+                      opacity: isFaded ? 0.4 : 1,
                       transform: isSelected ? 'scale(0.98)' : 'scale(1)',
                       background: isSelected ? '#0a0a0a' : 'transparent',
                       color: isSelected ? '#FAFAF8' : '#0a0a0a',
+                      borderColor: isSelected ? '#0a0a0a' : '#e0e0e0',
                       transitionDelay: `${i * 30}ms`,
                     }}
                   >
@@ -888,13 +1217,151 @@
       );
     };
 
-    const Results = ({ results, onRestart }) => {
+    const TeamSelect = ({ results, favoriteTeam, setFavoriteTeam, leastFavoriteTeam, setLeastFavoriteTeam, onComplete }) => {
+      const [visible, setVisible] = useState(false);
+      const [step, setStep] = useState(favoriteTeam ? (leastFavoriteTeam ? 2 : 1) : 0);
+      const [searchQuery, setSearchQuery] = useState('');
+
+      useEffect(() => {
+        setVisible(false);
+        const timer = setTimeout(() => setVisible(true), 100);
+        return () => clearTimeout(timer);
+      }, [step]);
+
+      const teamList = useMemo(() => {
+        return Object.entries(TEAMS)
+          .map(([id, team]) => ({ id, ...team }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+      }, []);
+
+      const filteredTeams = useMemo(() => {
+        if (!searchQuery.trim()) return teamList;
+        const query = searchQuery.toLowerCase();
+        return teamList.filter(team => 
+          team.name.toLowerCase().includes(query)
+        );
+      }, [teamList, searchQuery]);
+
+      const handleFavoriteSelect = (teamId) => {
+        setFavoriteTeam(teamId);
+        setSearchQuery('');
+        setTimeout(() => setStep(1), 300);
+      };
+
+      const handleLeastFavoriteSelect = (teamId) => {
+        setLeastFavoriteTeam(teamId);
+        setSearchQuery('');
+        setTimeout(() => setStep(2), 300);
+      };
+
+      const getStepContent = () => {
+        if (step === 0) {
+          return {
+            title: "one more thing",
+            subtitle: "which premier league club do you actually support?",
+            hint: "be honest. we won't judge. (we will judge.)",
+            onSelect: handleFavoriteSelect,
+            selectedTeam: favoriteTeam,
+            excludeTeam: null
+          };
+        } else if (step === 1) {
+          return {
+            title: "and now the spicy one",
+            subtitle: "which club can you absolutely not stand?",
+            hint: "everyone has one. don't pretend you don't.",
+            onSelect: handleLeastFavoriteSelect,
+            selectedTeam: leastFavoriteTeam,
+            excludeTeam: favoriteTeam
+          };
+        }
+        return null;
+      };
+
+      const stepContent = getStepContent();
+
+      if (step === 2) {
+        return (
+          <div style={{
+            ...styles.teamSelectScreen,
+            opacity: visible ? 1 : 0,
+            transform: visible ? 'translateY(0)' : 'translateY(20px)',
+          }}>
+            <div style={styles.teamSelectConfirm}>
+              <div style={styles.confirmIcon}>✓</div>
+              <h2 style={styles.teamSelectTitle}>noted.</h2>
+              <p style={styles.teamSelectHint}>
+                you love <span style={{ color: TEAMS[favoriteTeam].color, fontWeight: 600 }}>{TEAMS[favoriteTeam].name}</span> and 
+                can't stand <span style={{ color: TEAMS[leastFavoriteTeam].color, fontWeight: 600 }}>{TEAMS[leastFavoriteTeam].name}</span>.
+              </p>
+              <p style={{ ...styles.teamSelectHint, marginTop: 8, opacity: 0.6 }}>
+                this will make the results... interesting.
+              </p>
+              <button onClick={onComplete} style={styles.teamSelectCta}>
+                show me who i really am
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div style={{
+          ...styles.teamSelectScreen,
+          opacity: visible ? 1 : 0,
+          transform: visible ? 'translateY(0)' : 'translateY(20px)',
+        }}>
+          <div style={styles.teamSelectHeader}>
+            <p style={styles.teamSelectStep}>{step + 1} of 2</p>
+            <h2 style={styles.teamSelectTitle}>{stepContent.title}</h2>
+            <p style={styles.teamSelectSubtitle}>{stepContent.subtitle}</p>
+            <p style={styles.teamSelectHint}>{stepContent.hint}</p>
+          </div>
+
+          <div style={styles.searchWrapper}>
+            <input
+              type="text"
+              placeholder="search clubs..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={styles.searchInput}
+            />
+          </div>
+
+          <div style={styles.teamGrid}>
+            {filteredTeams
+              .filter(team => team.id !== stepContent.excludeTeam)
+              .map((team, i) => {
+                const isSelected = stepContent.selectedTeam === team.id;
+                return (
+                  <button
+                    key={team.id}
+                    onClick={() => stepContent.onSelect(team.id)}
+                    style={{
+                      ...styles.teamOption,
+                      borderColor: isSelected ? team.color : '#e5e5e5',
+                      background: isSelected ? `${team.color}10` : 'transparent',
+                      animationDelay: `${i * 20}ms`,
+                    }}
+                  >
+                    <span style={{ ...styles.teamDot, background: team.color }} />
+                    <span style={styles.teamName}>{team.name}</span>
+                  </button>
+                );
+              })}
+          </div>
+        </div>
+      );
+    };
+
+    const Results = ({ results, onRestart, favoriteTeam, leastFavoriteTeam }) => {
       const [visible, setVisible] = useState(false);
       const [detailsVisible, setDetailsVisible] = useState(false);
       
       const team = TEAMS[results.primary];
       const secondary = TEAMS[results.secondary];
       const tertiary = TEAMS[results.tertiary];
+      const favorite = favoriteTeam ? TEAMS[favoriteTeam] : null;
+      const leastFavorite = leastFavoriteTeam ? TEAMS[leastFavoriteTeam] : null;
 
       useEffect(() => {
         const t1 = setTimeout(() => setVisible(true), 100);
@@ -902,8 +1369,36 @@
         return () => { clearTimeout(t1); clearTimeout(t2); };
       }, []);
 
+      const getFavoriteCommentary = () => {
+        if (!favorite || !results.primary) return null;
+        
+        const predictedTeam = TEAMS[results.primary];
+        const isMatch = favoriteTeam === results.primary;
+        
+        if (isMatch) {
+          return favorite.reactions.whenFavorite.match;
+        } else {
+          return favorite.reactions.whenFavorite.different.replace('{predicted}', predictedTeam.name);
+        }
+      };
+
+      const getLeastFavoriteCommentary = () => {
+        if (!leastFavorite || !results.primary) return null;
+        
+        const predictedTeam = TEAMS[results.primary];
+        const isMatch = leastFavoriteTeam === results.primary;
+        
+        if (isMatch) {
+          return leastFavorite.reactions.whenLeast.match;
+        } else {
+          return leastFavorite.reactions.whenLeast.different.replace('{predicted}', predictedTeam.name);
+        }
+      };
+
       const handleShare = () => {
-        const text = `i'm ${team.name} coded ⚽\n\n"${team.vibe}"\n\nfind your premier league vibe`;
+        const favLine = favorite ? `\nactual team: ${favorite.name}` : '';
+        const nemesisLine = leastFavorite ? `\nnemesis: ${leastFavorite.name}` : '';
+        const text = `i'm ${team.name} coded ⚽\n\n"${team.vibe}"${favLine}${nemesisLine}\n\nfind your premier league vibe`;
         if (navigator.share) {
           navigator.share({ text, url: window.location.href });
         } else {
@@ -911,6 +1406,9 @@
           alert('Copied to clipboard!');
         }
       };
+
+      const favoriteCommentary = getFavoriteCommentary();
+      const leastFavoriteCommentary = getLeastFavoriteCommentary();
 
       return (
         <div style={{ ...styles.results, opacity: visible ? 1 : 0 }}>
@@ -930,6 +1428,34 @@
               ))}
             </div>
           </div>
+
+          {(favoriteCommentary || leastFavoriteCommentary) && (
+            <div style={{
+              ...styles.commentarySection,
+              opacity: detailsVisible ? 1 : 0,
+              transform: detailsVisible ? 'translateY(0)' : 'translateY(20px)',
+            }}>
+              {favoriteCommentary && (
+                <div style={styles.commentaryBlock}>
+                  <div style={styles.commentaryHeader}>
+                    <span style={{ ...styles.teamDotSmall, background: favorite.color }} />
+                    <span style={styles.commentaryLabel}>on your {favorite.name} loyalty</span>
+                  </div>
+                  <p style={styles.commentaryText}>{favoriteCommentary}</p>
+                </div>
+              )}
+              
+              {leastFavoriteCommentary && (
+                <div style={styles.commentaryBlock}>
+                  <div style={styles.commentaryHeader}>
+                    <span style={{ ...styles.teamDotSmall, background: leastFavorite.color }} />
+                    <span style={styles.commentaryLabel}>on your {leastFavorite.name} hatred</span>
+                  </div>
+                  <p style={styles.commentaryText}>{leastFavoriteCommentary}</p>
+                </div>
+              )}
+            </div>
+          )}
 
           <div style={{
             ...styles.secondaryWrap,
@@ -1005,25 +1531,43 @@
       introProgressDot: { width: '6px', height: '6px', borderRadius: '50%', transition: 'background 0.3s ease' },
 
       questionScreen: { flex: 1, display: 'flex', flexDirection: 'column', transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)' },
-      progressWrap: { display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px', paddingTop: '24px' },
+      progressWrap: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '40px', paddingTop: '24px' },
+      backButton: { width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: '1px solid #e0e0e0', borderRadius: '50%', cursor: 'pointer', transition: 'all 0.2s ease', color: '#666', flexShrink: 0 },
       progressBar: { flex: 1, height: '2px', background: '#e5e5e5', borderRadius: '1px', overflow: 'hidden' },
       progressFill: { height: '100%', background: '#0a0a0a', transition: 'width 0.5s cubic-bezier(0.16, 1, 0.3, 1)' },
-      progressLabel: { fontSize: '12px', color: '#999', fontVariantNumeric: 'tabular-nums', letterSpacing: '0.05em' },
+      progressLabel: { fontSize: '12px', color: '#999', fontVariantNumeric: 'tabular-nums', letterSpacing: '0.05em', flexShrink: 0 },
       questionWrap: { marginBottom: '32px' },
       questionText: { fontSize: 'clamp(22px, 5.5vw, 28px)', fontWeight: '500', lineHeight: '1.35', letterSpacing: '-0.02em', margin: 0, color: '#0a0a0a' },
       answers: { display: 'flex', flexDirection: 'column', gap: '12px' },
       answersBinary: { flexDirection: 'row', gap: '12px' },
       answersGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' },
-      answer: { padding: '18px 22px', background: 'transparent', border: '1px solid #e0e0e0', borderRadius: '12px', fontSize: '15px', fontWeight: '400', textAlign: 'left', cursor: 'pointer', transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)', lineHeight: '1.4' },
+      answer: { padding: '18px 22px', background: 'transparent', border: '1px solid #e0e0e0', borderRadius: '12px', fontSize: '15px', fontWeight: '400', textAlign: 'left', cursor: 'pointer', transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)', lineHeight: '1.4', fontFamily: 'inherit' },
       answerBinary: { flex: 1, textAlign: 'center', padding: '20px 16px' },
       answerGrid: { padding: '18px 14px', textAlign: 'center', fontSize: '14px' },
 
       sliderContainer: { display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '8px' },
       sliderLabels: { display: 'flex', justifyContent: 'space-between', gap: '24px' },
-      sliderLabel: { fontSize: '13px', color: '#666', maxWidth: '140px', lineHeight: '1.4' },
+      sliderLabel: { fontSize: '13px', color: '#666', maxWidth: '140px', lineHeight: '1.4', transition: 'opacity 0.2s ease' },
       sliderWrapper: { position: 'relative' },
       sliderInput: { width: '100%', height: '44px', cursor: 'pointer' },
-      sliderSubmit: { alignSelf: 'flex-start', padding: '14px 28px', background: '#0a0a0a', color: '#FAFAF8', border: 'none', borderRadius: '100px', fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.2s ease' },
+      sliderSubmit: { alignSelf: 'flex-start', padding: '14px 28px', background: '#0a0a0a', color: '#FAFAF8', border: 'none', borderRadius: '100px', fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.2s ease', fontFamily: 'inherit' },
+
+      teamSelectScreen: { flex: 1, display: 'flex', flexDirection: 'column', transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)', paddingTop: '24px' },
+      teamSelectHeader: { marginBottom: '24px' },
+      teamSelectStep: { fontSize: '12px', color: '#999', letterSpacing: '0.1em', marginBottom: '12px' },
+      teamSelectTitle: { fontSize: 'clamp(28px, 7vw, 36px)', fontWeight: '600', letterSpacing: '-0.03em', margin: '0 0 8px 0', color: '#0a0a0a' },
+      teamSelectSubtitle: { fontSize: '16px', color: '#444', margin: '0 0 8px 0', lineHeight: '1.4' },
+      teamSelectHint: { fontSize: '14px', color: '#888', margin: 0, fontStyle: 'italic' },
+      searchWrapper: { marginBottom: '20px' },
+      searchInput: { width: '100%', padding: '14px 18px', fontSize: '15px', border: '1px solid #e0e0e0', borderRadius: '12px', background: '#fff', outline: 'none', transition: 'border-color 0.2s ease', fontFamily: 'inherit' },
+      teamGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', flex: 1, overflowY: 'auto', paddingBottom: '24px' },
+      teamOption: { display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 16px', background: 'transparent', border: '1px solid #e5e5e5', borderRadius: '10px', cursor: 'pointer', transition: 'all 0.2s ease', textAlign: 'left', fontFamily: 'inherit' },
+      teamDot: { width: '10px', height: '10px', borderRadius: '50%', flexShrink: 0 },
+      teamDotSmall: { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
+      teamName: { fontSize: '14px', color: '#0a0a0a', fontWeight: '500' },
+      teamSelectConfirm: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' },
+      confirmIcon: { width: '48px', height: '48px', borderRadius: '50%', background: '#0a0a0a', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginBottom: '24px' },
+      teamSelectCta: { marginTop: '32px', padding: '16px 32px', background: '#0a0a0a', color: '#FAFAF8', border: 'none', borderRadius: '100px', fontSize: '15px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.2s ease', fontFamily: 'inherit' },
 
       results: { flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', transition: 'opacity 0.8s ease', paddingTop: '24px' },
       resultMain: { marginBottom: '32px', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)' },
@@ -1035,6 +1579,13 @@
       resultDesc: { fontSize: '14px', lineHeight: '1.6', color: '#444', margin: '0 0 20px 0' },
       resultEnergy: { display: 'flex', flexWrap: 'wrap', gap: '8px' },
       energyTag: { padding: '6px 12px', background: '#f0f0f0', borderRadius: '100px', fontSize: '12px', color: '#666', letterSpacing: '0.02em' },
+      
+      commentarySection: { marginBottom: '28px', transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s' },
+      commentaryBlock: { padding: '16px', background: '#f8f8f6', borderRadius: '12px', marginBottom: '12px' },
+      commentaryHeader: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' },
+      commentaryLabel: { fontSize: '11px', color: '#888', letterSpacing: '0.05em', textTransform: 'uppercase' },
+      commentaryText: { fontSize: '14px', lineHeight: '1.55', color: '#333', margin: 0 },
+      
       secondaryWrap: { marginBottom: '24px', transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s' },
       alsoLabel: { fontSize: '11px', color: '#999', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '10px', display: 'block' },
       secondaryRow: { display: 'flex', gap: '20px' },
@@ -1044,8 +1595,8 @@
       traitRow: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
       traitTag: { padding: '6px 12px', background: 'transparent', border: '1px solid #e0e0e0', borderRadius: '100px', fontSize: '12px', color: '#666', letterSpacing: '0.02em' },
       actions: { display: 'flex', gap: '12px', marginBottom: '40px', transition: 'opacity 0.6s ease 0.4s' },
-      btnSecondary: { padding: '14px 24px', background: 'transparent', border: '1px solid #e0e0e0', borderRadius: '100px', fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.2s ease', color: '#0a0a0a' },
-      btnPrimary: { padding: '14px 24px', background: '#0a0a0a', border: '1px solid #0a0a0a', borderRadius: '100px', fontSize: '14px', fontWeight: '500', color: '#FAFAF8', cursor: 'pointer', transition: 'all 0.2s ease' },
+      btnSecondary: { padding: '14px 24px', background: 'transparent', border: '1px solid #e0e0e0', borderRadius: '100px', fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.2s ease', color: '#0a0a0a', fontFamily: 'inherit' },
+      btnPrimary: { padding: '14px 24px', background: '#0a0a0a', border: '1px solid #0a0a0a', borderRadius: '100px', fontSize: '14px', fontWeight: '500', color: '#FAFAF8', cursor: 'pointer', transition: 'all 0.2s ease', fontFamily: 'inherit' },
       footerResults: { fontSize: '12px', color: '#bbb', letterSpacing: '0.05em' },
     };
 
