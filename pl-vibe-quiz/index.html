@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Find Your Premier League Vibe</title>
+  <meta name="description" content="A personality quiz that matches you with your Premier League club based on who you really are, not who you support.">
+  <meta property="og:title" content="Find Your Premier League Vibe">
+  <meta property="og:description" content="13 questions. 20 clubs. 18 traits. Find out which Premier League club matches your energy.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html, body, #root {
+      height: 100%;
+    }
+    
+    body {
+      background: #FAFAF8;
+      font-family: 'Instrument Sans', 'SF Pro Text', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #0a0a0a;
+    }
+    
+    button:hover {
+      transform: translateY(-1px);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    em {
+      font-style: italic;
+    }
+    
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 44px;
+      background: transparent;
+      cursor: pointer;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      background: #0a0a0a;
+      border-radius: 50%;
+      cursor: pointer;
+      margin-top: -10px;
+    }
+    
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 4px;
+      background: #e5e5e5;
+      border-radius: 2px;
+    }
+    
+    input[type="range"]::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      background: #0a0a0a;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+    
+    input[type="range"]::-moz-range-track {
+      height: 4px;
+      background: #e5e5e5;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const { useState, useEffect, useCallback } = React;
+
+    // =============================================================================
+    // TEAMS DATA
+    // =============================================================================
+
+    const TEAMS = {
+      arsenal: {
+        name: "Arsenal",
+        color: "#D3120B",
+        vibe: "trust the process era",
+        tagline: "You're in your patient queen arc",
+        description: "You believe the best things take time. You've got that quiet confidence—you know your moment is coming and you're not rushing it. Delulu? Maybe. But you'll be vindicated.",
+        energy: ["manifestation", "gallery dates", "vintage finds", "long-term thinking"],
+        traitVector: { creativity: 0.85, optimism: 0.8, patience: 0.9, sophistication: 0.75, tradition: 0.5, loyalty: 0.7, ambition: 0.7, analytical: 0.3, grit: 0.4, passion: 0.7, authenticity: 0.6, community: 0.5, underdog: 0.3, glamour: 0.5, chaos: 0.3, mystery: 0.4, reinvention: 0.4, pride: 0.6 },
+        interactionBonuses: [{ traits: ['creativity', 'patience'], multiplier: 1.4 }, { traits: ['optimism', 'sophistication'], multiplier: 1.3 }],
+        contradictionTolerance: 0.3
+      },
+      manchesterCity: {
+        name: "Manchester City",
+        color: "#6CABDD",
+        vibe: "perfectionist core",
+        tagline: "Excellence isn't a phase, it's your personality",
+        description: "You don't just want to win—you want to win so beautifully it becomes art. High standards aren't toxic, they're just how you operate.",
+        energy: ["spreadsheets", "morning routines", "aesthetic everything", "main character mindset"],
+        traitVector: { analytical: 0.95, ambition: 0.95, sophistication: 0.8, patience: 0.6, creativity: 0.5, tradition: 0.3, loyalty: 0.4, optimism: 0.5, grit: 0.5, passion: 0.5, authenticity: 0.4, community: 0.3, underdog: 0.05, glamour: 0.7, chaos: 0.1, mystery: 0.3, reinvention: 0.5, pride: 0.8 },
+        interactionBonuses: [{ traits: ['analytical', 'ambition'], multiplier: 1.5 }, { traits: ['sophistication', 'glamour'], multiplier: 1.2 }],
+        contradictionTolerance: 0.2
+      },
+      liverpool: {
+        name: "Liverpool",
+        color: "#C8102E",
+        vibe: "ride or die energy",
+        tagline: "Your loyalty is literally legendary",
+        description: "When you're in, you're ALL in. You've never walked alone and you never will. Your group chat has been the same since year 7.",
+        energy: ["found family", "concert queues", "matching tattoos", "emotional playlists"],
+        traitVector: { loyalty: 0.95, community: 0.95, passion: 0.9, tradition: 0.8, grit: 0.7, authenticity: 0.8, optimism: 0.6, pride: 0.7, creativity: 0.4, analytical: 0.3, sophistication: 0.3, patience: 0.5, underdog: 0.5, glamour: 0.3, chaos: 0.4, mystery: 0.3, reinvention: 0.3, ambition: 0.7 },
+        interactionBonuses: [{ traits: ['loyalty', 'community'], multiplier: 1.6 }, { traits: ['passion', 'tradition'], multiplier: 1.3 }],
+        contradictionTolerance: 0.4
+      },
+      chelsea: {
+        name: "Chelsea",
+        color: "#034694",
+        vibe: "main character syndrome",
+        tagline: "Reinvention is your whole thing",
+        description: "You're not afraid to burn it all down and start fresh. New era? Let's go. You've probably had multiple aesthetics this year alone.",
+        energy: ["rebrand", "impulsive decisions", "expensive taste", "plot twists"],
+        traitVector: { reinvention: 0.95, glamour: 0.9, chaos: 0.8, ambition: 0.8, creativity: 0.6, sophistication: 0.6, pride: 0.7, passion: 0.6, loyalty: 0.2, tradition: 0.1, patience: 0.2, community: 0.4, analytical: 0.4, authenticity: 0.4, grit: 0.5, underdog: 0.2, mystery: 0.5, optimism: 0.5 },
+        interactionBonuses: [{ traits: ['reinvention', 'glamour'], multiplier: 1.5 }, { traits: ['chaos', 'ambition'], multiplier: 1.3 }],
+        contradictionTolerance: 0.8
+      },
+      manchesterUnited: {
+        name: "Manchester United",
+        color: "#DA291C",
+        vibe: "legacy kid",
+        tagline: "You were raised on greatness",
+        description: "Heritage matters to you. You respect the classics—old money energy but make it football. You believe in dynasties.",
+        energy: ["vintage jerseys", "family traditions", "documentary binges", "comeback arcs"],
+        traitVector: { tradition: 0.95, pride: 0.9, ambition: 0.7, loyalty: 0.7, passion: 0.7, glamour: 0.6, community: 0.5, creativity: 0.4, analytical: 0.3, patience: 0.4, sophistication: 0.5, underdog: 0.2, grit: 0.5, chaos: 0.4, mystery: 0.3, reinvention: 0.3, authenticity: 0.5, optimism: 0.5 },
+        interactionBonuses: [{ traits: ['tradition', 'pride'], multiplier: 1.5 }, { traits: ['ambition', 'glamour'], multiplier: 1.3 }],
+        contradictionTolerance: 0.5
+      },
+      tottenham: {
+        name: "Tottenham",
+        color: "#132257",
+        vibe: "optimistic delulu",
+        tagline: "Next year is always your year (and you mean it)",
+        description: "You're genuinely built different because you keep believing. The hope never dies. It's lowkey inspiring and highkey concerning.",
+        energy: ["manifestation boards", "almost moments", "dramatic monologues", "clown makeup tutorials"],
+        traitVector: { optimism: 0.95, passion: 0.85, loyalty: 0.8, creativity: 0.6, authenticity: 0.7, community: 0.6, tradition: 0.5, pride: 0.6, analytical: 0.3, grit: 0.4, patience: 0.3, sophistication: 0.4, underdog: 0.6, glamour: 0.4, chaos: 0.5, mystery: 0.3, reinvention: 0.4, ambition: 0.7 },
+        interactionBonuses: [{ traits: ['optimism', 'passion'], multiplier: 1.5 }, { traits: ['loyalty', 'authenticity'], multiplier: 1.2 }],
+        contradictionTolerance: 0.7
+      },
+      newcastle: {
+        name: "Newcastle",
+        color: "#241F20",
+        vibe: "glow up in progress",
+        tagline: "You're on the come up and everyone knows it",
+        description: "Something shifted and now you're scary. You never forgot where you came from but you're absolutely going somewhere.",
+        energy: ["gym arc", "new money", "regional pride", "underrated taste"],
+        traitVector: { ambition: 0.9, pride: 0.85, grit: 0.85, community: 0.8, loyalty: 0.75, passion: 0.7, authenticity: 0.75, tradition: 0.6, optimism: 0.7, reinvention: 0.6, underdog: 0.5, creativity: 0.4, analytical: 0.4, sophistication: 0.4, glamour: 0.5, chaos: 0.4, mystery: 0.5, patience: 0.5 },
+        interactionBonuses: [{ traits: ['ambition', 'grit'], multiplier: 1.4 }, { traits: ['pride', 'community'], multiplier: 1.3 }],
+        contradictionTolerance: 0.5
+      },
+      brighton: {
+        name: "Brighton",
+        color: "#0057B8",
+        vibe: "secretly a genius",
+        tagline: "You see patterns others miss",
+        description: "Data-brained but make it cool. You were into things before they were things. The hipster energy is strong but you've got receipts.",
+        energy: ["alt algorithms", "niche obsessions", "coastal grandmother", "being right"],
+        traitVector: { analytical: 0.9, creativity: 0.8, authenticity: 0.8, sophistication: 0.7, patience: 0.7, mystery: 0.6, reinvention: 0.6, optimism: 0.5, underdog: 0.5, community: 0.5, grit: 0.5, ambition: 0.6, tradition: 0.2, loyalty: 0.5, passion: 0.5, glamour: 0.3, chaos: 0.4, pride: 0.5 },
+        interactionBonuses: [{ traits: ['analytical', 'creativity'], multiplier: 1.5 }, { traits: ['authenticity', 'sophistication'], multiplier: 1.3 }],
+        contradictionTolerance: 0.6
+      },
+      astonVilla: {
+        name: "Aston Villa",
+        color: "#670E36",
+        vibe: "renaissance era",
+        tagline: "Your redemption arc is immaculate",
+        description: "You've been through it and came back better. History runs deep but you're writing new chapters. Comeback of the decade.",
+        energy: ["glow up", "old soul", "proving people wrong", "european summer"],
+        traitVector: { tradition: 0.8, ambition: 0.8, pride: 0.8, patience: 0.7, loyalty: 0.7, grit: 0.7, optimism: 0.7, community: 0.6, authenticity: 0.6, passion: 0.6, reinvention: 0.5, creativity: 0.5, analytical: 0.4, sophistication: 0.5, underdog: 0.5, glamour: 0.5, chaos: 0.3, mystery: 0.4 },
+        interactionBonuses: [{ traits: ['tradition', 'ambition'], multiplier: 1.4 }, { traits: ['patience', 'optimism'], multiplier: 1.3 }],
+        contradictionTolerance: 0.5
+      },
+      westHam: {
+        name: "West Ham",
+        color: "#7A263A",
+        vibe: "working class royalty",
+        tagline: "You keep it real, always",
+        description: "No pretense, no fake vibes. You're loyal to your people and you fight for what's yours. East London energy that can't be bought.",
+        energy: ["family groupchat", "local spots", "ride or die", "no cap ever"],
+        traitVector: { authenticity: 0.95, loyalty: 0.9, grit: 0.9, community: 0.9, passion: 0.8, pride: 0.75, tradition: 0.7, underdog: 0.6, patience: 0.5, optimism: 0.5, creativity: 0.3, analytical: 0.2, sophistication: 0.2, glamour: 0.1, chaos: 0.4, mystery: 0.3, reinvention: 0.3, ambition: 0.5 },
+        interactionBonuses: [{ traits: ['authenticity', 'loyalty'], multiplier: 1.5 }, { traits: ['grit', 'community'], multiplier: 1.4 }],
+        contradictionTolerance: 0.3
+      },
+      crystalPalace: {
+        name: "Crystal Palace",
+        color: "#1B458F",
+        vibe: "creative chaos",
+        tagline: "South London made you different",
+        description: "You're the artsy one and you own it. A bit chaotic, definitely creative, always authentic. You do things your own way.",
+        energy: ["art school", "thrift finds", "main stage energy", "unapologetically you"],
+        traitVector: { creativity: 0.95, chaos: 0.85, authenticity: 0.85, passion: 0.8, community: 0.7, pride: 0.65, grit: 0.6, loyalty: 0.6, mystery: 0.5, underdog: 0.5, optimism: 0.5, reinvention: 0.5, analytical: 0.2, sophistication: 0.3, patience: 0.4, tradition: 0.4, glamour: 0.4, ambition: 0.5 },
+        interactionBonuses: [{ traits: ['creativity', 'chaos'], multiplier: 1.5 }, { traits: ['authenticity', 'passion'], multiplier: 1.3 }],
+        contradictionTolerance: 0.7
+      },
+      fulham: {
+        name: "Fulham",
+        color: "#000000",
+        vibe: "quiet luxury",
+        tagline: "Class without the noise",
+        description: "You let quality speak for itself. Understated but never underestimated. The 'if you know you know' of people.",
+        energy: ["old money aesthetic", "farmers market", "natural wine", "being unbothered"],
+        traitVector: { sophistication: 0.95, patience: 0.85, authenticity: 0.75, mystery: 0.7, creativity: 0.6, analytical: 0.6, tradition: 0.6, loyalty: 0.5, pride: 0.5, community: 0.5, ambition: 0.5, optimism: 0.4, passion: 0.3, grit: 0.4, underdog: 0.3, glamour: 0.4, chaos: 0.1, reinvention: 0.3 },
+        interactionBonuses: [{ traits: ['sophistication', 'patience'], multiplier: 1.5 }, { traits: ['mystery', 'authenticity'], multiplier: 1.3 }],
+        contradictionTolerance: 0.2
+      },
+      brentford: {
+        name: "Brentford",
+        color: "#E30613",
+        vibe: "smart underdog",
+        tagline: "You work smarter, not just harder",
+        description: "You've figured out what others haven't. Community-minded but clever with it. David vs Goliath but David has a spreadsheet.",
+        energy: ["life hacks", "local hero", "punching up", "efficiency"],
+        traitVector: { analytical: 0.85, underdog: 0.9, community: 0.85, authenticity: 0.8, grit: 0.75, creativity: 0.7, patience: 0.7, loyalty: 0.7, optimism: 0.6, pride: 0.5, ambition: 0.6, mystery: 0.4, tradition: 0.4, sophistication: 0.4, passion: 0.5, glamour: 0.1, chaos: 0.3, reinvention: 0.5 },
+        interactionBonuses: [{ traits: ['analytical', 'underdog'], multiplier: 1.5 }, { traits: ['community', 'authenticity'], multiplier: 1.3 }],
+        contradictionTolerance: 0.4
+      },
+      wolves: {
+        name: "Wolves",
+        color: "#FDB913",
+        vibe: "mysterious pack",
+        tagline: "Move in silence, strike as one",
+        description: "European flair meets Midlands grit. You've got a continental soul that people don't expect. Pack mentality.",
+        energy: ["wolf pack", "international friends", "midnight energy", "enigmatic"],
+        traitVector: { mystery: 0.9, loyalty: 0.85, grit: 0.8, community: 0.8, patience: 0.7, authenticity: 0.7, pride: 0.65, tradition: 0.6, creativity: 0.5, ambition: 0.6, analytical: 0.5, sophistication: 0.5, underdog: 0.5, passion: 0.5, optimism: 0.4, glamour: 0.3, chaos: 0.3, reinvention: 0.4 },
+        interactionBonuses: [{ traits: ['mystery', 'loyalty'], multiplier: 1.5 }, { traits: ['grit', 'community'], multiplier: 1.3 }],
+        contradictionTolerance: 0.5
+      },
+      bournemouth: {
+        name: "Bournemouth",
+        color: "#DA291C",
+        vibe: "beach town chill",
+        tagline: "Relaxed but resilient",
+        description: "Life's a marathon not a sprint and you get that. Coastal calm with survival instincts. Never counted in, never count yourself out.",
+        energy: ["beach walks", "underestimated", "steady wins", "vitamin sea"],
+        traitVector: { patience: 0.9, underdog: 0.8, authenticity: 0.8, community: 0.7, grit: 0.7, optimism: 0.6, loyalty: 0.65, mystery: 0.5, creativity: 0.5, pride: 0.4, tradition: 0.5, analytical: 0.4, passion: 0.4, sophistication: 0.4, ambition: 0.4, glamour: 0.2, chaos: 0.3, reinvention: 0.4 },
+        interactionBonuses: [{ traits: ['patience', 'underdog'], multiplier: 1.4 }, { traits: ['authenticity', 'community'], multiplier: 1.3 }],
+        contradictionTolerance: 0.4
+      },
+      nottinghamForest: {
+        name: "Nottingham Forest",
+        color: "#DD0000",
+        vibe: "sleeping giant awakening",
+        tagline: "The legend is coming back",
+        description: "You've got history that most can only dream of. European royalty in waiting. The comeback is greater than the setback.",
+        energy: ["old glory", "patience", "european nights", "written in the stars"],
+        traitVector: { tradition: 0.95, patience: 0.85, pride: 0.85, loyalty: 0.8, optimism: 0.7, community: 0.7, grit: 0.65, passion: 0.65, authenticity: 0.6, ambition: 0.6, mystery: 0.5, underdog: 0.5, creativity: 0.4, analytical: 0.3, sophistication: 0.4, glamour: 0.4, chaos: 0.3, reinvention: 0.3 },
+        interactionBonuses: [{ traits: ['tradition', 'patience'], multiplier: 1.5 }, { traits: ['pride', 'loyalty'], multiplier: 1.3 }],
+        contradictionTolerance: 0.4
+      },
+      everton: {
+        name: "Everton",
+        color: "#003399",
+        vibe: "born fighter",
+        tagline: "You don't quit. Ever.",
+        description: "Life hasn't been easy but giving up isn't in your vocabulary. Gritty, loyal, still standing. The underdog energy is generational.",
+        energy: ["survival mode", "community", "against all odds", "unconditional"],
+        traitVector: { grit: 0.95, loyalty: 0.9, underdog: 0.9, community: 0.85, authenticity: 0.85, passion: 0.8, pride: 0.7, tradition: 0.7, patience: 0.6, optimism: 0.3, creativity: 0.3, analytical: 0.3, sophistication: 0.2, glamour: 0.1, chaos: 0.4, mystery: 0.4, reinvention: 0.3, ambition: 0.5 },
+        interactionBonuses: [{ traits: ['grit', 'underdog'], multiplier: 1.6 }, { traits: ['loyalty', 'community'], multiplier: 1.4 }],
+        contradictionTolerance: 0.3
+      },
+      leicester: {
+        name: "Leicester City",
+        color: "#003090",
+        vibe: "miracle believer",
+        tagline: "You proved impossible is nothing",
+        description: "You've literally seen magic happen. Diverse, community-driven, believers in fairytales. 5000-1 isn't a stat, it's a mindset.",
+        energy: ["manifestation", "diversity", "once in a lifetime", "believers"],
+        traitVector: { optimism: 0.9, community: 0.85, underdog: 0.85, passion: 0.8, loyalty: 0.75, authenticity: 0.75, grit: 0.7, pride: 0.6, creativity: 0.5, patience: 0.5, tradition: 0.5, mystery: 0.4, analytical: 0.3, sophistication: 0.3, glamour: 0.3, chaos: 0.5, reinvention: 0.4, ambition: 0.6 },
+        interactionBonuses: [{ traits: ['optimism', 'underdog'], multiplier: 1.6 }, { traits: ['community', 'passion'], multiplier: 1.3 }],
+        contradictionTolerance: 0.6
+      },
+      southampton: {
+        name: "Southampton",
+        color: "#D71920",
+        vibe: "nurturing mentor",
+        tagline: "You help others reach their potential",
+        description: "You're the friend who spots talent before anyone else. Coastal vibes meet academy energy. Playing the long game.",
+        energy: ["growth mindset", "spotting potential", "patient", "developer"],
+        traitVector: { patience: 0.9, community: 0.8, authenticity: 0.8, loyalty: 0.7, creativity: 0.6, analytical: 0.6, optimism: 0.6, tradition: 0.6, grit: 0.55, pride: 0.5, mystery: 0.5, underdog: 0.5, passion: 0.5, sophistication: 0.5, ambition: 0.4, glamour: 0.2, chaos: 0.3, reinvention: 0.4 },
+        interactionBonuses: [{ traits: ['patience', 'community'], multiplier: 1.4 }, { traits: ['authenticity', 'creativity'], multiplier: 1.2 }],
+        contradictionTolerance: 0.4
+      },
+      ipswich: {
+        name: "Ipswich Town",
+        color: "#0044A6",
+        vibe: "fresh start energy",
+        tagline: "Nothing to lose, everything to prove",
+        description: "You're back where you belong and you're hungry. New chapter, clean slate, pure ambition. The comeback you've been waiting for.",
+        energy: ["new era", "humble beginnings", "hungry", "proving ground"],
+        traitVector: { underdog: 0.9, ambition: 0.85, authenticity: 0.85, grit: 0.8, optimism: 0.8, community: 0.75, loyalty: 0.7, passion: 0.7, patience: 0.6, pride: 0.5, creativity: 0.5, reinvention: 0.6, tradition: 0.4, analytical: 0.4, mystery: 0.4, sophistication: 0.3, glamour: 0.2, chaos: 0.4 },
+        interactionBonuses: [{ traits: ['underdog', 'ambition'], multiplier: 1.5 }, { traits: ['authenticity', 'grit'], multiplier: 1.3 }],
+        contradictionTolerance: 0.5
+      }
+    };
+
+    // =============================================================================
+    // QUESTIONS
+    // =============================================================================
+
+    const QUESTIONS = [
+      {
+        id: 'q1',
+        type: 'slider',
+        question: "alright, let's start simple. where do you sit on this?",
+        leftLabel: "i'd rather be loyal than successful",
+        rightLabel: "i'd rather be successful than loyal",
+        traits: {
+          left: { loyalty: 4, community: 2, authenticity: 2 },
+          right: { ambition: 4, glamour: 2, reinvention: 2 }
+        }
+      },
+      {
+        id: 'q2',
+        type: 'binary',
+        question: "quick one — you're more:",
+        answers: [
+          { id: 'a', text: "heart over head, every time", traits: { passion: 4, community: 2, chaos: 1 } },
+          { id: 'b', text: "head over heart, be serious", traits: { analytical: 4, patience: 2, sophistication: 1 } }
+        ]
+      },
+      {
+        id: 'q3',
+        type: 'stack',
+        question: "okay be fr with me. when everything goes wrong, you:",
+        answers: [
+          { id: 'a', text: "trust it'll work out. always does.", traits: { optimism: 4, patience: 2 } },
+          { id: 'b', text: "figure out what went wrong and fix it", traits: { analytical: 4, grit: 2 } },
+          { id: 'c', text: "burn it down, fresh start, new me", traits: { reinvention: 4, chaos: 2 } },
+          { id: 'd', text: "dig in. i don't quit.", traits: { grit: 4, loyalty: 2, underdog: 1 } }
+        ]
+      },
+      {
+        id: 'q4',
+        type: 'slider',
+        question: "drag this to where you actually are, not where you want to be:",
+        leftLabel: "i'm a creature of habit",
+        rightLabel: "i reinvent myself constantly",
+        traits: {
+          left: { tradition: 4, loyalty: 2, patience: 2 },
+          right: { reinvention: 4, chaos: 2, creativity: 2 }
+        }
+      },
+      {
+        id: 'q5',
+        type: 'grid',
+        question: "pick the one that hits different:",
+        answers: [
+          { id: 'a', text: "loyalty is everything", traits: { loyalty: 4, community: 3, tradition: 1 } },
+          { id: 'b', text: "excellence is everything", traits: { ambition: 4, analytical: 2, sophistication: 2 } },
+          { id: 'c', text: "authenticity is everything", traits: { authenticity: 4, grit: 2, community: 1 } },
+          { id: 'd', text: "the vibes are everything", traits: { creativity: 3, chaos: 2, optimism: 2 } }
+        ]
+      },
+      {
+        id: 'q6',
+        type: 'stack',
+        question: "your mate's team just got relegated and he's proper sad. you:",
+        answers: [
+          { id: 'a', text: "we're going out, drinks on me, forget about it", traits: { community: 4, passion: 2 } },
+          { id: 'b', text: "banter him obviously, but you're there for him", traits: { authenticity: 3, loyalty: 3, grit: 1 } },
+          { id: 'c', text: "\"it's just football mate\" (you're lying)", traits: { patience: 3, sophistication: 2, mystery: 1 } },
+          { id: 'd', text: "already planning the away days in the championship", traits: { loyalty: 4, optimism: 2, grit: 1 } }
+        ]
+      },
+      {
+        id: 'q7',
+        type: 'slider',
+        question: "real talk:",
+        leftLabel: "i love being the underdog",
+        rightLabel: "i expect to win",
+        traits: {
+          left: { underdog: 4, grit: 3, authenticity: 1 },
+          right: { ambition: 4, pride: 2, glamour: 2 }
+        }
+      },
+      {
+        id: 'q8',
+        type: 'binary',
+        question: "you walk into a room and you want people to think:",
+        answers: [
+          { id: 'a', text: "\"there's something about them\"", traits: { mystery: 4, sophistication: 2, creativity: 1 } },
+          { id: 'b', text: "\"they're one of us\"", traits: { community: 4, authenticity: 2, loyalty: 1 } }
+        ]
+      },
+      {
+        id: 'q9',
+        type: 'stack',
+        question: "okay this one's deep. what do you actually want your legacy to be?",
+        answers: [
+          { id: 'a', text: "they never gave up, no matter what", traits: { grit: 4, underdog: 3, loyalty: 1 } },
+          { id: 'b', text: "they did it differently and it worked", traits: { creativity: 4, analytical: 2, authenticity: 1 } },
+          { id: 'c', text: "they lifted everyone around them", traits: { community: 4, passion: 2, loyalty: 1 } },
+          { id: 'd', text: "they were simply world class", traits: { ambition: 4, sophistication: 2, pride: 1 } }
+        ]
+      },
+      {
+        id: 'q10',
+        type: 'binary',
+        question: "chaos or control?",
+        answers: [
+          { id: 'a', text: "beautiful chaos", traits: { chaos: 4, creativity: 3, passion: 1 } },
+          { id: 'b', text: "elegant control", traits: { analytical: 3, sophistication: 3, patience: 2 } }
+        ]
+      },
+      {
+        id: 'q11',
+        type: 'slider',
+        question: "where are you on this honestly:",
+        leftLabel: "good things take time",
+        rightLabel: "i want it now",
+        traits: {
+          left: { patience: 4, tradition: 2, mystery: 1 },
+          right: { ambition: 3, reinvention: 2, chaos: 2 }
+        }
+      },
+      {
+        id: 'q12',
+        type: 'grid',
+        question: "which energy is most you?",
+        answers: [
+          { id: 'a', text: "old money quiet", traits: { sophistication: 4, tradition: 2, mystery: 2 } },
+          { id: 'b', text: "new money loud", traits: { glamour: 4, ambition: 2, pride: 2 } },
+          { id: 'c', text: "no money authentic", traits: { authenticity: 4, grit: 3, community: 1 } },
+          { id: 'd', text: "who cares about money", traits: { creativity: 3, passion: 3, optimism: 2 } }
+        ]
+      },
+      {
+        id: 'q13',
+        type: 'stack',
+        question: "last one. at the end of the day, it's really about:",
+        answers: [
+          { id: 'a', text: "the people you go through it with", traits: { community: 5, loyalty: 3, passion: 1 } },
+          { id: 'b', text: "how you play the game", traits: { creativity: 4, authenticity: 2, sophistication: 2 } },
+          { id: 'c', text: "whether you won or not", traits: { ambition: 5, pride: 2, analytical: 1 } },
+          { id: 'd', text: "that you stayed true to yourself", traits: { authenticity: 5, grit: 2, loyalty: 1 } }
+        ]
+      }
+    ];
+
+    // =============================================================================
+    // PREDICTION ENGINE
+    // =============================================================================
+
+    const TRAIT_DIMENSIONS = [
+      'loyalty', 'ambition', 'creativity', 'grit', 'optimism', 'tradition',
+      'sophistication', 'community', 'underdog', 'glamour', 'chaos', 'analytical',
+      'authenticity', 'patience', 'passion', 'mystery', 'reinvention', 'pride'
+    ];
+
+    const calculateResults = (responses) => {
+      const traitScores = {};
+      const traitConfidence = {};
+      
+      TRAIT_DIMENSIONS.forEach(trait => {
+        traitScores[trait] = 0;
+        traitConfidence[trait] = 0;
+      });
+      
+      responses.forEach(response => {
+        if (response.traits) {
+          Object.entries(response.traits).forEach(([trait, score]) => {
+            const confidence = response.confidence || 1;
+            traitScores[trait] = (traitScores[trait] || 0) + (score * confidence);
+            traitConfidence[trait] = (traitConfidence[trait] || 0) + confidence;
+          });
+        }
+      });
+      
+      Object.keys(traitScores).forEach(trait => {
+        if (traitConfidence[trait] > 0) {
+          traitScores[trait] = traitScores[trait] / Math.sqrt(traitConfidence[trait]);
+        }
+      });
+      
+      const contradictions = detectContradictions(traitScores);
+      const teamScores = {};
+      
+      Object.entries(TEAMS).forEach(([teamId, team]) => {
+        let score = 0;
+        score += cosineSimilarity(traitScores, team.traitVector) * 100;
+        
+        team.interactionBonuses.forEach(bonus => {
+          const traitValues = bonus.traits.map(t => traitScores[t] || 0);
+          const minTrait = Math.min(...traitValues);
+          if (minTrait > 0) {
+            score += minTrait * bonus.multiplier * 5;
+          }
+        });
+        
+        const contradictionPenalty = Math.max(0, contradictions - team.contradictionTolerance) * 10;
+        score -= contradictionPenalty;
+        
+        Object.entries(team.traitVector).forEach(([trait, teamValue]) => {
+          const userValue = traitScores[trait] || 0;
+          if (teamValue > 0.7 && userValue < 2) {
+            score -= (teamValue - 0.5) * 8;
+          }
+          if (teamValue < 0.3 && userValue > 10) {
+            score -= userValue * 0.5;
+          }
+        });
+        
+        teamScores[teamId] = score;
+      });
+      
+      const sorted = Object.entries(teamScores)
+        .sort((a, b) => b[1] - a[1])
+        .map(([team, score]) => ({ team, score }));
+      
+      return {
+        primary: sorted[0].team,
+        secondary: sorted[1].team,
+        tertiary: sorted[2].team,
+        confidence: calculateMatchConfidence(sorted),
+        traitProfile: getTopTraits(traitScores)
+      };
+    };
+
+    const cosineSimilarity = (userTraits, teamVector) => {
+      let dotProduct = 0;
+      let userMagnitude = 0;
+      let teamMagnitude = 0;
+      
+      Object.keys(teamVector).forEach(trait => {
+        const userVal = userTraits[trait] || 0;
+        const teamVal = teamVector[trait] || 0;
+        dotProduct += userVal * teamVal;
+        userMagnitude += userVal * userVal;
+        teamMagnitude += teamVal * teamVal;
+      });
+      
+      if (userMagnitude === 0 || teamMagnitude === 0) return 0;
+      return dotProduct / (Math.sqrt(userMagnitude) * Math.sqrt(teamMagnitude));
+    };
+
+    const detectContradictions = (traitScores) => {
+      const contradictionPairs = [
+        ['loyalty', 'reinvention'],
+        ['tradition', 'chaos'],
+        ['analytical', 'chaos'],
+        ['patience', 'reinvention'],
+        ['sophistication', 'chaos'],
+        ['grit', 'glamour']
+      ];
+      
+      let contradictionScore = 0;
+      contradictionPairs.forEach(([trait1, trait2]) => {
+        const val1 = traitScores[trait1] || 0;
+        const val2 = traitScores[trait2] || 0;
+        if (val1 > 5 && val2 > 5) {
+          contradictionScore += Math.min(val1, val2) / 10;
+        }
+      });
+      
+      return contradictionScore;
+    };
+
+    const calculateMatchConfidence = (sortedTeams) => {
+      if (sortedTeams.length < 2) return 1;
+      const gap = sortedTeams[0].score - sortedTeams[1].score;
+      return Math.min(1, gap / 20);
+    };
+
+    const getTopTraits = (traitScores) => {
+      return Object.entries(traitScores)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 4)
+        .map(([trait]) => trait);
+    };
+
+    // =============================================================================
+    // COMPONENTS
+    // =============================================================================
+
+    const App = () => {
+      const [screen, setScreen] = useState('intro');
+      const [introStep, setIntroStep] = useState(0);
+      const [currentQuestion, setCurrentQuestion] = useState(0);
+      const [responses, setResponses] = useState([]);
+      const [results, setResults] = useState(null);
+      const [transitioning, setTransitioning] = useState(false);
+
+      const startQuiz = useCallback(() => {
+        setCurrentQuestion(0);
+        setResponses([]);
+        setResults(null);
+        setScreen('quiz');
+      }, []);
+
+      const handleResponse = useCallback((response) => {
+        if (transitioning) return;
+        setTransitioning(true);
+        
+        setTimeout(() => {
+          const newResponses = [...responses, response];
+          setResponses(newResponses);
+          
+          if (currentQuestion >= QUESTIONS.length - 1) {
+            setResults(calculateResults(newResponses));
+            setScreen('results');
+          } else {
+            setCurrentQuestion(prev => prev + 1);
+          }
+          setTransitioning(false);
+        }, 400);
+      }, [transitioning, responses, currentQuestion]);
+
+      const restart = () => {
+        setScreen('intro');
+        setIntroStep(0);
+      };
+
+      const question = QUESTIONS[currentQuestion];
+      const progress = (currentQuestion / QUESTIONS.length) * 100;
+
+      return (
+        <div style={styles.app}>
+          <div style={styles.container}>
+            {screen === 'intro' && (
+              <Intro step={introStep} onNext={() => setIntroStep(s => s + 1)} onStart={startQuiz} />
+            )}
+            {screen === 'quiz' && question && (
+              <QuestionView
+                question={question}
+                onResponse={handleResponse}
+                progress={progress}
+                index={currentQuestion}
+                total={QUESTIONS.length}
+                transitioning={transitioning}
+              />
+            )}
+            {screen === 'results' && results && (
+              <Results results={results} onRestart={restart} />
+            )}
+          </div>
+        </div>
+      );
+    };
+
+    const Intro = ({ step, onNext, onStart }) => {
+      const [visible, setVisible] = useState(false);
+      
+      useEffect(() => {
+        setVisible(false);
+        const timer = setTimeout(() => setVisible(true), 50);
+        return () => clearTimeout(timer);
+      }, [step]);
+
+      const steps = [
+        {
+          content: (
+            <React.Fragment>
+              <div style={styles.introMark}>⚽</div>
+              <h1 style={styles.introTitle}>
+                <span style={styles.introTitleSm}>find your</span>
+                <span style={styles.introTitleLg}>premier league</span>
+                <span style={styles.introTitleXl}>vibe</span>
+              </h1>
+            </React.Fragment>
+          )
+        },
+        {
+          content: (
+            <React.Fragment>
+              <p style={styles.introStatement}>This isn't about who you support.</p>
+              <p style={styles.introStatementFade}>It's about who you <em>are</em>.</p>
+            </React.Fragment>
+          )
+        },
+        {
+          content: (
+            <React.Fragment>
+              <p style={styles.introExplain}>
+                We're going to ask you 13 questions. Some are quick vibes, some make you think. A few use sliders so we can see how strongly you feel.
+              </p>
+              <p style={styles.introExplainSm}>
+                Based on your answers, we'll match you with one of the 20 Premier League clubs.
+              </p>
+            </React.Fragment>
+          )
+        },
+        {
+          content: (
+            <React.Fragment>
+              <p style={styles.introTechnical}>
+                <span style={styles.techLabel}>how it works</span>
+              </p>
+              <p style={styles.introTechBody}>
+                We map your responses onto an 18-dimensional trait space—things like loyalty, ambition, creativity, grit. Each club has a unique trait fingerprint based on their culture and fanbase.
+              </p>
+              <p style={styles.introTechBodySm}>
+                The model uses cosine similarity for base matching, then applies interaction bonuses (some trait combos are multiplicative), contradiction analysis (paradoxes affect different clubs differently), and confidence weighting from slider responses.
+              </p>
+              <p style={styles.introTechBodySm}>
+                Translation: we don't just add up your answers. We look at <em>how</em> they combine.
+              </p>
+            </React.Fragment>
+          )
+        },
+        {
+          content: (
+            <React.Fragment>
+              <div style={styles.introStats}>
+                <div style={styles.introStat}>
+                  <span style={styles.introStatNumber}>13</span>
+                  <span style={styles.introStatLabel}>questions</span>
+                </div>
+                <div style={styles.introStatDivider} />
+                <div style={styles.introStat}>
+                  <span style={styles.introStatNumber}>20</span>
+                  <span style={styles.introStatLabel}>clubs</span>
+                </div>
+                <div style={styles.introStatDivider} />
+                <div style={styles.introStat}>
+                  <span style={styles.introStatNumber}>18</span>
+                  <span style={styles.introStatLabel}>traits</span>
+                </div>
+              </div>
+              <p style={styles.introReady}>ready to find out who you really are?</p>
+            </React.Fragment>
+          ),
+          isFinal: true
+        }
+      ];
+
+      const current = steps[step];
+
+      return (
+        <div style={{
+          ...styles.intro,
+          opacity: visible ? 1 : 0,
+          transform: visible ? 'translateY(0)' : 'translateY(20px)',
+        }}>
+          <div style={styles.introContent}>{current.content}</div>
+          
+          <div style={styles.introFooter}>
+            <button onClick={current.isFinal ? onStart : onNext} style={styles.introCta}>
+              <span>{current.isFinal ? 'start' : 'continue'}</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ marginLeft: 8 }}>
+                <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+            
+            <div style={styles.introProgress}>
+              {steps.map((_, i) => (
+                <div key={i} style={{ ...styles.introProgressDot, background: i <= step ? '#0a0a0a' : '#e0e0e0' }} />
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const QuestionView = ({ question, onResponse, progress, index, total, transitioning }) => {
+      const [visible, setVisible] = useState(false);
+      const [sliderValue, setSliderValue] = useState(50);
+      const [selectedId, setSelectedId] = useState(null);
+      
+      useEffect(() => {
+        setVisible(false);
+        setSliderValue(50);
+        setSelectedId(null);
+        const timer = setTimeout(() => setVisible(true), 50);
+        return () => clearTimeout(timer);
+      }, [question.id]);
+
+      const handleChoice = (answer) => {
+        if (transitioning) return;
+        setSelectedId(answer.id);
+        onResponse({ traits: answer.traits, confidence: 1 });
+      };
+
+      const handleSliderSubmit = () => {
+        if (transitioning) return;
+        const normalized = sliderValue / 100;
+        const confidence = Math.abs(normalized - 0.5) * 2 + 0.5;
+        
+        const traits = {};
+        Object.entries(question.traits.left).forEach(([trait, weight]) => {
+          traits[trait] = (traits[trait] || 0) + weight * (1 - normalized);
+        });
+        Object.entries(question.traits.right).forEach(([trait, weight]) => {
+          traits[trait] = (traits[trait] || 0) + weight * normalized;
+        });
+        
+        onResponse({ traits, confidence });
+      };
+
+      const isBinary = question.type === 'binary';
+      const isGrid = question.type === 'grid';
+      const isSlider = question.type === 'slider';
+
+      return (
+        <div style={{
+          ...styles.questionScreen,
+          opacity: visible ? 1 : 0,
+          transform: visible ? 'translateY(0)' : 'translateY(16px)',
+        }}>
+          <div style={styles.progressWrap}>
+            <div style={styles.progressBar}>
+              <div style={{ ...styles.progressFill, width: `${progress}%` }} />
+            </div>
+            <span style={styles.progressLabel}>{index + 1} / {total}</span>
+          </div>
+
+          <div style={styles.questionWrap}>
+            <h2 style={styles.questionText}>{question.question}</h2>
+          </div>
+
+          {isSlider ? (
+            <div style={styles.sliderContainer}>
+              <div style={styles.sliderLabels}>
+                <span style={styles.sliderLabel}>{question.leftLabel}</span>
+                <span style={styles.sliderLabel}>{question.rightLabel}</span>
+              </div>
+              <div style={styles.sliderWrapper}>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={sliderValue}
+                  onChange={(e) => setSliderValue(Number(e.target.value))}
+                  style={styles.sliderInput}
+                />
+              </div>
+              <button onClick={handleSliderSubmit} style={styles.sliderSubmit}>
+                that's me
+              </button>
+            </div>
+          ) : (
+            <div style={{
+              ...styles.answers,
+              ...(isBinary ? styles.answersBinary : {}),
+              ...(isGrid ? styles.answersGrid : {}),
+            }}>
+              {question.answers.map((answer, i) => {
+                const isSelected = selectedId === answer.id;
+                const isFaded = selectedId && !isSelected;
+                
+                return (
+                  <button
+                    key={answer.id}
+                    onClick={() => handleChoice(answer)}
+                    style={{
+                      ...styles.answer,
+                      ...(isBinary ? styles.answerBinary : {}),
+                      ...(isGrid ? styles.answerGrid : {}),
+                      opacity: isFaded ? 0.3 : 1,
+                      transform: isSelected ? 'scale(0.98)' : 'scale(1)',
+                      background: isSelected ? '#0a0a0a' : 'transparent',
+                      color: isSelected ? '#FAFAF8' : '#0a0a0a',
+                      transitionDelay: `${i * 30}ms`,
+                    }}
+                  >
+                    {answer.text}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const Results = ({ results, onRestart }) => {
+      const [visible, setVisible] = useState(false);
+      const [detailsVisible, setDetailsVisible] = useState(false);
+      
+      const team = TEAMS[results.primary];
+      const secondary = TEAMS[results.secondary];
+      const tertiary = TEAMS[results.tertiary];
+
+      useEffect(() => {
+        const t1 = setTimeout(() => setVisible(true), 100);
+        const t2 = setTimeout(() => setDetailsVisible(true), 700);
+        return () => { clearTimeout(t1); clearTimeout(t2); };
+      }, []);
+
+      const handleShare = () => {
+        const text = `i'm ${team.name} coded ⚽\n\n"${team.vibe}"\n\nfind your premier league vibe`;
+        if (navigator.share) {
+          navigator.share({ text, url: window.location.href });
+        } else {
+          navigator.clipboard.writeText(text + '\n' + window.location.href);
+          alert('Copied to clipboard!');
+        }
+      };
+
+      return (
+        <div style={{ ...styles.results, opacity: visible ? 1 : 0 }}>
+          <div style={{
+            ...styles.resultMain,
+            transform: visible ? 'translateY(0)' : 'translateY(30px)',
+          }}>
+            <span style={styles.resultLabel}>you're giving</span>
+            <h1 style={styles.resultTeam}>{team.name}</h1>
+            <div style={{ ...styles.resultAccent, background: team.color }} />
+            <p style={styles.resultVibe}>{team.vibe}</p>
+            <p style={styles.resultTagline}>{team.tagline}</p>
+            <p style={styles.resultDesc}>{team.description}</p>
+            <div style={styles.resultEnergy}>
+              {team.energy.map((e, i) => (
+                <span key={i} style={styles.energyTag}>{e}</span>
+              ))}
+            </div>
+          </div>
+
+          <div style={{
+            ...styles.secondaryWrap,
+            opacity: detailsVisible ? 1 : 0,
+            transform: detailsVisible ? 'translateY(0)' : 'translateY(20px)',
+          }}>
+            <span style={styles.alsoLabel}>also in your energy</span>
+            <div style={styles.secondaryRow}>
+              <span style={styles.secondaryTeam}>
+                <span style={{ ...styles.secondaryDot, background: secondary.color }} />
+                {secondary.name}
+              </span>
+              <span style={styles.secondaryTeam}>
+                <span style={{ ...styles.secondaryDot, background: tertiary.color }} />
+                {tertiary.name}
+              </span>
+            </div>
+          </div>
+
+          <div style={{ ...styles.traitWrap, opacity: detailsVisible ? 1 : 0 }}>
+            <span style={styles.alsoLabel}>your dominant traits</span>
+            <div style={styles.traitRow}>
+              {results.traitProfile.map((trait, i) => (
+                <span key={i} style={styles.traitTag}>{trait}</span>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ ...styles.actions, opacity: detailsVisible ? 1 : 0 }}>
+            <button onClick={onRestart} style={styles.btnSecondary}>retake</button>
+            <button onClick={handleShare} style={styles.btnPrimary}>share result</button>
+          </div>
+
+          <footer style={styles.footerResults}>
+            <span>vibecheck.club</span>
+          </footer>
+        </div>
+      );
+    };
+
+    // =============================================================================
+    // STYLES
+    // =============================================================================
+
+    const styles = {
+      app: { minHeight: '100vh', width: '100%', background: '#FAFAF8' },
+      container: { minHeight: '100vh', maxWidth: '540px', margin: '0 auto', padding: '24px 20px', display: 'flex', flexDirection: 'column' },
+      
+      intro: { flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)', paddingTop: '15vh', paddingBottom: '48px' },
+      introContent: { flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' },
+      introMark: { fontSize: '28px', marginBottom: '32px', filter: 'grayscale(100%)', opacity: 0.7 },
+      introTitle: { margin: 0, display: 'flex', flexDirection: 'column' },
+      introTitleSm: { fontSize: '14px', fontWeight: '400', letterSpacing: '0.1em', color: '#888', marginBottom: '8px' },
+      introTitleLg: { fontSize: 'clamp(26px, 6vw, 38px)', fontWeight: '500', letterSpacing: '-0.03em', lineHeight: '1.05', color: '#0a0a0a' },
+      introTitleXl: { fontSize: 'clamp(48px, 12vw, 68px)', fontWeight: '600', letterSpacing: '-0.04em', lineHeight: '0.95', color: '#0a0a0a' },
+      introStatement: { fontSize: 'clamp(22px, 5.5vw, 30px)', fontWeight: '500', letterSpacing: '-0.02em', lineHeight: '1.3', margin: '0 0 16px 0', color: '#0a0a0a' },
+      introStatementFade: { fontSize: 'clamp(22px, 5.5vw, 30px)', fontWeight: '500', letterSpacing: '-0.02em', lineHeight: '1.3', margin: 0, color: '#666' },
+      introExplain: { fontSize: '16px', lineHeight: '1.6', color: '#0a0a0a', margin: '0 0 20px 0', maxWidth: '400px' },
+      introExplainSm: { fontSize: '15px', lineHeight: '1.6', color: '#666', margin: 0, maxWidth: '380px' },
+      introTechnical: { margin: '0 0 16px 0' },
+      techLabel: { fontSize: '11px', fontWeight: '600', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#999', background: '#f0f0f0', padding: '6px 10px', borderRadius: '4px' },
+      introTechBody: { fontSize: '15px', lineHeight: '1.65', color: '#333', margin: '0 0 16px 0', maxWidth: '420px' },
+      introTechBodySm: { fontSize: '14px', lineHeight: '1.6', color: '#666', margin: '0 0 12px 0', maxWidth: '400px' },
+      introStats: { display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '40px' },
+      introStat: { display: 'flex', flexDirection: 'column', alignItems: 'center' },
+      introStatNumber: { fontSize: '36px', fontWeight: '600', letterSpacing: '-0.03em', color: '#0a0a0a', lineHeight: '1' },
+      introStatLabel: { fontSize: '11px', color: '#888', letterSpacing: '0.05em', marginTop: '4px' },
+      introStatDivider: { width: '1px', height: '36px', background: '#e0e0e0' },
+      introReady: { fontSize: '16px', color: '#666', margin: 0 },
+      introFooter: { display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'flex-start' },
+      introCta: { display: 'inline-flex', alignItems: 'center', padding: '16px 32px', background: '#0a0a0a', color: '#FAFAF8', border: 'none', borderRadius: '100px', fontSize: '15px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.3s ease', letterSpacing: '0.02em' },
+      introProgress: { display: 'flex', gap: '8px' },
+      introProgressDot: { width: '6px', height: '6px', borderRadius: '50%', transition: 'background 0.3s ease' },
+
+      questionScreen: { flex: 1, display: 'flex', flexDirection: 'column', transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)' },
+      progressWrap: { display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px', paddingTop: '24px' },
+      progressBar: { flex: 1, height: '2px', background: '#e5e5e5', borderRadius: '1px', overflow: 'hidden' },
+      progressFill: { height: '100%', background: '#0a0a0a', transition: 'width 0.5s cubic-bezier(0.16, 1, 0.3, 1)' },
+      progressLabel: { fontSize: '12px', color: '#999', fontVariantNumeric: 'tabular-nums', letterSpacing: '0.05em' },
+      questionWrap: { marginBottom: '32px' },
+      questionText: { fontSize: 'clamp(22px, 5.5vw, 28px)', fontWeight: '500', lineHeight: '1.35', letterSpacing: '-0.02em', margin: 0, color: '#0a0a0a' },
+      answers: { display: 'flex', flexDirection: 'column', gap: '12px' },
+      answersBinary: { flexDirection: 'row', gap: '12px' },
+      answersGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' },
+      answer: { padding: '18px 22px', background: 'transparent', border: '1px solid #e0e0e0', borderRadius: '12px', fontSize: '15px', fontWeight: '400', textAlign: 'left', cursor: 'pointer', transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)', lineHeight: '1.4' },
+      answerBinary: { flex: 1, textAlign: 'center', padding: '20px 16px' },
+      answerGrid: { padding: '18px 14px', textAlign: 'center', fontSize: '14px' },
+
+      sliderContainer: { display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '8px' },
+      sliderLabels: { display: 'flex', justifyContent: 'space-between', gap: '24px' },
+      sliderLabel: { fontSize: '13px', color: '#666', maxWidth: '140px', lineHeight: '1.4' },
+      sliderWrapper: { position: 'relative' },
+      sliderInput: { width: '100%', height: '44px', cursor: 'pointer' },
+      sliderSubmit: { alignSelf: 'flex-start', padding: '14px 28px', background: '#0a0a0a', color: '#FAFAF8', border: 'none', borderRadius: '100px', fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.2s ease' },
+
+      results: { flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', transition: 'opacity 0.8s ease', paddingTop: '24px' },
+      resultMain: { marginBottom: '32px', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)' },
+      resultLabel: { fontSize: '13px', color: '#999', letterSpacing: '0.1em', marginBottom: '8px', display: 'block' },
+      resultTeam: { fontSize: 'clamp(36px, 10vw, 56px)', fontWeight: '600', letterSpacing: '-0.03em', margin: '0 0 16px 0', lineHeight: '1' },
+      resultAccent: { width: '48px', height: '4px', borderRadius: '2px', marginBottom: '20px' },
+      resultVibe: { fontSize: '17px', fontWeight: '500', color: '#0a0a0a', margin: '0 0 6px 0' },
+      resultTagline: { fontSize: '14px', color: '#666', margin: '0 0 20px 0', fontStyle: 'italic' },
+      resultDesc: { fontSize: '14px', lineHeight: '1.6', color: '#444', margin: '0 0 20px 0' },
+      resultEnergy: { display: 'flex', flexWrap: 'wrap', gap: '8px' },
+      energyTag: { padding: '6px 12px', background: '#f0f0f0', borderRadius: '100px', fontSize: '12px', color: '#666', letterSpacing: '0.02em' },
+      secondaryWrap: { marginBottom: '24px', transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s' },
+      alsoLabel: { fontSize: '11px', color: '#999', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '10px', display: 'block' },
+      secondaryRow: { display: 'flex', gap: '20px' },
+      secondaryTeam: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#444' },
+      secondaryDot: { width: '8px', height: '8px', borderRadius: '50%' },
+      traitWrap: { marginBottom: '32px', transition: 'opacity 0.6s ease 0.3s' },
+      traitRow: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
+      traitTag: { padding: '6px 12px', background: 'transparent', border: '1px solid #e0e0e0', borderRadius: '100px', fontSize: '12px', color: '#666', letterSpacing: '0.02em' },
+      actions: { display: 'flex', gap: '12px', marginBottom: '40px', transition: 'opacity 0.6s ease 0.4s' },
+      btnSecondary: { padding: '14px 24px', background: 'transparent', border: '1px solid #e0e0e0', borderRadius: '100px', fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.2s ease', color: '#0a0a0a' },
+      btnPrimary: { padding: '14px 24px', background: '#0a0a0a', border: '1px solid #0a0a0a', borderRadius: '100px', fontSize: '14px', fontWeight: '500', color: '#FAFAF8', cursor: 'pointer', transition: 'all 0.2s ease' },
+      footerResults: { fontSize: '12px', color: '#bbb', letterSpacing: '0.05em' },
+    };
+
+    // Render
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
