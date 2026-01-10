@@ -9,7 +9,7 @@
   <meta property="og:description" content="13 questions. 20 clubs. 18 traits. Find out which Premier League club matches your energy.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='none' stroke='%230a0a0a' stroke-width='6'/><circle cx='50' cy='50' r='20' fill='%230a0a0a'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
@@ -103,6 +103,22 @@
     ::-moz-selection {
       background: #0a0a0a;
       color: #FAFAF8;
+    }
+
+    /* Persistent back link */
+    .persistent-back {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      font-size: 12px;
+      color: #bbb;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s ease;
+      z-index: 10;
+    }
+    .persistent-back:hover {
+      color: #666;
     }
 
     /* Custom scrollbar */
@@ -923,6 +939,7 @@
 
       return (
         <div style={styles.app}>
+          <a href="https://lmpollockmuguruza.github.io/" className="persistent-back">← lucas' site</a>
           <div style={styles.container}>
             {screen === 'intro' && (
               <Intro step={introStep} onNext={() => setIntroStep(s => s + 1)} onStart={startQuiz} />
@@ -1395,18 +1412,6 @@
         }
       };
 
-      const handleShare = () => {
-        const favLine = favorite ? `\nactual team: ${favorite.name}` : '';
-        const nemesisLine = leastFavorite ? `\nnemesis: ${leastFavorite.name}` : '';
-        const text = `i'm ${team.name} coded ⚽\n\n"${team.vibe}"${favLine}${nemesisLine}\n\nfind your premier league vibe`;
-        if (navigator.share) {
-          navigator.share({ text, url: window.location.href });
-        } else {
-          navigator.clipboard.writeText(text + '\n' + window.location.href);
-          alert('Copied to clipboard!');
-        }
-      };
-
       const favoriteCommentary = getFavoriteCommentary();
       const leastFavoriteCommentary = getLeastFavoriteCommentary();
 
@@ -1486,12 +1491,7 @@
 
           <div style={{ ...styles.actions, opacity: detailsVisible ? 1 : 0 }}>
             <button onClick={onRestart} style={styles.btnSecondary}>retake</button>
-            <button onClick={handleShare} style={styles.btnPrimary}>share result</button>
           </div>
-
-          <footer style={styles.footerResults}>
-            <span>vibecheck.club</span>
-          </footer>
         </div>
       );
     };
@@ -1502,7 +1502,9 @@
 
     const styles = {
       app: { minHeight: '100vh', width: '100%', background: '#FAFAF8' },
-      container: { minHeight: '100vh', maxWidth: '540px', margin: '0 auto', padding: '24px 20px', display: 'flex', flexDirection: 'column' },
+      container: { minHeight: '100vh', maxWidth: '540px', margin: '0 auto', padding: '24px 20px', display: 'flex', flexDirection: 'column', position: 'relative' },
+      
+      persistentBack: { position: 'fixed', bottom: '20px', left: '20px', fontSize: '12px', color: '#bbb', textDecoration: 'none', letterSpacing: '0.02em', transition: 'color 0.2s ease', zIndex: 10 },
       
       intro: { flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)', paddingTop: '15vh', paddingBottom: '48px' },
       introContent: { flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' },
@@ -1596,7 +1598,7 @@
       traitTag: { padding: '6px 12px', background: 'transparent', border: '1px solid #e0e0e0', borderRadius: '100px', fontSize: '12px', color: '#666', letterSpacing: '0.02em' },
       actions: { display: 'flex', gap: '12px', marginBottom: '40px', transition: 'opacity 0.6s ease 0.4s' },
       btnSecondary: { padding: '14px 24px', background: 'transparent', border: '1px solid #e0e0e0', borderRadius: '100px', fontSize: '14px', fontWeight: '500', cursor: 'pointer', transition: 'all 0.2s ease', color: '#0a0a0a', fontFamily: 'inherit' },
-      btnPrimary: { padding: '14px 24px', background: '#0a0a0a', border: '1px solid #0a0a0a', borderRadius: '100px', fontSize: '14px', fontWeight: '500', color: '#FAFAF8', cursor: 'pointer', transition: 'all 0.2s ease', fontFamily: 'inherit' },
+      btnPrimary: { padding: '14px 24px', background: '#0a0a0a', border: '1px solid #0a0a0a', borderRadius: '100px', fontSize: '14px', fontWeight: '500', color: '#FAFAF8', cursor: 'pointer', transition: 'all 0.2s ease', fontFamily: 'inherit', textDecoration: 'none', display: 'inline-block' },
       footerResults: { fontSize: '12px', color: '#bbb', letterSpacing: '0.05em' },
     };
 
