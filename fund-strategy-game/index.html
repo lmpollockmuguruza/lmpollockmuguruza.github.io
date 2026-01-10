@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Fund Strategy — Private Markets Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { height: 100%; }
+    body { background: #FAFAF8; font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; -webkit-font-smoothing: antialiased; color: #0a0a0a; overflow-x: hidden; }
+    button { font-family: inherit; cursor: pointer; transition: all 0.2s ease; }
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    button:disabled { transform: none; }
+    input[type="number"] { font-family: inherit; }
+    ::selection { background: #0a0a0a; color: #FAFAF8; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d0d0d0; border-radius: 3px; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes tooltipPulse { 
+      0%, 100% { transform: scale(1); opacity: 1; } 
+      50% { transform: scale(1.02); opacity: 0.95; } 
+    }
+    .back-link { position: fixed; bottom: 20px; left: 20px; font-size: 11px; color: #ccc; text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s ease; z-index: 100; }
+    .back-link:hover { color: #888; }
+    .spotlight-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; }
+    .spotlight-tooltip { position: fixed; z-index: 1002; background: #fff; padding: 20px; border-radius: 16px; max-width: 340px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: fadeInUp 0.3s ease; }
+    .tooltip-trigger { position: relative; cursor: help; border-bottom: 1px dotted #999; }
+    .tooltip-content { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #0a0a0a; color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 11px; line-height: 1.4; width: 200px; text-align: center; opacity: 0; visibility: hidden; transition: all 0.2s ease; z-index: 100; pointer-events: none; }
+    .tooltip-trigger:hover .tooltip-content { opacity: 1; visibility: visible; }
+  </style>
+</head>
+<body>
+  <a href="https://lmpollockmuguruza.github.io" class="back-link">← lucas</a>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel">
+    const { useState, useCallback, useRef, useEffect } = React;
+
+    // =========================================================================
+    // SECTOR DATA WITH REALISTIC PROBABILITIES AND NAMES
+    // =========================================================================
+    
+    const SECTORS = {
+      'B2B SaaS': { 
+        probability: 0.22, 
+        names: ['Salesboard', 'Pipefy', 'Zendesk', 'Notion', 'Airtable', 'Monday', 'Asana', 'Clickup', 'Figma', 'Miro', 'Loom', 'Calendly', 'Gong', 'Outreach', 'Salesloft', 'Clari', 'Chorus', 'Highspot', 'Seismic', 'Showpad'],
+        suffixes: ['HQ', 'Cloud', 'Labs', 'io', 'ly', ''],
+        vcWeight: 1.2, peWeight: 0.8
+      },
+      'Fintech': { 
+        probability: 0.18, 
+        names: ['Stripe', 'Plaid', 'Ramp', 'Brex', 'Mercury', 'Carta', 'Divvy', 'Melio', 'Fundbox', 'Pipe', 'Capchase', 'Clearco', 'Wayflyer', 'Ampla', 'Parker', 'Slope', 'Flex', 'Coast', 'Rho', 'Airbase'],
+        suffixes: ['Pay', 'Finance', 'Capital', 'Bank', ''],
+        vcWeight: 1.1, peWeight: 1.0
+      },
+      'Healthcare': { 
+        probability: 0.12, 
+        names: ['Tempus', 'Flatiron', 'Veracyte', 'Grail', 'Freenome', 'Guardant', 'Foundation', 'Invitae', 'Color', 'Ro', 'Hims', 'Nurx', 'Alto', 'Capsule', 'Truepill', 'Wheel', 'Calibrate', 'Thirty Madison', 'Keeps', 'Apostrophe'],
+        suffixes: ['Health', 'Medical', 'Bio', 'Therapeutics', 'Genomics', ''],
+        vcWeight: 0.9, peWeight: 1.3
+      },
+      'Consumer': { 
+        probability: 0.10, 
+        names: ['Warby', 'Allbirds', 'Glossier', 'Away', 'Casper', 'Peloton', 'Mirror', 'Tonal', 'Hydrow', 'Oura', 'Whoop', 'Eight Sleep', 'Molekule', 'Dyson', 'Ember', 'Theragun', 'Hyperice', 'Lululemon', 'On Running', 'Vuori'],
+        suffixes: ['', 'Labs', 'Co', 'Brands', 'Direct'],
+        vcWeight: 0.8, peWeight: 1.1
+      },
+      'Enterprise Software': { 
+        probability: 0.14, 
+        names: ['Snowflake', 'Databricks', 'Confluent', 'HashiCorp', 'Datadog', 'Splunk', 'Elastic', 'MongoDB', 'Cockroach', 'PlanetScale', 'Neon', 'Supabase', 'Prisma', 'Airbyte', 'Fivetran', 'dbt', 'Stitch', 'Segment', 'Rudderstack', 'Heap'],
+        suffixes: ['Labs', 'Data', 'Systems', 'Tech', ''],
+        vcWeight: 1.0, peWeight: 1.0
+      },
+      'Climate': { 
+        probability: 0.08, 
+        names: ['Watershed', 'Pachama', 'NCX', 'Charm', 'Heirloom', 'Sustaera', 'Heimdal', 'CarbonCure', 'Solidia', 'Twelve', 'Prometheus', 'Infinium', 'Arbor', 'Solugen', 'Lanzatech', 'Climeworks', 'Carbon Engineering', 'Verdox', 'Running Tide', 'Ebb Carbon'],
+        suffixes: ['Carbon', 'Climate', 'Energy', 'Green', ''],
+        vcWeight: 1.0, peWeight: 0.7
+      },
+      'AI/ML': { 
+        probability: 0.12, 
+        names: ['OpenAI', 'Anthropic', 'Cohere', 'Adept', 'Inflection', 'Character', 'Stability', 'Midjourney', 'Runway', 'Jasper', 'Copy', 'Writer', 'Notion AI', 'Mem', 'Replit', 'Hugging Face', 'Scale', 'Snorkel', 'Weights', 'Roboflow'],
+        suffixes: ['AI', 'Labs', 'Intelligence', ''],
+        vcWeight: 1.4, peWeight: 0.6
+      },
+      'Cybersecurity': { 
+        probability: 0.09, 
+        names: ['CrowdStrike', 'SentinelOne', 'Wiz', 'Orca', 'Lacework', 'Snyk', 'Aqua', 'Sysdig', 'Armis', 'Claroty', 'Dragos', 'Nozomi', 'Axonius', 'Noetic', 'Sevco', 'JupiterOne', 'Censys', 'SecurityScorecard', 'BitSight', 'UpGuard'],
+        suffixes: ['Security', 'Cyber', 'Shield', 'Guard', ''],
+        vcWeight: 1.1, peWeight: 1.2
+      },
+      'E-commerce Infrastructure': { 
+        probability: 0.07, 
+        names: ['Shopify', 'BigCommerce', 'Bolt', 'Fast', 'Checkout', 'Recharge', 'Yotpo', 'Klaviyo', 'Attentive', 'Postscript', 'Gorgias', 'Kustomer', 'Gladly', 'Loop', 'Narvar', 'AfterShip', 'Route', 'Returnly', 'Happy Returns', 'Optoro'],
+        suffixes: ['Commerce', 'Shop', 'Retail', ''],
+        vcWeight: 0.9, peWeight: 1.1
+      },
+      'Logistics & Supply Chain': { 
+        probability: 0.06, 
+        names: ['Flexport', 'Convoy', 'Loadsmart', 'Transfix', 'Uber Freight', 'Project44', 'FourKites', 'Descartes', 'E2open', 'Coupa', 'Jaggaer', 'GEP', 'Ivalua', 'SAP Ariba', 'Oracle SCM', 'Blue Yonder', 'Manhattan', 'Körber', 'Softeon', 'HighJump'],
+        suffixes: ['Logistics', 'Freight', 'Supply', 'Chain', ''],
+        vcWeight: 0.7, peWeight: 1.4
+      },
+      'HR Tech': { 
+        probability: 0.05, 
+        names: ['Rippling', 'Deel', 'Remote', 'Oyster', 'Papaya', 'Velocity', 'Lattice', 'Culture Amp', '15Five', 'Leapsome', 'Workday', 'BambooHR', 'Gusto', 'Justworks', 'Namely', 'Paylocity', 'Paycom', 'Paycor', 'Ceridian', 'ADP'],
+        suffixes: ['HR', 'People', 'Team', ''],
+        vcWeight: 0.9, peWeight: 1.2
+      },
+      'Real Estate Tech': { 
+        probability: 0.04, 
+        names: ['Opendoor', 'Offerpad', 'Redfin', 'Compass', 'Side', 'Place', 'Avenue 8', 'Flyhomes', 'Ribbon', 'Orchard', 'Homeward', 'Knock', 'Sundae', 'Roofstock', 'Arrived', 'Fundrise', 'Cadre', 'RealtyMogul', 'CrowdStreet', 'Yieldstreet'],
+        suffixes: ['Homes', 'Property', 'Realty', ''],
+        vcWeight: 0.8, peWeight: 1.3
+      },
+      'EdTech': { 
+        probability: 0.04, 
+        names: ['Coursera', 'Udemy', 'Skillshare', 'MasterClass', 'Duolingo', 'Babbel', 'Quizlet', 'Kahoot', 'Nearpod', 'Pear Deck', 'ClassDojo', 'Remind', 'Clever', 'Canvas', 'Schoology', 'Blackboard', 'Instructure', 'PowerSchool', 'Infinite Campus', 'Skyward'],
+        suffixes: ['Learning', 'Academy', 'Ed', ''],
+        vcWeight: 0.8, peWeight: 1.0
+      },
+    };
+
+    const STAGES_VC = ['Pre-seed', 'Seed', 'Series A', 'Series B'];
+    const STAGES_PE = ['Growth', 'Late Growth', 'Buyout'];
+    const FOUNDER_TYPES = ['Desperate', 'Reasonable', 'Confident', 'Arrogant'];
+
+    const MARKET_CONDITIONS = {
+      boom: { name: 'Bull Market', color: '#15803d', icon: '📈', multipleModifier: 1.3, exitModifier: 1.4, competitionIntensity: 1.5, dealFlow: 1.3 },
+      normal: { name: 'Stable', color: '#666', icon: '➡️', multipleModifier: 1.0, exitModifier: 1.0, competitionIntensity: 1.0, dealFlow: 1.0 },
+      downturn: { name: 'Bear Market', color: '#b91c1c', icon: '📉', multipleModifier: 0.7, exitModifier: 0.5, competitionIntensity: 0.6, dealFlow: 0.6 },
+      recovery: { name: 'Recovery', color: '#f59e0b', icon: '🔄', multipleModifier: 0.9, exitModifier: 0.8, competitionIntensity: 0.8, dealFlow: 0.8 }
+    };
+
+    const MACRO_EVENTS = [
+      { text: 'Fed raises rates', effect: 'downturn', duration: 5, icon: '🏛️' },
+      { text: 'Banking crisis', effect: 'downturn', duration: 4, icon: '🏦' },
+      { text: 'AI investment boom', effect: 'boom', duration: 5, sectorBoost: 'AI/ML', icon: '🤖' },
+      { text: 'IPO window opens', effect: 'boom', duration: 4, icon: '🔔' },
+      { text: 'Stimulus announced', effect: 'recovery', duration: 5, icon: '💵' },
+      { text: 'Consumer spending surge', effect: 'boom', duration: 4, sectorBoost: 'Consumer', icon: '🛒' },
+      { text: 'Cybersecurity mandate', effect: 'boom', duration: 4, sectorBoost: 'Cybersecurity', icon: '🔒' },
+      { text: 'Healthcare reform', effect: 'boom', duration: 5, sectorBoost: 'Healthcare', icon: '🏥' },
+    ];
+
+    const PORTFOLIO_EVENTS = [
+      { type: 'decision', title: 'Key Engineer Leaving', description: 'Lead engineer at {company} wants 40% raise to stay.',
+        choices: [
+          { text: 'Approve raise', effect: { cost: 0.5, valueMod: 1.0 }, outcome: 'Engineer stays.' },
+          { text: 'Let them go', effect: { valueMod: 0.8 }, outcome: 'Velocity drops significantly.' }
+        ]},
+      { type: 'decision', title: 'Founder Conflict', description: 'Co-founders at {company} disagree. CEO wants CTO out.',
+        choices: [
+          { text: 'Support CEO', effect: { valueMod: 0.85 }, outcome: 'CTO exits. Morale hit.' },
+          { text: 'Stay neutral', effect: { valueMod: 0.9 }, outcome: 'Tensions simmer.' }
+        ]},
+      { type: 'decision', title: 'Acquisition Offer', description: 'Buyer wants {company} for 2x your cost.',
+        choices: [
+          { text: 'Accept', effect: { forceExit: 2.0 }, outcome: 'Sold for 2x.' },
+          { text: 'Decline', effect: { valueMod: 1.15 }, outcome: 'Holding for more.' }
+        ]},
+      { type: 'decision', title: 'Bridge Financing', description: '{company} needs $3M bridge or will cut 40% of staff.',
+        choices: [
+          { text: 'Fund bridge ($3M)', effect: { cost: 3, valueMod: 1.2 }, outcome: 'Bridge closed.' },
+          { text: 'Force cuts', effect: { valueMod: 0.65 }, outcome: 'Major layoffs.' }
+        ]},
+      { type: 'event', text: 'Viral growth', valueMod: 1.35, isPositive: true },
+      { type: 'event', text: 'Key customer churned', valueMod: 0.8, isPositive: false },
+      { type: 'event', text: 'Major press coverage', valueMod: 1.2, isPositive: true },
+      { type: 'event', text: 'Competitor raised $100M', valueMod: 0.85, isPositive: false },
+      { type: 'event', text: 'Regulatory scrutiny', valueMod: 0.75, isPositive: false, failRisk: 0.15 },
+    ];
+
+    const FOLLOWON_SCENARIOS = [
+      { title: 'Follow-on Round', description: '{company} raising at {valuation}. Your pro-rata is ${amount}M.', isDown: false },
+      { title: 'Down Round', description: '{company} down round at {valuation}. Pay ${amount}M or face heavy dilution.', isDown: true },
+    ];
+
+    const COMPETITOR_FUNDS = [
+      { name: 'Sequoia', aggressiveness: 0.9 },
+      { name: 'a16z', aggressiveness: 0.85 },
+      { name: 'Benchmark', aggressiveness: 0.8 },
+      { name: 'Tiger Global', aggressiveness: 0.95 },
+      { name: 'Insight Partners', aggressiveness: 0.75 },
+    ];
+
+    // Upgrades with 25% price increase per level
+    const UPGRADES = {
+      analyst: { name: 'Analysts', icon: '👥', tip: 'Better analysts find higher-quality deals', levels: [
+        { name: 'Junior', cost: 0, dealQualityBonus: 0 },
+        { name: 'Mixed', cost: 3, dealQualityBonus: 0.05 },
+        { name: 'Senior', cost: 7, dealQualityBonus: 0.1 },
+        { name: 'Elite', cost: 15, dealQualityBonus: 0.15 },
+      ]},
+      ddProgram: { name: 'Due Diligence', icon: '🔍', tip: 'Better DD narrows estimate ranges', levels: [
+        { name: 'Basic', cost: 0, ddCostMod: 1.0, accuracy: 0.4 },
+        { name: 'Standard', cost: 5, ddCostMod: 0.9, accuracy: 0.6 },
+        { name: 'Thorough', cost: 12, ddCostMod: 0.8, accuracy: 0.75 },
+        { name: 'Institutional', cost: 25, ddCostMod: 0.7, accuracy: 0.9 },
+      ]},
+      portSupport: { name: 'Portfolio Support', icon: '🛠️', tip: 'Active support improves outcomes', levels: [
+        { name: 'Passive', cost: 0, valueBoost: 0, failReduction: 0 },
+        { name: 'Quarterly', cost: 4, valueBoost: 0.02, failReduction: 0.1 },
+        { name: 'Hands-on', cost: 10, valueBoost: 0.04, failReduction: 0.2 },
+        { name: 'Platform', cost: 20, valueBoost: 0.06, failReduction: 0.35 },
+      ]},
+      network: { name: 'Network', icon: '🌐', tip: 'Better network = deal access + negotiation edge', levels: [
+        { name: 'Unknown', cost: 0, dealFlowBonus: 0, founderBonus: 0, competitiveEdge: 0 },
+        { name: 'Emerging', cost: 5, dealFlowBonus: 0.1, founderBonus: 0.05, competitiveEdge: 0.1 },
+        { name: 'Known', cost: 12, dealFlowBonus: 0.2, founderBonus: 0.1, competitiveEdge: 0.2 },
+        { name: 'Top-Tier', cost: 25, dealFlowBonus: 0.35, founderBonus: 0.15, competitiveEdge: 0.35 },
+      ]}
+    };
+
+    // Jargon tooltips - all in sentence case
+    const JARGON = {
+      'Pro-rata': 'The right to invest in future rounds to maintain your ownership percentage. Without it, your stake gets diluted when new investors come in.',
+      'Board seat': 'A position on the company\'s board of directors, giving you voting power on major decisions like fundraising, M&A, and executive hiring.',
+      'Moic': 'Multiple on invested capital. If you invest $10M and return $30M, your MOIC is 3x.',
+      'Dry powder': 'Uncommitted capital available to invest. Money sitting ready to deploy into new deals.',
+      'Due diligence': 'Deep investigation into a company before investing—verifying financials, checking references, assessing risks.',
+      'Down round': 'A funding round at a lower valuation than the previous round. Often comes with punitive terms for existing investors.',
+      'Dilution': 'Reduction in your ownership percentage when new shares are issued to other investors.',
+      'Liquidation preference': 'In an exit, investors with liquidation preference get paid before common shareholders. 1x means they get their money back first.',
+      'Tam': 'Total addressable market. The total revenue opportunity if you captured 100% of the market.',
+      'Churn': 'The rate at which customers cancel or stop using a product. Lower is better.',
+      'Arr': 'Annual recurring revenue. Predictable, subscription-based revenue measured yearly.',
+      'Exit': 'How investors get their money back—usually through acquisition (M&A) or IPO.',
+      'Exits': 'Realized investments where you\'ve sold your stake and received cash back.',
+      'Multiple': 'Valuation multiple (e.g., 15x revenue). Higher multiples mean you pay more for each dollar of revenue. In bull markets, multiples expand; in bear markets, they contract.',
+      // Market conditions
+      'Bull Market': 'Strong economy, high valuations, easy exits. Companies command premium prices and IPO windows are open.',
+      'Bear Market': 'Weak economy, low valuations, difficult exits. Buyers are scarce and companies trade at discounts.',
+      'Recovery': 'Market transitioning from downturn to growth. Valuations rising but still below peak levels.',
+      'Stable': 'Normal market conditions with balanced supply and demand for deals.',
+      // Company stages
+      'Pre-seed': 'Earliest stage. Usually just an idea or prototype. Very high risk, tiny check sizes ($100K-$500K).',
+      'Seed': 'Early product with initial traction. High risk, small checks ($500K-$3M). Looking for product-market fit.',
+      'Series A': 'Proven product-market fit, scaling the business. Checks of $5M-$15M. Building the go-to-market engine.',
+      'Series B': 'Scaling rapidly with clear unit economics. Checks of $15M-$50M. Expanding team and market.',
+      'Growth': 'Mature company with predictable revenue. Lower risk, larger checks. Focus on efficiency and market expansion.',
+      'Late Growth': 'Pre-IPO stage company. Very large checks, lowest risk. Preparing for public markets.',
+      'Buyout': 'Acquiring controlling stake in established company. Often involves leverage (debt). Focus on operational improvements.',
+      // Macro events
+      'Fed raises rates': 'Higher interest rates make borrowing expensive, reduce valuations, and slow deal activity.',
+      'Banking crisis': 'Financial system stress reduces available capital and increases risk aversion.',
+      'Stimulus announced': 'Government spending injects money into the economy, boosting valuations and deal activity.',
+      'IPO window opens': 'Public markets receptive to new listings, making exits easier and boosting late-stage valuations.',
+      'AI investment boom': 'Surge of capital flowing into AI/ML companies, driving up valuations in the sector.',
+      'Consumer spending surge': 'Strong consumer demand benefits consumer-facing companies and their valuations.',
+      'Cybersecurity mandate': 'New regulations drive enterprise spending on security, boosting cybersecurity company valuations.',
+      'Healthcare reform': 'Policy changes create opportunities in healthcare sector, increasing investor interest.',
+    };
+
+    const SPOTLIGHT_STEPS = [
+      { id: 'header', title: 'Fund Overview', desc: 'Your fund type, market conditions, quarter progress, and current MOIC vs target.' },
+      { id: 'metrics', title: 'Key Metrics', desc: 'Dry Powder = uninvested cash. Deployed = active investments. Portfolio = current value. Reputation affects deal access.' },
+      { id: 'dealflow', title: 'Deal Flow', desc: 'Companies seeking investment. Sector, stage, and founder type matter. Hot deals (🔥) have competition—act fast.' },
+      { id: 'deal-metrics-example', title: 'Company Metrics', desc: 'Revenue, Growth %, Margin, and TAM (Total Addressable Market). These are surface-level—DD reveals more.' },
+      { id: 'dd-example', title: 'Due Diligence Results', desc: 'DD shows ranges for Team quality, Churn, and Tech Debt. Better DD programs = tighter ranges = more confidence.' },
+      { id: 'negotiate-example', title: 'Negotiation', desc: 'Set your offer amount and valuation multiple. Add Board seat and Pro-rata rights. Founders may counter, accept, or walk away permanently.' },
+      { id: 'portfolio', title: 'Portfolio', desc: 'Your investments. Value changes each quarter based on performance and market. Exit when hold period passes.' },
+      { id: 'nextquarter', title: 'Advance Time', desc: 'Move to next quarter. New deals may (or may not) arrive. Portfolio values update. Market conditions can shift.' },
+      { id: 'upgrades', title: 'Upgrades', desc: 'Invest in your team. Better analysts, DD, support, and network compound over time. Costs increase with each level.' },
+      { id: 'activity', title: 'Activity Log', desc: 'Recent events. Green = positive, Red = negative, Yellow = needs attention.' },
+    ];
+
+    // =========================================================================
+    // HELPER FUNCTIONS
+    // =========================================================================
+
+    const pickSector = (fundType) => {
+      const sectors = Object.entries(SECTORS);
+      const weights = sectors.map(([name, data]) => {
+        const baseProb = data.probability;
+        const typeWeight = fundType === 'VC' ? data.vcWeight : data.peWeight;
+        return baseProb * typeWeight;
+      });
+      const totalWeight = weights.reduce((a, b) => a + b, 0);
+      let random = Math.random() * totalWeight;
+      for (let i = 0; i < sectors.length; i++) {
+        random -= weights[i];
+        if (random <= 0) return sectors[i][0];
+      }
+      return sectors[0][0];
+    };
+
+    const generateCompanyName = (sector) => {
+      const sectorData = SECTORS[sector];
+      const baseName = sectorData.names[Math.floor(Math.random() * sectorData.names.length)];
+      const suffix = sectorData.suffixes[Math.floor(Math.random() * sectorData.suffixes.length)];
+      // Add some randomization to avoid exact duplicates
+      const variations = ['', ' Inc', ' Co', ''];
+      const variation = variations[Math.floor(Math.random() * variations.length)];
+      return suffix ? `${baseName} ${suffix}${variation}`.trim() : `${baseName}${variation}`.trim();
+    };
+
+    const generateCompany = (quarter, fundType, qualityBonus = 0, marketCondition = 'normal', sectorBoost = null) => {
+      const sector = pickSector(fundType);
+      const isVC = fundType === 'VC';
+      const stages = isVC ? STAGES_VC : STAGES_PE;
+      const stage = stages[Math.floor(Math.random() * stages.length)];
+      const market = MARKET_CONDITIONS[marketCondition];
+      
+      // Base metrics with more variance
+      const revenue = isVC ? Math.random() * 8 + 0.2 : Math.random() * 150 + 20;
+      const growth = isVC ? Math.random() * 200 + 20 : Math.random() * 60 + 10;
+      const margin = isVC ? Math.random() * 60 - 35 : Math.random() * 35 + 5;
+      const teamScore = Math.min(100, Math.floor(Math.random() * 50) + 50 + qualityBonus * 80);
+      const marketSize = Math.floor(Math.random() * 120) + 5;
+      
+      let askMultiple = isVC ? Math.random() * 30 + 10 : Math.random() * 8 + 4;
+      askMultiple *= market.multipleModifier;
+      if (sectorBoost === sector) askMultiple *= 1.25;
+      const askAmount = isVC ? Math.random() * 15 + 2 : Math.random() * 200 + 40;
+      
+      const trueQuality = Math.min(1, Math.max(0.1, (teamScore * 0.35 + marketSize * 0.2 + Math.min(growth, 100) * 0.25 + (margin > 0 ? 20 : 0)) / 100 + qualityBonus * 0.1));
+      
+      // Founder type distribution varies by quality
+      let founderType;
+      const founderRoll = Math.random();
+      if (trueQuality < 0.4) {
+        founderType = founderRoll < 0.5 ? 'Desperate' : founderRoll < 0.8 ? 'Reasonable' : 'Confident';
+      } else if (trueQuality > 0.7) {
+        founderType = founderRoll < 0.1 ? 'Desperate' : founderRoll < 0.4 ? 'Reasonable' : founderRoll < 0.7 ? 'Confident' : 'Arrogant';
+      } else {
+        founderType = FOUNDER_TYPES[Math.floor(Math.random() * FOUNDER_TYPES.length)];
+      }
+      
+      const isHot = trueQuality > 0.65 && Math.random() < 0.25 * market.competitionIntensity;
+      
+      return {
+        id: `${quarter}-${Math.random().toString(36).substr(2, 9)}`,
+        name: generateCompanyName(sector),
+        sector, stage, founderType,
+        metrics: { revenue, growth, margin, teamScore, marketSize },
+        ask: { amount: askAmount, multiple: askMultiple },
+        trueQuality,
+        dueDiligenceComplete: false,
+        ddFindings: null,
+        isHot,
+        competingFund: isHot ? COMPETITOR_FUNDS[Math.floor(Math.random() * COMPETITOR_FUNDS.length)] : null,
+        turnsToDecide: isHot ? 2 : null,
+        hasWalked: false, // Track if founder has walked away
+        negotiationHistory: [], // Track negotiation attempts
+      };
+    };
+
+    // DD now returns ranges based on accuracy
+    const generateDD = (company, accuracy = 0.4) => {
+      const q = company.trueQuality;
+      const rangeWidth = (1 - accuracy) * 40; // Higher accuracy = tighter range
+      
+      const teamTrue = company.metrics.teamScore;
+      const teamLow = Math.max(0, Math.floor(teamTrue - rangeWidth + (Math.random() - 0.5) * 10));
+      const teamHigh = Math.min(100, Math.floor(teamTrue + rangeWidth + (Math.random() - 0.5) * 10));
+      
+      const churnTrue = q > 0.6 ? Math.random() * 8 + 2 : Math.random() * 25 + 8;
+      const churnLow = Math.max(0, churnTrue - rangeWidth * 0.3);
+      const churnHigh = churnTrue + rangeWidth * 0.4;
+      
+      const techDebtScore = q > 0.6 ? 0.2 : q > 0.4 ? 0.5 : 0.8;
+      const techDebtUncertainty = 1 - accuracy;
+      
+      // Red flags more likely to be found with better accuracy
+      const redFlagDetectChance = accuracy * 0.8;
+      const hasRedFlag = q < 0.45 && Math.random() < 0.6;
+      const foundRedFlag = hasRedFlag && Math.random() < redFlagDetectChance;
+      
+      const hasUpside = q > 0.7 && Math.random() < 0.4;
+      const foundUpside = hasUpside && Math.random() < redFlagDetectChance;
+      
+      return {
+        teamRange: [teamLow, teamHigh],
+        churnRange: [Math.round(churnLow * 10) / 10, Math.round(churnHigh * 10) / 10],
+        techDebt: techDebtScore < 0.35 ? 'Likely Low' : techDebtScore < 0.65 ? 'Medium' : 'Likely High',
+        techDebtConfidence: accuracy > 0.7 ? 'High' : accuracy > 0.5 ? 'Medium' : 'Low',
+        redFlags: foundRedFlag ? ['Inconsistent financials', 'High turnover', 'Customer complaints', 'Legal concerns'][Math.floor(Math.random() * 4)] : null,
+        upside: foundUpside ? ['Strong pipeline', 'Key partnership pending', 'Patent portfolio'][Math.floor(Math.random() * 3)] : null,
+        accuracy: Math.round(accuracy * 100),
+      };
+    };
+
+    // Calculate DD cost based on fund type and stage
+    const getDDCost = (fundType, stage, ddLevel) => {
+      const baseCost = fundType === 'VC' ? 0.4 : 1.5; // Expensive!
+      const stageMod = stage.includes('Seed') || stage.includes('Pre') ? 0.7 : stage.includes('Buyout') ? 1.5 : 1.0;
+      const levelMod = UPGRADES.ddProgram.levels[ddLevel].ddCostMod;
+      return Math.round(baseCost * stageMod * levelMod * 10) / 10;
+    };
+
+    // Determine how many deals appear this quarter (can be 0!)
+    const getNewDealCount = (quarter, marketCondition, networkLevel) => {
+      const market = MARKET_CONDITIONS[marketCondition];
+      const networkBonus = UPGRADES.network.levels[networkLevel].dealFlowBonus;
+      
+      // Base: 1-2 deals, but can be 0
+      // First few quarters have guaranteed deals
+      if (quarter <= 2) return Math.floor(Math.random() * 2) + 2; // 2-3 deals early
+      
+      const baseChance = 0.7 * market.dealFlow; // 70% base chance per "slot"
+      const adjustedChance = baseChance + networkBonus * 0.3;
+      
+      let count = 0;
+      // Roll for 0-3 potential deals
+      const maxDeals = Math.floor(Math.random() * 2) + 1; // 1-2 max per quarter normally
+      for (let i = 0; i < maxDeals; i++) {
+        if (Math.random() < adjustedChance) count++;
+      }
+      
+      // Occasional "hot" quarter with extra deal
+      if (Math.random() < 0.1 * market.dealFlow) count++;
+      
+      return count;
+    };
+
+    // =========================================================================
+    // STYLES
+    // =========================================================================
+
+    const s = {
+      app: { minHeight: '100vh', background: '#FAFAF8' },
+      container: { maxWidth: '1200px', margin: '0 auto', padding: '20px' },
+      intro: { minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '40px 20px' },
+      introTitle: { fontSize: 'clamp(36px, 10vw, 56px)', fontWeight: '700', letterSpacing: '-0.03em', marginBottom: '16px' },
+      introSub: { fontSize: '16px', color: '#666', marginBottom: '40px', maxWidth: '460px', lineHeight: 1.6 },
+      introFeatures: { display: 'flex', gap: '32px', marginTop: '48px', flexWrap: 'wrap', justifyContent: 'center' },
+      introFeature: { textAlign: 'center', maxWidth: '120px' },
+      setup: { minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '40px 20px' },
+      fundGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', width: '100%', maxWidth: '580px' },
+      fundCard: { padding: '28px', background: '#fff', border: '1px solid #e5e5e5', borderRadius: '16px', textAlign: 'left', cursor: 'pointer', transition: 'all 0.2s ease' },
+      header: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 0', borderBottom: '1px solid #e5e5e5', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' },
+      badge: { fontSize: '10px', padding: '5px 10px', borderRadius: '100px', fontWeight: '500' },
+      metricsBar: { display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px', marginBottom: '16px' },
+      metricCard: { padding: '12px', background: '#fff', border: '1px solid #e5e5e5', borderRadius: '10px' },
+      mainGrid: { display: 'grid', gridTemplateColumns: '1fr 280px', gap: '20px' },
+      sectionTitle: { fontSize: '11px', fontWeight: '600', letterSpacing: '0.06em', textTransform: 'uppercase', color: '#999', marginBottom: '10px' },
+      dealCard: { padding: '16px', background: '#fff', border: '1px solid #e5e5e5', borderRadius: '12px', marginBottom: '12px' },
+      hotBadge: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', padding: '4px 8px', background: '#fef3c7', color: '#92400e', borderRadius: '100px', fontWeight: '500', marginBottom: '8px' },
+      walkedBadge: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px', padding: '4px 8px', background: '#fef2f2', color: '#b91c1c', borderRadius: '100px', fontWeight: '500', marginBottom: '8px' },
+      dealMetrics: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', padding: '10px', background: '#FAFAF8', borderRadius: '8px', marginBottom: '10px' },
+      ddBox: { padding: '10px', background: '#f8f8f6', borderRadius: '8px', marginBottom: '10px' },
+      ddRange: { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px' },
+      btn: { padding: '9px 14px', background: '#0a0a0a', color: '#fff', border: 'none', borderRadius: '100px', fontSize: '11px', fontWeight: '500', cursor: 'pointer' },
+      btnSec: { padding: '9px 14px', background: 'transparent', color: '#0a0a0a', border: '1px solid #e0e0e0', borderRadius: '100px', fontSize: '11px', fontWeight: '500', cursor: 'pointer' },
+      btnSm: { padding: '6px 10px', fontSize: '10px' },
+      btnDisabled: { opacity: 0.4, cursor: 'not-allowed' },
+      sidebar: { display: 'flex', flexDirection: 'column', gap: '12px' },
+      sideCard: { padding: '14px', background: '#fff', border: '1px solid #e5e5e5', borderRadius: '12px' },
+      nextBtn: { width: '100%', padding: '12px', background: '#0a0a0a', color: '#fff', border: 'none', borderRadius: '10px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' },
+      activityList: { maxHeight: '120px', overflowY: 'auto' },
+      logItem: { padding: '4px 0', fontSize: '10px', borderLeft: '2px solid', paddingLeft: '8px', marginBottom: '3px', lineHeight: 1.3 },
+      modal: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: '20px' },
+      modalContent: { background: '#fff', borderRadius: '16px', maxWidth: '440px', width: '100%', maxHeight: '85vh', overflow: 'auto' },
+      modalHeader: { padding: '16px', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+      modalBody: { padding: '16px' },
+      modalFooter: { padding: '14px 16px', borderTop: '1px solid #f0f0f0', display: 'flex', gap: '8px', justifyContent: 'flex-end' },
+      decisionCard: { padding: '12px', background: '#f8f8f6', borderRadius: '10px', marginBottom: '8px', cursor: 'pointer', border: '2px solid transparent', transition: 'all 0.2s ease' },
+      gameOver: { minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '40px 20px' },
+      empty: { padding: '12px', textAlign: 'center', color: '#999', fontSize: '11px' },
+      tooltip: { position: 'relative', display: 'inline-block', cursor: 'help', borderBottom: '1px dotted #999' },
+    };
+
+    // =========================================================================
+    // COMPONENTS
+    // =========================================================================
+
+    const Btn = ({ children, onClick, disabled, variant = 'primary', small }) => {
+      const base = variant === 'primary' ? s.btn : s.btnSec;
+      return <button onClick={onClick} disabled={disabled} style={{ ...base, ...(small ? s.btnSm : {}), ...(disabled ? s.btnDisabled : {}) }}>{children}</button>;
+    };
+
+    const Metric = ({ label, value, sub, good, bad }) => (
+      <div style={{ ...s.metricCard, borderColor: good ? '#bbf7d0' : bad ? '#fecaca' : '#e5e5e5' }}>
+        <div style={{ fontSize: '9px', fontWeight: '600', letterSpacing: '0.06em', textTransform: 'uppercase', color: '#999', marginBottom: '4px' }}>{label}</div>
+        <div style={{ fontSize: '17px', fontWeight: '600', color: good ? '#15803d' : bad ? '#b91c1c' : '#0a0a0a' }}>{value}</div>
+        {sub && <div style={{ fontSize: '10px', color: '#999', marginTop: '2px' }}>{sub}</div>}
+      </div>
+    );
+
+    // Tooltip component for jargon - fixed position in bottom-right corner with animation
+    const Jargon = ({ term, children, noBorder = false }) => {
+      const [show, setShow] = useState(false);
+      const explanation = JARGON[term] || term;
+      
+      return (
+        <span 
+          className="tooltip-trigger"
+          onMouseEnter={() => setShow(true)}
+          onMouseLeave={() => setShow(false)}
+          style={{ 
+            position: 'relative', 
+            cursor: 'help', 
+            borderBottom: noBorder ? 'none' : '1px dotted #999'
+          }}
+        >
+          {children || term}
+          {show && ReactDOM.createPortal(
+            <div style={{
+              position: 'fixed',
+              bottom: '24px',
+              right: '24px',
+              background: '#0a0a0a', 
+              color: '#fff', 
+              padding: '12px 16px', 
+              borderRadius: '12px',
+              fontSize: '12px', 
+              lineHeight: 1.5, 
+              width: '240px', 
+              textAlign: 'left',
+              zIndex: 9999, 
+              boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+              textTransform: 'none',
+              fontWeight: 'normal',
+              letterSpacing: 'normal',
+              animation: 'tooltipPulse 2s ease-in-out infinite'
+            }}>
+              <div style={{ fontSize: '10px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#888', marginBottom: '6px' }}>{term}</div>
+              {explanation}
+            </div>,
+            document.body
+          )}
+        </span>
+      );
+    };
+
+    function SpotlightTutorial({ step, onNext, onSkip }) {
+      const data = SPOTLIGHT_STEPS[step];
+      if (!data) return null;
+      
+      useEffect(() => {
+        const el = document.getElementById(data.id);
+        if (el) {
+          el.style.position = 'relative';
+          el.style.zIndex = '1001';
+          el.style.background = '#fff';
+          el.style.borderRadius = '12px';
+          el.style.boxShadow = '0 0 0 4px rgba(255,255,255,0.5)';
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return () => {
+            el.style.position = '';
+            el.style.zIndex = '';
+            el.style.boxShadow = '';
+          };
+        }
+      }, [data.id]);
+
+      return (
+        <>
+          <div className="spotlight-overlay" onClick={onSkip} />
+          <div className="spotlight-tooltip" style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+            <div style={{ fontSize: '10px', color: '#999', marginBottom: '8px' }}>{step + 1} of {SPOTLIGHT_STEPS.length}</div>
+            <h4 style={{ fontSize: '15px', fontWeight: '600', marginBottom: '8px' }}>{data.title}</h4>
+            <p style={{ fontSize: '13px', color: '#666', lineHeight: 1.5, marginBottom: '16px' }}>{data.desc}</p>
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+              <button onClick={onSkip} style={{ ...s.btnSec, ...s.btnSm }}>Skip</button>
+              <button onClick={onNext} style={{ ...s.btn, ...s.btnSm }}>{step === SPOTLIGHT_STEPS.length - 1 ? 'Done' : 'Next'}</button>
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    // =========================================================================
+    // MAIN GAME COMPONENT
+    // =========================================================================
+
+    function FundGame() {
+      const [gameState, setGameState] = useState('intro');
+      const [fundType, setFundType] = useState('VC');
+      const [fundName, setFundName] = useState('');
+      const [pendingFundType, setPendingFundType] = useState(null);
+      const [inputFundName, setInputFundName] = useState('');
+      const [quarter, setQuarter] = useState(1);
+      const [capital, setCapital] = useState(100);
+      const [deployed, setDeployed] = useState(0);
+      const [portfolio, setPortfolio] = useState([]);
+      const [failedCompanies, setFailedCompanies] = useState([]);
+      const [exits, setExits] = useState([]);
+      const [dealFlow, setDealFlow] = useState([]);
+      const [log, setLog] = useState([]);
+      const [negotiation, setNegotiation] = useState(null);
+      const [gameOver, setGameOver] = useState(null);
+      const [upgrades, setUpgrades] = useState({ analyst: 0, ddProgram: 0, portSupport: 0, network: 0 });
+      const [marketCondition, setMarketCondition] = useState('normal');
+      const [marketEvent, setMarketEvent] = useState(null);
+      const [eventTurns, setEventTurns] = useState(0);
+      const [sectorBoost, setSectorBoost] = useState(null);
+      const [pendingDecision, setPendingDecision] = useState(null);
+      const [pendingFollowOn, setPendingFollowOn] = useState(null);
+      const [reputation, setReputation] = useState(50);
+      const [dealsLost, setDealsLost] = useState(0);
+      const [showSpotlight, setShowSpotlight] = useState(false);
+      const [spotlightStep, setSpotlightStep] = useState(0);
+      const [showTutorialDeals, setShowTutorialDeals] = useState(false);
+      const logIdRef = useRef(0);
+
+      const targetMOIC = fundType === 'VC' ? 3 : 2.5;
+      const getUpgrade = (type, level) => UPGRADES[type].levels[level];
+      const market = MARKET_CONDITIONS[marketCondition];
+      
+      // Use ref to track current quarter for logging (avoids stale closure issues)
+      const quarterRef = useRef(quarter);
+      useEffect(() => { quarterRef.current = quarter; }, [quarter]);
+
+      const addLog = useCallback((msg, type = 'info') => {
+        logIdRef.current += 1;
+        const currentQuarter = quarterRef.current;
+        setLog(prev => [{ msg, type, id: logIdRef.current, q: currentQuarter }, ...prev].slice(0, 50));
+      }, []);
+
+      const startGame = (type, name) => {
+        setFundType(type);
+        setFundName(name || (type === 'VC' ? 'Venture Fund I' : 'Growth Fund I'));
+        setCapital(type === 'VC' ? 100 : 500);
+        setGameState('playing');
+        // Generate initial deals (guaranteed 2-3 for first quarter)
+        const initialDeals = [
+          generateCompany(1, type),
+          generateCompany(1, type),
+          Math.random() > 0.5 ? generateCompany(1, type) : null
+        ].filter(Boolean);
+        setDealFlow(initialDeals);
+        setLog([]);
+        setMarketCondition('normal');
+        setReputation(50);
+        setQuarter(1);
+        setPortfolio([]);
+        setExits([]);
+        setFailedCompanies([]);
+        setDeployed(0);
+        setUpgrades({ analyst: 0, ddProgram: 0, portSupport: 0, network: 0 });
+        setShowTutorialDeals(true);
+        setTimeout(() => setShowSpotlight(true), 600);
+      };
+
+      const purchaseUpgrade = (type) => {
+        const curr = upgrades[type];
+        const next = UPGRADES[type].levels[curr + 1];
+        if (!next || capital - deployed < next.cost) return;
+        setCapital(prev => prev - next.cost);
+        setUpgrades(prev => ({ ...prev, [type]: curr + 1 }));
+        addLog(`Upgraded ${UPGRADES[type].name} to ${next.name}`, 'success');
+        if (type === 'network') setReputation(prev => Math.min(100, prev + 5));
+      };
+
+      const conductDD = (deal) => {
+        const ddLevel = upgrades.ddProgram;
+        const cost = getDDCost(fundType, deal.stage, ddLevel);
+        if (capital - deployed < cost) { 
+          addLog('Insufficient funds for DD', 'error'); 
+          return; 
+        }
+        setCapital(prev => prev - cost);
+        const accuracy = UPGRADES.ddProgram.levels[ddLevel].accuracy;
+        const findings = generateDD(deal, accuracy);
+        setDealFlow(prev => prev.map(d => d.id === deal.id ? { ...d, dueDiligenceComplete: true, ddFindings: findings } : d));
+        addLog(`DD on ${deal.name} (-$${cost}M)`, 'info');
+      };
+
+      // Improved negotiation behavior - less predictable, founders remember
+      const getFounderBehavior = (founderType, negotiationHistory = []) => {
+        const base = {
+          Desperate: { baseWalk: 0.55, counterAggr: 0.6, patience: 4, volatility: 0.15 },
+          Reasonable: { baseWalk: 0.35, counterAggr: 0.8, patience: 3, volatility: 0.1 },
+          Confident: { baseWalk: 0.22, counterAggr: 0.9, patience: 2, volatility: 0.08 },
+          Arrogant: { baseWalk: 0.12, counterAggr: 0.95, patience: 1, volatility: 0.2 },
+        }[founderType];
+        
+        // Founders get more frustrated with each round
+        const frustration = negotiationHistory.length * 0.08;
+        // Add randomness to make behavior less predictable
+        const randomFactor = (Math.random() - 0.5) * base.volatility;
+        
+        const networkBonus = getUpgrade('network', upgrades.network).founderBonus || 0;
+        
+        return {
+          walkThreshold: Math.max(0.05, base.baseWalk - frustration + randomFactor + networkBonus),
+          counterAggression: Math.min(0.98, base.counterAggr + frustration * 0.5),
+          patience: Math.max(1, base.patience - negotiationHistory.length),
+          volatility: base.volatility,
+        };
+      };
+
+      const startNegotiation = (deal) => {
+        // Can't negotiate with someone who walked away
+        if (deal.hasWalked) {
+          addLog(`${deal.name} already declined to work with you`, 'error');
+          return;
+        }
+        
+        if (deal.isHot && deal.competingFund) {
+          const ourEdge = (getUpgrade('network', upgrades.network).competitiveEdge || 0) + (reputation / 200);
+          if (Math.random() < (deal.competingFund.aggressiveness - ourEdge) * 0.5) {
+            addLog(`Lost ${deal.name} to ${deal.competingFund.name}`, 'error');
+            setDealFlow(prev => prev.filter(d => d.id !== deal.id));
+            setDealsLost(prev => prev + 1);
+            setReputation(prev => Math.max(0, prev - 2));
+            return;
+          }
+        }
+        
+        const behavior = getFounderBehavior(deal.founderType, deal.negotiationHistory);
+        
+        setNegotiation({
+          deal,
+          terms: { 
+            amount: Math.floor(deal.ask.amount * 0.85 * 10) / 10, 
+            multiple: Math.floor(deal.ask.multiple * 0.8 * 10) / 10, 
+            boardSeat: true, 
+            proRata: true 
+          },
+          mood: 100 - deal.negotiationHistory.length * 15,
+          round: deal.negotiationHistory.length + 1,
+          maxRounds: behavior.patience + 2,
+          msg: deal.negotiationHistory.length === 0 
+            ? `${deal.founderType} founder. Asking $${deal.ask.amount.toFixed(1)}M at ${deal.ask.multiple.toFixed(1)}x.`
+            : `Back again? We're at $${deal.ask.amount.toFixed(1)}M, ${deal.ask.multiple.toFixed(1)}x.`,
+        });
+      };
+
+      const submitOffer = () => {
+        if (!negotiation) return;
+        const { deal, terms, round, maxRounds, mood } = negotiation;
+        const behavior = getFounderBehavior(deal.founderType, deal.negotiationHistory);
+        
+        // Calculate how aggressive the offer is
+        const priceDiscount = 1 - (terms.amount / deal.ask.amount);
+        const multDiscount = 1 - (terms.multiple / deal.ask.multiple);
+        const avgDiscount = (priceDiscount + multDiscount) / 2;
+        
+        // Add randomness - founders aren't perfectly rational
+        const randomMod = (Math.random() - 0.5) * behavior.volatility * 2;
+        const effectiveDiscount = avgDiscount + randomMod;
+        
+        // Update negotiation history
+        const newHistory = [...deal.negotiationHistory, { terms, round }];
+        
+        // Check if founder walks
+        if (effectiveDiscount > behavior.walkThreshold || round >= maxRounds) {
+          // Founder walks - mark deal as walked, can't negotiate again
+          setDealFlow(prev => prev.map(d => 
+            d.id === deal.id ? { ...d, hasWalked: true, negotiationHistory: newHistory } : d
+          ));
+          setNegotiation(null);
+          addLog(`${deal.name} walked away permanently`, 'error');
+          setReputation(prev => Math.max(0, prev - 1));
+          return;
+        }
+        
+        // Check if founder accepts (low discount or tired of negotiating)
+        const acceptChance = effectiveDiscount <= 0.08 ? 0.9 : 
+                           effectiveDiscount <= 0.15 ? 0.4 : 
+                           effectiveDiscount <= 0.25 ? 0.15 : 0.05;
+        
+        if (Math.random() < acceptChance) {
+          invest(deal, terms);
+          setNegotiation(null);
+          return;
+        }
+        
+        // Founder counters
+        const counterStrength = behavior.counterAggression + (Math.random() - 0.5) * 0.1;
+        const counterAmount = terms.amount + (deal.ask.amount - terms.amount) * counterStrength * 0.6;
+        const counterMult = terms.multiple + (deal.ask.multiple - terms.multiple) * counterStrength * 0.5;
+        
+        const counterMsgs = {
+          Desperate: ['We need at least this...', 'Please, can you do better?', 'We\'re flexible but...'],
+          Reasonable: ['Let\'s meet closer to our ask.', 'We can work with this.', 'A bit more would help.'],
+          Confident: ['We know our worth.', 'Other funds are interested.', 'This is our floor.'],
+          Arrogant: ['Take it or leave it.', 'We don\'t discount.', 'Last chance.'],
+        };
+        const msgOptions = counterMsgs[deal.founderType];
+        
+        // Update deal with negotiation history
+        setDealFlow(prev => prev.map(d => 
+          d.id === deal.id ? { ...d, negotiationHistory: newHistory } : d
+        ));
+        
+        setNegotiation(prev => ({
+          ...prev,
+          round: round + 1,
+          mood: Math.max(10, mood - avgDiscount * 60 - 10),
+          counter: { 
+            amount: Math.floor(counterAmount * 10) / 10, 
+            multiple: Math.floor(counterMult * 10) / 10 
+          },
+          msg: msgOptions[Math.floor(Math.random() * msgOptions.length)],
+        }));
+      };
+
+      const acceptCounter = () => {
+        if (!negotiation?.counter) return;
+        invest(negotiation.deal, { 
+          ...negotiation.terms, 
+          amount: negotiation.counter.amount, 
+          multiple: negotiation.counter.multiple 
+        });
+        setNegotiation(null);
+      };
+
+      const walkFromNegotiation = () => {
+        if (!negotiation) return;
+        const { deal } = negotiation;
+        // Update history so they remember we walked
+        const newHistory = [...deal.negotiationHistory, { walkedBy: 'investor' }];
+        setDealFlow(prev => prev.map(d => 
+          d.id === deal.id ? { ...d, negotiationHistory: newHistory } : d
+        ));
+        addLog(`Walked from ${deal.name}`, 'info');
+        setNegotiation(null);
+      };
+
+      const invest = (deal, terms) => {
+        if (capital - deployed < terms.amount) { addLog('Insufficient capital', 'error'); return; }
+        const inv = { 
+          ...deal, 
+          investedAmount: terms.amount, 
+          investedMultiple: terms.multiple, 
+          boardSeat: terms.boardSeat, 
+          proRata: terms.proRata, 
+          ownership: (terms.amount / (terms.amount + deal.metrics.revenue * terms.multiple)) * 100, 
+          quarterInvested: quarter, 
+          currentValue: terms.amount, 
+          status: 'active' 
+        };
+        setPortfolio(prev => [...prev, inv]);
+        setDeployed(prev => prev + terms.amount);
+        setDealFlow(prev => prev.filter(d => d.id !== deal.id));
+        addLog(`Invested $${terms.amount.toFixed(1)}M in ${deal.name}`, 'success');
+        setReputation(prev => Math.min(100, prev + 2));
+      };
+
+      const passDeal = (deal) => { 
+        setDealFlow(prev => prev.filter(d => d.id !== deal.id)); 
+        addLog(`Passed on ${deal.name}`, 'info'); 
+      };
+
+      const handleDecision = (idx) => {
+        if (!pendingDecision) return;
+        const { company, event } = pendingDecision;
+        const choice = event.choices[idx];
+        let newVal = company.currentValue;
+        if (choice.effect.cost && capital - deployed >= choice.effect.cost) { 
+          setCapital(prev => prev - choice.effect.cost); 
+          setDeployed(prev => prev + choice.effect.cost); 
+        }
+        if (choice.effect.valueMod) newVal *= choice.effect.valueMod;
+        if (choice.effect.forceExit) {
+          const proceeds = company.investedAmount * choice.effect.forceExit;
+          setCapital(prev => prev + proceeds);
+          setDeployed(prev => prev - company.investedAmount);
+          setExits(prev => [...prev, { ...company, exitValue: proceeds, exitMOIC: proceeds / company.investedAmount }]);
+          setPortfolio(prev => prev.filter(p => p.id !== company.id));
+          addLog(`Sold ${company.name} for ${choice.effect.forceExit}x`, 'success');
+          setPendingDecision(null);
+          return;
+        }
+        setPortfolio(prev => prev.map(p => p.id === company.id ? { ...p, currentValue: newVal } : p));
+        addLog(`${company.name}: ${choice.outcome}`, choice.effect.valueMod >= 1 ? 'success' : 'warning');
+        setPendingDecision(null);
+      };
+
+      const handleFollowOn = (participate) => {
+        if (!pendingFollowOn) return;
+        const { company, scenario, proRataAmount } = pendingFollowOn;
+        if (participate) {
+          if (capital - deployed < proRataAmount) { addLog('Insufficient capital', 'error'); setPendingFollowOn(null); return; }
+          setCapital(prev => prev - proRataAmount);
+          setDeployed(prev => prev + proRataAmount);
+          setPortfolio(prev => prev.map(p => p.id === company.id ? { 
+            ...p, 
+            currentValue: p.currentValue * (scenario.isDown ? 0.7 : 1.3), 
+            investedAmount: p.investedAmount + proRataAmount 
+          } : p));
+          addLog(`Pro-rata in ${company.name}`, 'success');
+        } else {
+          setPortfolio(prev => prev.map(p => p.id === company.id ? { 
+            ...p, 
+            ownership: p.ownership * (scenario.isDown ? 0.5 : 0.85), 
+            currentValue: p.currentValue * (scenario.isDown ? 0.6 : 1.1) 
+          } : p));
+          addLog(`Diluted in ${company.name}`, scenario.isDown ? 'error' : 'warning');
+        }
+        setPendingFollowOn(null);
+      };
+
+      const attemptExit = (inv) => {
+        const hold = quarter - inv.quarterInvested;
+        const minHold = fundType === 'VC' ? 8 : 12;
+        if (hold < minHold) return;
+        const exitProb = Math.min(0.85, (inv.trueQuality * 0.5 + hold / 40 * 0.3 + 0.1) * market.exitModifier);
+        if (Math.random() < exitProb) {
+          const proceeds = inv.currentValue * (0.8 + Math.random() * 0.5 + inv.trueQuality * 0.3) * market.exitModifier;
+          setCapital(prev => prev + proceeds);
+          setDeployed(prev => prev - inv.investedAmount);
+          setExits(prev => [...prev, { ...inv, exitValue: proceeds, exitMOIC: proceeds / inv.investedAmount }]);
+          setPortfolio(prev => prev.filter(p => p.id !== inv.id));
+          addLog(`Exited ${inv.name} at ${(proceeds / inv.investedAmount).toFixed(1)}x`, 'success');
+        } else { 
+          addLog(`No buyers for ${inv.name}`, 'error'); 
+        }
+      };
+
+      const advanceQuarter = () => {
+        if (quarter >= 40) { endGame(); return; }
+        if (pendingDecision || pendingFollowOn) return;
+        
+        const port = getUpgrade('portSupport', upgrades.portSupport);
+        const analyst = getUpgrade('analyst', upgrades.analyst);
+        const network = getUpgrade('network', upgrades.network);
+        
+        // Market cycle logic
+        let newMarket = marketCondition;
+        let newEventTurns = eventTurns - 1;
+        if (newEventTurns <= 0 && marketEvent) { 
+          setMarketEvent(null); 
+          setSectorBoost(null); 
+          newMarket = 'normal'; 
+        }
+        if (!marketEvent && Math.random() < 0.1) {
+          const ev = MACRO_EVENTS[Math.floor(Math.random() * MACRO_EVENTS.length)];
+          setMarketEvent(ev);
+          setEventTurns(ev.duration);
+          newEventTurns = ev.duration;
+          newMarket = ev.effect;
+          if (ev.sectorBoost) setSectorBoost(ev.sectorBoost);
+          addLog(`${ev.icon} ${ev.text}`, ev.effect === 'downturn' ? 'warning' : 'success');
+        }
+        setMarketCondition(newMarket);
+        setEventTurns(newEventTurns);
+        
+        // Hot deal countdown - remove deals that ran out of time
+        // First, identify which deals will expire (outside state updater)
+        const expiringDeals = dealFlow.filter(d => d.turnsToDecide !== null && d.turnsToDecide - 1 <= 0);
+        expiringDeals.forEach(d => {
+          addLog(`${d.name} chose another investor`, 'warning');
+        });
+        
+        // Then update the state
+        setDealFlow(prev => prev.map(d => {
+          if (d.turnsToDecide !== null) {
+            const t = d.turnsToDecide - 1;
+            if (t <= 0) { 
+              return null; 
+            }
+            return { ...d, turnsToDecide: t };
+          }
+          return d;
+        }).filter(Boolean));
+        
+        // Remove deals that walked away after 2 quarters
+        setDealFlow(prev => prev.filter(d => !d.hasWalked));
+        
+        // Portfolio updates
+        let failures = [];
+        const updated = portfolio.map(inv => {
+          if (inv.status === 'failed') return inv;
+          const q = inv.trueQuality;
+          const mMod = MARKET_CONDITIONS[newMarket].multipleModifier;
+          const sMod = sectorBoost === inv.sector ? 1.2 : 1;
+          const base = 1 + (inv.metrics.growth / 400) * q + port.valueBoost;
+          let newVal = inv.currentValue * Math.max(0.25, base + (Math.random() - 0.4) * 0.35) * mMod * sMod;
+          
+          // Random events
+          if (Math.random() < 0.1) {
+            const evts = PORTFOLIO_EVENTS.filter(e => e.type === 'event' ? (q < 0.5 ? !e.isPositive : Math.random() > 0.4) : Math.random() < 0.15);
+            const ev = evts[Math.floor(Math.random() * evts.length)];
+            if (ev) {
+              if (ev.type === 'decision') { 
+                setPendingDecision({ company: inv, event: ev }); 
+                return inv; 
+              }
+              addLog(`${inv.name}: ${ev.text}`, ev.isPositive ? 'success' : 'warning');
+              newVal *= ev.valueMod;
+              if (ev.failRisk && Math.random() < ev.failRisk * (1 - port.failReduction)) { 
+                failures.push({ ...inv, failReason: ev.text }); 
+                return { ...inv, status: 'failed', currentValue: 0 }; 
+              }
+            }
+          }
+          
+          // Follow-on rounds
+          const hold = quarter - inv.quarterInvested;
+          if (hold > 4 && hold % 6 === 0 && Math.random() < 0.15 && inv.proRata) {
+            const sc = FOLLOWON_SCENARIOS[Math.random() < 0.2 ? 1 : 0];
+            const amt = (inv.ownership / 100) * (fundType === 'VC' ? 6 : 25) * (sc.isDown ? 0.5 : 1);
+            setPendingFollowOn({ company: inv, scenario: sc, proRataAmount: Math.round(amt * 10) / 10, newValuation: inv.currentValue * (sc.isDown ? 0.6 : 1.8) });
+          }
+          
+          // Random failures
+          const fail = (1 - q) * 0.025 * (fundType === 'VC' ? 1.5 : 0.5) * (1 - port.failReduction);
+          if (Math.random() < fail) { 
+            failures.push({ ...inv, failReason: 'Out of runway' }); 
+            return { ...inv, status: 'failed', currentValue: 0 }; 
+          }
+          return { ...inv, currentValue: Math.max(0, newVal) };
+        });
+        
+        if (failures.length > 0) {
+          setFailedCompanies(prev => [...prev, ...failures]);
+          setDeployed(prev => prev - failures.reduce((s, f) => s + f.investedAmount, 0));
+          failures.forEach(f => addLog(`${f.name} failed`, 'error'));
+        }
+        setPortfolio(updated.filter(p => p.status !== 'failed'));
+        
+        // New deals - can be 0!
+        const networkLevel = upgrades.network;
+        const count = getNewDealCount(quarter + 1, newMarket, networkLevel);
+        
+        if (count === 0) {
+          addLog('No new deals this quarter', 'info');
+        } else {
+          const newDeals = Array(count).fill(0).map(() => 
+            generateCompany(quarter + 1, fundType, analyst.dealQualityBonus || 0, newMarket, sectorBoost)
+          );
+          setDealFlow(prev => [...prev, ...newDeals]);
+          addLog(`${count} new deal${count > 1 ? 's' : ''} arrived`, 'info');
+        }
+        
+        setQuarter(prev => prev + 1);
+      };
+
+      const endGame = () => {
+        const returned = capital + portfolio.reduce((s, p) => s + p.currentValue, 0);
+        const total = fundType === 'VC' ? 100 : 500;
+        setGameState('over');
+        setGameOver({ 
+          won: returned / total >= targetMOIC, 
+          moic: returned / total, 
+          target: targetMOIC, 
+          returned, 
+          total, 
+          exits: exits.length, 
+          failures: failedCompanies.length, 
+          dealsLost 
+        });
+      };
+
+      const resetGame = () => { 
+        setGameState('intro'); 
+        setGameOver(null); 
+        setShowSpotlight(false); 
+        setSpotlightStep(0);
+        setPendingFundType(null);
+        setInputFundName('');
+      };
+
+      const totalVal = portfolio.reduce((s, p) => s + p.currentValue, 0);
+      const totalInv = deployed + exits.reduce((s, e) => s + e.investedAmount, 0) + failedCompanies.reduce((s, f) => s + f.investedAmount, 0);
+      const moic = totalInv > 0 ? (totalVal + exits.reduce((s, e) => s + e.exitValue, 0)) / totalInv : 0;
+      const dryPowder = capital - deployed;
+      const ddCostExample = getDDCost(fundType, 'Series A', upgrades.ddProgram);
+
+      // INTRO SCREEN
+      if (gameState === 'intro') {
+        return (
+          <div style={s.app}>
+            <div style={s.intro}>
+              <div style={{ fontSize: '48px', marginBottom: '24px' }}>📊</div>
+              <div style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#999', marginBottom: '16px' }}>Private Markets Simulator</div>
+              <h1 style={s.introTitle}>Fund Strategy</h1>
+              <p style={s.introSub}>Step into the role of a fund manager. Source deals, negotiate terms, navigate market cycles, and build a portfolio that delivers returns.</p>
+              <button style={{ ...s.btn, padding: '14px 32px', fontSize: '14px' }} onClick={() => setGameState('setup')}>Begin</button>
+              <div style={s.introFeatures}>
+                <div style={s.introFeature}><div style={{ fontSize: '24px', marginBottom: '8px' }}>🎯</div><div style={{ fontSize: '12px', color: '#666' }}>Source deals</div></div>
+                <div style={s.introFeature}><div style={{ fontSize: '24px', marginBottom: '8px' }}>📈</div><div style={{ fontSize: '12px', color: '#666' }}>Navigate cycles</div></div>
+                <div style={s.introFeature}><div style={{ fontSize: '24px', marginBottom: '8px' }}>🤝</div><div style={{ fontSize: '12px', color: '#666' }}>Negotiate terms</div></div>
+                <div style={s.introFeature}><div style={{ fontSize: '24px', marginBottom: '8px' }}>💼</div><div style={{ fontSize: '12px', color: '#666' }}>Manage portfolio</div></div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // SETUP SCREEN
+      if (gameState === 'setup') {
+        if (!pendingFundType) {
+          return (
+            <div style={s.app}>
+              <div style={s.setup}>
+                <h1 style={{ fontSize: 'clamp(28px, 7vw, 40px)', fontWeight: '600', marginBottom: '12px' }}>Choose Your Fund</h1>
+                <p style={{ fontSize: '15px', color: '#666', marginBottom: '40px', maxWidth: '400px' }}>Each fund type has different check sizes, return targets, and risk profiles.</p>
+                <div style={s.fundGrid}>
+                  <button onClick={() => setPendingFundType('VC')} style={s.fundCard} onMouseOver={e => e.currentTarget.style.borderColor = '#0a0a0a'} onMouseOut={e => e.currentTarget.style.borderColor = '#e5e5e5'}>
+                    <div style={{ fontSize: '24px', marginBottom: '12px' }}>🚀</div>
+                    <div style={{ fontSize: '17px', fontWeight: '600', marginBottom: '8px' }}>Venture Capital</div>
+                    <div style={{ fontSize: '13px', color: '#666', marginBottom: '12px' }}>$100M fund · Target <Jargon term="Moic">3x MOIC</Jargon></div>
+                    <div style={{ fontSize: '12px', color: '#999', lineHeight: 1.4 }}>Early-stage. High risk, power-law returns. Expect 30-40% failures but aim for 10x winners.</div>
+                  </button>
+                  <button onClick={() => setPendingFundType('PE')} style={s.fundCard} onMouseOver={e => e.currentTarget.style.borderColor = '#0a0a0a'} onMouseOut={e => e.currentTarget.style.borderColor = '#e5e5e5'}>
+                    <div style={{ fontSize: '24px', marginBottom: '12px' }}>🏛️</div>
+                    <div style={{ fontSize: '17px', fontWeight: '600', marginBottom: '8px' }}>Private Equity</div>
+                    <div style={{ fontSize: '13px', color: '#666', marginBottom: '12px' }}>$500M fund · Target <Jargon term="Moic">2.5x MOIC</Jargon></div>
+                    <div style={{ fontSize: '12px', color: '#999', lineHeight: 1.4 }}>Growth & buyout. Lower risk, consistent returns. Operational value-add matters.</div>
+                  </button>
+                </div>
+                <button onClick={() => setGameState('intro')} style={{ ...s.btnSec, marginTop: '24px' }}>← Back</button>
+              </div>
+            </div>
+          );
+        }
+        
+        return (
+          <div style={s.app}>
+            <div style={s.setup}>
+              <div style={{ fontSize: '32px', marginBottom: '16px' }}>{pendingFundType === 'VC' ? '🚀' : '🏛️'}</div>
+              <h1 style={{ fontSize: 'clamp(24px, 6vw, 36px)', fontWeight: '600', marginBottom: '12px' }}>Name Your Fund</h1>
+              <p style={{ fontSize: '14px', color: '#666', marginBottom: '32px', maxWidth: '350px' }}>
+                {pendingFundType === 'VC' ? 'Venture Capital' : 'Private Equity'} · ${pendingFundType === 'VC' ? '100' : '500'}M
+              </p>
+              <input 
+                type="text" 
+                placeholder={pendingFundType === 'VC' ? 'e.g., Horizon Ventures' : 'e.g., Summit Capital'}
+                value={inputFundName}
+                onChange={e => setInputFundName(e.target.value)}
+                maxLength={24}
+                style={{ 
+                  width: '100%', 
+                  maxWidth: '300px', 
+                  padding: '14px 18px', 
+                  border: '1px solid #e5e5e5', 
+                  borderRadius: '12px', 
+                  fontSize: '15px', 
+                  textAlign: 'center',
+                  marginBottom: '24px',
+                  outline: 'none',
+                }}
+                onFocus={e => e.target.style.borderColor = '#0a0a0a'}
+                onBlur={e => e.target.style.borderColor = '#e5e5e5'}
+                autoFocus
+              />
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button onClick={() => { setPendingFundType(null); setInputFundName(''); }} style={s.btnSec}>← Back</button>
+                <button onClick={() => startGame(pendingFundType, inputFundName)} style={s.btn}>Launch Fund →</button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // GAME OVER SCREEN
+      if (gameState === 'over' && gameOver) {
+        return (
+          <div style={s.app}>
+            <div style={s.gameOver}>
+              <div style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px', color: gameOver.won ? '#15803d' : '#b91c1c' }}>{gameOver.won ? '🎉 Fund Success' : '📉 Below Target'}</div>
+              <div style={{ fontSize: 'clamp(48px, 14vw, 72px)', fontWeight: '700', letterSpacing: '-0.04em', marginBottom: '8px' }}>{gameOver.moic.toFixed(2)}x</div>
+              <div style={{ fontSize: '15px', color: '#666', marginBottom: '32px' }}>{gameOver.won ? `Beat ${gameOver.target}x target!` : `Target was ${gameOver.target}x`}</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', maxWidth: '260px', marginBottom: '32px' }}>
+                <div style={{ padding: '12px', background: '#fff', border: '1px solid #e5e5e5', borderRadius: '10px' }}><div style={{ fontSize: '9px', color: '#999' }}>Returned</div><div style={{ fontSize: '15px', fontWeight: '600' }}>${gameOver.returned.toFixed(0)}M</div></div>
+                <div style={{ padding: '12px', background: '#fff', border: '1px solid #e5e5e5', borderRadius: '10px' }}><div style={{ fontSize: '9px', color: '#999' }}>Exits</div><div style={{ fontSize: '15px', fontWeight: '600' }}>{gameOver.exits}</div></div>
+                <div style={{ padding: '12px', background: '#fff', border: '1px solid #e5e5e5', borderRadius: '10px' }}><div style={{ fontSize: '9px', color: '#999' }}>Failures</div><div style={{ fontSize: '15px', fontWeight: '600' }}>{gameOver.failures}</div></div>
+                <div style={{ padding: '12px', background: '#fff', border: '1px solid #e5e5e5', borderRadius: '10px' }}><div style={{ fontSize: '9px', color: '#999' }}>Deals Lost</div><div style={{ fontSize: '15px', fontWeight: '600' }}>{gameOver.dealsLost}</div></div>
+              </div>
+              <Btn onClick={resetGame}>Play Again</Btn>
+            </div>
+          </div>
+        );
+      }
+
+      // MAIN GAME
+      return (
+        <div style={s.app}>
+          <div style={s.container}>
+            {showSpotlight && <SpotlightTutorial step={spotlightStep} onNext={() => spotlightStep < SPOTLIGHT_STEPS.length - 1 ? setSpotlightStep(s => s + 1) : setShowSpotlight(false)} onSkip={() => setShowSpotlight(false)} />}
+
+            {pendingDecision && (
+              <div style={s.modal}>
+                <div style={s.modalContent}>
+                  <div style={s.modalHeader}><span style={{ fontSize: '15px', fontWeight: '600' }}>{pendingDecision.event.title}</span></div>
+                  <div style={s.modalBody}>
+                    <p style={{ fontSize: '13px', color: '#444', marginBottom: '16px', lineHeight: 1.5 }}>{pendingDecision.event.description.replace('{company}', pendingDecision.company.name)}</p>
+                    {pendingDecision.event.choices.map((c, i) => (
+                      <div key={i} style={s.decisionCard} onClick={() => handleDecision(i)} onMouseOver={e => e.currentTarget.style.borderColor = '#0a0a0a'} onMouseOut={e => e.currentTarget.style.borderColor = 'transparent'}>
+                        <div style={{ fontSize: '12px', fontWeight: '500' }}>{c.text}</div>
+                        {c.effect.cost && <div style={{ fontSize: '10px', color: '#666', marginTop: '3px' }}>Cost: ${c.effect.cost}M</div>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {pendingFollowOn && (
+              <div style={s.modal}>
+                <div style={s.modalContent}>
+                  <div style={s.modalHeader}><span style={{ fontSize: '15px', fontWeight: '600' }}>{pendingFollowOn.scenario.title}</span></div>
+                  <div style={s.modalBody}>
+                    <p style={{ fontSize: '13px', color: '#444', marginBottom: '14px', lineHeight: 1.5 }}>
+                      {pendingFollowOn.scenario.description.replace('{company}', pendingFollowOn.company.name).replace('{valuation}', `$${pendingFollowOn.newValuation.toFixed(0)}M`).replace('{amount}', pendingFollowOn.proRataAmount.toFixed(1))}
+                    </p>
+                    <div style={{ padding: '10px', background: '#f8f8f6', borderRadius: '8px', marginBottom: '14px', fontSize: '11px', color: '#666' }}>
+                      <Jargon term="Pro-rata">Pro-rata</Jargon>: <strong>${pendingFollowOn.proRataAmount.toFixed(1)}M</strong> · <Jargon term="Dry powder">Available</Jargon>: <strong>${dryPowder.toFixed(1)}M</strong>
+                    </div>
+                    {pendingFollowOn.scenario.isDown && <div style={{ padding: '6px 8px', background: '#fef2f2', borderRadius: '6px', color: '#b91c1c', fontSize: '10px', marginBottom: '14px' }}>⚠️ <Jargon term="Down round">Down round</Jargon> — passing means heavy <Jargon term="Dilution">dilution</Jargon></div>}
+                  </div>
+                  <div style={s.modalFooter}>
+                    <Btn variant="secondary" onClick={() => handleFollowOn(false)}>{pendingFollowOn.scenario.isDown ? 'Accept Dilution' : 'Pass'}</Btn>
+                    <Btn onClick={() => handleFollowOn(true)} disabled={dryPowder < pendingFollowOn.proRataAmount}>Invest</Btn>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {negotiation && (
+              <div style={s.modal}>
+                <div style={s.modalContent} id="negotiate-example">
+                  <div style={s.modalHeader}>
+                    <span style={{ fontSize: '15px', fontWeight: '600' }}>{negotiation.deal.name}</span>
+                    <button onClick={walkFromNegotiation} style={{ background: 'none', border: 'none', fontSize: '18px', color: '#999', cursor: 'pointer' }}>×</button>
+                  </div>
+                  <div style={s.modalBody}>
+                    <div style={{ fontSize: '10px', color: '#999', marginBottom: '8px' }}>{negotiation.deal.founderType} · Round {negotiation.round}/{negotiation.maxRounds}</div>
+                    <div style={{ height: '4px', background: '#f0f0f0', borderRadius: '2px', marginBottom: '14px', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${negotiation.mood}%`, background: negotiation.mood > 70 ? '#22c55e' : negotiation.mood > 40 ? '#f59e0b' : '#ef4444', transition: 'width 0.3s ease' }} />
+                    </div>
+                    <div style={{ padding: '10px', background: '#f8f8f6', borderRadius: '8px', fontSize: '11px', color: '#666', fontStyle: 'italic', marginBottom: '14px' }}>"{negotiation.msg}"</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '14px' }}>
+                      <div><label style={{ fontSize: '10px', fontWeight: '500', color: '#666' }}>Amount ($M)</label><input type="number" step="0.5" value={negotiation.terms.amount} onChange={e => setNegotiation(p => ({ ...p, terms: { ...p.terms, amount: parseFloat(e.target.value) || 0 } }))} style={{ width: '100%', padding: '8px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '12px', marginTop: '4px' }} /></div>
+                      <div><label style={{ fontSize: '10px', fontWeight: '500', color: '#666' }}><Jargon term="Multiple">Multiple</Jargon> (x)</label><input type="number" step="0.5" value={negotiation.terms.multiple} onChange={e => setNegotiation(p => ({ ...p, terms: { ...p.terms, multiple: parseFloat(e.target.value) || 0 } }))} style={{ width: '100%', padding: '8px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '12px', marginTop: '4px' }} /></div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px', background: '#FAFAF8', borderRadius: '8px', fontSize: '11px', cursor: 'pointer' }}>
+                        <input type="checkbox" checked={negotiation.terms.boardSeat} onChange={e => setNegotiation(p => ({ ...p, terms: { ...p.terms, boardSeat: e.target.checked } }))} /> 
+                        <Jargon term="Board seat">Board</Jargon>
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px', background: '#FAFAF8', borderRadius: '8px', fontSize: '11px', cursor: 'pointer' }}>
+                        <input type="checkbox" checked={negotiation.terms.proRata} onChange={e => setNegotiation(p => ({ ...p, terms: { ...p.terms, proRata: e.target.checked } }))} /> 
+                        <Jargon term="Pro-rata">Pro-rata</Jargon>
+                      </label>
+                    </div>
+                    {negotiation.counter && (
+                      <div style={{ padding: '10px', background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: '8px', marginBottom: '14px' }}>
+                        <div style={{ fontSize: '9px', fontWeight: '600', color: '#92400e', marginBottom: '3px' }}>COUNTER OFFER</div>
+                        <div style={{ fontSize: '13px', fontWeight: '600' }}>${negotiation.counter.amount.toFixed(1)}M @ {negotiation.counter.multiple.toFixed(1)}x</div>
+                      </div>
+                    )}
+                    <div style={{ fontSize: '10px', color: '#999', padding: '8px', background: '#f8f8f6', borderRadius: '6px' }}>
+                      💡 If they walk away, the deal is gone permanently. Founders remember aggressive offers.
+                    </div>
+                  </div>
+                  <div style={s.modalFooter}>
+                    <Btn variant="secondary" onClick={walkFromNegotiation}>Walk Away</Btn>
+                    {negotiation.counter && <Btn onClick={acceptCounter}>Accept Counter</Btn>}
+                    <Btn onClick={submitOffer}>Submit Offer</Btn>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <header id="header" style={s.header}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '16px', fontWeight: '600' }}>{fundName}</span>
+                <span style={{ ...s.badge, background: '#f5f5f3', color: '#666' }}>{fundType}</span>
+                <Jargon term={market.name} noBorder>
+                  <span style={{ ...s.badge, background: market.color + '12', color: market.color, border: `1px solid ${market.color}30` }}>{market.icon} {market.name}</span>
+                </Jargon>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <span style={{ fontSize: '12px', color: '#999' }}>Q{quarter}/40</span>
+                <div style={{ width: '50px', height: '3px', background: '#e5e5e5', borderRadius: '2px', overflow: 'hidden' }}><div style={{ height: '100%', width: `${(quarter / 40) * 100}%`, background: '#0a0a0a' }} /></div>
+                <span style={{ fontSize: '13px', fontWeight: '600', color: moic >= targetMOIC ? '#15803d' : moic >= targetMOIC * 0.7 ? '#f59e0b' : '#b91c1c' }}>{moic.toFixed(2)}x / {targetMOIC}x</span>
+                <Btn variant="secondary" small onClick={() => { setSpotlightStep(0); setShowSpotlight(true); }}>?</Btn>
+              </div>
+            </header>
+
+            {marketEvent && (
+              <Jargon term={marketEvent.text} noBorder>
+                <div style={{ padding: '10px 14px', borderRadius: '10px', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', background: market.color + '10', border: `1px solid ${market.color}25`, color: market.color, cursor: 'help' }}>
+                  <span>{marketEvent.icon}</span>
+                  <span><strong>{marketEvent.text}</strong> · {eventTurns}Q left</span>
+                </div>
+              </Jargon>
+            )}
+
+            <div id="metrics" style={s.metricsBar}>
+              <Metric label="Dry Powder" value={`$${dryPowder.toFixed(0)}M`} />
+              <Metric label="Deployed" value={`$${deployed.toFixed(0)}M`} sub={`${portfolio.length} active`} />
+              <Metric label="Portfolio" value={`$${totalVal.toFixed(0)}M`} good={totalVal > deployed} bad={totalVal < deployed * 0.7} />
+              <Metric label="Realized" value={`$${exits.reduce((s, e) => s + e.exitValue, 0).toFixed(0)}M`} sub={`${exits.length} exits`} />
+              <Metric label="Reputation" value={reputation} good={reputation > 70} bad={reputation < 30} />
+            </div>
+
+            <div style={s.mainGrid}>
+              <div>
+                <div id="dealflow" style={s.sectionTitle}>Deal Flow ({dealFlow.length})</div>
+                {dealFlow.length === 0 ? (
+                  <div style={{ ...s.empty, padding: '24px', background: '#fff', borderRadius: '12px', border: '1px solid #e5e5e5' }}>
+                    No deals this quarter. Advance to next—new opportunities may arrive.
+                  </div>
+                ) : dealFlow.map((d, idx) => (
+                  <div key={d.id} style={s.dealCard}>
+                    {d.hasWalked && <div style={s.walkedBadge}>❌ Declined to work with you</div>}
+                    {d.isHot && !d.hasWalked && <div style={s.hotBadge}>🔥 Competitive · {d.turnsToDecide}Q left {d.competingFund && `· vs ${d.competingFund.name}`}</div>}
+                    {d.negotiationHistory.length > 0 && !d.hasWalked && <div style={{ fontSize: '10px', color: '#92400e', marginBottom: '6px' }}>⚠️ Previously negotiated — founder patience lower</div>}
+                    
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                      <div>
+                        <div style={{ fontSize: '15px', fontWeight: '600' }}>{d.name}</div>
+                        <div style={{ display: 'flex', gap: '5px', marginTop: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+                          <span style={{ fontSize: '9px', padding: '3px 7px', background: '#f5f5f3', borderRadius: '100px', color: '#666' }}>{d.sector}</span>
+                          <span style={{ fontSize: '9px', padding: '3px 7px', background: '#f5f5f3', borderRadius: '100px', color: '#666' }}>{d.stage}</span>
+                          <span style={{ fontSize: '9px', padding: '3px 7px', borderRadius: '100px', background: d.founderType === 'Desperate' ? '#dcfce7' : d.founderType === 'Arrogant' ? '#fef2f2' : d.founderType === 'Confident' ? '#fef3c7' : '#f5f5f3', color: d.founderType === 'Desperate' ? '#15803d' : d.founderType === 'Arrogant' ? '#b91c1c' : d.founderType === 'Confident' ? '#92400e' : '#666' }}>{d.founderType}</span>
+                        </div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '14px', fontWeight: '600' }}>${d.ask.amount.toFixed(1)}M</div>
+                        <Jargon term="Multiple"><span style={{ fontSize: '10px', color: '#999' }}>{d.ask.multiple.toFixed(1)}x</span></Jargon>
+                      </div>
+                    </div>
+                    
+                    <div id={idx === 0 ? 'deal-metrics-example' : undefined} style={s.dealMetrics}>
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '8px', fontWeight: '600', textTransform: 'uppercase', color: '#999', marginBottom: '2px' }}>Revenue</div>
+                        <div style={{ fontSize: '12px', fontWeight: '600' }}>${d.metrics.revenue.toFixed(1)}M</div>
+                      </div>
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '8px', fontWeight: '600', textTransform: 'uppercase', color: '#999', marginBottom: '2px' }}>Growth</div>
+                        <div style={{ fontSize: '12px', fontWeight: '600', color: d.metrics.growth > 100 ? '#15803d' : '#0a0a0a' }}>{d.metrics.growth.toFixed(0)}%</div>
+                      </div>
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '8px', fontWeight: '600', textTransform: 'uppercase', color: '#999', marginBottom: '2px' }}>Margin</div>
+                        <div style={{ fontSize: '12px', fontWeight: '600', color: d.metrics.margin < 0 ? '#b91c1c' : '#15803d' }}>{d.metrics.margin.toFixed(0)}%</div>
+                      </div>
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '8px', fontWeight: '600', textTransform: 'uppercase', color: '#999', marginBottom: '2px' }}><Jargon term="Tam">TAM</Jargon></div>
+                        <div style={{ fontSize: '12px', fontWeight: '600' }}>${d.metrics.marketSize}B</div>
+                      </div>
+                    </div>
+                    
+                    {d.dueDiligenceComplete && d.ddFindings && (
+                      <div id={idx === 0 ? 'dd-example' : undefined} style={s.ddBox}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '6px' }}>
+                          <div style={{ fontSize: '10px' }}>
+                            <div style={{ color: '#999', marginBottom: '2px' }}>Team Score</div>
+                            <div style={s.ddRange}>
+                              <span style={{ fontWeight: '500' }}>{d.ddFindings.teamRange[0]}</span>
+                              <span style={{ color: '#999' }}>–</span>
+                              <span style={{ fontWeight: '500' }}>{d.ddFindings.teamRange[1]}</span>
+                            </div>
+                          </div>
+                          <div style={{ fontSize: '10px' }}>
+                            <div style={{ color: '#999', marginBottom: '2px' }}><Jargon term="Churn">Churn</Jargon></div>
+                            <div style={s.ddRange}>
+                              <span style={{ fontWeight: '500' }}>{d.ddFindings.churnRange[0]}%</span>
+                              <span style={{ color: '#999' }}>–</span>
+                              <span style={{ fontWeight: '500' }}>{d.ddFindings.churnRange[1]}%</span>
+                            </div>
+                          </div>
+                          <div style={{ fontSize: '10px' }}>
+                            <div style={{ color: '#999', marginBottom: '2px' }}>Tech Debt</div>
+                            <div style={{ fontWeight: '500' }}>{d.ddFindings.techDebt}</div>
+                            <div style={{ fontSize: '8px', color: '#999' }}>({d.ddFindings.techDebtConfidence} conf.)</div>
+                          </div>
+                        </div>
+                        <div style={{ fontSize: '9px', color: '#999', marginBottom: '4px' }}>DD Accuracy: {d.ddFindings.accuracy}%</div>
+                        {d.ddFindings.redFlags && <div style={{ marginTop: '6px', padding: '6px 8px', background: '#fef2f2', borderRadius: '6px', color: '#b91c1c', fontSize: '10px' }}>⚠️ {d.ddFindings.redFlags}</div>}
+                        {d.ddFindings.upside && <div style={{ marginTop: '6px', padding: '6px 8px', background: '#f0fdf4', borderRadius: '6px', color: '#15803d', fontSize: '10px' }}>✨ {d.ddFindings.upside}</div>}
+                      </div>
+                    )}
+                    
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                      {!d.dueDiligenceComplete && !d.hasWalked && (
+                        <Btn variant="secondary" small onClick={() => conductDD(d)}>
+                          <Jargon term="Due diligence">DD</Jargon> (${getDDCost(fundType, d.stage, upgrades.ddProgram)}M)
+                        </Btn>
+                      )}
+                      {!d.hasWalked && <Btn small onClick={() => startNegotiation(d)}>Negotiate</Btn>}
+                      <Btn variant="secondary" small onClick={() => passDeal(d)}>Pass</Btn>
+                    </div>
+                  </div>
+                ))}
+
+                <div id="portfolio" style={{ ...s.sectionTitle, marginTop: '20px' }}>Portfolio ({portfolio.length})</div>
+                <div style={s.sideCard}>
+                  {portfolio.length === 0 ? <div style={s.empty}>No investments yet</div> : portfolio.map((inv, i) => {
+                    const mult = inv.currentValue / inv.investedAmount;
+                    const hold = quarter - inv.quarterInvested;
+                    const minHold = fundType === 'VC' ? 8 : 12;
+                    const canExit = hold >= minHold;
+                    return (
+                      <div key={inv.id} style={{ padding: '10px 0', borderBottom: i === portfolio.length - 1 ? 'none' : '1px solid #f0f0f0' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                          <div>
+                            <div style={{ fontSize: '12px', fontWeight: '600' }}>{inv.name}</div>
+                            <div style={{ fontSize: '9px', color: '#999', marginTop: '2px' }}>{inv.sector} · {hold}Q {inv.boardSeat && '🪑'} {inv.proRata && '📊'}</div>
+                          </div>
+                          <div style={{ textAlign: 'right' }}>
+                            <div style={{ fontSize: '12px', fontWeight: '600', color: mult >= 1 ? '#15803d' : '#b91c1c' }}>${inv.currentValue.toFixed(1)}M</div>
+                            <div style={{ fontSize: '9px', color: '#999' }}>{mult.toFixed(2)}x</div>
+                          </div>
+                        </div>
+                        <div style={{ height: '3px', background: '#f0f0f0', borderRadius: '2px', margin: '6px 0', overflow: 'hidden' }}>
+                          <div style={{ height: '100%', width: `${Math.min(mult / 5 * 100, 100)}%`, background: mult >= 2 ? '#22c55e' : mult >= 1 ? '#86efac' : '#f87171' }} />
+                        </div>
+                        <Btn small variant={canExit ? 'primary' : 'secondary'} onClick={() => attemptExit(inv)} disabled={!canExit}>
+                          {canExit ? <span>Attempt <Jargon term="Exit">Exit</Jargon></span> : `${minHold - hold}Q to exit`}
+                        </Btn>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div style={s.sidebar}>
+                <div id="nextquarter">
+                  <button onClick={advanceQuarter} style={{ ...s.nextBtn, opacity: (pendingDecision || pendingFollowOn) ? 0.5 : 1 }} disabled={pendingDecision || pendingFollowOn}>
+                    {pendingDecision || pendingFollowOn ? 'Resolve First' : 'Next Quarter →'}
+                  </button>
+                  <div style={{ textAlign: 'center', fontSize: '10px', color: '#999', marginTop: '6px' }}>{40 - quarter} quarters left</div>
+                </div>
+
+                <div id="activity" style={s.sideCard}>
+                  <div style={s.sectionTitle}>Activity</div>
+                  <div style={s.activityList}>
+                    {log.length === 0 ? <div style={{ ...s.empty, padding: '6px 0' }}>No activity</div> : 
+                      log.slice(0, 15).map((e) => (
+                      <div key={e.id} style={{ 
+                        ...s.logItem, 
+                        borderColor: e.type === 'error' ? '#f87171' : e.type === 'success' ? '#86efac' : e.type === 'warning' ? '#fcd34d' : '#e5e5e5', 
+                        color: e.type === 'error' ? '#b91c1c' : e.type === 'success' ? '#15803d' : e.type === 'warning' ? '#92400e' : '#666'
+                      }}>
+                        <span style={{ opacity: 0.6 }}>Q{e.q}:</span> {e.msg}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div id="upgrades" style={s.sideCard}>
+                  <div style={s.sectionTitle}>Upgrades</div>
+                  {Object.entries(UPGRADES).map(([k, u]) => {
+                    const curr = upgrades[k];
+                    const c = u.levels[curr];
+                    const n = u.levels[curr + 1];
+                    const can = n && dryPowder >= n.cost;
+                    return (
+                      <div key={k} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px', background: '#FAFAF8', borderRadius: '8px', marginBottom: '6px' }} title={u.tip}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ fontSize: '14px' }}>{u.icon}</span>
+                          <div>
+                            <div style={{ fontSize: '11px', fontWeight: '500' }}>{u.name}</div>
+                            <div style={{ fontSize: '9px', color: '#999' }}>{c.name}</div>
+                          </div>
+                        </div>
+                        {n ? (
+                          <button onClick={() => purchaseUpgrade(k)} disabled={!can} style={{ padding: '4px 8px', fontSize: '9px', background: can ? '#fff8e6' : '#f5f5f3', color: can ? '#92400e' : '#999', border: `1px solid ${can ? '#fcd34d' : '#e5e5e5'}`, borderRadius: '100px', cursor: can ? 'pointer' : 'not-allowed', opacity: can ? 1 : 0.6 }}>
+                            ${n.cost}M
+                          </button>
+                        ) : (
+                          <span style={{ fontSize: '9px', color: '#15803d' }}>Max</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div style={s.sideCard}>
+                  <div style={s.sectionTitle}><Jargon term="Exits">Exits</Jargon> ({exits.length})</div>
+                  {exits.length === 0 ? <div style={{ ...s.empty, padding: '6px 0' }}>None</div> : (
+                    <div style={{ maxHeight: '70px', overflowY: 'auto' }}>
+                      {exits.slice(0, 5).map((e, i) => (
+                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0', fontSize: '10px' }}>
+                          <span style={{ color: '#666' }}>{e.name}</span>
+                          <span style={{ color: e.exitMOIC >= 1 ? '#15803d' : '#b91c1c', fontWeight: '500' }}>{e.exitMOIC.toFixed(2)}x</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div style={s.sideCard}>
+                  <div style={s.sectionTitle}>Failed ({failedCompanies.length})</div>
+                  {failedCompanies.length === 0 ? <div style={{ ...s.empty, padding: '6px 0' }}>None</div> : (
+                    <div style={{ maxHeight: '50px', overflowY: 'auto' }}>
+                      {failedCompanies.slice(0, 4).map((f, i) => (
+                        <div key={i} style={{ color: '#b91c1c', fontSize: '10px', padding: '2px 0' }}>{f.name}</div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div style={s.sideCard}>
+                  <div style={s.sectionTitle}>Quick Reference</div>
+                  <div style={{ fontSize: '10px', color: '#666', lineHeight: 1.5 }}>
+                    <div style={{ marginBottom: '3px' }}>• <strong>Bull:</strong> High valuations, easy exits</div>
+                    <div style={{ marginBottom: '3px' }}>• <strong>Bear:</strong> Low valuations, hard exits</div>
+                    <div style={{ marginBottom: '3px' }}>• <strong>🔥 Hot:</strong> Decide fast or lose deal</div>
+                    <div style={{ marginBottom: '3px' }}>• <strong>Desperate:</strong> Accept lower offers</div>
+                    <div>• Founders remember failed negotiations</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<FundGame />);
+  </script>
+</body>
+</html>
