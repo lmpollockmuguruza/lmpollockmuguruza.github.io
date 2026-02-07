@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>of interest — lucas pollock muguruza</title>
+
+    <!-- Favicon (shared with main site) -->
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ─── Palette ─── */
+        :root {
+            --bg: #f7f5f0;
+            --bg-card: #fdfcfa;
+            --bg-card-hover: #ffffff;
+            --ink: #1a1816;
+            --ink-soft: #3d3833;
+            --ink-muted: #7a7368;
+            --ink-faint: #b0a99e;
+            --ink-ghost: #d4cfc8;
+            --burgundy: #6b2737;
+            --burgundy-soft: #8b3747;
+            --burgundy-wash: rgba(107, 39, 55, 0.05);
+            --burgundy-glow: rgba(107, 39, 55, 0.10);
+            --border: rgba(26, 24, 22, 0.07);
+            --border-hover: rgba(107, 39, 55, 0.18);
+            --shadow-card: 0 1px 3px rgba(26, 24, 22, 0.03), 0 6px 24px rgba(26, 24, 22, 0.04);
+            --shadow-card-hover: 0 2px 8px rgba(26, 24, 22, 0.05), 0 12px 40px rgba(26, 24, 22, 0.07);
+            --radius: 14px;
+            --radius-sm: 8px;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+            --transition: 0.35s var(--ease);
+        }
+
+        [data-theme="dark"] {
+            --bg: #141311;
+            --bg-card: #1e1c19;
+            --bg-card-hover: #252320;
+            --ink: #e8e4dd;
+            --ink-soft: #c8c2b8;
+            --ink-muted: #8a8279;
+            --ink-faint: #5a554e;
+            --ink-ghost: #3a3632;
+            --burgundy: #c4707f;
+            --burgundy-soft: #d4909f;
+            --burgundy-wash: rgba(196, 112, 127, 0.06);
+            --burgundy-glow: rgba(196, 112, 127, 0.12);
+            --border: rgba(232, 228, 221, 0.06);
+            --border-hover: rgba(196, 112, 127, 0.2);
+            --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.12), 0 6px 24px rgba(0, 0, 0, 0.15);
+            --shadow-card-hover: 0 2px 8px rgba(0, 0, 0, 0.15), 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--ink-soft);
+            min-height: 100vh;
+            min-height: 100dvh;
+            line-height: 1.65;
+            transition: background-color 0.5s var(--ease), color 0.5s var(--ease);
+        }
+
+        /* Grain overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.018;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 256px;
+        }
+
+        [data-theme="dark"] body::before {
+            opacity: 0.03;
+        }
+
+        ::selection {
+            background: rgba(107, 39, 55, 0.18);
+            color: var(--ink);
+        }
+
+        /* ─── Layout ─── */
+        .page {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ─── Top bar ─── */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: transparent;
+            transition: all 0.4s var(--ease);
+        }
+
+        .topbar.scrolled {
+            background: color-mix(in srgb, var(--bg) 85%, transparent);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.78rem;
+            font-weight: 400;
+            color: var(--ink-muted);
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: color var(--transition);
+        }
+
+        .back-link:hover {
+            color: var(--burgundy);
+        }
+
+        .back-link svg {
+            width: 15px;
+            height: 15px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.5;
+            transition: transform var(--transition);
+        }
+
+        .back-link:hover svg {
+            transform: translateX(-3px);
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: var(--bg-card);
+            cursor: pointer;
+            transition: all var(--transition);
+            color: var(--ink-muted);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--border-hover);
+            color: var(--burgundy);
+            background: var(--burgundy-wash);
+        }
+
+        .theme-toggle svg {
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+            transition: transform 0.5s var(--ease-spring);
+        }
+
+        .theme-toggle:hover svg {
+            transform: rotate(30deg);
+        }
+
+        .theme-toggle .icon-sun { display: none; }
+        .theme-toggle .icon-moon { display: block; }
+        [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+        [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+
+        /* ─── Header ─── */
+        .header {
+            padding-top: 7rem;
+            padding-bottom: 1rem;
+            text-align: left;
+        }
+
+        .header-star {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 0.8s var(--ease-spring) 0.1s forwards;
+        }
+
+        .header-star svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--burgundy);
+            fill: none;
+            stroke-width: 1.3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .header h1 {
+            font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+            font-size: 2.8rem;
+            font-weight: 400;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+            color: var(--ink);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 0.8s var(--ease-spring) 0.2s forwards;
+        }
+
+        .header-intro {
+            font-size: 0.95rem;
+            line-height: 1.75;
+            color: var(--ink-muted);
+            max-width: 500px;
+            opacity: 0;
+            animation: fadeUp 0.8s var(--ease-spring) 0.35s forwards;
+        }
+
+        .header-intro em {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.05rem;
+            color: var(--ink-soft);
+            font-style: italic;
+        }
+
+        /* ─── Divider ─── */
+        .section-line {
+            width: 100%;
+            height: 1px;
+            background: var(--border);
+            margin: 2.5rem 0;
+            opacity: 0;
+            animation: fadeUp 0.6s var(--ease-spring) 0.5s forwards;
+        }
+
+        /* ─── Items ─── */
+        .items {
+            padding-bottom: 2rem;
+        }
+
+        .item {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            padding: 1.5rem 1.75rem;
+            margin-bottom: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-card);
+            transition: all var(--transition);
+            position: relative;
+            opacity: 0;
+            transform: translateY(16px);
+        }
+
+        .item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .item:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .item:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-card);
+        }
+
+        .item-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-title {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            line-height: 1.35;
+            color: var(--ink);
+            transition: color var(--transition);
+        }
+
+        .item:hover .item-title {
+            color: var(--burgundy);
+        }
+
+        .item-arrow {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            stroke: var(--ink-faint);
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all var(--transition);
+            margin-top: 0.2rem;
+        }
+
+        .item:hover .item-arrow {
+            stroke: var(--burgundy);
+            transform: translate(2px, -2px);
+        }
+
+        .item-meta {
+            font-size: 0.78rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.015em;
+            margin-bottom: 0.65rem;
+        }
+
+        .item-note {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1rem;
+            font-style: italic;
+            line-height: 1.6;
+            color: var(--ink-muted);
+        }
+
+        /* Tag pills */
+        .item-tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--burgundy);
+            background: var(--burgundy-wash);
+            border: 1px solid var(--burgundy-glow);
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            margin-top: 0.75rem;
+            transition: all var(--transition);
+        }
+
+        .item:hover .item-tag {
+            background: var(--burgundy-glow);
+        }
+
+        /* ─── Footer ─── */
+        .page-footer {
+            padding: 2.5rem 0 3rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            opacity: 0;
+            animation: fadeUp 0.6s var(--ease-spring) 0.6s forwards;
+        }
+
+        .footer-left {
+            font-size: 0.75rem;
+            color: var(--ink-faint);
+            font-weight: 300;
+        }
+
+        .footer-left a {
+            color: var(--ink-muted);
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+
+        .footer-left a:hover {
+            color: var(--burgundy);
+        }
+
+        .footer-right {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 0.85rem;
+            font-style: italic;
+            color: var(--ink-faint);
+        }
+
+        /* ─── Scrollbar ─── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--ink-ghost);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--ink-faint);
+        }
+
+        /* ─── Animations ─── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ─── Mobile ─── */
+        @media (max-width: 640px) {
+            .page {
+                padding: 0 1.25rem;
+            }
+
+            .topbar {
+                padding: 0.75rem 1.25rem;
+            }
+
+            .header {
+                padding-top: 5.5rem;
+            }
+
+            .header h1 {
+                font-size: 2.1rem;
+            }
+
+            .header-intro {
+                font-size: 0.88rem;
+            }
+
+            .item {
+                padding: 1.25rem 1.25rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .item-title {
+                font-size: 1.08rem;
+            }
+
+            .item-note {
+                font-size: 0.92rem;
+            }
+
+            .page-footer {
+                flex-direction: column;
+                gap: 0.75rem;
+                text-align: center;
+            }
+        }
+
+        /* ─── Reduced motion ─── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top bar -->
+    <nav class="topbar" id="topbar">
+        <a href="../" class="back-link">
+            <svg viewBox="0 0 24 24">
+                <path d="M19 12H5"/>
+                <path d="M12 19l-7-7 7-7"/>
+            </svg>
+            Lucas Pollock Muguruza
+        </a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <svg class="icon-moon" viewBox="0 0 20 20">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+            </svg>
+            <svg class="icon-sun" viewBox="0 0 20 20">
+                <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/>
+            </svg>
+        </button>
+    </nav>
+
+    <div class="page">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-star">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                </svg>
+            </div>
+            <h1>Of interest</h1>
+            <p class="header-intro">A small, curated collection of things I stumbled on and didn't want to&nbsp;gatekeep. Articles, tools, side&nbsp;projects, and the occasional piece that made me stop scrolling. As <em>a very important person of great intellect and character</em> probably once said: keep&nbsp;exploring.</p>
+        </header>
+
+        <div class="section-line"></div>
+
+        <!-- Items -->
+        <div class="items">
+
+            <a href="https://econvery-nextjs.vercel.app/" target="_blank" rel="noopener" class="item">
+                <div class="item-top">
+                    <span class="item-title">Econvery</span>
+                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <div class="item-meta">by Lucas Pollock Muguruza · 2026 · added 4 Feb 2026</div>
+                <p class="item-note">A tool I am currently developing, hosted on Vercel. Next steps include AI integration (relevance scoring, keyword / content matching, summary generation) through Gemini's API, expanding onto other fields (e.g., STEM), and newsletter.</p>
+                <span class="item-tag">vibe-coded</span>
+            </a>
+
+            <a href="https://lmpollockmuguruza.github.io/fund-strategy-game/" class="item">
+                <div class="item-top">
+                    <span class="item-title">Fund Strategy — Private Markets Simulator</span>
+                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <div class="item-meta">by Lucas Pollock Muguruza · added 10 Jan 2026</div>
+                <p class="item-note">A simulator of being your own VC/PE fund. Took a lot of time to get it where it is, even if it still has some pretty funky things. Cool and fun for 10–20 min, even if I have no idea what it is to be a VC/PE GP. Buy companies, improve your fund, make your investors happy. I guess it's as simple as that. If you have any suggestions to add or remove to the game, please do share through pigeon. For feedback, reach out to Claude.</p>
+                <span class="item-tag">vibe-coded</span>
+            </a>
+
+            <a href="https://lmpollockmuguruza.github.io/pl-vibe-quiz/" class="item">
+                <div class="item-top">
+                    <span class="item-title">Premier League Quiz</span>
+                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <div class="item-meta">by Lucas Pollock Muguruza · added 10 Jan 2026</div>
+                <p class="item-note">A "what's my team" quiz I vibe coded with Claude. It's really worth a click, even if just for the vibes yk?</p>
+                <span class="item-tag">vibe-coded</span>
+            </a>
+
+            <a href="https://danioffline.substack.com/p/everyone-wants-to-be-a-dj-no-one" target="_blank" rel="noopener" class="item">
+                <div class="item-top">
+                    <span class="item-title">everyone wants to be a DJ, no one wants to dance</span>
+                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <div class="item-meta">by Dani Offline · 2025 · added 29 Dec 2025</div>
+                <p class="item-note">A wonderful essay I have interpreted as a call to enjoy art rather than use it for the well-intentioned goal of being artists.</p>
+                <span class="item-tag">essay</span>
+            </a>
+
+            <a href="https://www.newyorker.com/culture/open-questions/should-you-just-give-up" target="_blank" rel="noopener" class="item">
+                <div class="item-top">
+                    <span class="item-title">Should you just give up?</span>
+                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <div class="item-meta">by Joshua Rothman · The New Yorker, 2024 · added 29 Dec 2025</div>
+                <p class="item-note">An article that is best described by its deck: Sisyphus couldn't stop pushing his boulder — but you can.</p>
+                <span class="item-tag">article</span>
+            </a>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="page-footer">
+            <div class="footer-left">
+                <a href="../">← back to portfolio</a>
+            </div>
+            <div class="footer-right">keep exploring</div>
+        </footer>
+    </div>
+
+    <script>
+        // ─── Theme ───
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Respect main site's saved theme, fall back to system preference
+        function getInitialTheme() {
+            const saved = localStorage.getItem('theme');
+            if (saved === 'dark') return 'dark';
+            if (saved === 'light') return 'light';
+            if (saved === 'auto' || !saved) {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            return 'light';
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                html.setAttribute('data-theme', 'dark');
+            } else {
+                html.removeAttribute('data-theme');
+            }
+        }
+
+        applyTheme(getInitialTheme());
+
+        toggle.addEventListener('click', () => {
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            const newTheme = isDark ? 'light' : 'dark';
+            applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // System preference listener
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            const saved = localStorage.getItem('theme');
+            if (saved === 'auto' || !saved) {
+                applyTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+
+        // ─── Topbar scroll effect ───
+        const topbar = document.getElementById('topbar');
+        let ticking = false;
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    topbar.classList.toggle('scrolled', window.scrollY > 40);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // ─── Staggered card entrance ───
+        const items = document.querySelectorAll('.item');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.08,
+            rootMargin: '0px 0px -40px 0px'
+        });
+
+        items.forEach((item, i) => {
+            item.style.transitionDelay = `${0.5 + i * 0.1}s`;
+            item.style.transitionDuration = '0.7s';
+            item.style.transitionTimingFunction = 'cubic-bezier(0.16, 1, 0.3, 1)';
+            item.style.transitionProperty = 'opacity, transform';
+            observer.observe(item);
+        });
+    </script>
+</body>
+</html>

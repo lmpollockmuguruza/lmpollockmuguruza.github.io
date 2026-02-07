@@ -1097,7 +1097,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#interests" class="nav-link">
+                    <a href="./ofinterest/" class="nav-link nav-link-external">
                         <svg class="nav-icon" viewBox="0 0 24 24">
                             <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
                         </svg>
@@ -1183,7 +1183,7 @@
             <div class="project-item scroll-animate">
                 <h3>Cultural Backlash Theory - Empirical Assessment</h3>
                 <p>Empirical assessment of cultural backlash theory with European data and modern difference-in-differences estimators. Completed as part of MSc programme.</p>
-                <a href="https://www.dropbox.com/scl/fi/j4znmv9oylg1ydkpx7760/PSPE-Current-Issues-Summative--Lucas-Pollock-Muguruza.pdf?rlkey=pcrn8hv4h7ej10chxn1regtwz&st=4x5qtvvq&dl=0" class="project-link" target="_blank">View Paper</a>
+                <a href="https://www.dropbox.com/scl/fi/j4znmv9oylg1ydkpx7760/PSPE-Current-Issues-Summative-Essay-Lucas-Pollock-Muguruza.pdf?rlkey=pcrn8hv4h7ej10chxn1regtwz&st=4x5qtvvq&dl=0" class="project-link" target="_blank">View Paper</a>
             </div>
 
             <div class="section-divider scroll-animate">Publications</div>
@@ -1219,60 +1219,7 @@
             </div>
         </section>
 
-        <!-- Of Interest Section -->
-        <section id="interests" class="content-section">
-            <h2>Of interest</h2>
-            <p class="scroll-animate interests-intro">A small, curated collection of things I stumbled on and didn't want to gatekeep. For more, as a very important person of great intellect and character probably once said: keep exploring!</p>
-
-            <div class="interest-item scroll-animate">
-                <div class="interest-header">
-                    <a href="https://econvery-nextjs.vercel.app/" target="_blank" class="interest-title">Econvery (vibe-coded)</a>
-                    <span class="interest-meta">by Lucas Pollock Muguruza (2026) · added 04/02/2026</span>
-                </div>
-                <p class="interest-description">A tool I am currently developing, hosted on Vercel. Next steps include AI integration (relevance scoring, keyword / content matching, summary generation) through Gemini's API, expanding onto other fields (e.g., STEM), and newsletter.</p>
-            </div>
-			
-	<div class="interest-item scroll-animate">
-                <div class="interest-header">
-                    <a href="https://lmpollockmuguruza.github.io/pl-vibe-quiz/" class="interest-title">Premier League quiz (vibe-coded)</a>
-                    <span class="interest-meta">by Lucas Pollock Muguruza · added 10/01/2026</span>
-                </div>
-                <p class="interest-description">A "what's my team" quiz I "vibe coded" with Claude. It's really worth a click, even if just for the vibes yk?</p>
-            </div>
-			
-<div class="interest-item scroll-animate">
-                <div class="interest-header">
-                    <a href="https://lmpollockmuguruza.github.io/fund-strategy-game/" class="interest-title">Fund Strategy - Private Markets Simulator (vibe-coded)</a>
-                    <span class="interest-meta">by Lucas Pollock Muguruza · added 10/01/2026</span>
-                </div>
-                <p class="interest-description">A simulator of being your own VC/PE fund. Took a lot of time to get it where it is, even if it still has some pretty funky things. Cool and fun for 10-20min, even if I have no idea what it is to be a VC/PE GP. Buy companies, improve your fund, make your investors happy. I guess it's as simple as that. If you have any suggestions to add or remove to the game, please do share through pigeon. For feedback, reach out to Claude.</p>
-            </div>
-  
-	<div class="interest-item scroll-animate">
-                <div class="interest-header">
-                    <a href="https://lmpollockmuguruza.github.io/pl-vibe-quiz/" class="interest-title">Premier League quiz (vibe-coded)</a>
-                    <span class="interest-meta">by Lucas Pollock Muguruza · added 10/01/2026</span>
-                </div>
-                <p class="interest-description">A "what's my team" quiz I "vibe coded" with Claude. It's really worth a click, even if just for the vibes yk?</p>
-            </div>
-
-            <div class="interest-item scroll-animate">
-                <div class="interest-header">
-                    <a href="https://danioffline.substack.com/p/everyone-wants-to-be-a-dj-no-one" target="_blank" class="interest-title">everyone wants to be a DJ, no one wants to dance</a>
-                    <span class="interest-meta">by Dani Offline (2025) · added 29/12/2025</span>
-                </div>
-                <p class="interest-description">A wonderful essay I have interpreted as a call to enjoy art rather than use it for the well-intentioned goal of being artists.</p>
-            </div>
-
-<div class="interest-item scroll-animate">
-                <div class="interest-header">
-                    <a href="https://www.newyorker.com/culture/open-questions/should-you-just-give-up" target="_blank" class="interest-title">Should you just give up?</a>
-                    <span class="interest-meta">by Joshua Rothman (2024) · added 29/12/2025</span>
-                </div>
-                <p class="interest-description">An article that is best described by its deck: Sisyphus couldn’t stop pushing his boulder—but you can.</p>
-            </div>
-
-        </section>
+        <!-- Of Interest Section — now lives at ./ofinterest/ -->
 
         <!-- CV Section -->
         <section id="cv" class="content-section">
@@ -1551,6 +1498,11 @@
 
         navLinks.forEach(link => {
             link.addEventListener('click', function(e) {
+                // Allow external links (like Of Interest) to navigate normally
+                if (this.classList.contains('nav-link-external')) {
+                    return;
+                }
+
                 e.preventDefault();
                 
                 // Remove active class from all

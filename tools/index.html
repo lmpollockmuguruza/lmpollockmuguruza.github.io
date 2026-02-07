@@ -192,10 +192,16 @@
             min-height: 80px;
         }
 
-        /* Inline row */
+        /* Inline rows */
         .field-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .field-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 0.75rem;
         }
 
@@ -277,6 +283,41 @@
 
         .toggle input:checked + .toggle-track::after {
             transform: translateX(16px);
+        }
+
+        /* Tag pills for selection */
+        .tag-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+
+        .tag-pill {
+            display: inline-block;
+            padding: 0.3rem 0.7rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--ink-muted);
+            background: var(--warm-white);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all var(--transition);
+            user-select: none;
+        }
+
+        .tag-pill:hover {
+            border-color: var(--border-focus);
+            color: var(--burgundy);
+        }
+
+        .tag-pill.active {
+            background: var(--burgundy-wash);
+            border-color: var(--burgundy-glow);
+            color: var(--burgundy);
         }
 
         /* Generate button */
@@ -403,7 +444,6 @@
         .code-block .tag { color: #d4907c; }
         .code-block .attr { color: #c9b87d; }
         .code-block .str { color: #a3be8c; }
-        .code-block .class { color: #88c0d0; }
         .code-block .text { color: #c8c2b8; }
 
         /* Preview card */
@@ -421,38 +461,87 @@
         }
 
         .preview-card {
-            padding: 1.5rem;
+            padding: 1.5rem 1.75rem;
             background: var(--warm-white);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 14px;
+            box-shadow: 0 1px 3px rgba(26, 24, 22, 0.03), 0 6px 24px rgba(26, 24, 22, 0.04);
             transition: all var(--transition);
         }
 
         .preview-card:hover {
-            box-shadow: var(--shadow-md);
-            border-color: var(--burgundy-glow);
+            box-shadow: 0 2px 8px rgba(26, 24, 22, 0.05), 0 12px 40px rgba(26, 24, 22, 0.07);
+            border-color: rgba(107, 39, 55, 0.18);
+            transform: translateY(-2px);
+        }
+
+        .preview-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .preview-card .p-title {
-            color: var(--burgundy);
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            line-height: 1.35;
+            color: var(--ink);
             text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 400;
-            line-height: 1.4;
+            transition: color var(--transition);
+        }
+
+        .preview-card:hover .p-title {
+            color: var(--burgundy);
+        }
+
+        .preview-card .p-arrow {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            stroke: var(--ink-faint);
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            margin-top: 0.2rem;
+            transition: all var(--transition);
+        }
+
+        .preview-card:hover .p-arrow {
+            stroke: var(--burgundy);
+            transform: translate(2px, -2px);
         }
 
         .preview-card .p-meta {
             font-size: 0.78rem;
-            color: var(--ink-muted);
-            margin-top: 0.35rem;
+            color: var(--ink-faint);
+            margin-bottom: 0.65rem;
+            letter-spacing: 0.015em;
         }
 
-        .preview-card .p-desc {
-            font-size: 0.85rem;
-            color: var(--ink-muted);
-            margin-top: 0.5rem;
-            line-height: 1.6;
+        .preview-card .p-note {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1rem;
             font-style: italic;
+            line-height: 1.6;
+            color: var(--ink-muted);
+        }
+
+        .preview-card .p-tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--burgundy);
+            background: var(--burgundy-wash);
+            border: 1px solid var(--burgundy-glow);
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            margin-top: 0.75rem;
         }
 
         /* Footer */
@@ -482,6 +571,13 @@
             border-color: var(--burgundy);
         }
 
+        .footer code {
+            font-size: 0.68rem;
+            background: var(--cream-dark);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+        }
+
         /* Animations */
         @keyframes rise {
             from {
@@ -495,54 +591,22 @@
         }
 
         /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--ink-faint); border-radius: 3px; }
+        .code-block::-webkit-scrollbar-thumb { background: rgba(200, 194, 184, 0.3); }
 
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--ink-faint);
-            border-radius: 3px;
-        }
-
-        .code-block::-webkit-scrollbar-thumb {
-            background: rgba(200, 194, 184, 0.3);
-        }
-
-        /* Mobile refinements */
+        /* Mobile */
         @media (max-width: 600px) {
-            .container {
-                padding: 0 1.25rem;
-            }
-
-            .header {
-                padding-top: 2rem;
-            }
-
-            .header h1 {
-                font-size: 1.5rem;
-            }
-
-            .field-row {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
-
-            .code-block {
-                border-radius: var(--radius-sm);
-                padding: 1rem;
-            }
-
-            .code-block pre {
-                font-size: 0.65rem;
-            }
+            .container { padding: 0 1.25rem; }
+            .header { padding-top: 2rem; }
+            .header h1 { font-size: 1.5rem; }
+            .field-row, .field-row-3 { grid-template-columns: 1fr; gap: 0; }
+            .code-block { border-radius: var(--radius-sm); padding: 1rem; }
+            .code-block pre { font-size: 0.65rem; }
         }
 
-        /* Toast notification */
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -595,20 +659,38 @@
                 <input type="url" id="url" placeholder="https://..." autocomplete="off">
             </div>
 
+            <div class="field">
+                <label for="author">Author / Source</label>
+                <input type="text" id="author" placeholder="Joshua Rothman · The New Yorker, 2024" autocomplete="off">
+            </div>
+
             <div class="field-row">
                 <div class="field">
-                    <label for="author">Author / Source</label>
-                    <input type="text" id="author" placeholder="Joshua Rothman (2024)" autocomplete="off">
+                    <label for="date">Date Added</label>
+                    <input type="text" id="date" placeholder="7 Feb 2026" autocomplete="off">
                 </div>
                 <div class="field">
-                    <label for="date">Date Added</label>
-                    <input type="text" id="date" placeholder="07/02/2026" autocomplete="off">
+                    <label for="tag">Tag</label>
+                    <input type="text" id="tag" placeholder="article" autocomplete="off">
                 </div>
             </div>
 
+            <!-- Quick tag selection -->
+            <div class="tag-options" id="tagOptions">
+                <span class="tag-pill" data-tag="article">article</span>
+                <span class="tag-pill" data-tag="essay">essay</span>
+                <span class="tag-pill" data-tag="video">video</span>
+                <span class="tag-pill" data-tag="paper">paper</span>
+                <span class="tag-pill" data-tag="tool">tool</span>
+                <span class="tag-pill" data-tag="vibe-coded">vibe-coded</span>
+                <span class="tag-pill" data-tag="podcast">podcast</span>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;"></div>
+
             <div class="field">
-                <label for="description">Your note</label>
-                <textarea id="description" placeholder="A brief note on why this is worth reading..." rows="3"></textarea>
+                <label for="note">Your note</label>
+                <textarea id="note" placeholder="A brief note on why this is worth reading..." rows="3"></textarea>
             </div>
 
             <div class="toggle-row">
@@ -643,17 +725,21 @@
 
             <div class="preview-area">
                 <div class="preview-title">Preview</div>
-                <div class="preview-card">
-                    <a class="p-title" id="previewTitle" href="#">Title</a>
+                <div class="preview-card" id="previewCard">
+                    <div class="preview-top">
+                        <span class="p-title" id="previewTitle">Title</span>
+                        <svg class="p-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                    </div>
                     <div class="p-meta" id="previewMeta">by Author · added Date</div>
-                    <p class="p-desc" id="previewDesc">Description</p>
+                    <p class="p-note" id="previewNote">Note</p>
+                    <span class="p-tag" id="previewTag">tag</span>
                 </div>
             </div>
         </div>
 
         <!-- Footer -->
         <footer class="footer">
-            <p>paste into your <a href="https://github.com/lmpollockmuguruza/lmpollockmuguruza.github.io" target="_blank">index.html</a> — inside the <code style="font-size:0.68rem; background:var(--cream-dark); padding:0.15rem 0.4rem; border-radius:4px;">#interests</code> section</p>
+            <p>paste into <a href="https://github.com/lmpollockmuguruza/lmpollockmuguruza.github.io" target="_blank">ofinterest/index.html</a> — inside the <code>.items</code> div</p>
         </footer>
     </div>
 
@@ -661,14 +747,30 @@
     <div class="toast" id="toast">Copied to clipboard</div>
 
     <script>
-        // Auto-fill today's date in DD/MM/YYYY format
+        // Auto-fill today's date in "7 Feb 2026" format
         (function() {
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
             const now = new Date();
-            const dd = String(now.getDate()).padStart(2, '0');
-            const mm = String(now.getMonth() + 1).padStart(2, '0');
-            const yyyy = now.getFullYear();
-            document.getElementById('date').value = `${dd}/${mm}/${yyyy}`;
+            document.getElementById('date').value = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
         })();
+
+        // Tag pill quick-select
+        document.querySelectorAll('.tag-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                // Toggle active state
+                document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                document.getElementById('tag').value = pill.dataset.tag;
+            });
+        });
+
+        // Sync tag input with pills
+        document.getElementById('tag').addEventListener('input', (e) => {
+            const val = e.target.value.trim().toLowerCase();
+            document.querySelectorAll('.tag-pill').forEach(p => {
+                p.classList.toggle('active', p.dataset.tag === val);
+            });
+        });
 
         function escapeHtml(str) {
             return str
@@ -683,7 +785,8 @@
             const url = document.getElementById('url').value.trim();
             const author = document.getElementById('author').value.trim();
             const date = document.getElementById('date').value.trim();
-            const description = document.getElementById('description').value.trim();
+            const tag = document.getElementById('tag').value.trim().toLowerCase();
+            const note = document.getElementById('note').value.trim();
             const external = document.getElementById('external').checked;
 
             if (!title) {
@@ -698,31 +801,57 @@
                 return;
             }
 
-            // Build the target attribute
-            const targetAttr = external ? ' target="_blank"' : '';
+            // Build attributes
+            const extAttrs = external ? ' target="_blank" rel="noopener"' : '';
+            const metaParts = [];
+            if (author) metaParts.push(`by ${author}`);
+            if (date) metaParts.push(`added ${date}`);
+            const metaText = metaParts.join(' · ');
 
-            // Build raw HTML string
-            const rawHtml = 
-`<div class="interest-item scroll-animate">
-    <div class="interest-header">
-        <a href="${url}"${targetAttr} class="interest-title">${title}</a>
-        <span class="interest-meta">by ${author || '—'} · added ${date || '—'}</span>
-    </div>
-    <p class="interest-description">${description || ''}</p>
-</div>`;
+            // Build raw HTML
+            const tagLine = tag ? `\n                <span class="item-tag">${tag}</span>` : '';
+            const rawHtml =
+`            <a href="${url}"${extAttrs} class="item">
+                <div class="item-top">
+                    <span class="item-title">${title}</span>
+                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <div class="item-meta">${metaText}</div>
+                <p class="item-note">${note || ''}</p>${tagLine}
+            </a>`;
 
-            // Store raw for copying
             window._rawSnippet = rawHtml;
 
-            // Build syntax-highlighted version for display
-            const highlighted = buildHighlighted(title, url, targetAttr, author, date, description);
+            // Syntax-highlighted display
+            const e = escapeHtml;
+            const tagHighlight = tag
+                ? `\n                <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="str">"item-tag"</span><span class="tag">&gt;</span><span class="text">${e(tag)}</span><span class="tag">&lt;/span&gt;</span>`
+                : '';
+
+            const highlighted = [
+                `<span class="tag">&lt;a</span> <span class="attr">href=</span><span class="str">"${e(url)}"</span>${external ? ` <span class="attr">target=</span><span class="str">"_blank"</span> <span class="attr">rel=</span><span class="str">"noopener"</span>` : ''} <span class="attr">class=</span><span class="str">"item"</span><span class="tag">&gt;</span>`,
+                `    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"item-top"</span><span class="tag">&gt;</span>`,
+                `        <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="str">"item-title"</span><span class="tag">&gt;</span><span class="text">${e(title)}</span><span class="tag">&lt;/span&gt;</span>`,
+                `        <span class="tag">&lt;svg</span> <span class="attr">class=</span><span class="str">"item-arrow"</span> ...<span class="tag">&gt;&lt;/svg&gt;</span>`,
+                `    <span class="tag">&lt;/div&gt;</span>`,
+                `    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"item-meta"</span><span class="tag">&gt;</span><span class="text">${e(metaText)}</span><span class="tag">&lt;/div&gt;</span>`,
+                `    <span class="tag">&lt;p</span> <span class="attr">class=</span><span class="str">"item-note"</span><span class="tag">&gt;</span><span class="text">${e(note || '')}</span><span class="tag">&lt;/p&gt;</span>${tagHighlight}`,
+                `<span class="tag">&lt;/a&gt;</span>`
+            ].join('\n');
+
             document.getElementById('codeOutput').innerHTML = highlighted;
 
             // Update preview
             document.getElementById('previewTitle').textContent = title;
-            document.getElementById('previewTitle').href = url;
-            document.getElementById('previewMeta').textContent = `by ${author || '—'} · added ${date || '—'}`;
-            document.getElementById('previewDesc').textContent = description || '';
+            document.getElementById('previewMeta').textContent = metaText;
+            document.getElementById('previewNote').textContent = note || '';
+            const previewTag = document.getElementById('previewTag');
+            if (tag) {
+                previewTag.textContent = tag;
+                previewTag.style.display = 'inline-block';
+            } else {
+                previewTag.style.display = 'none';
+            }
 
             // Show output
             const output = document.getElementById('outputArea');
@@ -737,24 +866,9 @@
                 btn.classList.remove('success');
             }, 1500);
 
-            // Scroll to output smoothly
             setTimeout(() => {
                 output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }, 100);
-        }
-
-        function buildHighlighted(title, url, targetAttr, author, date, description) {
-            const e = escapeHtml;
-            const lines = [
-                `<span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"interest-item scroll-animate"</span><span class="tag">&gt;</span>`,
-                `    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"interest-header"</span><span class="tag">&gt;</span>`,
-                `        <span class="tag">&lt;a</span> <span class="attr">href=</span><span class="str">"${e(url)}"</span>${targetAttr ? ` <span class="attr">target=</span><span class="str">"_blank"</span>` : ''} <span class="attr">class=</span><span class="str">"interest-title"</span><span class="tag">&gt;</span><span class="text">${e(title)}</span><span class="tag">&lt;/a&gt;</span>`,
-                `        <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="str">"interest-meta"</span><span class="tag">&gt;</span><span class="text">by ${e(author || '—')} · added ${e(date || '—')}</span><span class="tag">&lt;/span&gt;</span>`,
-                `    <span class="tag">&lt;/div&gt;</span>`,
-                `    <span class="tag">&lt;p</span> <span class="attr">class=</span><span class="str">"interest-description"</span><span class="tag">&gt;</span><span class="text">${e(description || '')}</span><span class="tag">&lt;/p&gt;</span>`,
-                `<span class="tag">&lt;/div&gt;</span>`
-            ];
-            return lines.join('\n');
         }
 
         async function copyCode() {
@@ -762,24 +876,23 @@
 
             try {
                 await navigator.clipboard.writeText(window._rawSnippet);
-                
+
                 const btn = document.getElementById('copyBtn');
                 const text = document.getElementById('copyText');
                 const icon = document.getElementById('copyIcon');
-                
+
                 btn.classList.add('copied');
                 text.textContent = 'Copied';
                 icon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
-                
+
                 showToast('Copied to clipboard');
-                
+
                 setTimeout(() => {
                     btn.classList.remove('copied');
                     text.textContent = 'Copy';
                     icon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>';
                 }, 2000);
             } catch {
-                // Fallback
                 const ta = document.createElement('textarea');
                 ta.value = window._rawSnippet;
                 ta.style.position = 'fixed';
@@ -799,7 +912,7 @@
             setTimeout(() => toast.classList.remove('show'), 2000);
         }
 
-        // Allow Ctrl/Cmd+Enter to generate
+        // Ctrl/Cmd+Enter to generate
         document.addEventListener('keydown', (e) => {
             if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
                 e.preventDefault();
