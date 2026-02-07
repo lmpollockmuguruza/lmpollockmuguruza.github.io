@@ -195,7 +195,7 @@
         <div class="panel active" id="panel-az"></div>
         <div class="panel" id="panel-region"></div>
         <div class="panel" id="panel-works"></div>
-        <div class="panel" id="panel-map"><div id="mapContainer"></div><p class="map-legend">Click a marker to learn more about the work.</p></div>
+        <div class="panel" id="panel-map"><div id="mapContainer"></div><p class="map-legend">Click a marker to learn more about the work.<br><span style="font-size:.65rem;color:var(--ink-ghost);font-style:normal">⚠ Locations are approximate and may not reflect exact addresses—please verify before visiting.</span></p></div>
         <footer class="page-footer">
             <div class="footer-left"><a href="../">&#8592; back to portfolio</a></div>
             <div class="footer-right">look up from your phone</div>
@@ -217,21 +217,21 @@ const architects=[
 {name:"Agust\u00edn Hern\u00e1ndez Navarro",country:"Mexico",region:"Latin America",tags:["brutalist","sculptural","pre-columbian"],url:gImg("Agust\u00edn Hern\u00e1ndez Navarro architecture Mexico"),preview:""},
 {name:"Tatiana Bilbao",country:"Mexico",region:"Latin America",tags:["social","sustainable"],url:"https://tatianabilbao.com/",preview:thu("https://tatianabilbao.com/")},
 {name:"Alberto Kalach",country:"Mexico",region:"Latin America",tags:["modernist","landscape"],url:gImg("Alberto Kalach architect Mexico"),preview:""},
-{name:"Tadao Ando",country:"Japan",region:"Asia",tags:["concrete","minimalist","light"],url:"https://www.archdaily.com/tag/tadao-ando",preview:thu("https://www.archdaily.com/tag/tadao-ando")},
+{name:"Tadao Ando",country:"Japan",region:"Asia",tags:["concrete","minimalist","light"],url:gImg("Tadao Ando architecture concrete"),preview:""},
 {name:"Kengo Kuma",country:"Japan",region:"Asia",tags:["timber","organic","transparent"],url:"https://kkaa.co.jp/",preview:thu("https://kkaa.co.jp/")},
 {name:"Kazuyo Sejima / SANAA",country:"Japan",region:"Asia",tags:["minimalist","ethereal","glass"],url:"https://www.sanaa.co.jp/",preview:thu("https://www.sanaa.co.jp/")},
-{name:"Ludwig Godefroy",country:"France / Mexico",region:"Latin America",tags:["brutalist","pre-columbian","concrete"],url:"https://www.archdaily.com/office/ludwig-godefroy-architecture",preview:thu("https://www.archdaily.com/office/ludwig-godefroy-architecture")},
-{name:"Paulo Mendes da Rocha",country:"Brazil",region:"Latin America",tags:["brutalist","modernist"],url:"https://www.archdaily.com/tag/paulo-mendes-da-rocha",preview:thu("https://www.archdaily.com/tag/paulo-mendes-da-rocha")},
-{name:"Oscar Niemeyer",country:"Brazil",region:"Latin America",tags:["modernist","curvilinear","monumental"],url:"https://www.archdaily.com/tag/oscar-niemeyer",preview:thu("https://www.archdaily.com/tag/oscar-niemeyer")},
+{name:"Ludwig Godefroy",country:"France / Mexico",region:"Latin America",tags:["brutalist","pre-columbian","concrete"],url:gImg("Ludwig Godefroy architecture Mexico brutalist"),preview:""},
+{name:"Paulo Mendes da Rocha",country:"Brazil",region:"Latin America",tags:["brutalist","modernist"],url:gImg("Paulo Mendes da Rocha architecture Brazil"),preview:""},
+{name:"Oscar Niemeyer",country:"Brazil",region:"Latin America",tags:["modernist","curvilinear","monumental"],url:gImg("Oscar Niemeyer architecture Brazil"),preview:""},
 {name:"Zaha Hadid",country:"Iraq / UK",region:"Europe",tags:["parametric","futuristic","fluid"],url:"https://www.zaha-hadid.com/",preview:thu("https://www.zaha-hadid.com/")},
 {name:"Frank Lloyd Wright",country:"United States",region:"North America",tags:["organic","prairie","modernist"],url:"https://franklloydwright.org/",preview:thu("https://franklloydwright.org/")},
-{name:"\u00c1lvaro Siza Vieira",country:"Portugal",region:"Europe",tags:["minimalist","sculptural","white"],url:"https://www.archdaily.com/tag/alvaro-siza",preview:thu("https://www.archdaily.com/tag/alvaro-siza")},
-{name:"Shelley McNamara",country:"Ireland",region:"Europe",tags:["civic","crafted"],url:"https://www.archdaily.com/tag/grafton-architects",preview:thu("https://www.archdaily.com/tag/grafton-architects")},
-{name:"Yvonne Farrell",country:"Ireland",region:"Europe",tags:["civic","tectonic"],url:"https://www.archdaily.com/tag/grafton-architects",preview:""},
+{name:"\u00c1lvaro Siza Vieira",country:"Portugal",region:"Europe",tags:["minimalist","sculptural","white"],url:gImg("\u00c1lvaro Siza Vieira architecture Portugal"),preview:""},
+{name:"Shelley McNamara",country:"Ireland",region:"Europe",tags:["civic","crafted"],url:gImg("Grafton Architects Shelley McNamara architecture"),preview:""},
+{name:"Yvonne Farrell",country:"Ireland",region:"Europe",tags:["civic","tectonic"],url:gImg("Grafton Architects Yvonne Farrell architecture"),preview:""},
 {name:"Luciano Kruk",country:"Argentina",region:"Latin America",tags:["concrete","residential","landscape"],url:"https://lucianokruk.com/",preview:thu("https://lucianokruk.com/")},
 {name:"Fernanda Canales",country:"Mexico",region:"Latin America",tags:["residential","social","garden"],url:"https://www.fernandacanales.com/",preview:thu("https://www.fernandacanales.com/")},
-{name:"Walter Maria F\u00f6rderer",country:"Switzerland",region:"Europe",tags:["brutalist","ecclesiastical","sculptural"],url:gImg("Walter Maria F\u00f6rderer architecture brutalist church"),preview:""},
-{name:"Peter Zumthor",country:"Switzerland",region:"Europe",tags:["phenomenological","material","atmospheric"],url:"https://www.archdaily.com/tag/peter-zumthor",preview:thu("https://www.archdaily.com/tag/peter-zumthor")},
+{name:"Walter Maria F\u00f6rderer",country:"Switzerland",region:"Europe",tags:["brutalist","ecclesiastical","sculptural"],url:gImg("Walter Maria F\u00f6rderer brutalist church architecture"),preview:""},
+{name:"Peter Zumthor",country:"Switzerland",region:"Europe",tags:["phenomenological","material","atmospheric"],url:gImg("Peter Zumthor architecture atmospheric"),preview:""},
 {name:"Pedro Reyes",country:"Mexico",region:"Latin America",tags:["sculpture","experimental","activist"],url:"https://www.pedroreyes.net/",preview:thu("https://www.pedroreyes.net/")},
 {name:"Fernando Menis",country:"Spain (Canarias)",region:"Europe",tags:["volcanic","raw","sculptural"],url:gImg("Fernando Menis architect Tenerife"),preview:""},
 {name:"Aires Mateus",country:"Portugal",region:"Europe",tags:["minimalist","void","white"],url:"https://www.airesmateus.com/",preview:thu("https://www.airesmateus.com/")},
@@ -247,7 +247,7 @@ const architects=[
 {name:"HEMAA",country:"Mexico",region:"Latin America",tags:["residential","urban","material"],url:"https://hemaa.mx/",preview:thu("https://hemaa.mx/")},
 {name:"PPAA",country:"Mexico",region:"Latin America",tags:["gallery","experimental"],url:"https://ppaa.mx/",preview:thu("https://ppaa.mx/")},
 {name:"David Chipperfield",country:"United Kingdom",region:"Europe",tags:["civic","restrained","classical-modern"],url:"https://davidchipperfield.com/",preview:thu("https://davidchipperfield.com/")},
-{name:"Gabriela Carrillo",country:"Mexico",region:"Latin America",tags:["civic","light","landscape"],url:"https://www.archdaily.com/tag/gabriela-carrillo",preview:thu("https://www.archdaily.com/tag/gabriela-carrillo")},
+{name:"Gabriela Carrillo",country:"Mexico",region:"Latin America",tags:["civic","light","landscape"],url:gImg("Gabriela Carrillo architect Mexico"),preview:""},
 {name:"Mauricio Rocha",country:"Mexico",region:"Latin America",tags:["earth","contextual","social"],url:gImg("Mauricio Rocha architect Mexico"),preview:""},
 {name:"Angelo Bucci",country:"Brazil",region:"Latin America",tags:["concrete","structural","modernist"],url:"https://www.spbr.arq.br/",preview:thu("https://www.spbr.arq.br/")},
 {name:"Hiroshi Nakamura & NAP",country:"Japan",region:"Asia",tags:["organic","ceremonial","nature"],url:"https://www.nakam.info/en/",preview:thu("https://www.nakam.info/en/")},
@@ -256,46 +256,141 @@ const architects=[
 {name:"Gradol\u00ed & Sanz",country:"Spain",region:"Europe",tags:["residential","sustainable"],url:"https://www.gradolisanz.com/",preview:""},
 {name:"Bonsar Architects",country:"Iran",region:"Middle East",tags:["residential","courtyard","material"],url:gImg("Bonsar architecture studio Iran"),preview:""},
 {name:"Luigi Moretti",country:"Italy",region:"Europe",tags:["baroque-modern","sculptural","spatial"],url:gImg("Luigi Moretti architect Rome works"),preview:""},
-{name:"Richard Neutra",country:"Austria / United States",region:"North America",tags:["modernist","glass","landscape"],url:"https://www.archdaily.com/tag/richard-neutra",preview:thu("https://www.archdaily.com/tag/richard-neutra")},
+{name:"Richard Neutra",country:"Austria / United States",region:"North America",tags:["modernist","glass","landscape"],url:gImg("Richard Neutra architecture modernist"),preview:""},
 {name:"SUPPOSE DESIGN OFFICE",country:"Japan",region:"Asia",tags:["experimental","boundary","nature"],url:"https://suppose.jp/",preview:thu("https://suppose.jp/")},
-{name:"Kenzo Tange",country:"Japan",region:"Asia",tags:["brutalist","metabolist","monumental"],url:"https://www.archdaily.com/tag/kenzo-tange",preview:thu("https://www.archdaily.com/tag/kenzo-tange")},
+{name:"Kenzo Tange",country:"Japan",region:"Asia",tags:["brutalist","metabolist","monumental"],url:gImg("Kenzo Tange architecture Japan"),preview:""},
 {name:"William Lescaze",country:"Switzerland / US",region:"North America",tags:["modernist","international style"],url:gImg("William Lescaze architect Philadelphia"),preview:""},
 {name:"Leopold Banchini",country:"Switzerland",region:"Europe",tags:["experimental","raw","poetic"],url:"https://www.leopoldbanchini.com/",preview:thu("https://www.leopoldbanchini.com/")},
+/* ─── ADD NEW STUDIOS ABOVE THIS LINE ─── */
 ];
 
 const works=[
-{name:"Complejo Cultural Teresa Carre\u00f1o",city:"Caracas",country:"Venezuela",region:"Latin America",architect:"Tom\u00e1s Lugo, Jes\u00fas Sandoval, Dietrich Kunckel",year:"1983",tags:["brutalist","cultural"],url:"https://en.wikipedia.org/wiki/Teresa_Carre%C3%B1o_Cultural_Complex",lat:10.499,lng:-66.898},
-{name:"UTEC",city:"Lima",country:"Peru",region:"Latin America",architect:"Grafton Architects",year:"2015",tags:["brutalist","educational"],url:"https://www.archdaily.com/595584/utec-universidad-de-ingenieria-y-tecnologia-grafton-architects",lat:-12.093,lng:-77.019},
-{name:"Museo Nacional de Antropolog\u00eda",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Pedro Ram\u00edrez V\u00e1zquez",year:"1964",tags:["modernist","museum"],url:"https://www.archdaily.com/785122/ad-classics-national-museum-of-anthropology-pedro-ramirez-vazquez",lat:19.426,lng:-99.186},
-{name:"Museo Jumex",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"David Chipperfield",year:"2013",tags:["gallery","contemporary"],url:"https://www.archdaily.com/451356/museo-jumex-david-chipperfield-architects",lat:19.440,lng:-99.204},
-{name:"Casa Praxis",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Agust\u00edn Hern\u00e1ndez Navarro",year:"1975",tags:["sculptural","residential"],url:"https://www.archdaily.com/1000662/architecture-classics-casa-en-el-aire-agustin-hernandez",lat:19.388,lng:-99.245},
-{name:"Casa en el Aire",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Agust\u00edn Hern\u00e1ndez Navarro",year:"1991",tags:["sculptural","residential"],url:"https://www.archdaily.com/1000662/architecture-classics-casa-en-el-aire-agustin-hernandez",lat:19.390,lng:-99.248},
-{name:"Casa Itamb\u00e9",city:"S\u00e3o Paulo",country:"Brazil",region:"Latin America",architect:"Paulo Mendes da Rocha",year:"1966",tags:["brutalist","residential"],url:gS("Casa Itamb\u00e9 Paulo Mendes da Rocha"),lat:-23.565,lng:-46.652},
-{name:"Casa Pedregal",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Luis Barrag\u00e1n",year:"1950",tags:["modernist","color","residential"],url:gS("Casa Pedregal Luis Barrag\u00e1n"),lat:19.330,lng:-99.194},
-{name:"Biblioteca Vasconcelos",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Alberto Kalach",year:"2006",tags:["monumental","library"],url:"https://www.archdaily.com/175847/jose-vasconcelos-library-alberto-kalach",lat:19.444,lng:-99.153},
+/* ═══ CARACAS ═══ */
+{name:"Complejo Cultural Teresa Carre\u00f1o",city:"Caracas",country:"Venezuela",region:"Latin America",architect:"Tom\u00e1s Lugo, Jes\u00fas Sandoval, Dietrich Kunckel",year:"1983",tags:["brutalist","cultural"],url:gImg("Teresa Carre\u00f1o Cultural Complex Caracas architecture"),lat:10.499,lng:-66.898},
+/* ═══ LIMA ═══ */
+{name:"UTEC (University of Engineering and Technology)",city:"Lima",country:"Peru",region:"Latin America",architect:"Grafton Architects",year:"2015",tags:["brutalist","educational"],url:gImg("UTEC Lima Grafton Architects building"),lat:-12.093,lng:-77.019},
+/* ═══ MEXICO CITY ═══ */
+{name:"Museo Nacional de Antropolog\u00eda",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Pedro Ram\u00edrez V\u00e1zquez",year:"1964",tags:["modernist","museum"],url:gImg("Museo Nacional Antropolog\u00eda Mexico City architecture"),lat:19.426,lng:-99.186},
+{name:"Museo Jumex",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"David Chipperfield",year:"2013",tags:["gallery","contemporary"],url:gImg("Museo Jumex David Chipperfield Mexico City"),lat:19.440,lng:-99.204},
+{name:"Casa Praxis",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Agust\u00edn Hern\u00e1ndez Navarro",year:"1975",tags:["sculptural","residential"],url:gImg("Casa Praxis Agust\u00edn Hern\u00e1ndez Navarro Mexico"),lat:19.388,lng:-99.245},
+{name:"Casa en el Aire",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Agust\u00edn Hern\u00e1ndez Navarro",year:"1991",tags:["sculptural","residential"],url:gImg("Casa en el Aire Agust\u00edn Hern\u00e1ndez Navarro Mexico"),lat:19.390,lng:-99.248},
+{name:"Biblioteca Vasconcelos",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Alberto Kalach",year:"2006",tags:["monumental","library"],url:gImg("Biblioteca Vasconcelos Alberto Kalach interior"),lat:19.444,lng:-99.153},
 {name:"Pedro Reyes' Studio",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Pedro Reyes",year:"",tags:["studio","experimental"],url:"https://www.pedroreyes.net/",lat:19.352,lng:-99.162},
 {name:"Iglesia San Jos\u00e9 de las Palmas",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"",year:"",tags:["ecclesiastical"],url:gImg("Iglesia San Jos\u00e9 de las Palmas Mexico City"),lat:19.388,lng:-99.258},
-{name:"Casa Frida Kahlo",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"",year:"1904",tags:["museum","historic","color"],url:"https://www.museofridakahlo.org.mx/",lat:19.355,lng:-99.162},
-{name:"Ferrocarril de Cuernavaca 780",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"HEMAA",year:"",tags:["residential","urban"],url:"https://hemaa.mx/",lat:19.425,lng:-99.184},
-{name:"Artz Pedregal",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Sordo Madaleno",year:"2018",tags:["commercial","landscape"],url:"https://www.archdaily.com/902840/artz-pedregal-sordo-madaleno-arquitectos",lat:19.316,lng:-99.201},
-{name:"UNAM Campus",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Mario Pani, Enrique del Moral, et al.",year:"1952",tags:["modernist","campus","UNESCO"],url:gS("Ciudad Universitaria UNAM architecture"),lat:19.332,lng:-99.187},
-{name:"Pavilh\u00e3o de Portugal",city:"Lisbon",country:"Portugal",region:"Europe",architect:"\u00c1lvaro Siza Vieira",year:"1998",tags:["minimalist","pavilion","concrete"],url:"https://www.archdaily.com/907747/ad-classics-expo-98-portuguese-national-pavilion-alvaro-siza",lat:38.763,lng:-9.094},
-{name:"Front\u00f3n Beti Jai",city:"Madrid",country:"Spain",region:"Europe",architect:"Joaqu\u00edn Rucoba",year:"1894",tags:["historic","neo-mud\u00e9jar","sport"],url:"https://en.wikipedia.org/wiki/Beti_Jai_fronton",lat:40.431,lng:-3.694},
+{name:"Casa Frida Kahlo (La Casa Azul)",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"",year:"1904",tags:["museum","historic","color"],url:"https://www.museofridakahlo.org.mx/",lat:19.355,lng:-99.162},
+{name:"Ferrocarril de Cuernavaca 780",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"HEMAA",year:"",tags:["residential","urban"],url:gImg("Ferrocarril de Cuernavaca 780 HEMAA Mexico City"),lat:19.425,lng:-99.184},
+{name:"Artz Pedregal",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Sordo Madaleno",year:"2018",tags:["commercial","landscape"],url:gImg("Artz Pedregal Sordo Madaleno architecture"),lat:19.316,lng:-99.201},
+{name:"UNAM Campus (Ciudad Universitaria)",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Mario Pani, Enrique del Moral, et al.",year:"1952",tags:["modernist","campus","UNESCO"],url:gImg("Ciudad Universitaria UNAM architecture campus"),lat:19.332,lng:-99.187},
+{name:"Casa Pedregal",city:"Mexico City",country:"Mexico",region:"Latin America",architect:"Luis Barrag\u00e1n",year:"1950",tags:["modernist","color","residential"],url:gImg("Casa Pedregal Luis Barrag\u00e1n Mexico City"),lat:19.330,lng:-99.194},
+/* ═══ S\u00c3O PAULO / BRAZIL ═══ */
+{name:"Casa Itamb\u00e9",city:"S\u00e3o Paulo",country:"Brazil",region:"Latin America",architect:"Paulo Mendes da Rocha",year:"1966",tags:["brutalist","residential"],url:gImg("Casa Itamb\u00e9 Paulo Mendes da Rocha"),lat:-23.565,lng:-46.652},
+{name:"Casa Carapicu\u00edba",city:"Carapicu\u00edba",country:"Brazil",region:"Latin America",architect:"Angelo Bucci / SPBR",year:"2017",tags:["concrete","residential","structural"],url:gImg("Casa Carapicu\u00edba Angelo Bucci SPBR"),lat:-23.527,lng:-46.835},
+/* ═══ BUENOS AIRES ═══ */
+{name:"Luciano Kruk's Houses",city:"Buenos Aires Province",country:"Argentina",region:"Latin America",architect:"Luciano Kruk",year:"",tags:["concrete","residential","landscape"],url:"https://lucianokruk.com/",lat:-36.54,lng:-56.69},
+/* ═══ MEDELL\u00cdN ═══ */
+{name:"Biblioteca Central Universidad EAFIT",city:"Medell\u00edn",country:"Colombia",region:"Latin America",architect:"Daniel Bonilla Arquitectos",year:"2015",tags:["library","educational"],url:gImg("Biblioteca Central EAFIT Medell\u00edn architecture"),lat:6.200,lng:-75.578},
+/* ═══ CIALES, PUERTO RICO ═══ */
+{name:"Ciales Kindergarten",city:"Ciales",country:"Puerto Rico",region:"Latin America",architect:"Toro Arquitectos",year:"",tags:["educational","tropical"],url:gImg("Ciales Kindergarten Toro Arquitectos Puerto Rico"),lat:18.336,lng:-66.469},
+/* ═══ RESERVA PE\u00d1ITAS ═══ */
+{name:"Casa 720\u00b0",city:"Reserva Pe\u00f1itas",country:"Mexico",region:"Latin America",architect:"",year:"",tags:["residential","landscape"],url:gImg("Casa 720 grados Reserva Pe\u00f1itas Mexico architecture"),lat:19.420,lng:-100.250},
+/* ═══ VALLE DE BRAVO ═══ */
+{name:"Casa Copas",city:"Valle de Bravo",country:"Mexico",region:"Latin America",architect:"PPAA",year:"",tags:["residential","landscape"],url:gImg("Casa Copas PPAA Valle de Bravo Mexico"),lat:19.183,lng:-100.130},
+/* ═══ IXTAPA ═══ */
+{name:"Hotel Brisas Ixtapa",city:"Ixtapa, Guerrero",country:"Mexico",region:"Latin America",architect:"Ricardo Legorreta",year:"1981",tags:["resort","color","landscape"],url:gImg("Hotel Brisas Ixtapa Guerrero Mexico architecture"),lat:17.660,lng:-101.605},
+/* ═══ ACAPULCO ═══ */
+{name:"Casa Piedra (Stone House)",city:"Acapulco",country:"Mexico",region:"Latin America",architect:"Gabriela Carrillo",year:"",tags:["stone","residential","landscape"],url:gImg("Casa Piedra Stone House Gabriela Carrillo Acapulco"),lat:16.860,lng:-99.880},
+/* ═══ LISBON ═══ */
+{name:"Pavilh\u00e3o de Portugal",city:"Lisbon",country:"Portugal",region:"Europe",architect:"\u00c1lvaro Siza Vieira",year:"1998",tags:["minimalist","pavilion","concrete"],url:gImg("Pavilh\u00e3o de Portugal \u00c1lvaro Siza Lisbon"),lat:38.763,lng:-9.094},
+{name:"Casa em Estrela",city:"Lisbon",country:"Portugal",region:"Europe",architect:"Aires Mateus",year:"2017",tags:["minimalist","void","residential"],url:gImg("Casa em Estrela Aires Mateus Lisbon"),lat:38.710,lng:-9.155},
+{name:"Casa Moby",city:"Lisbon",country:"Portugal",region:"Europe",architect:"Aires Mateus",year:"",tags:["minimalist","residential"],url:gImg("Casa Moby Aires Mateus Lisbon"),lat:38.713,lng:-9.150},
+/* ═══ MADRID ═══ */
+{name:"Front\u00f3n Beti Jai",city:"Madrid",country:"Spain",region:"Europe",architect:"Joaqu\u00edn Rucoba",year:"1894",tags:["historic","neo-mud\u00e9jar","sport"],url:gImg("Front\u00f3n Beti Jai Madrid interior architecture"),lat:40.431,lng:-3.694},
 {name:"La Pagoda (demolished 1999)",city:"Madrid",country:"Spain",region:"Europe",architect:"Miguel Fisac",year:"1969",tags:["modernist","demolished","iconic"],url:gImg("La Pagoda Miguel Fisac Madrid"),lat:40.452,lng:-3.720},
-{name:"Biblioteca Escuelas P\u00edas",city:"Madrid",country:"Spain",region:"Europe",architect:"Jos\u00e9 Ignacio Linazasoro",year:"2004",tags:["adaptive reuse","library","ruins"],url:gS("Biblioteca Escuelas P\u00edas Linazasoro Madrid"),lat:40.427,lng:-3.700},
+{name:"Biblioteca Escuelas P\u00edas",city:"Madrid",country:"Spain",region:"Europe",architect:"Jos\u00e9 Ignacio Linazasoro",year:"2004",tags:["adaptive reuse","library","ruins"],url:gImg("Biblioteca Escuelas P\u00edas Linazasoro Madrid"),lat:40.427,lng:-3.700},
 {name:"Edificio Princesa",city:"Madrid",country:"Spain",region:"Europe",architect:"Fernando Higueras",year:"1975",tags:["brutalist","residential"],url:gImg("Edificio Princesa Fernando Higueras Madrid"),lat:40.432,lng:-3.715},
-{name:"Torre Castelar",city:"Madrid",country:"Spain",region:"Europe",architect:"Rafael de la Hoz",year:"1983",tags:["curtain wall","office"],url:gS("Torre Castelar Rafael de la Hoz Madrid"),lat:40.438,lng:-3.691},
-{name:"CaixaForum Madrid",city:"Madrid",country:"Spain",region:"Europe",architect:"Herzog & de Meuron",year:"2008",tags:["adaptive reuse","cultural","corten"],url:"https://www.archdaily.com/150541/caixaforum-madrid-herzog-and-de-meuron",lat:40.411,lng:-3.693},
-{name:"Infinito Delicias",city:"Madrid",country:"Spain",region:"Europe",architect:"",year:"",tags:["residential","contemporary"],url:gS("Infinito Delicias Madrid architecture"),lat:40.393,lng:-3.692},
-{name:"El Rascainfiernos",city:"Madrid",country:"Spain",region:"Europe",architect:"Fernando Higueras",year:"1973",tags:["underground","sustainable","studio"],url:"https://www.metalocus.es/en/news/fernando-higueras-foundation",lat:40.464,lng:-3.672},
+{name:"Torre Castelar",city:"Madrid",country:"Spain",region:"Europe",architect:"Rafael de la Hoz",year:"1983",tags:["curtain wall","office"],url:gImg("Torre Castelar Rafael de la Hoz Madrid"),lat:40.438,lng:-3.691},
+{name:"CaixaForum Madrid",city:"Madrid",country:"Spain",region:"Europe",architect:"Herzog & de Meuron",year:"2008",tags:["adaptive reuse","cultural","corten"],url:gImg("CaixaForum Madrid Herzog de Meuron"),lat:40.411,lng:-3.693},
+{name:"Infinito Delicias",city:"Madrid",country:"Spain",region:"Europe",architect:"",year:"",tags:["residential","contemporary"],url:gImg("Infinito Delicias Madrid building architecture"),lat:40.393,lng:-3.692},
+{name:"El Rascainfiernos",city:"Madrid",country:"Spain",region:"Europe",architect:"Fernando Higueras",year:"1973",tags:["underground","sustainable","studio"],url:gImg("El Rascainfiernos Fernando Higueras Madrid"),lat:40.464,lng:-3.672},
 {name:"Iglesia Ntra. Sra. del Rosario de Filipinas",city:"Madrid",country:"Spain",region:"Europe",architect:"Cecilio S\u00e1nchez-Robles",year:"1970",tags:["brutalist","ecclesiastical"],url:gImg("Iglesia Nuestra Se\u00f1ora del Rosario de Filipinas Madrid"),lat:40.435,lng:-3.716},
 {name:"Iglesia de Santa Ana y la Esperanza",city:"Madrid",country:"Spain",region:"Europe",architect:"Miguel Fisac",year:"1966",tags:["modernist","ecclesiastical"],url:gImg("Iglesia Santa Ana y la Esperanza Miguel Fisac Madrid"),lat:40.424,lng:-3.680},
-{name:"Luciano Kruk's Houses",city:"Buenos Aires Province",country:"Argentina",region:"Latin America",architect:"Luciano Kruk",year:"",tags:["concrete","residential","landscape"],url:"https://lucianokruk.com/",lat:-36.54,lng:-56.69},
+/* ═══ BARCELONA AREA ═══ */
+{name:"Solo House",city:"Matarra\u00f1a",country:"Spain",region:"Europe",architect:"Pezo von Ellrichshausen, Office KGDVS, et al.",year:"2017",tags:["residential","landscape","experimental"],url:gImg("Solo House Matarra\u00f1a Spain architecture"),lat:40.88,lng:0.08},
+{name:"Modulus Matrix",city:"Barcelona",country:"Spain",region:"Europe",architect:"",year:"",tags:["residential","modular"],url:gImg("Modulus Matrix Barcelona architecture building"),lat:41.389,lng:2.159},
+{name:"La Borda (cooperative social housing)",city:"Barcelona",country:"Spain",region:"Europe",architect:"Lacol",year:"2018",tags:["cooperative","social housing","timber"],url:gImg("La Borda Lacol cooperative housing Barcelona"),lat:41.373,lng:2.152},
+{name:"Biblioteca Gabriel Garc\u00eda M\u00e1rquez",city:"Barcelona",country:"Spain",region:"Europe",architect:"SUMA Arquitectura",year:"2022",tags:["library","civic","concrete"],url:gImg("Biblioteca Gabriel Garc\u00eda M\u00e1rquez Barcelona SUMA"),lat:41.419,lng:2.189},
+/* ═══ VALENCIA ═══ */
+{name:"Centro de Arte Hortensia Herrero",city:"Valencia",country:"Spain",region:"Europe",architect:"ERRE Arquitectura",year:"2023",tags:["museum","adaptive reuse","cultural"],url:"https://www.cahh.es/",lat:39.474,lng:-0.376},
+/* ═══ TENERIFE ═══ */
+{name:"Iglesia Sant\u00edsimo Redentor",city:"Tenerife",country:"Spain",region:"Europe",architect:"Fernando Menis",year:"2008",tags:["volcanic","ecclesiastical","sculptural"],url:gImg("Iglesia Sant\u00edsimo Redentor Fernando Menis Tenerife"),lat:28.456,lng:-16.308},
+/* ═══ LONDON ═══ */
 {name:"The Barbican (interiors)",city:"London",country:"United Kingdom",region:"Europe",architect:"Chamberlin, Powell & Bon",year:"1982",tags:["brutalist","residential","cultural"],url:"https://www.barbican.org.uk/",lat:51.520,lng:-0.094},
-{name:"Modern Wing, Art Institute of Chicago",city:"Chicago",country:"United States",region:"North America",architect:"Renzo Piano",year:"2009",tags:["museum","light"],url:"https://www.archdaily.com/24652/the-modern-wing-renzo-piano",lat:41.879,lng:-87.624},
-{name:"Schweikher House and Studio",city:"Schaumburg, IL",country:"United States",region:"North America",architect:"Paul Schweikher",year:"1938",tags:["modernist","residential"],url:gS("Paul Schweikher House Studio Schaumburg"),lat:42.031,lng:-88.083},
+/* ═══ MILAN ═══ */
+{name:"Biblioteca Sormani",city:"Milan",country:"Italy",region:"Europe",architect:"",year:"1956",tags:["library","classical","civic"],url:gImg("Biblioteca Sormani Milan interior architecture"),lat:45.459,lng:9.193},
+/* ═══ VENICE ═══ */
+{name:"Nordic Pavilion",city:"Venice",country:"Italy",region:"Europe",architect:"Sverre Fehn",year:"1962",tags:["modernist","pavilion","light"],url:gImg("Nordic Pavilion Venice Sverre Fehn Biennale"),lat:45.430,lng:12.356},
+/* ═══ PARIS ═══ */
+{name:"Sport Centre Jules Ladoum\u00e8gue",city:"Paris",country:"France",region:"Europe",architect:"Dietmar Feichtinger Architectes",year:"2014",tags:["sports","green roof","landscape"],url:gImg("Sport Centre Jules Ladoum\u00e8gue Paris architecture"),lat:48.892,lng:2.385},
+/* ═══ PRAGUE ═══ */
+{name:"Nov\u00e1 Sc\u00e9na (The New Stage)",city:"Prague",country:"Czech Republic",region:"Europe",architect:"Karel Prager",year:"1983",tags:["brutalist","glass","cultural"],url:gImg("Nov\u00e1 Sc\u00e9na New Stage Prague Karel Prager"),lat:50.081,lng:14.415},
+/* ═══ FINLAND ═══ */
+{name:"S\u00e4yn\u00e4tsalo Town Hall",city:"S\u00e4yn\u00e4tsalo",country:"Finland",region:"Europe",architect:"Alvar Aalto",year:"1952",tags:["modernist","civic","brick"],url:gImg("S\u00e4yn\u00e4tsalo Town Hall Alvar Aalto Finland"),lat:62.027,lng:25.789},
+/* ═══ ISTANBUL ═══ */
+{name:"Sancaklar Mosque",city:"Istanbul",country:"Turkey",region:"Middle East",architect:"Emre Arolat (EAA)",year:"2013",tags:["minimalist","cave-like","mosque"],url:gImg("Sancaklar Mosque Istanbul Emre Arolat architecture"),lat:41.020,lng:28.580},
+/* ═══ CHICAGO ═══ */
+{name:"Modern Wing, Art Institute of Chicago",city:"Chicago",country:"United States",region:"North America",architect:"Renzo Piano",year:"2009",tags:["museum","light"],url:gImg("Modern Wing Art Institute Chicago Renzo Piano"),lat:41.879,lng:-87.624},
+/* ═══ SCHAUMBURG ═══ */
+{name:"Schweikher House and Studio",city:"Schaumburg, IL",country:"United States",region:"North America",architect:"Paul Schweikher",year:"1938",tags:["modernist","residential"],url:gImg("Paul Schweikher House Studio Schaumburg Illinois"),lat:42.031,lng:-88.083},
+/* ═══ WASHINGTON D.C. ═══ */
 {name:"Washington D.C. Metro Stations",city:"Washington D.C.",country:"United States",region:"North America",architect:"Harry Weese",year:"1976",tags:["brutalist","infrastructure","vaulted"],url:gImg("Washington DC metro station architecture Harry Weese"),lat:38.907,lng:-77.009},
-{name:"George L. Mosse Humanities Building",city:"Madison, WI",country:"United States",region:"North America",architect:"Harry Weese",year:"1969",tags:["brutalist","educational"],url:"https://en.wikipedia.org/wiki/George_L._Mosse_Humanities_Building",lat:43.076,lng:-89.401},
+/* ═══ MADISON ═══ */
+{name:"George L. Mosse Humanities Building",city:"Madison, WI",country:"United States",region:"North America",architect:"Harry Weese",year:"1969",tags:["brutalist","educational"],url:gImg("George L. Mosse Humanities Building Madison Wisconsin"),lat:43.076,lng:-89.401},
+/* ═══ FALLINGWATER ═══ */
+{name:"Fallingwater",city:"Mill Run, PA",country:"United States",region:"North America",architect:"Frank Lloyd Wright",year:"1939",tags:["organic","residential","iconic"],url:"https://fallingwater.org/",lat:39.906,lng:-79.468},
+/* ═══ FRANK LLOYD WRIGHT \u2014 MAYAN REVIVAL / YODOK\u014c ═══ */
+{name:"Yodok\u014d Guest House",city:"Ashiya",country:"Japan",region:"Asia",architect:"Frank Lloyd Wright",year:"1924",tags:["Mayan Revival","residential","textile block"],url:gImg("Yodok\u014d Guest House Frank Lloyd Wright Ashiya Japan"),lat:34.744,lng:135.302},
+{name:"Ennis House (Mayan Revival)",city:"Los Angeles",country:"United States",region:"North America",architect:"Frank Lloyd Wright",year:"1924",tags:["Mayan Revival","residential","textile block"],url:gImg("Ennis House Frank Lloyd Wright Los Angeles"),lat:34.118,lng:-118.280},
+{name:"Hollyhock House (Mayan Revival)",city:"Los Angeles",country:"United States",region:"North America",architect:"Frank Lloyd Wright",year:"1921",tags:["Mayan Revival","residential","cultural"],url:gImg("Hollyhock House Frank Lloyd Wright Los Angeles"),lat:34.100,lng:-118.294},
+/* ═══ CUPERTINO ═══ */
+{name:"Apple Park",city:"Cupertino, CA",country:"United States",region:"North America",architect:"Foster + Partners",year:"2017",tags:["corporate","landscape","circular"],url:gImg("Apple Park Foster Partners Cupertino architecture"),lat:37.335,lng:-122.009},
+/* ═══ WEST HOLLYWOOD ═══ */
+{name:"Kings Road House (Schindler House)",city:"West Hollywood, CA",country:"United States",region:"North America",architect:"Rudolph Schindler",year:"1922",tags:["modernist","residential","open-plan"],url:"https://mfraa.org/schindler-house/",lat:34.082,lng:-118.366},
+/* ═══ PALM SPRINGS ═══ */
+{name:"Maslon House (demolished 2002)",city:"Palm Springs, CA",country:"United States",region:"North America",architect:"Richard Neutra",year:"1963",tags:["modernist","residential","desert"],url:gImg("Maslon House Richard Neutra Palm Springs"),lat:33.835,lng:-116.549},
+/* ═══ LOS ANGELES ═══ */
+/* ═══ NEW YORK ═══ */
+{name:"Sotheby's Madison Avenue (ex-Whitney Museum)",city:"New York",country:"United States",region:"North America",architect:"Marcel Breuer",year:"1966",tags:["brutalist","museum","iconic"],url:gImg("Marcel Breuer Whitney Museum 945 Madison Avenue New York"),lat:40.773,lng:-73.964},
+/* ═══ NUNAVUT ═══ */
+{name:"Nunavut Inuit Heritage Centre (unbuilt)",city:"Rankin Inlet",country:"Canada",region:"North America",architect:"Tundra Studio",year:"",tags:["cultural","unbuilt","indigenous"],url:gImg("Nunavut Inuit Heritage Centre architecture unbuilt"),lat:62.806,lng:-92.085},
+/* ═══ TOKYO ═══ */
+{name:"Small, narrow and vertical houses",city:"Tokyo",country:"Japan",region:"Asia",architect:"Various",year:"",tags:["residential","micro","vertical"],url:gImg("small narrow vertical houses Tokyo Japan architecture"),lat:35.681,lng:139.767},
+{name:"Waseda International House of Literature (Haruki Murakami Library)",city:"Tokyo",country:"Japan",region:"Asia",architect:"Kengo Kuma",year:"2021",tags:["library","cultural","timber"],url:gImg("Haruki Murakami Library Waseda Kengo Kuma Tokyo"),lat:35.709,lng:139.722},
+{name:"House T (A cave in a city)",city:"Tokyo (Shibuya)",country:"Japan",region:"Asia",architect:"SUPPOSE DESIGN OFFICE",year:"2020",tags:["concrete","cave-like","residential"],url:"https://suppose.jp/en/works/house-t/",lat:35.660,lng:139.701},
+{name:"Love2 House",city:"Tokyo",country:"Japan",region:"Asia",architect:"Takeshi Hosaka Architects",year:"2020",tags:["micro","residential","light"],url:gImg("Love2 House Takeshi Hosaka Architects Tokyo"),lat:35.650,lng:139.720},
+/* ═══ SEOUL ═══ */
+{name:"Small, narrow and vertical houses",city:"Seoul",country:"South Korea",region:"Asia",architect:"Various",year:"",tags:["residential","micro","vertical"],url:gImg("small narrow vertical houses Seoul Korea architecture"),lat:37.566,lng:126.978},
+/* ═══ ATSUGI ═══ */
+{name:"KAIT Plaza, Kanagawa Institute of Technology",city:"Atsugi",country:"Japan",region:"Asia",architect:"Junya Ishigami",year:"2008",tags:["minimalist","structural","ethereal"],url:gImg("KAIT Workshop Junya Ishigami Kanagawa Institute Technology"),lat:35.446,lng:139.345},
+/* ═══ KYOTO ═══ */
+{name:"Kyoto ICC (Garden of Fine Arts)",city:"Kyoto",country:"Japan",region:"Asia",architect:"Tadao Ando",year:"1994",tags:["cultural","concrete","water"],url:gImg("Garden of Fine Arts Kyoto Tadao Ando"),lat:35.057,lng:135.762},
+/* ═══ OSAKA ═══ */
+{name:"The Grand Ring (Expo 2025)",city:"Osaka",country:"Japan",region:"Asia",architect:"Sou Fujimoto",year:"2025",tags:["timber","ring","monumental"],url:gImg("Grand Ring Sou Fujimoto Osaka Expo 2025"),lat:34.645,lng:135.398},
+/* ═══ ASHIYA ═══ */
+/* ═══ HIROSHIMA ═══ */
+{name:"Optical Glass House",city:"Hiroshima",country:"Japan",region:"Asia",architect:"Hiroshi Nakamura & NAP",year:"2012",tags:["glass","residential","garden"],url:"https://www.nakam.info/en/works/optical-glass-house/",lat:34.395,lng:132.462},
+/* ═══ KARUIZAWA ═══ */
+{name:"Stone Church of Karuizawa",city:"Karuizawa, Nagano",country:"Japan",region:"Asia",architect:"Kendrick Bangs Kellogg",year:"1988",tags:["organic","ecclesiastical","stone"],url:gImg("Stone Church Karuizawa Kendrick Bangs Kellogg"),lat:36.344,lng:138.634},
+/* ═══ MINAKAMI ═══ */
+{name:"NOT A HOTEL MINAKAMI TOJI",city:"Minakami, Gunma",country:"Japan",region:"Asia",architect:"SUPPOSE DESIGN OFFICE",year:"2025",tags:["copper","hospitality","onsen"],url:"https://notahotel.com/en/marketplace/house-groups/minakami-toji-a",lat:36.770,lng:138.950},
+/* ═══ KANTO ═══ */
+{name:"Peninsula House",city:"Kanto",country:"Japan",region:"Asia",architect:"Mount Fuji Architects Studio",year:"",tags:["residential","landscape","timber"],url:gImg("Peninsula House Mount Fuji Architects Studio Japan"),lat:35.32,lng:139.55},
+/* ═══ SUZHOU ═══ */
+{name:"Suzhou Museum of Contemporary Art",city:"Suzhou",country:"China",region:"Asia",architect:"BIG (Bjarke Ingels Group)",year:"",tags:["museum","contemporary"],url:gImg("Suzhou Museum Contemporary Art BIG Bjarke Ingels"),lat:31.316,lng:120.606},
+/* ═══ ANHUI ═══ */
+{name:"Librairie Avant-Garde (Bishan Bookstore)",city:"Anhui",country:"China",region:"Asia",architect:"",year:"",tags:["bookstore","adaptive reuse","rural"],url:gImg("Librairie Avant-Garde Bishan Bookstore Anhui China"),lat:29.96,lng:118.15},
+/* ═══ VICTORIA, AUSTRALIA ═══ */
+{name:"Sawmill Treehouse",city:"Victoria",country:"Australia",region:"Oceania",architect:"Robbie Walker",year:"",tags:["treehouse","timber","nature"],url:gImg("Sawmill Treehouse Victoria Australia Robbie Walker"),lat:-37.700,lng:145.800},
+/* ─── ADD NEW WORKS ABOVE THIS LINE ─── */
 ];
 
 /* ═══ SORTING ═══ */
@@ -324,7 +419,7 @@ function buildAZ(list){
 /* ═══ REGION ═══ */
 function buildRegion(list){
   var panel=document.getElementById('panel-region');
-  var order=['Latin America','Europe','Asia','North America','Middle East'];
+  var order=['Latin America','Europe','Asia','North America','Middle East','Oceania'];
   var rg={};
   list.forEach(function(a){if(!rg[a.region])rg[a.region]={};if(!rg[a.region][a.country])rg[a.region][a.country]=[];rg[a.region][a.country].push(a)});
   var h='';

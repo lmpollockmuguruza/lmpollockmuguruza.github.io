@@ -3,922 +3,441 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>of interest — snippet tool</title>
+    <title>snippet tool — lucas pollock muguruza</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --cream:#f8f6f1;--cream-dark:#efece5;--warm-white:#fdfcfa;
+            --ink:#1a1816;--ink-soft:#3d3833;--ink-muted:#8a8279;--ink-faint:#b8b1a7;
+            --burgundy:#6b2737;--burgundy-soft:#8b3747;
+            --burgundy-wash:rgba(107,39,55,0.06);--burgundy-glow:rgba(107,39,55,0.12);
+            --border:rgba(26,24,22,0.08);--border-focus:rgba(107,39,55,0.3);
+            --shadow-sm:0 1px 2px rgba(26,24,22,0.04);--shadow-md:0 4px 16px rgba(26,24,22,0.06);--shadow-lg:0 8px 32px rgba(26,24,22,0.08);
+            --radius:12px;--radius-sm:8px;--transition:0.3s cubic-bezier(0.4,0,0.2,1);
         }
+        html{font-size:16px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+        body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;min-height:100dvh;line-height:1.6;overflow-x:hidden}
+        body::before{content:'';position:fixed;inset:0;opacity:0.025;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px}
+        ::selection{background:rgba(107,39,55,0.15);color:var(--ink)}
+        .container{max-width:540px;margin:0 auto;padding:0 1.5rem}
+        .header{padding:3rem 0 0;text-align:center;opacity:0;animation:rise .8s cubic-bezier(.16,1,.3,1) .1s forwards}
+        .header-mark{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;margin-bottom:1.5rem;position:relative}
+        .header-mark svg{width:22px;height:22px;stroke:var(--burgundy);fill:none;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round}
+        .header h1{font-family:'EB Garamond',Georgia,serif;font-size:1.75rem;font-weight:400;letter-spacing:-.02em;color:var(--ink);margin-bottom:.5rem}
+        .header p{font-size:.8rem;color:var(--ink-muted);font-weight:300;letter-spacing:.03em}
 
-        :root {
-            --cream: #f8f6f1;
-            --cream-dark: #efece5;
-            --warm-white: #fdfcfa;
-            --ink: #1a1816;
-            --ink-soft: #3d3833;
-            --ink-muted: #8a8279;
-            --ink-faint: #b8b1a7;
-            --burgundy: #6b2737;
-            --burgundy-soft: #8b3747;
-            --burgundy-wash: rgba(107, 39, 55, 0.06);
-            --burgundy-glow: rgba(107, 39, 55, 0.12);
-            --border: rgba(26, 24, 22, 0.08);
-            --border-focus: rgba(107, 39, 55, 0.3);
-            --shadow-sm: 0 1px 2px rgba(26, 24, 22, 0.04);
-            --shadow-md: 0 4px 16px rgba(26, 24, 22, 0.06);
-            --shadow-lg: 0 8px 32px rgba(26, 24, 22, 0.08);
-            --radius: 12px;
-            --radius-sm: 8px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        /* ═══ MODE TABS ═══ */
+        .mode-tabs{display:flex;justify-content:center;gap:0;margin:1.75rem auto 0;background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:3px;max-width:280px;opacity:0;animation:rise .8s cubic-bezier(.16,1,.3,1) .2s forwards}
+        .mode-tab{flex:1;padding:.5rem .75rem;font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);background:none;border:none;border-radius:6px;cursor:pointer;transition:all var(--transition);text-align:center}
+        .mode-tab:hover{color:var(--ink-muted)}
+        .mode-tab.active{color:var(--burgundy);background:var(--burgundy-wash);box-shadow:var(--shadow-sm)}
 
-        html {
-            font-size: 16px;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+        .divider{width:32px;height:1px;background:var(--border);margin:2rem auto;opacity:0;animation:rise .8s cubic-bezier(.16,1,.3,1) .25s forwards}
+        .form-area{padding-bottom:1rem;opacity:0;animation:rise .8s cubic-bezier(.16,1,.3,1) .35s forwards}
+        .mode-form{display:none}.mode-form.active{display:block}
 
-        body {
-            font-family: 'DM Sans', -apple-system, sans-serif;
-            background: var(--cream);
-            color: var(--ink);
-            min-height: 100vh;
-            min-height: 100dvh;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Subtle grain texture */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            opacity: 0.025;
-            pointer-events: none;
-            z-index: 9999;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            background-repeat: repeat;
-            background-size: 256px;
-        }
-
-        ::selection {
-            background: rgba(107, 39, 55, 0.15);
-            color: var(--ink);
-        }
-
-        /* Layout */
-        .container {
-            max-width: 540px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-
-        /* Header */
-        .header {
-            padding: 3rem 0 0;
-            text-align: center;
-            opacity: 0;
-            animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
-        }
-
-        .header-mark {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-
-        .header-mark svg {
-            width: 22px;
-            height: 22px;
-            stroke: var(--burgundy);
-            fill: none;
-            stroke-width: 1.2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .header h1 {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1.75rem;
-            font-weight: 400;
-            letter-spacing: -0.02em;
-            color: var(--ink);
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            font-size: 0.8rem;
-            color: var(--ink-muted);
-            font-weight: 300;
-            letter-spacing: 0.03em;
-        }
-
-        /* Divider */
-        .divider {
-            width: 32px;
-            height: 1px;
-            background: var(--border);
-            margin: 2rem auto;
-            opacity: 0;
-            animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards;
-        }
-
-        /* Form */
-        .form-area {
-            padding-bottom: 1rem;
-            opacity: 0;
-            animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
-        }
-
-        .field {
-            margin-bottom: 1.25rem;
-            position: relative;
-        }
-
-        .field label {
-            display: block;
-            font-size: 0.7rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--ink-muted);
-            margin-bottom: 0.5rem;
-            transition: color var(--transition);
-        }
-
-        .field:focus-within label {
-            color: var(--burgundy);
-        }
-
-        .field input,
-        .field textarea {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 400;
-            color: var(--ink);
-            background: var(--warm-white);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            outline: none;
-            transition: all var(--transition);
-            line-height: 1.5;
-        }
-
-        .field input::placeholder,
-        .field textarea::placeholder {
-            color: var(--ink-faint);
-            font-weight: 300;
-        }
-
-        .field input:focus,
-        .field textarea:focus {
-            border-color: var(--border-focus);
-            box-shadow: 0 0 0 3px var(--burgundy-wash);
-            background: #fff;
-        }
-
-        .field textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        /* Inline rows */
-        .field-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-        }
-
-        .field-row-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 0.75rem;
-        }
+        .field{margin-bottom:1.25rem;position:relative}
+        .field label{display:block;font-size:.7rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:.5rem;transition:color var(--transition)}
+        .field:focus-within label{color:var(--burgundy)}
+        .field input,.field textarea,.field select{width:100%;padding:.75rem 1rem;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:400;color:var(--ink);background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius-sm);outline:none;transition:all var(--transition);line-height:1.5}
+        .field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a8279' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem;cursor:pointer}
+        .field input::placeholder,.field textarea::placeholder{color:var(--ink-faint);font-weight:300}
+        .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px var(--burgundy-wash);background:#fff}
+        .field textarea{resize:vertical;min-height:80px}
+        .field-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+        .field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+        .field-help{font-size:.65rem;color:var(--ink-faint);font-weight:300;margin-top:.3rem;font-style:italic}
 
         /* Toggle */
-        .toggle-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.65rem 1rem;
-            background: var(--warm-white);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            margin-bottom: 1.25rem;
-            transition: all var(--transition);
-        }
+        .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1rem;background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:1.25rem;transition:all var(--transition)}
+        .toggle-row:hover{border-color:var(--border-focus)}
+        .toggle-label{font-size:.7rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted)}
+        .toggle-hint{font-size:.7rem;color:var(--ink-faint);font-weight:300;text-transform:none;letter-spacing:0;margin-left:.5rem}
+        .toggle{position:relative;width:36px;height:20px;flex-shrink:0}
+        .toggle input{opacity:0;width:0;height:0;position:absolute}
+        .toggle-track{position:absolute;inset:0;background:var(--cream-dark);border-radius:10px;cursor:pointer;transition:background var(--transition);border:1px solid var(--border)}
+        .toggle-track::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:white;border-radius:50%;box-shadow:var(--shadow-sm);transition:transform var(--transition)}
+        .toggle input:checked+.toggle-track{background:var(--burgundy);border-color:var(--burgundy)}
+        .toggle input:checked+.toggle-track::after{transform:translateX(16px)}
 
-        .toggle-row:hover {
-            border-color: var(--border-focus);
-        }
+        /* Tag pills */
+        .tag-options{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.5rem}
+        .tag-pill{display:inline-block;padding:.25rem .6rem;font-family:'DM Sans',sans-serif;font-size:.65rem;font-weight:500;letter-spacing:.04em;color:var(--ink-muted);background:var(--warm-white);border:1px solid var(--border);border-radius:20px;cursor:pointer;transition:all var(--transition);user-select:none}
+        .tag-pill:hover{border-color:var(--border-focus);color:var(--burgundy)}
+        .tag-pill.active{background:var(--burgundy-wash);border-color:var(--burgundy-glow);color:var(--burgundy)}
 
-        .toggle-label {
-            font-size: 0.7rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--ink-muted);
-        }
-
-        .toggle-hint {
-            font-size: 0.7rem;
-            color: var(--ink-faint);
-            font-weight: 300;
-            text-transform: none;
-            letter-spacing: 0;
-            margin-left: 0.5rem;
-        }
-
-        .toggle {
-            position: relative;
-            width: 36px;
-            height: 20px;
-            flex-shrink: 0;
-        }
-
-        .toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            position: absolute;
-        }
-
-        .toggle-track {
-            position: absolute;
-            inset: 0;
-            background: var(--cream-dark);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background var(--transition);
-            border: 1px solid var(--border);
-        }
-
-        .toggle-track::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 14px;
-            height: 14px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: var(--shadow-sm);
-            transition: transform var(--transition);
-        }
-
-        .toggle input:checked + .toggle-track {
-            background: var(--burgundy);
-            border-color: var(--burgundy);
-        }
-
-        .toggle input:checked + .toggle-track::after {
-            transform: translateX(16px);
-        }
-
-        /* Tag pills for selection */
-        .tag-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin-top: 0.5rem;
-        }
-
-        .tag-pill {
-            display: inline-block;
-            padding: 0.3rem 0.7rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.7rem;
-            font-weight: 500;
-            letter-spacing: 0.04em;
-            color: var(--ink-muted);
-            background: var(--warm-white);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all var(--transition);
-            user-select: none;
-        }
-
-        .tag-pill:hover {
-            border-color: var(--border-focus);
-            color: var(--burgundy);
-        }
-
-        .tag-pill.active {
-            background: var(--burgundy-wash);
-            border-color: var(--burgundy-glow);
-            color: var(--burgundy);
-        }
+        /* Arch sub-tabs */
+        .arch-sub-tabs{display:flex;gap:0;background:var(--warm-white);border:1px solid var(--border);border-radius:var(--radius-sm);padding:3px;margin-bottom:1.5rem}
+        .arch-sub-tab{flex:1;padding:.55rem .75rem;font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);background:none;border:none;border-radius:6px;cursor:pointer;transition:all var(--transition);text-align:center}
+        .arch-sub-tab:hover{color:var(--ink-muted)}
+        .arch-sub-tab.active{color:var(--ink);background:var(--cream-dark);box-shadow:var(--shadow-sm)}
+        .arch-sub-form{display:none}.arch-sub-form.active{display:block}
 
         /* Generate button */
-        .generate-btn {
-            width: 100%;
-            padding: 0.85rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.8rem;
-            font-weight: 500;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--cream);
-            background: var(--ink);
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
+        .generate-btn{width:100%;padding:.85rem;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--cream);background:var(--ink);border:none;border-radius:var(--radius-sm);cursor:pointer;transition:all var(--transition);position:relative;overflow:hidden}
+        .generate-btn:hover{background:var(--ink-soft);transform:translateY(-1px);box-shadow:var(--shadow-md)}
+        .generate-btn:active{transform:translateY(0);box-shadow:none}
+        .generate-btn.success{background:var(--burgundy)}
 
-        .generate-btn:hover {
-            background: var(--ink-soft);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
+        /* Output */
+        .output-area{margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border);opacity:0;transform:translateY(12px);transition:all .5s cubic-bezier(.16,1,.3,1);pointer-events:none}
+        .output-area.visible{opacity:1;transform:translateY(0);pointer-events:all}
+        .output-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+        .output-title{font-size:.7rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted)}
+        .copy-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .8rem;font-family:'DM Sans',sans-serif;font-size:.7rem;font-weight:500;letter-spacing:.04em;color:var(--burgundy);background:var(--burgundy-wash);border:1px solid transparent;border-radius:6px;cursor:pointer;transition:all var(--transition)}
+        .copy-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8}
+        .copy-btn:hover{background:var(--burgundy-glow);border-color:rgba(107,39,55,.15)}
+        .copy-btn.copied{color:var(--cream);background:var(--burgundy);border-color:var(--burgundy)}
+        .code-block{position:relative;background:var(--ink);border-radius:var(--radius);padding:1.25rem;overflow-x:auto;box-shadow:var(--shadow-lg)}
+        .code-block pre{font-family:'SF Mono','Fira Code','Cascadia Code',monospace;font-size:.72rem;line-height:1.7;color:#c8c2b8;white-space:pre;tab-size:4;margin:0}
+        .code-block .hl-key{color:#c9b87d}.code-block .hl-str{color:#a3be8c}.code-block .hl-fn{color:#d4907c}.code-block .hl-br{color:#8a8279}.code-block .hl-num{color:#b48ead}
+        .code-block .tag{color:#d4907c}.code-block .attr{color:#c9b87d}.code-block .str{color:#a3be8c}.code-block .text{color:#c8c2b8}
 
-        .generate-btn:active {
-            transform: translateY(0);
-            box-shadow: none;
-        }
+        /* Preview */
+        .preview-area{margin-top:1.75rem}
+        .preview-title{font-size:.7rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted);margin-bottom:1rem}
+        .preview-card{padding:1.5rem 1.75rem;background:var(--warm-white);border:1px solid var(--border);border-radius:14px;box-shadow:0 1px 3px rgba(26,24,22,.03),0 6px 24px rgba(26,24,22,.04);transition:all var(--transition)}
+        .preview-card:hover{box-shadow:0 2px 8px rgba(26,24,22,.05),0 12px 40px rgba(26,24,22,.07);border-color:rgba(107,39,55,.18);transform:translateY(-2px)}
+        .preview-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.5rem}
+        .preview-card .p-title{font-family:'EB Garamond',Georgia,serif;font-size:1.2rem;font-weight:500;line-height:1.35;color:var(--ink);text-decoration:none;transition:color var(--transition)}
+        .preview-card:hover .p-title{color:var(--burgundy)}
+        .preview-card .p-arrow{flex-shrink:0;width:18px;height:18px;stroke:var(--ink-faint);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-top:.2rem;transition:all var(--transition)}
+        .preview-card:hover .p-arrow{stroke:var(--burgundy);transform:translate(2px,-2px)}
+        .preview-card .p-meta{font-size:.78rem;color:var(--ink-faint);margin-bottom:.65rem;letter-spacing:.015em}
+        .preview-card .p-note{font-family:'EB Garamond',Georgia,serif;font-size:1rem;font-style:italic;line-height:1.6;color:var(--ink-muted)}
+        .preview-card .p-tag{display:inline-block;font-size:.65rem;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--burgundy);background:var(--burgundy-wash);border:1px solid var(--burgundy-glow);padding:.2rem .55rem;border-radius:4px;margin-top:.75rem}
 
-        .generate-btn.success {
-            background: var(--burgundy);
-        }
-
-        /* Output area */
-        .output-area {
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
-            opacity: 0;
-            transform: translateY(12px);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            pointer-events: none;
-        }
-
-        .output-area.visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: all;
-        }
-
-        .output-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-
-        .output-title {
-            font-size: 0.7rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--ink-muted);
-        }
-
-        .copy-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 0.8rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.7rem;
-            font-weight: 500;
-            letter-spacing: 0.04em;
-            color: var(--burgundy);
-            background: var(--burgundy-wash);
-            border: 1px solid transparent;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all var(--transition);
-        }
-
-        .copy-btn svg {
-            width: 13px;
-            height: 13px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 1.8;
-        }
-
-        .copy-btn:hover {
-            background: var(--burgundy-glow);
-            border-color: rgba(107, 39, 55, 0.15);
-        }
-
-        .copy-btn.copied {
-            color: var(--cream);
-            background: var(--burgundy);
-            border-color: var(--burgundy);
-        }
-
-        .code-block {
-            position: relative;
-            background: var(--ink);
-            border-radius: var(--radius);
-            padding: 1.25rem;
-            overflow-x: auto;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .code-block pre {
-            font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-            font-size: 0.72rem;
-            line-height: 1.7;
-            color: #c8c2b8;
-            white-space: pre;
-            tab-size: 4;
-            margin: 0;
-        }
-
-        .code-block .tag { color: #d4907c; }
-        .code-block .attr { color: #c9b87d; }
-        .code-block .str { color: #a3be8c; }
-        .code-block .text { color: #c8c2b8; }
-
-        /* Preview card */
-        .preview-area {
-            margin-top: 1.75rem;
-        }
-
-        .preview-title {
-            font-size: 0.7rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--ink-muted);
-            margin-bottom: 1rem;
-        }
-
-        .preview-card {
-            padding: 1.5rem 1.75rem;
-            background: var(--warm-white);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            box-shadow: 0 1px 3px rgba(26, 24, 22, 0.03), 0 6px 24px rgba(26, 24, 22, 0.04);
-            transition: all var(--transition);
-        }
-
-        .preview-card:hover {
-            box-shadow: 0 2px 8px rgba(26, 24, 22, 0.05), 0 12px 40px rgba(26, 24, 22, 0.07);
-            border-color: rgba(107, 39, 55, 0.18);
-            transform: translateY(-2px);
-        }
-
-        .preview-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .preview-card .p-title {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1.2rem;
-            font-weight: 500;
-            line-height: 1.35;
-            color: var(--ink);
-            text-decoration: none;
-            transition: color var(--transition);
-        }
-
-        .preview-card:hover .p-title {
-            color: var(--burgundy);
-        }
-
-        .preview-card .p-arrow {
-            flex-shrink: 0;
-            width: 18px;
-            height: 18px;
-            stroke: var(--ink-faint);
-            fill: none;
-            stroke-width: 1.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            margin-top: 0.2rem;
-            transition: all var(--transition);
-        }
-
-        .preview-card:hover .p-arrow {
-            stroke: var(--burgundy);
-            transform: translate(2px, -2px);
-        }
-
-        .preview-card .p-meta {
-            font-size: 0.78rem;
-            color: var(--ink-faint);
-            margin-bottom: 0.65rem;
-            letter-spacing: 0.015em;
-        }
-
-        .preview-card .p-note {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1rem;
-            font-style: italic;
-            line-height: 1.6;
-            color: var(--ink-muted);
-        }
-
-        .preview-card .p-tag {
-            display: inline-block;
-            font-size: 0.65rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--burgundy);
-            background: var(--burgundy-wash);
-            border: 1px solid var(--burgundy-glow);
-            padding: 0.2rem 0.55rem;
-            border-radius: 4px;
-            margin-top: 0.75rem;
-        }
+        /* Arch preview */
+        .arch-preview-card{padding:.85rem 1rem;background:var(--warm-white);border:1px solid var(--border);border-radius:14px;box-shadow:0 1px 3px rgba(26,24,22,.03),0 6px 24px rgba(26,24,22,.04);transition:all var(--transition)}
+        .arch-preview-card:hover{box-shadow:0 2px 8px rgba(26,24,22,.05),0 12px 40px rgba(26,24,22,.07);border-color:rgba(107,39,55,.18);transform:translateY(-2px)}
+        .arch-preview-card .ap-name{font-family:'EB Garamond',Georgia,serif;font-size:1.05rem;font-weight:500;color:var(--ink);line-height:1.3;transition:color var(--transition)}
+        .arch-preview-card:hover .ap-name{color:var(--burgundy)}
+        .arch-preview-card .ap-meta{font-size:.72rem;color:var(--ink-faint);margin-top:.15rem;letter-spacing:.015em}
+        .arch-preview-card .ap-tags{display:flex;flex-wrap:wrap;gap:.2rem;margin-top:.35rem}
+        .arch-preview-card .ap-tag{font-size:.55rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--burgundy);background:var(--burgundy-wash);border:1px solid var(--burgundy-glow);padding:.08rem .32rem;border-radius:3px}
 
         /* Footer */
-        .footer {
-            text-align: center;
-            padding: 3rem 0 2rem;
-            opacity: 0;
-            animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
-        }
+        .footer{text-align:center;padding:3rem 0 2rem;opacity:0;animation:rise .8s cubic-bezier(.16,1,.3,1) .5s forwards}
+        .footer p{font-size:.7rem;color:var(--ink-faint);font-weight:300;letter-spacing:.02em}
+        .footer a{color:var(--ink-muted);text-decoration:none;border-bottom:1px solid var(--border);transition:all var(--transition)}
+        .footer a:hover{color:var(--burgundy);border-color:var(--burgundy)}
+        .footer code{font-size:.68rem;background:var(--cream-dark);padding:.15rem .4rem;border-radius:4px}
 
-        .footer p {
-            font-size: 0.7rem;
-            color: var(--ink-faint);
-            font-weight: 300;
-            letter-spacing: 0.02em;
-        }
-
-        .footer a {
-            color: var(--ink-muted);
-            text-decoration: none;
-            border-bottom: 1px solid var(--border);
-            transition: all var(--transition);
-        }
-
-        .footer a:hover {
-            color: var(--burgundy);
-            border-color: var(--burgundy);
-        }
-
-        .footer code {
-            font-size: 0.68rem;
-            background: var(--cream-dark);
-            padding: 0.15rem 0.4rem;
-            border-radius: 4px;
-        }
-
-        /* Animations */
-        @keyframes rise {
-            from {
-                opacity: 0;
-                transform: translateY(16px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--ink-faint); border-radius: 3px; }
-        .code-block::-webkit-scrollbar-thumb { background: rgba(200, 194, 184, 0.3); }
-
-        /* Mobile */
-        @media (max-width: 600px) {
-            .container { padding: 0 1.25rem; }
-            .header { padding-top: 2rem; }
-            .header h1 { font-size: 1.5rem; }
-            .field-row, .field-row-3 { grid-template-columns: 1fr; gap: 0; }
-            .code-block { border-radius: var(--radius-sm); padding: 1rem; }
-            .code-block pre { font-size: 0.65rem; }
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--ink);
-            color: var(--cream);
-            padding: 0.7rem 1.25rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.78rem;
-            font-weight: 400;
-            letter-spacing: 0.02em;
-            box-shadow: var(--shadow-lg);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 100;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+        ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--ink-faint);border-radius:3px}.code-block::-webkit-scrollbar-thumb{background:rgba(200,194,184,.3)}
+        @media(max-width:600px){.container{padding:0 1.25rem}.header{padding-top:2rem}.header h1{font-size:1.5rem}.field-row,.field-row-3{grid-template-columns:1fr;gap:0}.code-block{border-radius:var(--radius-sm);padding:1rem}.code-block pre{font-size:.65rem}}
+        .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--cream);padding:.7rem 1.25rem;border-radius:var(--radius-sm);font-size:.78rem;font-weight:400;letter-spacing:.02em;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:all .4s cubic-bezier(.16,1,.3,1);z-index:100}
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header class="header">
-            <div class="header-mark">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                </svg>
-            </div>
-            <h1>of interest</h1>
-            <p>snippet generator for your site</p>
+            <div class="header-mark"><svg viewBox="0 0 24 24" id="headerIcon"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></div>
+            <h1>snippet tool</h1>
+            <p>generate entries for your site</p>
         </header>
+
+        <div class="mode-tabs">
+            <button class="mode-tab active" data-mode="interest" onclick="switchMode('interest')">Of Interest</button>
+            <button class="mode-tab" data-mode="arch" onclick="switchMode('arch')">Architecture</button>
+        </div>
 
         <div class="divider"></div>
 
-        <!-- Form -->
         <div class="form-area">
-            <div class="field">
-                <label for="title">Title</label>
-                <input type="text" id="title" placeholder="Should you just give up?" autocomplete="off">
-            </div>
-
-            <div class="field">
-                <label for="url">Link</label>
-                <input type="url" id="url" placeholder="https://..." autocomplete="off">
-            </div>
-
-            <div class="field">
-                <label for="author">Author / Source</label>
-                <input type="text" id="author" placeholder="Joshua Rothman · The New Yorker, 2024" autocomplete="off">
-            </div>
-
-            <div class="field-row">
-                <div class="field">
-                    <label for="date">Date Added</label>
-                    <input type="text" id="date" placeholder="7 Feb 2026" autocomplete="off">
+            <!-- ═══ OF INTEREST FORM ═══ -->
+            <div class="mode-form active" id="form-interest">
+                <div class="field"><label for="oi-title">Title</label><input type="text" id="oi-title" placeholder="Should you just give up?" autocomplete="off"></div>
+                <div class="field"><label for="oi-url">Link</label><input type="url" id="oi-url" placeholder="https://..." autocomplete="off"></div>
+                <div class="field"><label for="oi-author">Author / Source</label><input type="text" id="oi-author" placeholder="Joshua Rothman · The New Yorker, 2024" autocomplete="off"></div>
+                <div class="field-row">
+                    <div class="field"><label for="oi-date">Date Added</label><input type="text" id="oi-date" placeholder="7 Feb 2026" autocomplete="off"></div>
+                    <div class="field"><label for="oi-tag">Tag</label><input type="text" id="oi-tag" placeholder="article" autocomplete="off"></div>
                 </div>
-                <div class="field">
-                    <label for="tag">Tag</label>
-                    <input type="text" id="tag" placeholder="article" autocomplete="off">
+                <div class="tag-options" id="oiTagOptions">
+                    <span class="tag-pill" data-tag="article">article</span>
+                    <span class="tag-pill" data-tag="essay">essay</span>
+                    <span class="tag-pill" data-tag="video">video</span>
+                    <span class="tag-pill" data-tag="paper">paper</span>
+                    <span class="tag-pill" data-tag="tool">tool</span>
+                    <span class="tag-pill" data-tag="vibe-coded">vibe-coded</span>
+                    <span class="tag-pill" data-tag="podcast">podcast</span>
+                </div>
+                <div style="margin-bottom:1.25rem"></div>
+                <div class="field"><label for="oi-note">Your note</label><textarea id="oi-note" placeholder="A brief note on why this is worth reading..." rows="3"></textarea></div>
+                <div class="toggle-row"><div><span class="toggle-label">External link</span><span class="toggle-hint">opens in new tab</span></div><label class="toggle"><input type="checkbox" id="oi-external" checked><span class="toggle-track"></span></label></div>
+                <button class="generate-btn" onclick="generateInterest()">Generate snippet</button>
+            </div>
+
+            <!-- ═══ ARCHITECTURE FORM ═══ -->
+            <div class="mode-form" id="form-arch">
+                <div class="arch-sub-tabs">
+                    <button class="arch-sub-tab active" data-sub="studio" onclick="switchArchSub('studio')">Studio</button>
+                    <button class="arch-sub-tab" data-sub="work" onclick="switchArchSub('work')">Work</button>
+                </div>
+
+                <!-- Studio fields -->
+                <div class="arch-sub-form active" id="arch-studio">
+                    <div class="field"><label for="as-name">Name</label><input type="text" id="as-name" placeholder="Tadao Ando" autocomplete="off"></div>
+                    <div class="field-row">
+                        <div class="field"><label for="as-country">Country</label><input type="text" id="as-country" placeholder="Japan" autocomplete="off"></div>
+                        <div class="field"><label for="as-region">Region</label><select id="as-region"><option value="">Select…</option><option value="Latin America">Latin America</option><option value="Europe">Europe</option><option value="Asia">Asia</option><option value="North America">North America</option><option value="Middle East">Middle East</option><option value="Oceania">Oceania</option><option value="Africa">Africa</option></select></div>
+                    </div>
+                    <div class="field"><label for="as-url">Link <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:.65rem;color:var(--ink-faint)">— leave empty for Google Images</span></label><input type="url" id="as-url" placeholder="https://studio-website.com" autocomplete="off"></div>
+                    <div class="field"><label>Tags <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:.65rem;color:var(--ink-faint)">— click to select multiple</span></label><div class="tag-options" id="asTagOptions"></div></div>
+                    <div style="margin-bottom:1.25rem"></div>
+                    <button class="generate-btn" onclick="generateStudio()">Generate studio entry</button>
+                </div>
+
+                <!-- Work fields -->
+                <div class="arch-sub-form" id="arch-work">
+                    <div class="field"><label for="aw-name">Name</label><input type="text" id="aw-name" placeholder="Optical Glass House" autocomplete="off"></div>
+                    <div class="field-row">
+                        <div class="field"><label for="aw-city">City</label><input type="text" id="aw-city" placeholder="Hiroshima" autocomplete="off"></div>
+                        <div class="field"><label for="aw-country">Country</label><input type="text" id="aw-country" placeholder="Japan" autocomplete="off"></div>
+                    </div>
+                    <div class="field-row">
+                        <div class="field"><label for="aw-region">Region</label><select id="aw-region"><option value="">Select…</option><option value="Latin America">Latin America</option><option value="Europe">Europe</option><option value="Asia">Asia</option><option value="North America">North America</option><option value="Middle East">Middle East</option><option value="Oceania">Oceania</option><option value="Africa">Africa</option></select></div>
+                        <div class="field"><label for="aw-year">Year</label><input type="text" id="aw-year" placeholder="2012" autocomplete="off"></div>
+                    </div>
+                    <div class="field"><label for="aw-architect">Architect</label><input type="text" id="aw-architect" placeholder="Hiroshi Nakamura & NAP" autocomplete="off"></div>
+                    <div class="field"><label for="aw-url">Link <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:.65rem;color:var(--ink-faint)">— leave empty for Google Images</span></label><input type="url" id="aw-url" placeholder="https://specific-work-page.com" autocomplete="off"></div>
+                    <div class="field-row">
+                        <div class="field"><label for="aw-lat">Latitude</label><input type="text" id="aw-lat" placeholder="34.395" autocomplete="off"></div>
+                        <div class="field"><label for="aw-lng">Longitude</label><input type="text" id="aw-lng" placeholder="132.462" autocomplete="off"></div>
+                    </div>
+                    <p class="field-help">Tip: search the place on Google Maps, right-click the pin → copy coordinates.</p>
+                    <div style="margin-bottom:1rem"></div>
+                    <div class="field"><label>Tags <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:.65rem;color:var(--ink-faint)">— click to select multiple</span></label><div class="tag-options" id="awTagOptions"></div></div>
+                    <div style="margin-bottom:1.25rem"></div>
+                    <button class="generate-btn" onclick="generateWork()">Generate work entry</button>
                 </div>
             </div>
-
-            <!-- Quick tag selection -->
-            <div class="tag-options" id="tagOptions">
-                <span class="tag-pill" data-tag="article">article</span>
-                <span class="tag-pill" data-tag="essay">essay</span>
-                <span class="tag-pill" data-tag="video">video</span>
-                <span class="tag-pill" data-tag="paper">paper</span>
-                <span class="tag-pill" data-tag="tool">tool</span>
-                <span class="tag-pill" data-tag="vibe-coded">vibe-coded</span>
-                <span class="tag-pill" data-tag="podcast">podcast</span>
-            </div>
-
-            <div style="margin-bottom: 1.25rem;"></div>
-
-            <div class="field">
-                <label for="note">Your note</label>
-                <textarea id="note" placeholder="A brief note on why this is worth reading..." rows="3"></textarea>
-            </div>
-
-            <div class="toggle-row">
-                <div>
-                    <span class="toggle-label">External link</span>
-                    <span class="toggle-hint">opens in new tab</span>
-                </div>
-                <label class="toggle">
-                    <input type="checkbox" id="external" checked>
-                    <span class="toggle-track"></span>
-                </label>
-            </div>
-
-            <button class="generate-btn" id="generateBtn" onclick="generate()">Generate snippet</button>
         </div>
 
-        <!-- Output -->
+        <!-- ═══ SHARED OUTPUT ═══ -->
         <div class="output-area" id="outputArea">
             <div class="output-header">
-                <span class="output-title">HTML snippet</span>
-                <button class="copy-btn" id="copyBtn" onclick="copyCode()">
-                    <svg viewBox="0 0 24 24" id="copyIcon">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-                    </svg>
-                    <span id="copyText">Copy</span>
-                </button>
+                <span class="output-title" id="outputLabel">HTML snippet</span>
+                <button class="copy-btn" id="copyBtn" onclick="copyCode()"><svg viewBox="0 0 24 24" id="copyIcon"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg><span id="copyText">Copy</span></button>
             </div>
-            <div class="code-block">
-                <pre id="codeOutput"></pre>
-            </div>
-
-            <div class="preview-area">
+            <div class="code-block"><pre id="codeOutput"></pre></div>
+            <div class="preview-area" id="previewOI">
                 <div class="preview-title">Preview</div>
                 <div class="preview-card" id="previewCard">
-                    <div class="preview-top">
-                        <span class="p-title" id="previewTitle">Title</span>
-                        <svg class="p-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                    </div>
+                    <div class="preview-top"><span class="p-title" id="previewTitle">Title</span><svg class="p-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></div>
                     <div class="p-meta" id="previewMeta">by Author · added Date</div>
                     <p class="p-note" id="previewNote">Note</p>
                     <span class="p-tag" id="previewTag">tag</span>
                 </div>
             </div>
+            <div class="preview-area" id="previewArch" style="display:none">
+                <div class="preview-title">Preview</div>
+                <div class="arch-preview-card"><div class="ap-name" id="apName">Name</div><div class="ap-meta" id="apMeta">Country</div><div class="ap-tags" id="apTags"></div></div>
+            </div>
         </div>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>paste into <a href="https://github.com/lmpollockmuguruza/lmpollockmuguruza.github.io" target="_blank">ofinterest/index.html</a> — inside the <code>.items</code> div</p>
-        </footer>
+        <footer class="footer"><p id="footerText">paste into <a href="https://github.com/lmpollockmuguruza/lmpollockmuguruza.github.io" target="_blank">ofinterest/index.html</a> — inside the <code>.items</code> div</p></footer>
     </div>
 
-    <!-- Toast -->
     <div class="toast" id="toast">Copied to clipboard</div>
 
-    <script>
-        // Auto-fill today's date in "7 Feb 2026" format
-        (function() {
-            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            const now = new Date();
-            document.getElementById('date').value = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-        })();
+<script>
+const ARCH_TAGS=['brutalist','minimalist','modernist','organic','parametric','deconstructivist','vernacular','experimental','phenomenological','concrete','timber','glass','stone','copper','corten','brick','earth','volcanic','raw','sculptural','monumental','atmospheric','poetic','ethereal','fluid','humble','restrained','residential','cultural','museum','library','ecclesiastical','educational','civic','commercial','hospitality','infrastructure','sport','landscape','light','void','cave-like','courtyard','underground','vertical','micro','open-plan','social','sustainable','adaptive reuse','historic','demolished','unbuilt','UNESCO','color','iconic'];
 
-        // Tag pill quick-select
-        document.querySelectorAll('.tag-pill').forEach(pill => {
-            pill.addEventListener('click', () => {
-                // Toggle active state
-                document.querySelectorAll('.tag-pill').forEach(p => p.classList.remove('active'));
-                pill.classList.add('active');
-                document.getElementById('tag').value = pill.dataset.tag;
-            });
-        });
+(function(){
+    const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const now=new Date();
+    document.getElementById('oi-date').value=`${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    buildPills('asTagOptions');
+    buildPills('awTagOptions');
+})();
 
-        // Sync tag input with pills
-        document.getElementById('tag').addEventListener('input', (e) => {
-            const val = e.target.value.trim().toLowerCase();
-            document.querySelectorAll('.tag-pill').forEach(p => {
-                p.classList.toggle('active', p.dataset.tag === val);
-            });
-        });
+function buildPills(id){
+    document.getElementById(id).innerHTML=ARCH_TAGS.map(t=>`<span class="tag-pill" data-tag="${t}" onclick="this.classList.toggle('active')">${t}</span>`).join('');
+}
 
-        function escapeHtml(str) {
-            return str
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;');
-        }
+/* ═══ MODE SWITCHING ═══ */
+let currentMode='interest';
+function switchMode(mode){
+    currentMode=mode;
+    document.querySelectorAll('.mode-tab').forEach(t=>t.classList.toggle('active',t.dataset.mode===mode));
+    document.querySelectorAll('.mode-form').forEach(f=>f.classList.remove('active'));
+    document.getElementById(mode==='interest'?'form-interest':'form-arch').classList.add('active');
+    document.getElementById('headerIcon').innerHTML=mode==='arch'
+        ?'<path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M10 9h1"/><path d="M13 9h1"/>'
+        :'<path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>';
+    document.getElementById('outputArea').classList.remove('visible');
+    document.getElementById('footerText').innerHTML=mode==='arch'
+        ?'paste into <a href="https://github.com/lmpollockmuguruza/lmpollockmuguruza.github.io" target="_blank">architecture/index.html</a> — above the <code>ADD NEW</code> comment'
+        :'paste into <a href="https://github.com/lmpollockmuguruza/lmpollockmuguruza.github.io" target="_blank">ofinterest/index.html</a> — inside the <code>.items</code> div';
+}
 
-        function generate() {
-            const title = document.getElementById('title').value.trim();
-            const url = document.getElementById('url').value.trim();
-            const author = document.getElementById('author').value.trim();
-            const date = document.getElementById('date').value.trim();
-            const tag = document.getElementById('tag').value.trim().toLowerCase();
-            const note = document.getElementById('note').value.trim();
-            const external = document.getElementById('external').checked;
+let archSub='studio';
+function switchArchSub(sub){
+    archSub=sub;
+    document.querySelectorAll('.arch-sub-tab').forEach(t=>t.classList.toggle('active',t.dataset.sub===sub));
+    document.querySelectorAll('.arch-sub-form').forEach(f=>f.classList.remove('active'));
+    document.getElementById(sub==='studio'?'arch-studio':'arch-work').classList.add('active');
+    document.getElementById('outputArea').classList.remove('visible');
+}
 
-            if (!title) {
-                showToast('Add a title first');
-                document.getElementById('title').focus();
-                return;
-            }
+/* ═══ OI TAG PILLS ═══ */
+document.querySelectorAll('#oiTagOptions .tag-pill').forEach(pill=>{
+    pill.addEventListener('click',()=>{
+        document.querySelectorAll('#oiTagOptions .tag-pill').forEach(p=>p.classList.remove('active'));
+        pill.classList.add('active');
+        document.getElementById('oi-tag').value=pill.dataset.tag;
+    });
+});
+document.getElementById('oi-tag').addEventListener('input',e=>{
+    const val=e.target.value.trim().toLowerCase();
+    document.querySelectorAll('#oiTagOptions .tag-pill').forEach(p=>p.classList.toggle('active',p.dataset.tag===val));
+});
 
-            if (!url) {
-                showToast('Add a link');
-                document.getElementById('url').focus();
-                return;
-            }
+function getSelectedTags(id){return Array.from(document.querySelectorAll(`#${id} .tag-pill.active`)).map(p=>p.dataset.tag)}
+function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function escapeJs(s){return s.replace(/\\/g,'\\\\').replace(/"/g,'\\"')}
 
-            // Build attributes
-            const extAttrs = external ? ' target="_blank" rel="noopener"' : '';
-            const metaParts = [];
-            if (author) metaParts.push(`by ${author}`);
-            if (date) metaParts.push(`added ${date}`);
-            const metaText = metaParts.join(' · ');
+function showOutput(raw,html,label,pMode){
+    window._rawSnippet=raw;
+    document.getElementById('codeOutput').innerHTML=html;
+    document.getElementById('outputLabel').textContent=label;
+    document.getElementById('previewOI').style.display=pMode==='interest'?'block':'none';
+    document.getElementById('previewArch').style.display=pMode==='arch'?'block':'none';
+    const o=document.getElementById('outputArea');o.classList.add('visible');
+    setTimeout(()=>o.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+}
+function btnFeedback(btn){const t=btn.textContent;btn.textContent='Updated \u2713';btn.classList.add('success');setTimeout(()=>{btn.textContent=t;btn.classList.remove('success')},1500)}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
 
-            // Build raw HTML
-            const tagLine = tag ? `\n                <span class="item-tag">${tag}</span>` : '';
-            const rawHtml =
-`            <a href="${url}"${extAttrs} class="item">
-                <div class="item-top">
-                    <span class="item-title">${title}</span>
-                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </div>
-                <div class="item-meta">${metaText}</div>
-                <p class="item-note">${note || ''}</p>${tagLine}
-            </a>`;
+/* ═══ GENERATE: OF INTEREST ═══ */
+function generateInterest(){
+    const title=document.getElementById('oi-title').value.trim();
+    const url=document.getElementById('oi-url').value.trim();
+    const author=document.getElementById('oi-author').value.trim();
+    const date=document.getElementById('oi-date').value.trim();
+    const tag=document.getElementById('oi-tag').value.trim().toLowerCase();
+    const note=document.getElementById('oi-note').value.trim();
+    const external=document.getElementById('oi-external').checked;
+    if(!title){showToast('Add a title first');document.getElementById('oi-title').focus();return}
+    if(!url){showToast('Add a link');document.getElementById('oi-url').focus();return}
+    const extA=external?' target="_blank" rel="noopener"':'';
+    const mp=[];if(author)mp.push(`by ${author}`);if(date)mp.push(`added ${date}`);
+    const mt=mp.join(' \u00b7 ');
+    const tl=tag?`\n                <span class="item-tag">${tag}</span>`:'';
+    const raw=`            <a href="${url}"${extA} class="item">\n                <div class="item-top">\n                    <span class="item-title">${title}</span>\n                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>\n                </div>\n                <div class="item-meta">${mt}</div>\n                <p class="item-note">${note||''}</p>${tl}\n            </a>`;
+    const e=escapeHtml;
+    const th=tag?`\n                <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="str">"item-tag"</span><span class="tag">&gt;</span><span class="text">${e(tag)}</span><span class="tag">&lt;/span&gt;</span>`:'';
+    const hl=[
+        `<span class="tag">&lt;a</span> <span class="attr">href=</span><span class="str">"${e(url)}"</span>${external?` <span class="attr">target=</span><span class="str">"_blank"</span> <span class="attr">rel=</span><span class="str">"noopener"</span>`:''} <span class="attr">class=</span><span class="str">"item"</span><span class="tag">&gt;</span>`,
+        `    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"item-top"</span><span class="tag">&gt;</span>`,
+        `        <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="str">"item-title"</span><span class="tag">&gt;</span><span class="text">${e(title)}</span><span class="tag">&lt;/span&gt;</span>`,
+        `        <span class="tag">&lt;svg</span> <span class="attr">class=</span><span class="str">"item-arrow"</span> ...<span class="tag">&gt;&lt;/svg&gt;</span>`,
+        `    <span class="tag">&lt;/div&gt;</span>`,
+        `    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"item-meta"</span><span class="tag">&gt;</span><span class="text">${e(mt)}</span><span class="tag">&lt;/div&gt;</span>`,
+        `    <span class="tag">&lt;p</span> <span class="attr">class=</span><span class="str">"item-note"</span><span class="tag">&gt;</span><span class="text">${e(note||'')}</span><span class="tag">&lt;/p&gt;</span>${th}`,
+        `<span class="tag">&lt;/a&gt;</span>`
+    ].join('\n');
+    document.getElementById('previewTitle').textContent=title;
+    document.getElementById('previewMeta').textContent=mt;
+    document.getElementById('previewNote').textContent=note||'';
+    const pt=document.getElementById('previewTag');
+    if(tag){pt.textContent=tag;pt.style.display='inline-block'}else{pt.style.display='none'}
+    showOutput(raw,hl,'HTML snippet','interest');
+    btnFeedback(document.querySelector('#form-interest .generate-btn'));
+}
 
-            window._rawSnippet = rawHtml;
+/* ═══ GENERATE: STUDIO ═══ */
+function generateStudio(){
+    const name=document.getElementById('as-name').value.trim();
+    const country=document.getElementById('as-country').value.trim();
+    const region=document.getElementById('as-region').value;
+    const url=document.getElementById('as-url').value.trim();
+    const tags=getSelectedTags('asTagOptions');
+    if(!name){showToast('Add a name');document.getElementById('as-name').focus();return}
+    if(!country){showToast('Add a country');document.getElementById('as-country').focus();return}
+    if(!region){showToast('Select a region');document.getElementById('as-region').focus();return}
+    const ts=tags.map(t=>`"${escapeJs(t)}"`).join(',');
+    const up=url?`url:"${escapeJs(url)}",preview:thu("${escapeJs(url)}")`:`url:gImg("${escapeJs(name)} architecture"),preview:""`;
+    const raw=`{name:"${escapeJs(name)}",country:"${escapeJs(country)}",region:"${escapeJs(region)}",tags:[${ts}],${up}},`;
+    const tHL=tags.map(t=>`<span class="hl-str">"${escapeHtml(t)}"</span>`).join(',');
+    const uHL=url
+        ?`<span class="hl-key">url</span>:<span class="hl-str">"${escapeHtml(url)}"</span>,<span class="hl-key">preview</span>:<span class="hl-fn">thu</span>(<span class="hl-str">"${escapeHtml(url)}"</span>)`
+        :`<span class="hl-key">url</span>:<span class="hl-fn">gImg</span>(<span class="hl-str">"${escapeHtml(name)} architecture"</span>),<span class="hl-key">preview</span>:<span class="hl-str">""</span>`;
+    const hl=`<span class="hl-br">{</span><span class="hl-key">name</span>:<span class="hl-str">"${escapeHtml(name)}"</span>,<span class="hl-key">country</span>:<span class="hl-str">"${escapeHtml(country)}"</span>,\n <span class="hl-key">region</span>:<span class="hl-str">"${escapeHtml(region)}"</span>,<span class="hl-key">tags</span>:[${tHL}],\n ${uHL}<span class="hl-br">}</span>,`;
+    document.getElementById('apName').textContent=name;
+    document.getElementById('apMeta').textContent=country;
+    document.getElementById('apTags').innerHTML=tags.map(t=>`<span class="ap-tag">${t}</span>`).join('');
+    showOutput(raw,hl,'JS entry \u2014 paste above ADD NEW STUDIOS','arch');
+    btnFeedback(document.querySelector('#arch-studio .generate-btn'));
+}
 
-            // Syntax-highlighted display
-            const e = escapeHtml;
-            const tagHighlight = tag
-                ? `\n                <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="str">"item-tag"</span><span class="tag">&gt;</span><span class="text">${e(tag)}</span><span class="tag">&lt;/span&gt;</span>`
-                : '';
+/* ═══ GENERATE: WORK ═══ */
+function generateWork(){
+    const name=document.getElementById('aw-name').value.trim();
+    const city=document.getElementById('aw-city').value.trim();
+    const country=document.getElementById('aw-country').value.trim();
+    const region=document.getElementById('aw-region').value;
+    const architect=document.getElementById('aw-architect').value.trim();
+    const year=document.getElementById('aw-year').value.trim();
+    const url=document.getElementById('aw-url').value.trim();
+    const lat=document.getElementById('aw-lat').value.trim();
+    const lng=document.getElementById('aw-lng').value.trim();
+    const tags=getSelectedTags('awTagOptions');
+    if(!name){showToast('Add a name');document.getElementById('aw-name').focus();return}
+    if(!city){showToast('Add a city');document.getElementById('aw-city').focus();return}
+    if(!country){showToast('Add a country');document.getElementById('aw-country').focus();return}
+    if(!region){showToast('Select a region');document.getElementById('aw-region').focus();return}
+    const ts=tags.map(t=>`"${escapeJs(t)}"`).join(',');
+    const sq=`${name} ${city} architecture`;
+    const up=url?`"${escapeJs(url)}"`:`gImg("${escapeJs(sq)}")`;
+    const la=lat||'0',lo=lng||'0';
+    const raw=`{name:"${escapeJs(name)}",city:"${escapeJs(city)}",country:"${escapeJs(country)}",region:"${escapeJs(region)}",architect:"${escapeJs(architect)}",year:"${escapeJs(year)}",tags:[${ts}],url:${up},lat:${la},lng:${lo}},`;
+    const tHL=tags.map(t=>`<span class="hl-str">"${escapeHtml(t)}"</span>`).join(',');
+    const uHL=url?`<span class="hl-str">"${escapeHtml(url)}"</span>`:`<span class="hl-fn">gImg</span>(<span class="hl-str">"${escapeHtml(sq)}"</span>)`;
+    const hl=[
+        `<span class="hl-br">{</span><span class="hl-key">name</span>:<span class="hl-str">"${escapeHtml(name)}"</span>,`,
+        ` <span class="hl-key">city</span>:<span class="hl-str">"${escapeHtml(city)}"</span>,<span class="hl-key">country</span>:<span class="hl-str">"${escapeHtml(country)}"</span>,<span class="hl-key">region</span>:<span class="hl-str">"${escapeHtml(region)}"</span>,`,
+        ` <span class="hl-key">architect</span>:<span class="hl-str">"${escapeHtml(architect)}"</span>,<span class="hl-key">year</span>:<span class="hl-str">"${escapeHtml(year)}"</span>,`,
+        ` <span class="hl-key">tags</span>:[${tHL}],`,
+        ` <span class="hl-key">url</span>:${uHL},`,
+        ` <span class="hl-key">lat</span>:<span class="hl-num">${escapeHtml(la)}</span>,<span class="hl-key">lng</span>:<span class="hl-num">${escapeHtml(lo)}</span><span class="hl-br">}</span>,`
+    ].join('\n');
+    document.getElementById('apName').textContent=name;
+    const mp=[];if(architect)mp.push(architect);if(year)mp.push(year);mp.push(`${city}, ${country}`);
+    document.getElementById('apMeta').textContent=mp.join(' \u00b7 ');
+    document.getElementById('apTags').innerHTML=tags.map(t=>`<span class="ap-tag">${t}</span>`).join('');
+    showOutput(raw,hl,'JS entry \u2014 paste above ADD NEW WORKS','arch');
+    btnFeedback(document.querySelector('#arch-work .generate-btn'));
+}
 
-            const highlighted = [
-                `<span class="tag">&lt;a</span> <span class="attr">href=</span><span class="str">"${e(url)}"</span>${external ? ` <span class="attr">target=</span><span class="str">"_blank"</span> <span class="attr">rel=</span><span class="str">"noopener"</span>` : ''} <span class="attr">class=</span><span class="str">"item"</span><span class="tag">&gt;</span>`,
-                `    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"item-top"</span><span class="tag">&gt;</span>`,
-                `        <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="str">"item-title"</span><span class="tag">&gt;</span><span class="text">${e(title)}</span><span class="tag">&lt;/span&gt;</span>`,
-                `        <span class="tag">&lt;svg</span> <span class="attr">class=</span><span class="str">"item-arrow"</span> ...<span class="tag">&gt;&lt;/svg&gt;</span>`,
-                `    <span class="tag">&lt;/div&gt;</span>`,
-                `    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"item-meta"</span><span class="tag">&gt;</span><span class="text">${e(metaText)}</span><span class="tag">&lt;/div&gt;</span>`,
-                `    <span class="tag">&lt;p</span> <span class="attr">class=</span><span class="str">"item-note"</span><span class="tag">&gt;</span><span class="text">${e(note || '')}</span><span class="tag">&lt;/p&gt;</span>${tagHighlight}`,
-                `<span class="tag">&lt;/a&gt;</span>`
-            ].join('\n');
+/* ═══ COPY ═══ */
+async function copyCode(){
+    if(!window._rawSnippet)return;
+    try{
+        await navigator.clipboard.writeText(window._rawSnippet);
+        const b=document.getElementById('copyBtn'),t=document.getElementById('copyText'),i=document.getElementById('copyIcon');
+        b.classList.add('copied');t.textContent='Copied';i.innerHTML='<polyline points="20 6 9 17 4 12"/>';
+        showToast('Copied to clipboard');
+        setTimeout(()=>{b.classList.remove('copied');t.textContent='Copy';i.innerHTML='<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>';},2000);
+    }catch{
+        const ta=document.createElement('textarea');ta.value=window._rawSnippet;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('Copied to clipboard');
+    }
+}
 
-            document.getElementById('codeOutput').innerHTML = highlighted;
-
-            // Update preview
-            document.getElementById('previewTitle').textContent = title;
-            document.getElementById('previewMeta').textContent = metaText;
-            document.getElementById('previewNote').textContent = note || '';
-            const previewTag = document.getElementById('previewTag');
-            if (tag) {
-                previewTag.textContent = tag;
-                previewTag.style.display = 'inline-block';
-            } else {
-                previewTag.style.display = 'none';
-            }
-
-            // Show output
-            const output = document.getElementById('outputArea');
-            output.classList.add('visible');
-
-            // Button feedback
-            const btn = document.getElementById('generateBtn');
-            btn.textContent = 'Updated ✓';
-            btn.classList.add('success');
-            setTimeout(() => {
-                btn.textContent = 'Generate snippet';
-                btn.classList.remove('success');
-            }, 1500);
-
-            setTimeout(() => {
-                output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 100);
-        }
-
-        async function copyCode() {
-            if (!window._rawSnippet) return;
-
-            try {
-                await navigator.clipboard.writeText(window._rawSnippet);
-
-                const btn = document.getElementById('copyBtn');
-                const text = document.getElementById('copyText');
-                const icon = document.getElementById('copyIcon');
-
-                btn.classList.add('copied');
-                text.textContent = 'Copied';
-                icon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
-
-                showToast('Copied to clipboard');
-
-                setTimeout(() => {
-                    btn.classList.remove('copied');
-                    text.textContent = 'Copy';
-                    icon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>';
-                }, 2000);
-            } catch {
-                const ta = document.createElement('textarea');
-                ta.value = window._rawSnippet;
-                ta.style.position = 'fixed';
-                ta.style.left = '-9999px';
-                document.body.appendChild(ta);
-                ta.select();
-                document.execCommand('copy');
-                document.body.removeChild(ta);
-                showToast('Copied to clipboard');
-            }
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-
-        // Ctrl/Cmd+Enter to generate
-        document.addEventListener('keydown', (e) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-                e.preventDefault();
-                generate();
-            }
-        });
-    </script>
+document.addEventListener('keydown',e=>{
+    if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){
+        e.preventDefault();
+        if(currentMode==='interest')generateInterest();
+        else if(archSub==='studio')generateStudio();
+        else generateWork();
+    }
+});
+</script>
 </body>
 </html>
