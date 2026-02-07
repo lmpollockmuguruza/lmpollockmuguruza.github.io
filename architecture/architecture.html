@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>architecture — lucas pollock muguruza</title>
+
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #f7f5f0;
+            --bg-card: #fdfcfa;
+            --bg-card-hover: #ffffff;
+            --ink: #1a1816;
+            --ink-soft: #3d3833;
+            --ink-muted: #7a7368;
+            --ink-faint: #b0a99e;
+            --ink-ghost: #d4cfc8;
+            --burgundy: #6b2737;
+            --burgundy-soft: #8b3747;
+            --burgundy-wash: rgba(107, 39, 55, 0.05);
+            --burgundy-glow: rgba(107, 39, 55, 0.10);
+            --border: rgba(26, 24, 22, 0.07);
+            --border-hover: rgba(107, 39, 55, 0.18);
+            --shadow-card: 0 1px 3px rgba(26, 24, 22, 0.03), 0 6px 24px rgba(26, 24, 22, 0.04);
+            --shadow-card-hover: 0 2px 8px rgba(26, 24, 22, 0.05), 0 12px 40px rgba(26, 24, 22, 0.07);
+            --shadow-preview: 0 8px 40px rgba(26, 24, 22, 0.12), 0 2px 12px rgba(26, 24, 22, 0.06);
+            --radius: 14px;
+            --radius-sm: 8px;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+            --transition: 0.35s var(--ease);
+        }
+
+        [data-theme="dark"] {
+            --bg: #141311;
+            --bg-card: #1e1c19;
+            --bg-card-hover: #252320;
+            --ink: #e8e4dd;
+            --ink-soft: #c8c2b8;
+            --ink-muted: #8a8279;
+            --ink-faint: #5a554e;
+            --ink-ghost: #3a3632;
+            --burgundy: #c4707f;
+            --burgundy-soft: #d4909f;
+            --burgundy-wash: rgba(196, 112, 127, 0.06);
+            --burgundy-glow: rgba(196, 112, 127, 0.12);
+            --border: rgba(232, 228, 221, 0.06);
+            --border-hover: rgba(196, 112, 127, 0.2);
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.12), 0 6px 24px rgba(0,0,0,0.15);
+            --shadow-card-hover: 0 2px 8px rgba(0,0,0,0.15), 0 12px 40px rgba(0,0,0,0.2);
+            --shadow-preview: 0 8px 40px rgba(0,0,0,0.35), 0 2px 12px rgba(0,0,0,0.2);
+        }
+
+        html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--ink-soft);
+            min-height: 100vh;
+            min-height: 100dvh;
+            line-height: 1.65;
+            transition: background-color 0.5s var(--ease), color 0.5s var(--ease);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.018;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 256px;
+        }
+        [data-theme="dark"] body::before { opacity: 0.03; }
+
+        ::selection { background: rgba(107, 39, 55, 0.18); color: var(--ink); }
+
+        /* ─── Layout ─── */
+        .page { max-width: 720px; margin: 0 auto; padding: 0 2rem; }
+
+        /* ─── Top bar ─── */
+        .topbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 1rem 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+            background: transparent;
+            transition: all 0.4s var(--ease);
+        }
+        .topbar.scrolled {
+            background: color-mix(in srgb, var(--bg) 85%, transparent);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+        .back-link {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            font-size: 0.78rem; font-weight: 400; color: var(--ink-muted);
+            text-decoration: none; letter-spacing: 0.02em; transition: color var(--transition);
+        }
+        .back-link:hover { color: var(--burgundy); }
+        .back-link svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.5; transition: transform var(--transition); }
+        .back-link:hover svg { transform: translateX(-3px); }
+
+        .topbar-right { display: flex; align-items: center; gap: 0.5rem; }
+
+        .theme-toggle, .view-toggle-btn {
+            display: flex; align-items: center; justify-content: center;
+            width: 34px; height: 34px;
+            border: 1px solid var(--border); border-radius: 50%;
+            background: var(--bg-card); cursor: pointer;
+            transition: all var(--transition); color: var(--ink-muted);
+        }
+        .theme-toggle:hover, .view-toggle-btn:hover {
+            border-color: var(--border-hover); color: var(--burgundy); background: var(--burgundy-wash);
+        }
+        .theme-toggle svg, .view-toggle-btn svg {
+            width: 15px; height: 15px; fill: currentColor; transition: transform 0.5s var(--ease-spring);
+        }
+        .theme-toggle:hover svg { transform: rotate(30deg); }
+        .theme-toggle .icon-sun { display: none; }
+        .theme-toggle .icon-moon { display: block; }
+        [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+        [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+        /* ─── Header ─── */
+        .header { padding-top: 7rem; padding-bottom: 0.5rem; text-align: left; }
+        .header-icon {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; border-radius: 8px;
+            background: var(--burgundy-wash); border: 1px solid var(--burgundy-glow);
+            margin-bottom: 1.5rem;
+            opacity: 0; animation: fadeUp 0.8s var(--ease-spring) 0.1s forwards;
+        }
+        .header-icon svg { width: 18px; height: 18px; stroke: var(--burgundy); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+        .header h1 {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 2.8rem; font-weight: 400; letter-spacing: -0.03em;
+            line-height: 1.15; color: var(--ink); margin-bottom: 1.2rem;
+            opacity: 0; animation: fadeUp 0.8s var(--ease-spring) 0.2s forwards;
+        }
+        .header-intro {
+            font-size: 0.95rem; line-height: 1.75; color: var(--ink-muted); max-width: 540px;
+            opacity: 0; animation: fadeUp 0.8s var(--ease-spring) 0.35s forwards;
+        }
+        .header-intro em {
+            font-family: 'EB Garamond', Georgia, serif; font-size: 1.05rem;
+            color: var(--ink-soft); font-style: italic;
+        }
+
+        /* ─── Tabs ─── */
+        .tabs {
+            display: flex; gap: 0; margin: 2rem 0 0.25rem 0;
+            border-bottom: 1px solid var(--border);
+            opacity: 0; animation: fadeUp 0.6s var(--ease-spring) 0.45s forwards;
+        }
+        .tab {
+            padding: 0.7rem 1.2rem; font-size: 0.78rem; font-weight: 500;
+            letter-spacing: 0.04em; text-transform: uppercase;
+            color: var(--ink-faint); background: none; border: none;
+            cursor: pointer; position: relative; transition: color var(--transition);
+        }
+        .tab:hover { color: var(--ink-muted); }
+        .tab.active { color: var(--burgundy); }
+        .tab.active::after {
+            content: ''; position: absolute; bottom: -1px; left: 0.5rem; right: 0.5rem;
+            height: 2px; background: var(--burgundy); border-radius: 1px;
+        }
+
+        /* ─── View Panels ─── */
+        .panel { display: none; padding: 1.5rem 0 2rem 0; }
+        .panel.active { display: block; }
+
+        /* ─── A–Z Index ─── */
+        .az-layout { display: flex; gap: 0; position: relative; }
+
+        .az-sidebar {
+            position: sticky; top: 5rem; align-self: flex-start;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 0.5rem 0; margin-right: 1rem;
+            gap: 1px; width: 22px; flex-shrink: 0;
+        }
+        .az-letter-link {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 0.65rem; color: var(--ink-ghost); text-decoration: none;
+            width: 20px; height: 18px; display: flex; align-items: center; justify-content: center;
+            border-radius: 3px; transition: all 0.2s var(--ease);
+            cursor: pointer;
+        }
+        .az-letter-link:hover { color: var(--burgundy); background: var(--burgundy-wash); }
+        .az-letter-link.has-entries { color: var(--ink-faint); font-weight: 500; }
+
+        .az-content { flex: 1; min-width: 0; }
+
+        .az-group { margin-bottom: 1.5rem; }
+        .az-group-letter {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 2rem; font-weight: 400; color: var(--ink-ghost);
+            padding-bottom: 0.5rem; margin-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            line-height: 1;
+        }
+
+        /* ─── Architect Entry ─── */
+        .arch-entry {
+            display: block; text-decoration: none; color: inherit;
+            padding: 0.85rem 1rem; margin-bottom: 0.35rem;
+            border-radius: var(--radius-sm);
+            transition: all 0.25s var(--ease);
+            position: relative;
+            border: 1px solid transparent;
+        }
+        .arch-entry:hover {
+            background: var(--bg-card); border-color: var(--border);
+            box-shadow: var(--shadow-card);
+        }
+        .arch-entry-name {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.1rem; font-weight: 500; color: var(--ink);
+            transition: color var(--transition); line-height: 1.3;
+        }
+        .arch-entry:hover .arch-entry-name { color: var(--burgundy); }
+        .arch-entry-meta {
+            font-size: 0.73rem; color: var(--ink-faint); letter-spacing: 0.015em; margin-top: 0.15rem;
+        }
+        .arch-entry-tags { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-top: 0.35rem; }
+        .arch-tag {
+            font-size: 0.6rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em;
+            color: var(--burgundy); background: var(--burgundy-wash);
+            border: 1px solid var(--burgundy-glow);
+            padding: 0.12rem 0.4rem; border-radius: 3px;
+        }
+
+        /* ─── Hover Preview ─── */
+        .preview-card {
+            position: fixed; z-index: 200;
+            width: 320px; max-height: 260px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-hover);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-preview);
+            pointer-events: none;
+            opacity: 0; transform: translateY(8px) scale(0.97);
+            transition: opacity 0.25s var(--ease), transform 0.3s var(--ease-spring);
+            overflow: hidden;
+        }
+        .preview-card.visible {
+            opacity: 1; transform: translateY(0) scale(1);
+        }
+        .preview-card-img {
+            width: 100%; height: 180px; object-fit: cover;
+            display: block; background: var(--ink-ghost);
+        }
+        .preview-card-img-placeholder {
+            width: 100%; height: 180px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 3rem; font-weight: 400; color: var(--burgundy);
+            opacity: 0.15;
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--burgundy-wash) 50%, var(--bg-card) 100%);
+        }
+        .preview-card-body {
+            padding: 0.65rem 0.85rem 0.7rem;
+        }
+        .preview-card-title {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 0.88rem; font-weight: 500; color: var(--ink);
+            line-height: 1.3;
+        }
+        .preview-card-sub {
+            font-size: 0.68rem; color: var(--ink-faint); margin-top: 0.15rem;
+        }
+
+        /* ─── Region View ─── */
+        .region-section { margin-bottom: 2rem; }
+        .region-header {
+            display: flex; align-items: baseline; gap: 0.75rem;
+            padding-bottom: 0.6rem; margin-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+        }
+        .region-name {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.4rem; font-weight: 500; color: var(--ink); line-height: 1.3;
+            transition: color var(--transition);
+        }
+        .region-header:hover .region-name { color: var(--burgundy); }
+        .region-count {
+            font-size: 0.72rem; color: var(--ink-faint); letter-spacing: 0.02em;
+        }
+        .region-chevron {
+            width: 14px; height: 14px; stroke: var(--ink-faint); fill: none;
+            stroke-width: 1.5; margin-left: auto; flex-shrink: 0;
+            transition: transform 0.3s var(--ease-spring);
+        }
+        .region-section.open .region-chevron { transform: rotate(180deg); }
+        .region-body { overflow: hidden; max-height: 0; transition: max-height 0.5s var(--ease); }
+        .region-section.open .region-body { max-height: 3000px; }
+
+        .city-group { margin-bottom: 1.25rem; margin-left: 0.25rem; }
+        .city-name {
+            font-size: 0.72rem; font-weight: 500; text-transform: uppercase;
+            letter-spacing: 0.06em; color: var(--ink-muted);
+            padding-bottom: 0.4rem; margin-bottom: 0.5rem;
+            border-bottom: 1px dashed var(--border);
+        }
+        .city-entries { display: flex; flex-direction: column; gap: 0.2rem; }
+
+        /* ─── Works View ─── */
+        .work-entry {
+            display: block; text-decoration: none; color: inherit;
+            padding: 1rem 1.15rem; margin-bottom: 0.5rem;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius);
+            transition: all var(--transition);
+            position: relative;
+        }
+        .work-entry:hover {
+            background: var(--bg-card-hover); border-color: var(--border-hover);
+            box-shadow: var(--shadow-card-hover); transform: translateY(-1px);
+        }
+        .work-entry-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+        .work-entry-name {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.05rem; font-weight: 500; color: var(--ink);
+            transition: color var(--transition); line-height: 1.35;
+        }
+        .work-entry:hover .work-entry-name { color: var(--burgundy); }
+        .work-entry-arrow {
+            flex-shrink: 0; width: 16px; height: 16px;
+            stroke: var(--ink-faint); fill: none;
+            stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+            transition: all var(--transition); margin-top: 0.15rem;
+        }
+        .work-entry:hover .work-entry-arrow { stroke: var(--burgundy); transform: translate(2px, -2px); }
+        .work-entry-detail {
+            font-size: 0.73rem; color: var(--ink-faint); margin-top: 0.25rem; line-height: 1.5;
+        }
+        .work-entry-detail span { color: var(--ink-muted); }
+
+        .works-city-section { margin-bottom: 2rem; }
+        .works-city-heading {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.5rem; font-weight: 400; color: var(--ink);
+            padding-bottom: 0.5rem; margin-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .works-city-heading small {
+            font-size: 0.75rem; color: var(--ink-faint); font-family: 'DM Sans', sans-serif;
+            font-weight: 400; letter-spacing: 0.02em; margin-left: 0.5rem;
+        }
+
+        /* ─── Search ─── */
+        .search-wrap {
+            position: relative; margin: 1.25rem 0 1rem 0;
+            opacity: 0; animation: fadeUp 0.6s var(--ease-spring) 0.55s forwards;
+        }
+        .search-input {
+            width: 100%; padding: 0.7rem 1rem 0.7rem 2.5rem;
+            font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+            color: var(--ink-soft); background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            outline: none; transition: all var(--transition);
+        }
+        .search-input::placeholder { color: var(--ink-ghost); }
+        .search-input:focus { border-color: var(--border-hover); box-shadow: 0 0 0 3px var(--burgundy-wash); }
+        .search-icon {
+            position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%);
+            width: 14px; height: 14px; stroke: var(--ink-ghost); fill: none; stroke-width: 1.5;
+        }
+        .search-count {
+            position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%);
+            font-size: 0.68rem; color: var(--ink-ghost);
+        }
+
+        /* ─── Footer ─── */
+        .page-footer {
+            padding: 2.5rem 0 3rem; border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            opacity: 0; animation: fadeUp 0.6s var(--ease-spring) 0.6s forwards;
+        }
+        .footer-left { font-size: 0.75rem; color: var(--ink-faint); font-weight: 300; }
+        .footer-left a { color: var(--ink-muted); text-decoration: none; transition: color var(--transition); }
+        .footer-left a:hover { color: var(--burgundy); }
+        .footer-right { font-family: 'EB Garamond', Georgia, serif; font-size: 0.85rem; font-style: italic; color: var(--ink-faint); }
+
+        /* ─── Scrollbar ─── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--ink-ghost); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
+
+        /* ─── Animations ─── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stagger-in { opacity: 0; transform: translateY(12px); transition: opacity 0.5s var(--ease-spring), transform 0.5s var(--ease-spring); }
+        .stagger-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* ─── Empty state ─── */
+        .empty-state {
+            text-align: center; padding: 3rem 1rem;
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.1rem; font-style: italic; color: var(--ink-ghost);
+        }
+
+        /* ─── Mobile ─── */
+        @media (max-width: 640px) {
+            .page { padding: 0 1.25rem; }
+            .topbar { padding: 0.75rem 1.25rem; }
+            .header { padding-top: 5.5rem; }
+            .header h1 { font-size: 2.1rem; }
+            .header-intro { font-size: 0.88rem; }
+            .az-sidebar { display: none; }
+            .tab { padding: 0.6rem 0.75rem; font-size: 0.7rem; }
+            .preview-card { display: none !important; }
+            .page-footer { flex-direction: column; gap: 0.75rem; text-align: center; }
+            .work-entry { padding: 0.85rem 1rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="topbar" id="topbar">
+        <a href="../" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            Lucas Pollock Muguruza
+        </a>
+        <div class="topbar-right">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <svg class="icon-moon" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+                <svg class="icon-sun" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
+            </button>
+        </div>
+    </nav>
+
+    <div class="page">
+        <header class="header">
+            <div class="header-icon">
+                <svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M10 9h1"/><path d="M13 9h1"/></svg>
+            </div>
+            <h1>Architecture</h1>
+            <p class="header-intro">Spaces that stopped me in my tracks. Architects who make concrete feel poetic and light feel heavy. This is a personal collection — not a syllabus, not a ranking — just <em>the stuff that made me look up from my phone.</em></p>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="az">A–Z</button>
+            <button class="tab" data-tab="region">By Region</button>
+            <button class="tab" data-tab="works">Works</button>
+        </div>
+
+        <!-- Search -->
+        <div class="search-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search architects, works, cities…">
+            <span class="search-count" id="searchCount"></span>
+        </div>
+
+        <!-- A–Z Panel -->
+        <div class="panel active" id="panel-az"></div>
+
+        <!-- Region Panel -->
+        <div class="panel" id="panel-region"></div>
+
+        <!-- Works Panel -->
+        <div class="panel" id="panel-works"></div>
+
+        <footer class="page-footer">
+            <div class="footer-left"><a href="../">← back to portfolio</a></div>
+            <div class="footer-right">look up from your phone</div>
+        </footer>
+    </div>
+
+    <!-- Preview Card -->
+    <div class="preview-card" id="previewCard">
+        <div id="previewImg"></div>
+        <div class="preview-card-body">
+            <div class="preview-card-title" id="previewTitle"></div>
+            <div class="preview-card-sub" id="previewSub"></div>
+        </div>
+    </div>
+
+    <script>
+    // ═══════════════════════════════════════════════
+    //  DATA
+    // ═══════════════════════════════════════════════
+
+    const architects = [
+        { name: "Agustín Hernández Navarro", country: "Mexico", region: "Latin America", tags: ["brutalist","sculptural"], url: "https://www.archdaily.com/tag/agustin-hernandez", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/agustin-hernandez" },
+        { name: "Tatiana Bilbao", country: "Mexico", region: "Latin America", tags: ["social","sustainable"], url: "https://tatianabilbao.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://tatianabilbao.com/" },
+        { name: "Alberto Kalach", country: "Mexico", region: "Latin America", tags: ["modernist","landscape"], url: "https://www.archdaily.com/tag/alberto-kalach", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/alberto-kalach" },
+        { name: "Tadao Ando", country: "Japan", region: "Asia", tags: ["concrete","minimalist","light"], url: "https://www.archdaily.com/tag/tadao-ando", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/tadao-ando" },
+        { name: "Kengo Kuma", country: "Japan", region: "Asia", tags: ["timber","organic","transparent"], url: "https://kkaa.co.jp/", preview: "https://image.thum.io/get/width/640/crop/400/https://kkaa.co.jp/" },
+        { name: "Kazuyo Sejima / SANAA", country: "Japan", region: "Asia", tags: ["minimalist","ethereal","glass"], url: "https://www.sanaa.co.jp/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.sanaa.co.jp/" },
+        { name: "Ludwig Godefroy", country: "France / Mexico", region: "Latin America", tags: ["brutalist","pre-columbian","concrete"], url: "https://www.archdaily.com/office/ludwig-godefroy-architecture", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/office/ludwig-godefroy-architecture" },
+        { name: "Paulo Mendes da Rocha", country: "Brazil", region: "Latin America", tags: ["brutalist","modernist"], url: "https://www.archdaily.com/tag/paulo-mendes-da-rocha", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/paulo-mendes-da-rocha" },
+        { name: "Oscar Niemeyer", country: "Brazil", region: "Latin America", tags: ["modernist","curvilinear","monumental"], url: "https://www.archdaily.com/tag/oscar-niemeyer", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/oscar-niemeyer" },
+        { name: "Zaha Hadid", country: "Iraq / UK", region: "Europe", tags: ["parametric","futuristic","fluid"], url: "https://www.zaha-hadid.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.zaha-hadid.com/" },
+        { name: "Frank Lloyd Wright", country: "United States", region: "North America", tags: ["organic","prairie","modernist"], url: "https://franklloydwright.org/", preview: "https://image.thum.io/get/width/640/crop/400/https://franklloydwright.org/" },
+        { name: "Álvaro Siza Vieira", country: "Portugal", region: "Europe", tags: ["minimalist","sculptural","white"], url: "https://www.archdaily.com/tag/alvaro-siza", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/alvaro-siza" },
+        { name: "Shelley McNamara", country: "Ireland", region: "Europe", tags: ["civic","crafted","tectonic"], url: "https://www.archdaily.com/tag/grafton-architects", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/grafton-architects" },
+        { name: "Yvonne Farrell", country: "Ireland", region: "Europe", tags: ["civic","crafted","tectonic"], url: "https://www.archdaily.com/tag/grafton-architects", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/grafton-architects" },
+        { name: "Luciano Kruk", country: "Argentina", region: "Latin America", tags: ["concrete","residential","landscape"], url: "https://lucianokruk.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://lucianokruk.com/" },
+        { name: "Fernanda Canales", country: "Mexico", region: "Latin America", tags: ["residential","social","garden"], url: "https://www.fernandacanales.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.fernandacanales.com/" },
+        { name: "Walter Maria Förderer", country: "Switzerland", region: "Europe", tags: ["brutalist","ecclesiastical","sculptural"], url: "https://www.archdaily.com/tag/walter-forderer", preview: "" },
+        { name: "Peter Zumthor", country: "Switzerland", region: "Europe", tags: ["phenomenological","material","atmospheric"], url: "https://www.archdaily.com/tag/peter-zumthor", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/peter-zumthor" },
+        { name: "Pedro Reyes", country: "Mexico", region: "Latin America", tags: ["sculpture","experimental","activist"], url: "https://www.pedroreyes.net/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.pedroreyes.net/" },
+        { name: "Fernando Menis", country: "Spain", region: "Europe", tags: ["volcanic","raw","sculptural"], url: "https://mfrfrede.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://mfrfrede.com/" },
+        { name: "Aires Mateus", country: "Portugal", region: "Europe", tags: ["minimalist","void","white"], url: "https://www.airesmateus.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.airesmateus.com/" },
+        { name: "HArquitectes", country: "Spain", region: "Europe", tags: ["bioclimatic","humble","material"], url: "https://www.harquitectes.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.harquitectes.com/" },
+        { name: "Macías Peredo", country: "Mexico", region: "Latin America", tags: ["material","contextual","poetic"], url: "https://www.maciasperedo.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.maciasperedo.com/" },
+        { name: "Héctor Barroso", country: "Mexico", region: "Latin America", tags: ["earth","vernacular","landscape"], url: "https://www.hectorbarroso.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.hectorbarroso.com/" },
+        { name: "Enric Miralles", country: "Spain", region: "Europe", tags: ["organic","deconstructivist","collage"], url: "https://www.mirallestagliabue.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.mirallestagliabue.com/" },
+        { name: "Escobedo Soliz", country: "Mexico", region: "Latin America", tags: ["experimental","material","civic"], url: "https://www.archdaily.com/tag/escobedo-soliz", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/escobedo-soliz" },
+        { name: "SUMA Arquitectura", country: "Spain", region: "Europe", tags: ["residential","contextual"], url: "https://www.sumaarquitectura.eu/", preview: "" },
+        { name: "TAO (Trace Architecture Office)", country: "China", region: "Asia", tags: ["contextual","timber","landscape"], url: "https://www.t-a-o.cn/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.t-a-o.cn/" },
+        { name: "Vector Architects", country: "China", region: "Asia", tags: ["coastal","minimalist","concrete"], url: "https://www.vectorarchitects.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.vectorarchitects.com/" },
+        { name: "Hiroyuki Wakabayashi", country: "Japan", region: "Asia", tags: ["residential","concrete","light"], url: "https://www.archdaily.com/tag/hiroyuki-wakabayashi", preview: "" },
+        { name: "HEMAA", country: "Mexico", region: "Latin America", tags: ["residential","urban","material"], url: "https://hemaa.mx/", preview: "https://image.thum.io/get/width/640/crop/400/https://hemaa.mx/" },
+        { name: "PPAA (Pérez Palacios Arquitectos Asociados)", country: "Mexico", region: "Latin America", tags: ["gallery","residential","experimental"], url: "https://ppaa.mx/", preview: "https://image.thum.io/get/width/640/crop/400/https://ppaa.mx/" },
+        { name: "David Chipperfield", country: "United Kingdom", region: "Europe", tags: ["civic","restrained","classical-modern"], url: "https://davidchipperfield.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://davidchipperfield.com/" },
+        { name: "Gabriela Carrillo", country: "Mexico", region: "Latin America", tags: ["civic","light","landscape"], url: "https://www.archdaily.com/tag/gabriela-carrillo", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/gabriela-carrillo" },
+        { name: "Mauricio Rocha", country: "Mexico", region: "Latin America", tags: ["earth","contextual","social"], url: "https://www.archdaily.com/tag/mauricio-rocha", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/mauricio-rocha" },
+        { name: "Angelo Bucci", country: "Brazil", region: "Latin America", tags: ["concrete","structural","modernist"], url: "https://www.spbr.arq.br/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.spbr.arq.br/" },
+        { name: "Hiroshi Nakamura & NAP", country: "Japan", region: "Asia", tags: ["organic","ceremonial","nature"], url: "https://www.nakam.info/en/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.nakam.info/en/" },
+        { name: "Go Hasegawa", country: "Japan", region: "Asia", tags: ["minimal","intimate","residential"], url: "https://www.archdaily.com/tag/go-hasegawa", preview: "" },
+        { name: "Bijoy Jain / Studio Mumbai", country: "India", region: "Asia", tags: ["craft","vernacular","material"], url: "https://www.studiomumbai.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.studiomumbai.com/" },
+        { name: "Gradolí & Sanz", country: "Spain", region: "Europe", tags: ["residential","sustainable"], url: "https://www.gradolisanz.com/", preview: "" },
+        { name: "Bonsar Architects", country: "Iran", region: "Middle East", tags: ["residential","courtyard","material"], url: "https://www.archdaily.com/office/bonsar-architecture-studio", preview: "" },
+        { name: "Luigi Moretti", country: "Italy", region: "Europe", tags: ["baroque-modern","sculptural","spatial"], url: "https://www.archdaily.com/tag/luigi-moretti", preview: "" },
+        { name: "Richard Neutra", country: "Austria / United States", region: "North America", tags: ["modernist","glass","landscape"], url: "https://www.archdaily.com/tag/richard-neutra", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/richard-neutra" },
+        { name: "SUPPOSE DESIGN OFFICE", country: "Japan", region: "Asia", tags: ["experimental","boundary","nature"], url: "https://suppose.jp/", preview: "https://image.thum.io/get/width/640/crop/400/https://suppose.jp/" },
+        { name: "Kenzo Tange", country: "Japan", region: "Asia", tags: ["brutalist","metabolist","monumental"], url: "https://www.archdaily.com/tag/kenzo-tange", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/kenzo-tange" },
+        { name: "William Lescaze", country: "Switzerland / United States", region: "North America", tags: ["modernist","international style"], url: "https://en.wikipedia.org/wiki/William_Lescaze", preview: "" },
+        { name: "Leopold Banchini", country: "Switzerland", region: "Europe", tags: ["experimental","raw","poetic"], url: "https://www.leopoldbanchini.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.leopoldbanchini.com/" },
+    ];
+
+    const works = [
+        { name: "Complejo Cultural Teresa Carreño", city: "Caracas", country: "Venezuela", region: "Latin America", architect: "Tomás Lugo, Jesús Sandoval, Dietrich Kunckel", year: "1983", tags: ["brutalist","cultural"], url: "https://en.wikipedia.org/wiki/Teresa_Carre%C3%B1o_Cultural_Complex", preview: "https://image.thum.io/get/width/640/crop/400/https://en.wikipedia.org/wiki/Teresa_Carre%C3%B1o_Cultural_Complex" },
+        { name: "University of Engineering and Technology (UTEC)", city: "Lima", country: "Peru", region: "Latin America", architect: "Grafton Architects", year: "2015", tags: ["brutalist","educational"], url: "https://www.archdaily.com/595584/utec-universidad-de-ingenieria-y-tecnologia-grafton-architects", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/595584/utec-universidad-de-ingenieria-y-tecnologia-grafton-architects" },
+        { name: "Museo Nacional de Antropología", city: "Mexico City", country: "Mexico", region: "Latin America", architect: "Pedro Ramírez Vázquez", year: "1964", tags: ["modernist","museum"], url: "https://www.archdaily.com/785122/ad-classics-national-museum-of-anthropology-pedro-ramirez-vazquez", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/785122/ad-classics-national-museum-of-anthropology-pedro-ramirez-vazquez" },
+        { name: "Museo Jumex", city: "Mexico City", country: "Mexico", region: "Latin America", architect: "David Chipperfield", year: "2013", tags: ["gallery","contemporary"], url: "https://www.archdaily.com/451356/museo-jumex-david-chipperfield-architects", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/451356/museo-jumex-david-chipperfield-architects" },
+        { name: "Casa Praxis", city: "Mexico City", country: "Mexico", region: "Latin America", architect: "Agustín Hernández Navarro", year: "1968", tags: ["sculptural","residential"], url: "https://www.archdaily.com/tag/agustin-hernandez", preview: "" },
+        { name: "Casa en el Aire", city: "Mexico City", country: "Mexico", region: "Latin America", architect: "Agustín Hernández Navarro", year: "1991", tags: ["sculptural","residential"], url: "https://www.archdaily.com/tag/agustin-hernandez", preview: "" },
+        { name: "Casa Itambé", city: "São Paulo", country: "Brazil", region: "Latin America", architect: "Paulo Mendes da Rocha", year: "1966", tags: ["brutalist","residential"], url: "https://www.archdaily.com/tag/paulo-mendes-da-rocha", preview: "" },
+        { name: "Casa Pedregal", city: "Mexico City", country: "Mexico", region: "Latin America", architect: "Luis Barragán", year: "1950", tags: ["modernist","color","residential"], url: "https://en.wikipedia.org/wiki/Jardines_del_Pedregal", preview: "" },
+        { name: "Biblioteca Vasconcelos", city: "Mexico City", country: "Mexico", region: "Latin America", architect: "Alberto Kalach", year: "2006", tags: ["monumental","library"], url: "https://www.archdaily.com/175847/jose-vasconcelos-library-alberto-kalach", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/175847/jose-vasconcelos-library-alberto-kalach" },
+        { name: "Pedro Reyes' Studio", city: "Mexico City", country: "Mexico", region: "Latin America", architect: "Pedro Reyes", year: "", tags: ["studio","experimental"], url: "https://www.pedroreyes.net/", preview: "" },
+        { name: "Iglesia San José de las Palmas", city: "Mexico City", country: "Mexico", region: "Latin America", architect: "", year: "", tags: ["ecclesiastical"], url: "", preview: "" },
+        { name: "Casa Frida Kahlo (Museo Frida Kahlo)", city: "Mexico City", country: "Mexico", region: "Latin America", architect: "", year: "1904", tags: ["museum","historic","color"], url: "https://www.museofridakahlo.org.mx/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.museofridakahlo.org.mx/" },
+        { name: "Ferrocarril de Cuernavaca 780", city: "Mexico City", country: "Mexico", region: "Latin America", architect: "HEMAA", year: "", tags: ["residential","urban"], url: "https://hemaa.mx/", preview: "" },
+        { name: "Artz Pedregal", city: "Mexico City", country: "Mexico", region: "Latin America", architect: "Sordo Madaleno", year: "2018", tags: ["commercial","landscape"], url: "https://www.archdaily.com/902840/artz-pedregal-sordo-madaleno-arquitectos", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/902840/artz-pedregal-sordo-madaleno-arquitectos" },
+        { name: "UNAM Campus", city: "Mexico City", country: "Mexico", region: "Latin America", architect: "Various (Mario Pani, Enrique del Moral, et al.)", year: "1952", tags: ["modernist","campus","UNESCO"], url: "https://www.archdaily.com/tag/unam", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/tag/unam" },
+        { name: "Pavilhão de Portugal", city: "Lisbon", country: "Portugal", region: "Europe", architect: "Álvaro Siza Vieira", year: "1998", tags: ["minimalist","pavilion","concrete"], url: "https://www.archdaily.com/907747/ad-classics-expo-98-portuguese-national-pavilion-alvaro-siza", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/907747/ad-classics-expo-98-portuguese-national-pavilion-alvaro-siza" },
+        { name: "Frontón Beti Jai", city: "Madrid", country: "Spain", region: "Europe", architect: "Joaquín Rucoba", year: "1894", tags: ["historic","restored","sport"], url: "https://en.wikipedia.org/wiki/Front%C3%B3n_Beti-Jai", preview: "" },
+        { name: "La Pagoda (demolished 1999)", city: "Madrid", country: "Spain", region: "Europe", architect: "Miguel Fisac", year: "1969", tags: ["modernist","demolished","iconic"], url: "https://www.archdaily.com/tag/miguel-fisac", preview: "" },
+        { name: "Biblioteca Escuelas Pías", city: "Madrid", country: "Spain", region: "Europe", architect: "José Ignacio Linazasoro", year: "2004", tags: ["adaptive reuse","library","ruins"], url: "https://www.archdaily.com/tag/jose-ignacio-linazasoro", preview: "" },
+        { name: "Edificio Princesa (Fernando Higueras)", city: "Madrid", country: "Spain", region: "Europe", architect: "Fernando Higueras", year: "1975", tags: ["brutalist","residential"], url: "https://www.archdaily.com/tag/fernando-higueras", preview: "" },
+        { name: "Torre Castelar", city: "Madrid", country: "Spain", region: "Europe", architect: "Rafael de la Hoz", year: "1983", tags: ["curtain wall","office","modern"], url: "https://en.wikipedia.org/wiki/Castelar_Tower", preview: "" },
+        { name: "CaixaForum Madrid", city: "Madrid", country: "Spain", region: "Europe", architect: "Herzog & de Meuron", year: "2008", tags: ["adaptive reuse","cultural","corten"], url: "https://www.archdaily.com/150541/caixaforum-madrid-herzog-and-de-meuron", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/150541/caixaforum-madrid-herzog-and-de-meuron" },
+        { name: "Infinito Delicias", city: "Madrid", country: "Spain", region: "Europe", architect: "", year: "", tags: ["residential","contemporary"], url: "", preview: "" },
+        { name: "El Rascainfiernos (Fernando Higueras)", city: "Madrid", country: "Spain", region: "Europe", architect: "Fernando Higueras", year: "1973", tags: ["brutalist","tower"], url: "https://www.archdaily.com/tag/fernando-higueras", preview: "" },
+        { name: "Iglesia Nuestra Señora del Rosario de Filipinas", city: "Madrid", country: "Spain", region: "Europe", architect: "Cecilio Sánchez-Robles", year: "1970", tags: ["brutalist","ecclesiastical"], url: "", preview: "" },
+        { name: "Iglesia de Santa Ana y la Esperanza", city: "Madrid", country: "Spain", region: "Europe", architect: "Miguel Fisac", year: "1966", tags: ["modernist","ecclesiastical"], url: "", preview: "" },
+        { name: "Luciano Kruk's Houses", city: "Buenos Aires Province", country: "Argentina", region: "Latin America", architect: "Luciano Kruk", year: "", tags: ["concrete","residential","landscape"], url: "https://lucianokruk.com/", preview: "https://image.thum.io/get/width/640/crop/400/https://lucianokruk.com/" },
+        { name: "The Barbican (interiors)", city: "London", country: "United Kingdom", region: "Europe", architect: "Chamberlin, Powell & Bon", year: "1982", tags: ["brutalist","residential","cultural"], url: "https://www.barbican.org.uk/", preview: "https://image.thum.io/get/width/640/crop/400/https://www.barbican.org.uk/" },
+        { name: "Modern Wing, Art Institute of Chicago", city: "Chicago", country: "United States", region: "North America", architect: "Renzo Piano", year: "2009", tags: ["museum","light","modern"], url: "https://www.archdaily.com/24652/the-modern-wing-renzo-piano", preview: "https://image.thum.io/get/width/640/crop/400/https://www.archdaily.com/24652/the-modern-wing-renzo-piano" },
+        { name: "Schweikher House and Studio", city: "Schaumburg, Illinois", country: "United States", region: "North America", architect: "Paul Schweikher", year: "1938", tags: ["modernist","residential","studio"], url: "https://en.wikipedia.org/wiki/Paul_Schweikher", preview: "" },
+        { name: "Washington D.C. Metro Stations", city: "Washington D.C.", country: "United States", region: "North America", architect: "Harry Weese", year: "1976", tags: ["brutalist","infrastructure","vaulted"], url: "https://www.archdaily.com/tag/washington-dc-metro", preview: "" },
+        { name: "George L. Mosse Humanities Building", city: "Madison, Wisconsin", country: "United States", region: "North America", architect: "Harry Weese", year: "1969", tags: ["brutalist","educational"], url: "https://en.wikipedia.org/wiki/George_L._Mosse_Humanities_Building", preview: "" },
+    ];
+
+    // ═══════════════════════════════════════════════
+    //  A–Z INDEX
+    // ═══════════════════════════════════════════════
+
+    function buildAZ(filteredArchitects) {
+        const panel = document.getElementById('panel-az');
+        const sorted = [...filteredArchitects].sort((a, b) => {
+            const aName = a.name.replace(/^(El |La |Los |Las |The )/i, '');
+            const bName = b.name.replace(/^(El |La |Los |Las |The )/i, '');
+            return aName.localeCompare(bName, 'es');
+        });
+
+        const groups = {};
+        sorted.forEach(a => {
+            const cleanName = a.name.replace(/^(El |La |Los |Las |The )/i, '');
+            const letter = cleanName[0].toUpperCase();
+            if (!groups[letter]) groups[letter] = [];
+            groups[letter].push(a);
+        });
+
+        const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        const existingLetters = Object.keys(groups).sort();
+
+        let sidebarHTML = '';
+        allLetters.forEach(l => {
+            const has = existingLetters.includes(l);
+            sidebarHTML += `<a class="az-letter-link ${has ? 'has-entries' : ''}" ${has ? `href="#az-${l}" onclick="event.preventDefault(); document.getElementById('az-${l}').scrollIntoView({behavior:'smooth',block:'start'})"` : ''}>${l}</a>`;
+        });
+
+        let contentHTML = '';
+        existingLetters.forEach(letter => {
+            contentHTML += `<div class="az-group" id="az-${letter}">`;
+            contentHTML += `<div class="az-group-letter">${letter}</div>`;
+            groups[letter].forEach(a => {
+                contentHTML += `
+                    <a href="${a.url}" target="_blank" rel="noopener" class="arch-entry"
+                       data-preview="${a.preview || ''}"
+                       data-title="${a.name}"
+                       data-sub="${a.country} · ${a.tags.join(', ')}">
+                        <div class="arch-entry-name">${a.name}</div>
+                        <div class="arch-entry-meta">${a.country}</div>
+                        <div class="arch-entry-tags">${a.tags.map(t => `<span class="arch-tag">${t}</span>`).join('')}</div>
+                    </a>`;
+            });
+            contentHTML += '</div>';
+        });
+
+        if (sorted.length === 0) {
+            contentHTML = '<div class="empty-state">No architects found</div>';
+        }
+
+        panel.innerHTML = `
+            <div class="az-layout">
+                <div class="az-sidebar">${sidebarHTML}</div>
+                <div class="az-content">${contentHTML}</div>
+            </div>`;
+
+        attachPreviewListeners(panel);
+        staggerEntrance(panel);
+    }
+
+    // ═══════════════════════════════════════════════
+    //  REGION VIEW
+    // ═══════════════════════════════════════════════
+
+    function buildRegion(filteredArchitects) {
+        const panel = document.getElementById('panel-region');
+
+        const regionOrder = ['Latin America', 'Europe', 'Asia', 'North America', 'Middle East'];
+        const regionGroups = {};
+        filteredArchitects.forEach(a => {
+            if (!regionGroups[a.region]) regionGroups[a.region] = {};
+            if (!regionGroups[a.region][a.country]) regionGroups[a.region][a.country] = [];
+            regionGroups[a.region][a.country].push(a);
+        });
+
+        let html = '';
+        regionOrder.forEach(region => {
+            if (!regionGroups[region]) return;
+            const countries = Object.keys(regionGroups[region]).sort();
+            const total = countries.reduce((sum, c) => sum + regionGroups[region][c].length, 0);
+
+            html += `<div class="region-section open">`;
+            html += `<div class="region-header" onclick="this.parentElement.classList.toggle('open')">
+                <span class="region-name">${region}</span>
+                <span class="region-count">${total} architect${total !== 1 ? 's' : ''}</span>
+                <svg class="region-chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="currentColor" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>`;
+            html += `<div class="region-body">`;
+
+            countries.forEach(country => {
+                const archs = regionGroups[region][country].sort((a, b) => a.name.localeCompare(b.name, 'es'));
+                html += `<div class="city-group">`;
+                html += `<div class="city-name">${country}</div>`;
+                html += `<div class="city-entries">`;
+                archs.forEach(a => {
+                    html += `
+                        <a href="${a.url}" target="_blank" rel="noopener" class="arch-entry"
+                           data-preview="${a.preview || ''}"
+                           data-title="${a.name}"
+                           data-sub="${a.tags.join(', ')}">
+                            <div class="arch-entry-name">${a.name}</div>
+                            <div class="arch-entry-tags">${a.tags.map(t => `<span class="arch-tag">${t}</span>`).join('')}</div>
+                        </a>`;
+                });
+                html += `</div></div>`;
+            });
+
+            html += `</div></div>`;
+        });
+
+        if (filteredArchitects.length === 0) {
+            html = '<div class="empty-state">No architects found</div>';
+        }
+
+        panel.innerHTML = html;
+        attachPreviewListeners(panel);
+        staggerEntrance(panel);
+    }
+
+    // ═══════════════════════════════════════════════
+    //  WORKS VIEW
+    // ═══════════════════════════════════════════════
+
+    function buildWorks(filteredWorks) {
+        const panel = document.getElementById('panel-works');
+
+        // Group by city
+        const cityGroups = {};
+        filteredWorks.forEach(w => {
+            const key = `${w.city}, ${w.country}`;
+            if (!cityGroups[key]) cityGroups[key] = { city: w.city, country: w.country, works: [] };
+            cityGroups[key].works.push(w);
+        });
+
+        const sortedCities = Object.keys(cityGroups).sort((a, b) => a.localeCompare(b));
+
+        let html = '';
+        sortedCities.forEach(key => {
+            const g = cityGroups[key];
+            html += `<div class="works-city-section">`;
+            html += `<div class="works-city-heading">${g.city}<small>${g.country}</small></div>`;
+
+            g.works.sort((a, b) => a.name.localeCompare(b.name)).forEach(w => {
+                const hasUrl = w.url && w.url.length > 0;
+                const tag = hasUrl ? 'a' : 'div';
+                const linkAttrs = hasUrl ? `href="${w.url}" target="_blank" rel="noopener"` : '';
+                html += `
+                    <${tag} ${linkAttrs} class="work-entry"
+                        data-preview="${w.preview || ''}"
+                        data-title="${w.name}"
+                        data-sub="${w.city} · ${w.architect || 'Unknown'}${w.year ? ' · ' + w.year : ''}">
+                        <div class="work-entry-top">
+                            <div class="work-entry-name">${w.name}</div>
+                            ${hasUrl ? '<svg class="work-entry-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>' : ''}
+                        </div>
+                        <div class="work-entry-detail">
+                            ${w.architect ? `<span>${w.architect}</span>` : ''}
+                            ${w.year ? ` · ${w.year}` : ''}
+                            ${w.tags.length ? ' · ' + w.tags.join(', ') : ''}
+                        </div>
+                    </${tag}>`;
+            });
+
+            html += `</div>`;
+        });
+
+        if (filteredWorks.length === 0) {
+            html = '<div class="empty-state">No works found</div>';
+        }
+
+        panel.innerHTML = html;
+        attachPreviewListeners(panel);
+        staggerEntrance(panel);
+    }
+
+    // ═══════════════════════════════════════════════
+    //  HOVER PREVIEW
+    // ═══════════════════════════════════════════════
+
+    const previewCard = document.getElementById('previewCard');
+    const previewImg = document.getElementById('previewImg');
+    const previewTitle = document.getElementById('previewTitle');
+    const previewSub = document.getElementById('previewSub');
+    let previewTimeout = null;
+    const imgCache = {};
+
+    function attachPreviewListeners(container) {
+        const entries = container.querySelectorAll('[data-preview]');
+        entries.forEach(el => {
+            el.addEventListener('mouseenter', (e) => {
+                const src = el.dataset.preview;
+                const title = el.dataset.title;
+                const sub = el.dataset.sub;
+
+                clearTimeout(previewTimeout);
+                previewTitle.textContent = title;
+                previewSub.textContent = sub;
+
+                if (src) {
+                    // Try loading image
+                    if (imgCache[src] === 'loaded') {
+                        previewImg.innerHTML = `<img class="preview-card-img" src="${src}" alt="${title}">`;
+                    } else if (imgCache[src] === 'error') {
+                        showPlaceholder(title);
+                    } else {
+                        showPlaceholder(title);
+                        const img = new Image();
+                        img.onload = () => {
+                            imgCache[src] = 'loaded';
+                            if (previewCard.classList.contains('visible') && previewTitle.textContent === title) {
+                                previewImg.innerHTML = `<img class="preview-card-img" src="${src}" alt="${title}">`;
+                            }
+                        };
+                        img.onerror = () => { imgCache[src] = 'error'; };
+                        img.src = src;
+                    }
+                } else {
+                    showPlaceholder(title);
+                }
+
+                positionPreview(e);
+                previewTimeout = setTimeout(() => {
+                    previewCard.classList.add('visible');
+                }, 120);
+            });
+
+            el.addEventListener('mousemove', positionPreview);
+
+            el.addEventListener('mouseleave', () => {
+                clearTimeout(previewTimeout);
+                previewCard.classList.remove('visible');
+            });
+        });
+    }
+
+    function showPlaceholder(title) {
+        const initials = title.split(/[\s/]+/).filter(w => w.length > 1 && w[0] === w[0].toUpperCase()).slice(0, 2).map(w => w[0]).join('');
+        previewImg.innerHTML = `<div class="preview-card-img-placeholder">${initials || '?'}</div>`;
+    }
+
+    function positionPreview(e) {
+        const pad = 20;
+        const cardW = 320;
+        const cardH = 260;
+        let x = e.clientX + pad;
+        let y = e.clientY - cardH / 2;
+
+        if (x + cardW > window.innerWidth - pad) x = e.clientX - cardW - pad;
+        if (y < pad) y = pad;
+        if (y + cardH > window.innerHeight - pad) y = window.innerHeight - cardH - pad;
+
+        previewCard.style.left = x + 'px';
+        previewCard.style.top = y + 'px';
+    }
+
+    // ═══════════════════════════════════════════════
+    //  STAGGER ENTRANCE
+    // ═══════════════════════════════════════════════
+
+    function staggerEntrance(container) {
+        const entries = container.querySelectorAll('.arch-entry, .work-entry, .az-group, .region-section');
+        const observer = new IntersectionObserver((items) => {
+            items.forEach(item => {
+                if (item.isIntersecting) {
+                    item.target.classList.add('visible');
+                    observer.unobserve(item.target);
+                }
+            });
+        }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+
+        entries.forEach((el, i) => {
+            el.classList.add('stagger-in');
+            el.style.transitionDelay = `${Math.min(i * 0.04, 0.6)}s`;
+            observer.observe(el);
+        });
+    }
+
+    // ═══════════════════════════════════════════════
+    //  TABS
+    // ═══════════════════════════════════════════════
+
+    const tabs = document.querySelectorAll('.tab');
+    let currentTab = 'az';
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.dataset.tab;
+            if (target === currentTab) return;
+            currentTab = target;
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(`panel-${target}`).classList.add('active');
+            applySearch();
+        });
+    });
+
+    // ═══════════════════════════════════════════════
+    //  SEARCH
+    // ═══════════════════════════════════════════════
+
+    const searchInput = document.getElementById('searchInput');
+    const searchCount = document.getElementById('searchCount');
+
+    function applySearch() {
+        const q = searchInput.value.toLowerCase().trim();
+
+        if (currentTab === 'az' || currentTab === 'region') {
+            const filtered = q ? architects.filter(a =>
+                a.name.toLowerCase().includes(q) ||
+                a.country.toLowerCase().includes(q) ||
+                a.tags.some(t => t.toLowerCase().includes(q)) ||
+                a.region.toLowerCase().includes(q)
+            ) : architects;
+
+            searchCount.textContent = q ? `${filtered.length} result${filtered.length !== 1 ? 's' : ''}` : '';
+
+            if (currentTab === 'az') buildAZ(filtered);
+            else buildRegion(filtered);
+        } else {
+            const filtered = q ? works.filter(w =>
+                w.name.toLowerCase().includes(q) ||
+                w.city.toLowerCase().includes(q) ||
+                w.country.toLowerCase().includes(q) ||
+                w.architect.toLowerCase().includes(q) ||
+                w.tags.some(t => t.toLowerCase().includes(q)) ||
+                w.region.toLowerCase().includes(q)
+            ) : works;
+
+            searchCount.textContent = q ? `${filtered.length} result${filtered.length !== 1 ? 's' : ''}` : '';
+            buildWorks(filtered);
+        }
+    }
+
+    searchInput.addEventListener('input', () => {
+        clearTimeout(searchInput._debounce);
+        searchInput._debounce = setTimeout(applySearch, 180);
+    });
+
+    // ═══════════════════════════════════════════════
+    //  INIT
+    // ═══════════════════════════════════════════════
+
+    buildAZ(architects);
+    buildRegion(architects);
+    buildWorks(works);
+
+    // ─── Theme ───
+    const toggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    function getInitialTheme() {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') return 'dark';
+        if (saved === 'light') return 'light';
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    function applyTheme(theme) {
+        if (theme === 'dark') html.setAttribute('data-theme', 'dark');
+        else html.removeAttribute('data-theme');
+    }
+    applyTheme(getInitialTheme());
+    toggle.addEventListener('click', () => {
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        const newTheme = isDark ? 'light' : 'dark';
+        applyTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'auto' || !saved) applyTheme(e.matches ? 'dark' : 'light');
+    });
+
+    // ─── Topbar ───
+    const topbar = document.getElementById('topbar');
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                topbar.classList.toggle('scrolled', window.scrollY > 40);
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+    </script>
+</body>
+</html>
