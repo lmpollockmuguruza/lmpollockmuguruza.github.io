@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>of interest — snippet tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cream: #f8f6f1;
+            --cream-dark: #efece5;
+            --warm-white: #fdfcfa;
+            --ink: #1a1816;
+            --ink-soft: #3d3833;
+            --ink-muted: #8a8279;
+            --ink-faint: #b8b1a7;
+            --burgundy: #6b2737;
+            --burgundy-soft: #8b3747;
+            --burgundy-wash: rgba(107, 39, 55, 0.06);
+            --burgundy-glow: rgba(107, 39, 55, 0.12);
+            --border: rgba(26, 24, 22, 0.08);
+            --border-focus: rgba(107, 39, 55, 0.3);
+            --shadow-sm: 0 1px 2px rgba(26, 24, 22, 0.04);
+            --shadow-md: 0 4px 16px rgba(26, 24, 22, 0.06);
+            --shadow-lg: 0 8px 32px rgba(26, 24, 22, 0.08);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+            min-height: 100dvh;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Subtle grain texture */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            opacity: 0.025;
+            pointer-events: none;
+            z-index: 9999;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 256px;
+        }
+
+        ::selection {
+            background: rgba(107, 39, 55, 0.15);
+            color: var(--ink);
+        }
+
+        /* Layout */
+        .container {
+            max-width: 540px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header */
+        .header {
+            padding: 3rem 0 0;
+            text-align: center;
+            opacity: 0;
+            animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+        }
+
+        .header-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .header-mark svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--burgundy);
+            fill: none;
+            stroke-width: 1.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .header h1 {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.75rem;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 0.8rem;
+            color: var(--ink-muted);
+            font-weight: 300;
+            letter-spacing: 0.03em;
+        }
+
+        /* Divider */
+        .divider {
+            width: 32px;
+            height: 1px;
+            background: var(--border);
+            margin: 2rem auto;
+            opacity: 0;
+            animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards;
+        }
+
+        /* Form */
+        .form-area {
+            padding-bottom: 1rem;
+            opacity: 0;
+            animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+        }
+
+        .field {
+            margin-bottom: 1.25rem;
+            position: relative;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--ink-muted);
+            margin-bottom: 0.5rem;
+            transition: color var(--transition);
+        }
+
+        .field:focus-within label {
+            color: var(--burgundy);
+        }
+
+        .field input,
+        .field textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--ink);
+            background: var(--warm-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            outline: none;
+            transition: all var(--transition);
+            line-height: 1.5;
+        }
+
+        .field input::placeholder,
+        .field textarea::placeholder {
+            color: var(--ink-faint);
+            font-weight: 300;
+        }
+
+        .field input:focus,
+        .field textarea:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--burgundy-wash);
+            background: #fff;
+        }
+
+        .field textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Inline row */
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        /* Toggle */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.65rem 1rem;
+            background: var(--warm-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            margin-bottom: 1.25rem;
+            transition: all var(--transition);
+        }
+
+        .toggle-row:hover {
+            border-color: var(--border-focus);
+        }
+
+        .toggle-label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--ink-muted);
+        }
+
+        .toggle-hint {
+            font-size: 0.7rem;
+            color: var(--ink-faint);
+            font-weight: 300;
+            text-transform: none;
+            letter-spacing: 0;
+            margin-left: 0.5rem;
+        }
+
+        .toggle {
+            position: relative;
+            width: 36px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        .toggle-track {
+            position: absolute;
+            inset: 0;
+            background: var(--cream-dark);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .toggle-track::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 14px;
+            height: 14px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition);
+        }
+
+        .toggle input:checked + .toggle-track {
+            background: var(--burgundy);
+            border-color: var(--burgundy);
+        }
+
+        .toggle input:checked + .toggle-track::after {
+            transform: translateX(16px);
+        }
+
+        /* Generate button */
+        .generate-btn {
+            width: 100%;
+            padding: 0.85rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--cream);
+            background: var(--ink);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .generate-btn:hover {
+            background: var(--ink-soft);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .generate-btn.success {
+            background: var(--burgundy);
+        }
+
+        /* Output area */
+        .output-area {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            opacity: 0;
+            transform: translateY(12px);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .output-area.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .output-title {
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--ink-muted);
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.8rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: var(--burgundy);
+            background: var(--burgundy-wash);
+            border: 1px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .copy-btn svg {
+            width: 13px;
+            height: 13px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
+        }
+
+        .copy-btn:hover {
+            background: var(--burgundy-glow);
+            border-color: rgba(107, 39, 55, 0.15);
+        }
+
+        .copy-btn.copied {
+            color: var(--cream);
+            background: var(--burgundy);
+            border-color: var(--burgundy);
+        }
+
+        .code-block {
+            position: relative;
+            background: var(--ink);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            overflow-x: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .code-block pre {
+            font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.72rem;
+            line-height: 1.7;
+            color: #c8c2b8;
+            white-space: pre;
+            tab-size: 4;
+            margin: 0;
+        }
+
+        .code-block .tag { color: #d4907c; }
+        .code-block .attr { color: #c9b87d; }
+        .code-block .str { color: #a3be8c; }
+        .code-block .class { color: #88c0d0; }
+        .code-block .text { color: #c8c2b8; }
+
+        /* Preview card */
+        .preview-area {
+            margin-top: 1.75rem;
+        }
+
+        .preview-title {
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--ink-muted);
+            margin-bottom: 1rem;
+        }
+
+        .preview-card {
+            padding: 1.5rem;
+            background: var(--warm-white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            transition: all var(--transition);
+        }
+
+        .preview-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--burgundy-glow);
+        }
+
+        .preview-card .p-title {
+            color: var(--burgundy);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .preview-card .p-meta {
+            font-size: 0.78rem;
+            color: var(--ink-muted);
+            margin-top: 0.35rem;
+        }
+
+        .preview-card .p-desc {
+            font-size: 0.85rem;
+            color: var(--ink-muted);
+            margin-top: 0.5rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 3rem 0 2rem;
+            opacity: 0;
+            animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+        }
+
+        .footer p {
+            font-size: 0.7rem;
+            color: var(--ink-faint);
+            font-weight: 300;
+            letter-spacing: 0.02em;
+        }
+
+        .footer a {
+            color: var(--ink-muted);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border);
+            transition: all var(--transition);
+        }
+
+        .footer a:hover {
+            color: var(--burgundy);
+            border-color: var(--burgundy);
+        }
+
+        /* Animations */
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--ink-faint);
+            border-radius: 3px;
+        }
+
+        .code-block::-webkit-scrollbar-thumb {
+            background: rgba(200, 194, 184, 0.3);
+        }
+
+        /* Mobile refinements */
+        @media (max-width: 600px) {
+            .container {
+                padding: 0 1.25rem;
+            }
+
+            .header {
+                padding-top: 2rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .field-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .code-block {
+                border-radius: var(--radius-sm);
+                padding: 1rem;
+            }
+
+            .code-block pre {
+                font-size: 0.65rem;
+            }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--ink);
+            color: var(--cream);
+            padding: 0.7rem 1.25rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 100;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-mark">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                </svg>
+            </div>
+            <h1>of interest</h1>
+            <p>snippet generator for your site</p>
+        </header>
+
+        <div class="divider"></div>
+
+        <!-- Form -->
+        <div class="form-area">
+            <div class="field">
+                <label for="title">Title</label>
+                <input type="text" id="title" placeholder="Should you just give up?" autocomplete="off">
+            </div>
+
+            <div class="field">
+                <label for="url">Link</label>
+                <input type="url" id="url" placeholder="https://..." autocomplete="off">
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label for="author">Author / Source</label>
+                    <input type="text" id="author" placeholder="Joshua Rothman (2024)" autocomplete="off">
+                </div>
+                <div class="field">
+                    <label for="date">Date Added</label>
+                    <input type="text" id="date" placeholder="07/02/2026" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="description">Your note</label>
+                <textarea id="description" placeholder="A brief note on why this is worth reading..." rows="3"></textarea>
+            </div>
+
+            <div class="toggle-row">
+                <div>
+                    <span class="toggle-label">External link</span>
+                    <span class="toggle-hint">opens in new tab</span>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="external" checked>
+                    <span class="toggle-track"></span>
+                </label>
+            </div>
+
+            <button class="generate-btn" id="generateBtn" onclick="generate()">Generate snippet</button>
+        </div>
+
+        <!-- Output -->
+        <div class="output-area" id="outputArea">
+            <div class="output-header">
+                <span class="output-title">HTML snippet</span>
+                <button class="copy-btn" id="copyBtn" onclick="copyCode()">
+                    <svg viewBox="0 0 24 24" id="copyIcon">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                    </svg>
+                    <span id="copyText">Copy</span>
+                </button>
+            </div>
+            <div class="code-block">
+                <pre id="codeOutput"></pre>
+            </div>
+
+            <div class="preview-area">
+                <div class="preview-title">Preview</div>
+                <div class="preview-card">
+                    <a class="p-title" id="previewTitle" href="#">Title</a>
+                    <div class="p-meta" id="previewMeta">by Author · added Date</div>
+                    <p class="p-desc" id="previewDesc">Description</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>paste into your <a href="https://github.com/lmpollockmuguruza/lmpollockmuguruza.github.io" target="_blank">index.html</a> — inside the <code style="font-size:0.68rem; background:var(--cream-dark); padding:0.15rem 0.4rem; border-radius:4px;">#interests</code> section</p>
+        </footer>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">Copied to clipboard</div>
+
+    <script>
+        // Auto-fill today's date in DD/MM/YYYY format
+        (function() {
+            const now = new Date();
+            const dd = String(now.getDate()).padStart(2, '0');
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const yyyy = now.getFullYear();
+            document.getElementById('date').value = `${dd}/${mm}/${yyyy}`;
+        })();
+
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function generate() {
+            const title = document.getElementById('title').value.trim();
+            const url = document.getElementById('url').value.trim();
+            const author = document.getElementById('author').value.trim();
+            const date = document.getElementById('date').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const external = document.getElementById('external').checked;
+
+            if (!title) {
+                showToast('Add a title first');
+                document.getElementById('title').focus();
+                return;
+            }
+
+            if (!url) {
+                showToast('Add a link');
+                document.getElementById('url').focus();
+                return;
+            }
+
+            // Build the target attribute
+            const targetAttr = external ? ' target="_blank"' : '';
+
+            // Build raw HTML string
+            const rawHtml = 
+`<div class="interest-item scroll-animate">
+    <div class="interest-header">
+        <a href="${url}"${targetAttr} class="interest-title">${title}</a>
+        <span class="interest-meta">by ${author || '—'} · added ${date || '—'}</span>
+    </div>
+    <p class="interest-description">${description || ''}</p>
+</div>`;
+
+            // Store raw for copying
+            window._rawSnippet = rawHtml;
+
+            // Build syntax-highlighted version for display
+            const highlighted = buildHighlighted(title, url, targetAttr, author, date, description);
+            document.getElementById('codeOutput').innerHTML = highlighted;
+
+            // Update preview
+            document.getElementById('previewTitle').textContent = title;
+            document.getElementById('previewTitle').href = url;
+            document.getElementById('previewMeta').textContent = `by ${author || '—'} · added ${date || '—'}`;
+            document.getElementById('previewDesc').textContent = description || '';
+
+            // Show output
+            const output = document.getElementById('outputArea');
+            output.classList.add('visible');
+
+            // Button feedback
+            const btn = document.getElementById('generateBtn');
+            btn.textContent = 'Updated ✓';
+            btn.classList.add('success');
+            setTimeout(() => {
+                btn.textContent = 'Generate snippet';
+                btn.classList.remove('success');
+            }, 1500);
+
+            // Scroll to output smoothly
+            setTimeout(() => {
+                output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function buildHighlighted(title, url, targetAttr, author, date, description) {
+            const e = escapeHtml;
+            const lines = [
+                `<span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"interest-item scroll-animate"</span><span class="tag">&gt;</span>`,
+                `    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"interest-header"</span><span class="tag">&gt;</span>`,
+                `        <span class="tag">&lt;a</span> <span class="attr">href=</span><span class="str">"${e(url)}"</span>${targetAttr ? ` <span class="attr">target=</span><span class="str">"_blank"</span>` : ''} <span class="attr">class=</span><span class="str">"interest-title"</span><span class="tag">&gt;</span><span class="text">${e(title)}</span><span class="tag">&lt;/a&gt;</span>`,
+                `        <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="str">"interest-meta"</span><span class="tag">&gt;</span><span class="text">by ${e(author || '—')} · added ${e(date || '—')}</span><span class="tag">&lt;/span&gt;</span>`,
+                `    <span class="tag">&lt;/div&gt;</span>`,
+                `    <span class="tag">&lt;p</span> <span class="attr">class=</span><span class="str">"interest-description"</span><span class="tag">&gt;</span><span class="text">${e(description || '')}</span><span class="tag">&lt;/p&gt;</span>`,
+                `<span class="tag">&lt;/div&gt;</span>`
+            ];
+            return lines.join('\n');
+        }
+
+        async function copyCode() {
+            if (!window._rawSnippet) return;
+
+            try {
+                await navigator.clipboard.writeText(window._rawSnippet);
+                
+                const btn = document.getElementById('copyBtn');
+                const text = document.getElementById('copyText');
+                const icon = document.getElementById('copyIcon');
+                
+                btn.classList.add('copied');
+                text.textContent = 'Copied';
+                icon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
+                
+                showToast('Copied to clipboard');
+                
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    text.textContent = 'Copy';
+                    icon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>';
+                }, 2000);
+            } catch {
+                // Fallback
+                const ta = document.createElement('textarea');
+                ta.value = window._rawSnippet;
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast('Copied to clipboard');
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Allow Ctrl/Cmd+Enter to generate
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                e.preventDefault();
+                generate();
+            }
+        });
+    </script>
+</body>
+</html>
