@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>gallery — lucas pollock muguruza</title>
+
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* ═══════════════════════════════════════════
+           PALETTE & TOKENS
+           ═══════════════════════════════════════════ */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #f7f5f0;
+            --bg-surface: #fdfcfa;
+            --bg-elevated: #ffffff;
+            --ink: #1a1816;
+            --ink-soft: #3d3833;
+            --ink-muted: #7a7368;
+            --ink-faint: #b0a99e;
+            --ink-ghost: #d4cfc8;
+            --burgundy: #6b2737;
+            --burgundy-soft: #8b3747;
+            --burgundy-wash: rgba(107, 39, 55, 0.05);
+            --burgundy-glow: rgba(107, 39, 55, 0.10);
+            --border: rgba(26, 24, 22, 0.07);
+            --border-hover: rgba(107, 39, 55, 0.18);
+            --shadow-photo: 0 1px 3px rgba(26, 24, 22, 0.06), 0 4px 16px rgba(26, 24, 22, 0.04);
+            --shadow-photo-hover: 0 8px 32px rgba(26, 24, 22, 0.12), 0 2px 8px rgba(26, 24, 22, 0.06);
+            --shadow-cluster: 0 1px 2px rgba(26, 24, 22, 0.03);
+            --radius: 3px;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-out: cubic-bezier(0, 0, 0.2, 1);
+            --photo-size: 110px;
+        }
+
+        [data-theme="dark"] {
+            --bg: #141311;
+            --bg-surface: #1e1c19;
+            --bg-elevated: #252320;
+            --ink: #e8e4dd;
+            --ink-soft: #c8c2b8;
+            --ink-muted: #8a8279;
+            --ink-faint: #5a554e;
+            --ink-ghost: #3a3632;
+            --burgundy: #c4707f;
+            --burgundy-soft: #d4909f;
+            --burgundy-wash: rgba(196, 112, 127, 0.06);
+            --burgundy-glow: rgba(196, 112, 127, 0.12);
+            --border: rgba(232, 228, 221, 0.06);
+            --border-hover: rgba(196, 112, 127, 0.2);
+            --shadow-photo: 0 1px 3px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.12);
+            --shadow-photo-hover: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.15);
+            --shadow-cluster: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ═══════════════════════════════════════════
+           BASE
+           ═══════════════════════════════════════════ */
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--ink-soft);
+            overflow: hidden;
+            height: 100vh;
+            height: 100dvh;
+            cursor: grab;
+            transition: background-color 0.5s var(--ease), color 0.5s var(--ease);
+            position: relative;
+        }
+
+        body:active { cursor: grabbing; }
+
+        /* Noise texture */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.018;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 256px;
+        }
+        [data-theme="dark"] body::before { opacity: 0.03; }
+
+        ::selection { background: rgba(107, 39, 55, 0.18); color: var(--ink); }
+
+        /* ═══════════════════════════════════════════
+           LOADING SCREEN
+           ═══════════════════════════════════════════ */
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1.2rem;
+            transition: opacity 0.8s var(--ease), visibility 0.8s var(--ease);
+        }
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .loading-title {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: var(--ink);
+            letter-spacing: -0.01em;
+            opacity: 0;
+            animation: fadeUp 0.6s var(--ease) 0.1s forwards;
+        }
+        .loading-sub {
+            font-size: 0.75rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeUp 0.6s var(--ease) 0.3s forwards;
+        }
+        .loading-bar {
+            width: 120px;
+            height: 1px;
+            background: var(--ink-ghost);
+            border-radius: 1px;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeUp 0.6s var(--ease) 0.5s forwards;
+        }
+        .loading-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--burgundy);
+            transition: width 0.3s var(--ease);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ═══════════════════════════════════════════
+           TOP BAR
+           ═══════════════════════════════════════════ */
+        .topbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 500;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+        .topbar > * { pointer-events: auto; }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.78rem;
+            font-weight: 400;
+            color: var(--ink-muted);
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: color 0.35s var(--ease);
+        }
+        .back-link:hover { color: var(--burgundy); }
+        .back-link svg {
+            width: 15px; height: 15px;
+            stroke: currentColor; fill: none; stroke-width: 1.5;
+            transition: transform 0.35s var(--ease);
+        }
+        .back-link:hover svg { transform: translateX(-3px); }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .theme-toggle, .help-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px; height: 34px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: var(--bg-surface);
+            cursor: pointer;
+            transition: all 0.35s var(--ease);
+            color: var(--ink-muted);
+        }
+        .theme-toggle:hover, .help-toggle:hover {
+            border-color: var(--border-hover);
+            color: var(--burgundy);
+            background: var(--burgundy-wash);
+        }
+        .theme-toggle svg, .help-toggle svg {
+            width: 15px; height: 15px;
+            fill: currentColor;
+            transition: transform 0.5s var(--ease-spring);
+        }
+        .theme-toggle:hover svg { transform: rotate(30deg); }
+        .theme-toggle .icon-sun { display: none; }
+        .theme-toggle .icon-moon { display: block; }
+        [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+        [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+        /* ═══════════════════════════════════════════
+           THE CANVAS
+           ═══════════════════════════════════════════ */
+        .canvas-viewport {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            will-change: transform;
+            transition: none;
+        }
+
+        /* ═══════════════════════════════════════════
+           TRIP CLUSTERS
+           ═══════════════════════════════════════════ */
+        .trip-cluster {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .trip-photos {
+            position: relative;
+            /* sized dynamically */
+        }
+
+        .trip-label {
+            margin-top: 12px;
+            text-align: center;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+        }
+        .trip-cluster:hover .trip-label,
+        .trip-cluster.active .trip-label {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .trip-name {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--ink);
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+        .trip-date {
+            font-size: 0.68rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        /* ═══════════════════════════════════════════
+           PHOTO ITEMS
+           ═══════════════════════════════════════════ */
+        .photo-item {
+            position: absolute;
+            width: var(--photo-size);
+            cursor: pointer;
+            transition: transform 0.4s var(--ease-spring),
+                        box-shadow 0.4s var(--ease),
+                        z-index 0s;
+            z-index: 1;
+            border-radius: var(--radius);
+            overflow: visible;
+        }
+
+        .photo-item:hover {
+            z-index: 100;
+        }
+
+        .photo-frame {
+            position: relative;
+            width: 100%;
+            background: var(--bg-elevated);
+            padding: 4px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-photo);
+            transition: box-shadow 0.4s var(--ease),
+                        transform 0.4s var(--ease-spring);
+            overflow: hidden;
+        }
+
+        .photo-item:hover .photo-frame {
+            box-shadow: var(--shadow-photo-hover);
+            transform: scale(2.6) rotate(0deg) !important;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            display: block;
+            border-radius: 1px;
+            object-fit: cover;
+            aspect-ratio: 4/3;
+            background: var(--ink-ghost);
+            transition: filter 0.4s var(--ease);
+        }
+
+        .photo-frame img.portrait {
+            aspect-ratio: 3/4;
+        }
+
+        /* Video indicator */
+        .photo-frame .video-badge {
+            position: absolute;
+            bottom: 8px; right: 8px;
+            width: 22px; height: 22px;
+            background: rgba(0,0,0,0.55);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .video-badge svg {
+            width: 10px; height: 10px;
+            fill: #fff;
+            margin-left: 1px;
+        }
+
+        /* Note tooltip on hover */
+        .photo-note {
+            position: absolute;
+            left: 50%;
+            bottom: calc(100% + 10px);
+            transform: translateX(-50%) scale(0.38) translateY(4px);
+            transform-origin: bottom center;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 0.82rem;
+            font-style: italic;
+            color: var(--ink-soft);
+            line-height: 1.45;
+            white-space: nowrap;
+            max-width: 260px;
+            white-space: normal;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s var(--ease), transform 0.3s var(--ease-spring);
+            box-shadow: 0 4px 20px rgba(26, 24, 22, 0.08);
+            z-index: 200;
+        }
+
+        .photo-item:hover .photo-note.has-note {
+            opacity: 1;
+            transform: translateX(-50%) scale(0.38) translateY(0);
+        }
+
+        /* ═══════════════════════════════════════════
+           TIMELINE
+           ═══════════════════════════════════════════ */
+        .timeline {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 52px;
+            z-index: 400;
+            pointer-events: none;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 2rem;
+            background: linear-gradient(to top, var(--bg) 60%, transparent);
+        }
+
+        .timeline-track {
+            position: relative;
+            width: 100%;
+            height: 1px;
+            background: var(--ink-ghost);
+            margin-bottom: 18px;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            top: -6px;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: color 0.3s var(--ease);
+            color: var(--ink-faint);
+        }
+        .timeline-marker:hover { color: var(--burgundy); }
+
+        .timeline-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--ink-ghost);
+            margin-bottom: 6px;
+            transition: background 0.3s var(--ease), transform 0.3s var(--ease);
+        }
+        .timeline-marker:hover .timeline-dot {
+            background: var(--burgundy);
+            transform: scale(1.4);
+        }
+        .timeline-marker.active .timeline-dot {
+            background: var(--burgundy);
+        }
+
+        .timeline-label {
+            font-size: 0.62rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: inherit;
+        }
+
+        /* Position indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 52px;
+            left: 0; right: 0;
+            height: 2px;
+            z-index: 401;
+            background: transparent;
+        }
+        .scroll-indicator-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--burgundy);
+            opacity: 0.4;
+            transition: width 0.1s linear;
+        }
+
+        /* ═══════════════════════════════════════════
+           MINIMAP
+           ═══════════════════════════════════════════ */
+        .minimap {
+            position: fixed;
+            bottom: 62px;
+            right: 2rem;
+            width: 140px;
+            height: 28px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            z-index: 450;
+            overflow: hidden;
+            opacity: 0.7;
+            transition: opacity 0.3s var(--ease);
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        .minimap:hover { opacity: 1; }
+
+        .minimap-viewport {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            background: var(--burgundy-glow);
+            border-left: 1.5px solid var(--burgundy);
+            border-right: 1.5px solid var(--burgundy);
+            transition: left 0.1s linear, width 0.1s linear;
+        }
+
+        .minimap-dot {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background: var(--ink-faint);
+        }
+
+        /* ═══════════════════════════════════════════
+           LIGHTBOX
+           ═══════════════════════════════════════════ */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 8000;
+            background: rgba(20, 19, 17, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s var(--ease), visibility 0.4s var(--ease);
+            cursor: pointer;
+        }
+        .lightbox.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 82vw;
+            max-height: 82vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: default;
+            transform: scale(0.95) translateY(10px);
+            transition: transform 0.5s var(--ease-spring);
+        }
+        .lightbox.open .lightbox-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 72vh;
+            border-radius: 4px;
+            box-shadow: 0 12px 60px rgba(0, 0, 0, 0.4);
+            object-fit: contain;
+            background: #1a1816;
+        }
+
+        .lightbox-video {
+            width: 72vw;
+            max-width: 960px;
+            aspect-ratio: 16/9;
+            border-radius: 4px;
+            border: none;
+            box-shadow: 0 12px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .lightbox-meta {
+            margin-top: 1.2rem;
+            text-align: center;
+            max-width: 480px;
+        }
+        .lightbox-note {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.1rem;
+            font-style: italic;
+            color: #c8c2b8;
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+        .lightbox-location {
+            font-size: 0.7rem;
+            color: #5a554e;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .lightbox-close {
+            position: fixed;
+            top: 1.5rem; right: 1.5rem;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            color: #c8c2b8;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s var(--ease);
+            z-index: 8001;
+        }
+        .lightbox-close:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        .lightbox-close svg {
+            width: 18px; height: 18px;
+            stroke: currentColor; fill: none; stroke-width: 1.5;
+        }
+
+        .lightbox-nav {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+            color: #8a8279;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s var(--ease);
+            z-index: 8001;
+        }
+        .lightbox-nav:hover {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+        }
+        .lightbox-nav svg {
+            width: 20px; height: 20px;
+            stroke: currentColor; fill: none; stroke-width: 1.5;
+        }
+        .lightbox-prev { left: 1.5rem; }
+        .lightbox-next { right: 1.5rem; }
+
+        .lightbox-counter {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.68rem;
+            color: #5a554e;
+            letter-spacing: 0.1em;
+            z-index: 8001;
+        }
+
+        /* ═══════════════════════════════════════════
+           HELP OVERLAY
+           ═══════════════════════════════════════════ */
+        .help-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 7000;
+            background: rgba(20, 19, 17, 0.85);
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s var(--ease), visibility 0.4s var(--ease);
+            cursor: pointer;
+        }
+        .help-overlay.open { opacity: 1; visibility: visible; }
+
+        .help-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem 3rem;
+            max-width: 400px;
+            cursor: default;
+            transform: scale(0.95);
+            transition: transform 0.5s var(--ease-spring);
+        }
+        .help-overlay.open .help-card { transform: scale(1); }
+
+        .help-card h3 {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--ink);
+            margin-bottom: 1.2rem;
+        }
+        .help-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.9rem;
+        }
+        .help-key {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--burgundy);
+            letter-spacing: 0.05em;
+            min-width: 90px;
+            text-transform: uppercase;
+        }
+        .help-desc {
+            font-size: 0.82rem;
+            color: var(--ink-muted);
+            line-height: 1.4;
+        }
+
+        /* ═══════════════════════════════════════════
+           SCROLL HINT
+           ═══════════════════════════════════════════ */
+        .scroll-hint {
+            position: fixed;
+            bottom: 72px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.68rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.06em;
+            z-index: 300;
+            opacity: 0;
+            animation: hintFade 4s var(--ease) 1.5s forwards;
+            pointer-events: none;
+        }
+        .scroll-hint svg {
+            width: 16px; height: 16px;
+            stroke: var(--ink-faint);
+            fill: none;
+            stroke-width: 1.5;
+            animation: hintBounce 2s var(--ease) infinite;
+        }
+        @keyframes hintFade {
+            0% { opacity: 0; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+        @keyframes hintBounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(6px); }
+        }
+
+        /* ═══════════════════════════════════════════
+           CANVAS START TITLE
+           ═══════════════════════════════════════════ */
+        .canvas-title {
+            position: absolute;
+            top: 38%;
+            left: 80px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: 10;
+        }
+        .canvas-title h1 {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 3.2rem;
+            font-weight: 400;
+            color: var(--ink);
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            opacity: 0;
+            animation: fadeUp 0.8s var(--ease) 0.6s forwards;
+        }
+        .canvas-title p {
+            font-size: 0.78rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 0.6rem;
+            opacity: 0;
+            animation: fadeUp 0.8s var(--ease) 0.9s forwards;
+        }
+
+        /* ═══════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            :root { --photo-size: 80px; }
+
+            .topbar { padding: 0.75rem 1rem; }
+            .canvas-title { left: 40px; }
+            .canvas-title h1 { font-size: 2rem; }
+            .timeline { height: 44px; padding: 0 1rem; }
+            .minimap { display: none; }
+            .help-card { padding: 2rem; margin: 1rem; }
+            .lightbox-nav { display: none; }
+
+            .photo-item:hover .photo-frame {
+                transform: scale(2.2) rotate(0deg) !important;
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+           SCROLLBAR HIDE
+           ═══════════════════════════════════════════ */
+        ::-webkit-scrollbar { display: none; }
+        * { scrollbar-width: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Loading -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-title">gallery</div>
+        <div class="loading-sub">loading moments</div>
+        <div class="loading-bar"><div class="loading-bar-fill" id="loadingBar"></div></div>
+    </div>
+
+    <!-- Top bar -->
+    <nav class="topbar">
+        <a href="../" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5m0 0l7 7m-7-7l7-7"/></svg>
+            portfolio
+        </a>
+        <div class="topbar-right">
+            <button class="help-toggle" id="helpBtn" title="Controls">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" fill="none" stroke-width="1.5"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="currentColor" fill="none" stroke-width="1.5"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg>
+            </button>
+            <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Scroll hint -->
+    <div class="scroll-hint" id="scrollHint">
+        scroll to explore
+        <svg viewBox="0 0 24 24"><path d="M5 12h14m0 0l-7-7m7 7l-7 7"/></svg>
+    </div>
+
+    <!-- Canvas -->
+    <div class="canvas-viewport" id="viewport">
+        <div class="canvas" id="canvas">
+            <div class="canvas-title" id="canvasTitle">
+                <h1 id="galleryTitle">gallery</h1>
+                <p id="gallerySubtitle">places & moments</p>
+            </div>
+            <!-- Trip clusters injected here -->
+        </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline" id="timeline">
+        <div class="timeline-track" id="timelineTrack">
+            <!-- Markers injected here -->
+        </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator">
+        <div class="scroll-indicator-fill" id="scrollFill"></div>
+    </div>
+
+    <!-- Minimap -->
+    <div class="minimap" id="minimap">
+        <div class="minimap-viewport" id="minimapViewport"></div>
+        <!-- Dots injected -->
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">
+            <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev">
+            <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="lightbox-nav lightbox-next" id="lightboxNext">
+            <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <div class="lightbox-content" id="lightboxContent">
+            <img class="lightbox-img" id="lightboxImg" src="" alt="">
+            <iframe class="lightbox-video" id="lightboxVideo" src="" style="display:none" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            <div class="lightbox-meta">
+                <div class="lightbox-note" id="lightboxNote"></div>
+                <div class="lightbox-location" id="lightboxLocation"></div>
+            </div>
+        </div>
+        <div class="lightbox-counter" id="lightboxCounter"></div>
+    </div>
+
+    <!-- Help -->
+    <div class="help-overlay" id="helpOverlay">
+        <div class="help-card">
+            <h3>how to explore</h3>
+            <div class="help-row"><span class="help-key">Scroll</span><span class="help-desc">Move through the timeline</span></div>
+            <div class="help-row"><span class="help-key">Hover</span><span class="help-desc">Enlarge a photo & read its note</span></div>
+            <div class="help-row"><span class="help-key">Click</span><span class="help-desc">Open full view</span></div>
+            <div class="help-row"><span class="help-key">← →</span><span class="help-desc">Navigate in full view</span></div>
+            <div class="help-row"><span class="help-key">Esc</span><span class="help-desc">Close full view or this panel</span></div>
+            <div class="help-row"><span class="help-key">Timeline</span><span class="help-desc">Click a date to jump there</span></div>
+        </div>
+    </div>
+
+    <script>
+    (() => {
+        /* ═══════════════════════════════════════
+           CONFIG
+           ═══════════════════════════════════════ */
+        const CLUSTER_GAP = 420;       // horizontal space per cluster
+        const CANVAS_PAD_LEFT = 360;   // space before first cluster
+        const CANVAS_PAD_RIGHT = 300;  // space after last cluster
+        const PHOTO_SPREAD_X = 130;    // how wide photos spread within a cluster
+        const PHOTO_SPREAD_Y = 120;    // how tall
+        const SCROLL_SPEED = 1.8;      // mouse wheel multiplier
+        const SMOOTH_FACTOR = 0.12;    // scroll smoothing (lower = smoother)
+
+        /* ═══════════════════════════════════════
+           STATE
+           ═══════════════════════════════════════ */
+        let galleryData = null;
+        let allPhotos = [];            // flat list for lightbox nav
+        let scrollTarget = 0;
+        let scrollCurrent = 0;
+        let canvasWidth = 0;
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragScrollStart = 0;
+        let lightboxIndex = -1;
+        let animFrame = null;
+
+        const viewport = document.getElementById('viewport');
+        const canvas = document.getElementById('canvas');
+        const scrollFill = document.getElementById('scrollFill');
+        const minimapViewport = document.getElementById('minimapViewport');
+        const minimap = document.getElementById('minimap');
+        const loadingBar = document.getElementById('loadingBar');
+
+        /* ═══════════════════════════════════════
+           THEME
+           ═══════════════════════════════════════ */
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('gallery-theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('gallery-theme', next);
+        });
+
+        /* ═══════════════════════════════════════
+           LOAD DATA
+           ═══════════════════════════════════════ */
+        async function init() {
+            loadingBar.style.width = '30%';
+
+            // Try loading external JSON; fall back to embedded demo
+            try {
+                const resp = await fetch('gallery.json');
+                if (!resp.ok) throw new Error('no json');
+                galleryData = await resp.json();
+            } catch {
+                // Embedded fallback will be handled below
+                console.warn('gallery.json not found — using embedded demo data');
+                galleryData = getDemoData();
+            }
+
+            loadingBar.style.width = '60%';
+
+            if (galleryData.settings) {
+                document.getElementById('galleryTitle').textContent = galleryData.settings.title || 'gallery';
+                document.getElementById('gallerySubtitle').textContent = galleryData.settings.subtitle || '';
+                document.title = `${galleryData.settings.title} — lucas pollock muguruza`;
+            }
+
+            buildCanvas();
+            buildTimeline();
+            buildMinimap();
+            startScrollLoop();
+
+            loadingBar.style.width = '100%';
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 600);
+        }
+
+        /* ═══════════════════════════════════════
+           BUILD CANVAS
+           ═══════════════════════════════════════ */
+        function buildCanvas() {
+            const trips = galleryData.trips;
+            canvasWidth = CANVAS_PAD_LEFT + (trips.length * CLUSTER_GAP) + CANVAS_PAD_RIGHT;
+            canvas.style.width = canvasWidth + 'px';
+
+            allPhotos = [];
+
+            trips.forEach((trip, ti) => {
+                const clusterX = CANVAS_PAD_LEFT + ti * CLUSTER_GAP;
+                const clusterY = (trip.y || 0.4) * window.innerHeight;
+
+                const cluster = document.createElement('div');
+                cluster.className = 'trip-cluster';
+                cluster.style.left = clusterX + 'px';
+                cluster.style.top = clusterY + 'px';
+                cluster.dataset.tripIndex = ti;
+
+                const photosContainer = document.createElement('div');
+                photosContainer.className = 'trip-photos';
+
+                // Arrange photos in a scattered grid
+                const cols = Math.ceil(Math.sqrt(trip.photos.length));
+                const rows = Math.ceil(trip.photos.length / cols);
+                photosContainer.style.width = (cols * PHOTO_SPREAD_X + 40) + 'px';
+                photosContainer.style.height = (rows * PHOTO_SPREAD_Y + 40) + 'px';
+
+                trip.photos.forEach((photo, pi) => {
+                    const col = pi % cols;
+                    const row = Math.floor(pi / cols);
+
+                    // Add slight randomness to position
+                    const jitterX = (Math.random() - 0.5) * 24;
+                    const jitterY = (Math.random() - 0.5) * 20;
+                    const px = col * PHOTO_SPREAD_X + jitterX + 10;
+                    const py = row * PHOTO_SPREAD_Y + jitterY + 10;
+
+                    const rotation = photo.rotation || 0;
+                    const isPortrait = (photo.thumb || '').includes('/180/240');
+
+                    const item = document.createElement('div');
+                    item.className = 'photo-item';
+                    item.style.left = px + 'px';
+                    item.style.top = py + 'px';
+                    item.style.transform = `rotate(${rotation}deg)`;
+
+                    const frame = document.createElement('div');
+                    frame.className = 'photo-frame';
+                    frame.style.transform = `rotate(${rotation}deg)`;
+
+                    const img = document.createElement('img');
+                    img.loading = 'lazy';
+                    img.src = photo.thumb || photo.src;
+                    img.alt = photo.note || `${trip.name} — photo ${pi + 1}`;
+                    if (isPortrait) img.classList.add('portrait');
+                    frame.appendChild(img);
+
+                    if (photo.type === 'video') {
+                        const badge = document.createElement('div');
+                        badge.className = 'video-badge';
+                        badge.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>';
+                        frame.appendChild(badge);
+                    }
+
+                    item.appendChild(frame);
+
+                    // Note tooltip
+                    const note = document.createElement('div');
+                    note.className = 'photo-note' + (photo.note ? ' has-note' : '');
+                    note.textContent = photo.note || '';
+                    item.appendChild(note);
+
+                    // Store reference for lightbox
+                    const flatIndex = allPhotos.length;
+                    allPhotos.push({
+                        src: photo.src,
+                        thumb: photo.thumb,
+                        note: photo.note || '',
+                        type: photo.type || 'photo',
+                        tripName: trip.name,
+                        tripDate: trip.date,
+                        location: trip.location
+                    });
+
+                    item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openLightbox(flatIndex);
+                    });
+
+                    photosContainer.appendChild(item);
+                });
+
+                cluster.appendChild(photosContainer);
+
+                // Label
+                const label = document.createElement('div');
+                label.className = 'trip-label';
+                label.innerHTML = `
+                    <div class="trip-name">${trip.name}</div>
+                    <div class="trip-date">${formatDate(trip.date)} · ${trip.location}</div>
+                `;
+                cluster.appendChild(label);
+
+                canvas.appendChild(cluster);
+            });
+        }
+
+        /* ═══════════════════════════════════════
+           TIMELINE
+           ═══════════════════════════════════════ */
+        function buildTimeline() {
+            const track = document.getElementById('timelineTrack');
+            const trips = galleryData.trips;
+
+            trips.forEach((trip, i) => {
+                const pct = (CANVAS_PAD_LEFT + i * CLUSTER_GAP) / canvasWidth * 100;
+                const marker = document.createElement('div');
+                marker.className = 'timeline-marker';
+                marker.style.left = pct + '%';
+                marker.innerHTML = `
+                    <div class="timeline-dot"></div>
+                    <span class="timeline-label">${formatDateShort(trip.date)}</span>
+                `;
+                marker.addEventListener('click', () => {
+                    scrollTarget = CANVAS_PAD_LEFT + i * CLUSTER_GAP - window.innerWidth * 0.3;
+                    scrollTarget = clampScroll(scrollTarget);
+                });
+                track.appendChild(marker);
+            });
+        }
+
+        /* ═══════════════════════════════════════
+           MINIMAP
+           ═══════════════════════════════════════ */
+        function buildMinimap() {
+            const trips = galleryData.trips;
+            trips.forEach((trip, i) => {
+                const pct = (CANVAS_PAD_LEFT + i * CLUSTER_GAP) / canvasWidth * 100;
+                const dot = document.createElement('div');
+                dot.className = 'minimap-dot';
+                dot.style.left = pct + '%';
+                minimap.appendChild(dot);
+            });
+
+            minimap.addEventListener('click', (e) => {
+                const rect = minimap.getBoundingClientRect();
+                const pct = (e.clientX - rect.left) / rect.width;
+                scrollTarget = pct * (canvasWidth - window.innerWidth);
+                scrollTarget = clampScroll(scrollTarget);
+            });
+        }
+
+        /* ═══════════════════════════════════════
+           SCROLL SYSTEM
+           ═══════════════════════════════════════ */
+        function clampScroll(val) {
+            return Math.max(0, Math.min(val, canvasWidth - window.innerWidth));
+        }
+
+        // Mouse wheel → horizontal scroll
+        viewport.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+            scrollTarget += delta * SCROLL_SPEED;
+            scrollTarget = clampScroll(scrollTarget);
+        }, { passive: false });
+
+        // Drag to pan
+        viewport.addEventListener('mousedown', (e) => {
+            if (e.target.closest('.photo-item')) return;
+            isDragging = true;
+            dragStartX = e.clientX;
+            dragScrollStart = scrollTarget;
+            document.body.style.cursor = 'grabbing';
+        });
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = dragStartX - e.clientX;
+            scrollTarget = clampScroll(dragScrollStart + dx);
+        });
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            document.body.style.cursor = '';
+        });
+
+        // Touch support
+        let touchStartX = 0;
+        let touchScrollStart = 0;
+        viewport.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchScrollStart = scrollTarget;
+        }, { passive: true });
+        viewport.addEventListener('touchmove', (e) => {
+            const dx = touchStartX - e.touches[0].clientX;
+            scrollTarget = clampScroll(touchScrollStart + dx);
+        }, { passive: true });
+
+        // Keyboard
+        window.addEventListener('keydown', (e) => {
+            if (document.getElementById('lightbox').classList.contains('open')) return;
+            if (e.key === 'ArrowRight') { scrollTarget = clampScroll(scrollTarget + 300); e.preventDefault(); }
+            if (e.key === 'ArrowLeft') { scrollTarget = clampScroll(scrollTarget - 300); e.preventDefault(); }
+        });
+
+        // Smooth scroll animation loop
+        function startScrollLoop() {
+            function tick() {
+                scrollCurrent += (scrollTarget - scrollCurrent) * SMOOTH_FACTOR;
+                // Snap when close enough
+                if (Math.abs(scrollTarget - scrollCurrent) < 0.5) scrollCurrent = scrollTarget;
+
+                canvas.style.transform = `translateX(${-scrollCurrent}px)`;
+
+                // Update indicators
+                const maxScroll = canvasWidth - window.innerWidth;
+                const pct = maxScroll > 0 ? scrollCurrent / maxScroll : 0;
+                scrollFill.style.width = (pct * 100) + '%';
+
+                // Minimap viewport
+                const vpWidth = (window.innerWidth / canvasWidth) * 100;
+                minimapViewport.style.left = (pct * (100 - vpWidth)) + '%';
+                minimapViewport.style.width = vpWidth + '%';
+
+                animFrame = requestAnimationFrame(tick);
+            }
+            tick();
+        }
+
+        /* ═══════════════════════════════════════
+           LIGHTBOX
+           ═══════════════════════════════════════ */
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxVideo = document.getElementById('lightboxVideo');
+        const lightboxNote = document.getElementById('lightboxNote');
+        const lightboxLocation = document.getElementById('lightboxLocation');
+        const lightboxCounter = document.getElementById('lightboxCounter');
+
+        function openLightbox(index) {
+            lightboxIndex = index;
+            updateLightbox();
+            lightbox.classList.add('open');
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('open');
+            lightboxVideo.src = '';
+            lightboxVideo.style.display = 'none';
+            lightboxImg.style.display = '';
+            lightboxIndex = -1;
+        }
+
+        function updateLightbox() {
+            const photo = allPhotos[lightboxIndex];
+            if (!photo) return;
+
+            if (photo.type === 'video') {
+                lightboxImg.style.display = 'none';
+                lightboxVideo.style.display = '';
+                lightboxVideo.src = photo.src;
+            } else {
+                lightboxVideo.style.display = 'none';
+                lightboxVideo.src = '';
+                lightboxImg.style.display = '';
+                lightboxImg.src = photo.src;
+            }
+
+            lightboxNote.textContent = photo.note;
+            lightboxNote.style.display = photo.note ? '' : 'none';
+            lightboxLocation.textContent = `${photo.tripName} · ${formatDate(photo.tripDate)} · ${photo.location}`;
+            lightboxCounter.textContent = `${lightboxIndex + 1} / ${allPhotos.length}`;
+        }
+
+        document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+        document.getElementById('lightboxPrev').addEventListener('click', (e) => {
+            e.stopPropagation();
+            lightboxIndex = (lightboxIndex - 1 + allPhotos.length) % allPhotos.length;
+            updateLightbox();
+        });
+        document.getElementById('lightboxNext').addEventListener('click', (e) => {
+            e.stopPropagation();
+            lightboxIndex = (lightboxIndex + 1) % allPhotos.length;
+            updateLightbox();
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('open')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') {
+                lightboxIndex = (lightboxIndex + 1) % allPhotos.length;
+                updateLightbox();
+            }
+            if (e.key === 'ArrowLeft') {
+                lightboxIndex = (lightboxIndex - 1 + allPhotos.length) % allPhotos.length;
+                updateLightbox();
+            }
+        });
+
+        /* ═══════════════════════════════════════
+           HELP
+           ═══════════════════════════════════════ */
+        const helpOverlay = document.getElementById('helpOverlay');
+        document.getElementById('helpBtn').addEventListener('click', () => {
+            helpOverlay.classList.toggle('open');
+        });
+        helpOverlay.addEventListener('click', (e) => {
+            if (e.target === helpOverlay) helpOverlay.classList.remove('open');
+        });
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && helpOverlay.classList.contains('open')) {
+                helpOverlay.classList.remove('open');
+            }
+        });
+
+        /* ═══════════════════════════════════════
+           WINDOW RESIZE
+           ═══════════════════════════════════════ */
+        window.addEventListener('resize', () => {
+            scrollTarget = clampScroll(scrollTarget);
+        });
+
+        /* ═══════════════════════════════════════
+           HELPERS
+           ═══════════════════════════════════════ */
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const [y, m] = dateStr.split('-');
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${months[parseInt(m) - 1]} ${y}`;
+        }
+        function formatDateShort(dateStr) {
+            if (!dateStr) return '';
+            const [y, m] = dateStr.split('-');
+            const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+            return `${months[parseInt(m) - 1]} '${y.slice(2)}`;
+        }
+
+        /* ═══════════════════════════════════════
+           DEMO DATA (inline fallback)
+           ═══════════════════════════════════════ */
+        function getDemoData() {
+            return {
+                settings: { title: "gallery", subtitle: "places & moments" },
+                trips: [
+                    {
+                        id: "buenos-aires-2023", name: "Buenos Aires", date: "2023-03", location: "Argentina", y: 0.35,
+                        photos: [
+                            { src: "https://picsum.photos/seed/ba1/800/600", thumb: "https://picsum.photos/seed/ba1/240/180", note: "La Boca on a Sunday morning.", rotation: -2 },
+                            { src: "https://picsum.photos/seed/ba2/800/600", thumb: "https://picsum.photos/seed/ba2/240/180", note: "", rotation: 3 },
+                            { src: "https://picsum.photos/seed/ba3/600/800", thumb: "https://picsum.photos/seed/ba3/180/240", note: "Recoleta Cemetery.", rotation: -1 },
+                            { src: "https://picsum.photos/seed/ba4/800/600", thumb: "https://picsum.photos/seed/ba4/240/180", note: "", rotation: 4 },
+                            { src: "https://picsum.photos/seed/ba5/800/600", thumb: "https://picsum.photos/seed/ba5/240/180", note: "The best medialunas.", rotation: -3 },
+                            { src: "https://picsum.photos/seed/ba6/800/600", thumb: "https://picsum.photos/seed/ba6/240/180", note: "", rotation: 1 },
+                            { src: "https://picsum.photos/seed/ba7/800/600", thumb: "https://picsum.photos/seed/ba7/240/180", note: "", rotation: -2 },
+                            { src: "https://picsum.photos/seed/ba8/600/800", thumb: "https://picsum.photos/seed/ba8/180/240", note: "San Telmo flea market.", rotation: 2 }
+                        ]
+                    },
+                    {
+                        id: "london-2023", name: "London", date: "2023-06", location: "England", y: 0.55,
+                        photos: [
+                            { src: "https://picsum.photos/seed/ldn1/800/600", thumb: "https://picsum.photos/seed/ldn1/240/180", note: "The Barbican in fog.", rotation: 1 },
+                            { src: "https://picsum.photos/seed/ldn2/800/600", thumb: "https://picsum.photos/seed/ldn2/240/180", note: "", rotation: -3 },
+                            { src: "https://picsum.photos/seed/ldn3/600/800", thumb: "https://picsum.photos/seed/ldn3/180/240", note: "Brick Lane.", rotation: 2 },
+                            { src: "https://picsum.photos/seed/ldn4/800/600", thumb: "https://picsum.photos/seed/ldn4/240/180", note: "", rotation: -1 },
+                            { src: "https://picsum.photos/seed/ldn5/800/600", thumb: "https://picsum.photos/seed/ldn5/240/180", note: "", rotation: 3 },
+                            { src: "https://picsum.photos/seed/ldn6/800/600", thumb: "https://picsum.photos/seed/ldn6/240/180", note: "Tate Modern at dusk.", rotation: -2 }
+                        ]
+                    },
+                    {
+                        id: "tokyo-2023", name: "Tokyo", date: "2023-09", location: "Japan", y: 0.3,
+                        photos: [
+                            { src: "https://picsum.photos/seed/tky1/800/600", thumb: "https://picsum.photos/seed/tky1/240/180", note: "Shibuya at 2am.", rotation: -1 },
+                            { src: "https://picsum.photos/seed/tky2/600/800", thumb: "https://picsum.photos/seed/tky2/180/240", note: "", rotation: 2 },
+                            { src: "https://picsum.photos/seed/tky3/800/600", thumb: "https://picsum.photos/seed/tky3/240/180", note: "Yanaka.", rotation: -3 },
+                            { src: "https://picsum.photos/seed/tky4/800/600", thumb: "https://picsum.photos/seed/tky4/240/180", note: "", rotation: 1 },
+                            { src: "https://picsum.photos/seed/tky5/800/600", thumb: "https://picsum.photos/seed/tky5/240/180", note: "", rotation: -2 },
+                            { src: "https://picsum.photos/seed/tky6/800/600", thumb: "https://picsum.photos/seed/tky6/240/180", note: "Meiji Shrine.", rotation: 3 },
+                            { src: "https://picsum.photos/seed/tky7/800/600", thumb: "https://picsum.photos/seed/tky7/240/180", note: "", rotation: -1 },
+                            { src: "https://picsum.photos/seed/tky8/600/800", thumb: "https://picsum.photos/seed/tky8/180/240", note: "", rotation: 2 },
+                            { src: "https://picsum.photos/seed/tky9/800/600", thumb: "https://picsum.photos/seed/tky9/240/180", note: "Tsukiji outer market.", rotation: -3 },
+                            { src: "https://picsum.photos/seed/tky10/800/600", thumb: "https://picsum.photos/seed/tky10/240/180", note: "", rotation: 1 }
+                        ]
+                    },
+                    {
+                        id: "lisbon-2024", name: "Lisboa", date: "2024-01", location: "Portugal", y: 0.58,
+                        photos: [
+                            { src: "https://picsum.photos/seed/lis1/800/600", thumb: "https://picsum.photos/seed/lis1/240/180", note: "Alfama tiles.", rotation: 2 },
+                            { src: "https://picsum.photos/seed/lis2/800/600", thumb: "https://picsum.photos/seed/lis2/240/180", note: "", rotation: -1 },
+                            { src: "https://picsum.photos/seed/lis3/600/800", thumb: "https://picsum.photos/seed/lis3/180/240", note: "Pastéis de Belém queue.", rotation: 3 },
+                            { src: "https://picsum.photos/seed/lis4/800/600", thumb: "https://picsum.photos/seed/lis4/240/180", note: "", rotation: -2 },
+                            { src: "https://picsum.photos/seed/lis5/800/600", thumb: "https://picsum.photos/seed/lis5/240/180", note: "Tram 28.", rotation: 1 },
+                            { src: "https://picsum.photos/seed/lis6/800/600", thumb: "https://picsum.photos/seed/lis6/240/180", note: "", rotation: -3 },
+                            { src: "https://picsum.photos/seed/lis7/800/600", thumb: "https://picsum.photos/seed/lis7/240/180", note: "", rotation: 2 }
+                        ]
+                    },
+                    {
+                        id: "new-york-2024", name: "New York", date: "2024-04", location: "United States", y: 0.36,
+                        photos: [
+                            { src: "https://picsum.photos/seed/nyc1/800/600", thumb: "https://picsum.photos/seed/nyc1/240/180", note: "The Vessel from below.", rotation: -2 },
+                            { src: "https://picsum.photos/seed/nyc2/600/800", thumb: "https://picsum.photos/seed/nyc2/180/240", note: "", rotation: 3 },
+                            { src: "https://picsum.photos/seed/nyc3/800/600", thumb: "https://picsum.photos/seed/nyc3/240/180", note: "Chinatown at 7am.", rotation: -1 },
+                            { src: "https://picsum.photos/seed/nyc4/800/600", thumb: "https://picsum.photos/seed/nyc4/240/180", note: "", rotation: 2 },
+                            { src: "https://picsum.photos/seed/nyc5/800/600", thumb: "https://picsum.photos/seed/nyc5/240/180", note: "", rotation: -3 },
+                            { src: "https://picsum.photos/seed/nyc6/800/600", thumb: "https://picsum.photos/seed/nyc6/240/180", note: "Washington Square Park.", rotation: 1 },
+                            { src: "https://picsum.photos/seed/nyc7/800/600", thumb: "https://picsum.photos/seed/nyc7/240/180", note: "", rotation: -2 },
+                            { src: "https://picsum.photos/seed/nyc8/800/600", thumb: "https://picsum.photos/seed/nyc8/240/180", note: "", rotation: 3 },
+                            { src: "https://picsum.photos/seed/nyc9/600/800", thumb: "https://picsum.photos/seed/nyc9/180/240", note: "The High Line in April.", rotation: -1 }
+                        ]
+                    },
+                    {
+                        id: "marrakech-2024", name: "Marrakech", date: "2024-07", location: "Morocco", y: 0.5,
+                        photos: [
+                            { src: "https://picsum.photos/seed/mrk1/800/600", thumb: "https://picsum.photos/seed/mrk1/240/180", note: "Jemaa el-Fnaa.", rotation: 1 },
+                            { src: "https://picsum.photos/seed/mrk2/800/600", thumb: "https://picsum.photos/seed/mrk2/240/180", note: "", rotation: -2 },
+                            { src: "https://picsum.photos/seed/mrk3/600/800", thumb: "https://picsum.photos/seed/mrk3/180/240", note: "", rotation: 3 },
+                            { src: "https://picsum.photos/seed/mrk4/800/600", thumb: "https://picsum.photos/seed/mrk4/240/180", note: "The tanneries.", rotation: -1 },
+                            { src: "https://picsum.photos/seed/mrk5/800/600", thumb: "https://picsum.photos/seed/mrk5/240/180", note: "", rotation: 2 },
+                            { src: "https://picsum.photos/seed/mrk6/800/600", thumb: "https://picsum.photos/seed/mrk6/240/180", note: "Riad courtyard.", rotation: -3 }
+                        ]
+                    },
+                    {
+                        id: "copenhagen-2024", name: "København", date: "2024-10", location: "Denmark", y: 0.32,
+                        photos: [
+                            { src: "https://picsum.photos/seed/cph1/800/600", thumb: "https://picsum.photos/seed/cph1/240/180", note: "Nyhavn at 6:30am.", rotation: -2 },
+                            { src: "https://picsum.photos/seed/cph2/800/600", thumb: "https://picsum.photos/seed/cph2/240/180", note: "", rotation: 1 },
+                            { src: "https://picsum.photos/seed/cph3/600/800", thumb: "https://picsum.photos/seed/cph3/180/240", note: "", rotation: -3 },
+                            { src: "https://picsum.photos/seed/cph4/800/600", thumb: "https://picsum.photos/seed/cph4/240/180", note: "The Black Diamond.", rotation: 2 },
+                            { src: "https://picsum.photos/seed/cph5/800/600", thumb: "https://picsum.photos/seed/cph5/240/180", note: "", rotation: -1 },
+                            { src: "https://picsum.photos/seed/cph6/800/600", thumb: "https://picsum.photos/seed/cph6/240/180", note: "", rotation: 3 },
+                            { src: "https://picsum.photos/seed/cph7/800/600", thumb: "https://picsum.photos/seed/cph7/240/180", note: "Christiania.", rotation: -2 },
+                            { src: "https://picsum.photos/seed/cph8/800/600", thumb: "https://picsum.photos/seed/cph8/240/180", note: "", rotation: 1 }
+                        ]
+                    },
+                    {
+                        id: "rome-2025", name: "Roma", date: "2025-01", location: "Italy", y: 0.46,
+                        photos: [
+                            { src: "https://picsum.photos/seed/rom1/800/600", thumb: "https://picsum.photos/seed/rom1/240/180", note: "Trastevere.", rotation: 2 },
+                            { src: "https://picsum.photos/seed/rom2/600/800", thumb: "https://picsum.photos/seed/rom2/180/240", note: "", rotation: -1 },
+                            { src: "https://picsum.photos/seed/rom3/800/600", thumb: "https://picsum.photos/seed/rom3/240/180", note: "The Pantheon in rain.", rotation: 3 },
+                            { src: "https://picsum.photos/seed/rom4/800/600", thumb: "https://picsum.photos/seed/rom4/240/180", note: "", rotation: -2 },
+                            { src: "https://picsum.photos/seed/rom5/800/600", thumb: "https://picsum.photos/seed/rom5/240/180", note: "", rotation: 1 },
+                            { src: "https://picsum.photos/seed/rom6/800/600", thumb: "https://picsum.photos/seed/rom6/240/180", note: "Supplì al telefono.", rotation: -3 },
+                            { src: "https://picsum.photos/seed/rom7/800/600", thumb: "https://picsum.photos/seed/rom7/240/180", note: "", rotation: 2 },
+                            { type: "video", src: "https://www.youtube.com/embed/dQw4w9WgXcQ", thumb: "https://picsum.photos/seed/romvid/240/180", note: "Villa Borghese at sunset.", rotation: -1 }
+                        ]
+                    }
+                ]
+            };
+        }
+
+        /* ═══════════════════════════════════════
+           INIT
+           ═══════════════════════════════════════ */
+        init();
+    })();
+    </script>
+</body>
+</html>

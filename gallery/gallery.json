@@ -1,0 +1,113 @@
+{
+  "settings": {
+    "title": "gallery",
+    "subtitle": "places & moments"
+  },
+  "trips": [
+    {
+      "id": "mexico-2024",
+      "name": "México",
+      "date": "2024-01",
+      "location": "Mexico",
+      "y": 0.35,
+      "photos": [
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_8270.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_8270.jpg", "note": "", "rotation": -3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_8285.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_8285.jpg", "note": "my first mexican taco al pastor", "rotation": -2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_8309.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_8309.jpg", "note": "", "rotation": -1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_8386.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_8386.jpg", "note": "", "rotation": 1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_8578.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_8578.jpg", "note": "", "rotation": 2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_8607.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_8607.jpg", "note": "", "rotation": 3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_8625.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_8625.jpg", "note": "this changed my life", "rotation": -2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_8663.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_8663.jpg", "note": "", "rotation": 1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_8811.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_8811.jpg", "note": "", "rotation": -1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_9050.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_9050.jpg", "note": "", "rotation": 3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_9063.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_9063.jpg", "note": "", "rotation": 2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_9069.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_9069.jpg", "note": "", "rotation": -3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_9079.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_9079.jpg", "note": "", "rotation": -3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_9117.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_9117.jpg", "note": "", "rotation": -2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_9182.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_9182.jpg", "note": "", "rotation": -1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_9191.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_9191.jpg", "note": "", "rotation": 1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_9196.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_9196.jpg", "note": "", "rotation": 2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_9199.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_9199.jpg", "note": "", "rotation": 3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_9314.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_9314.jpg", "note": "", "rotation": -2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_9405.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_9405.jpg", "note": "where I understood what peace and calm meant", "rotation": 1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_9442.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_9442.jpg", "note": "", "rotation": -1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/web/IMG_9444.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/mexico-2024/thumbs/IMG_9444.jpg", "note": "", "rotation": 3 }
+      ]
+    },
+    {
+      "id": "manchester-2024",
+      "name": "Manchester",
+      "date": "2024-06",
+      "location": "England",
+      "y": 0.55,
+      "photos": [
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/web/IMG_0101.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/thumbs/IMG_0101.jpg", "note": "", "rotation": -3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/web/IMG_0147.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/thumbs/IMG_0147.jpg", "note": "", "rotation": -2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/web/IMG_0274.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/thumbs/IMG_0274.jpg", "note": "", "rotation": -1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/web/IMG_0299.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/thumbs/IMG_0299.jpg", "note": "man cleans paint from stop oil protest at university of manchester's whitworth hall", "rotation": 1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/web/IMG_0540.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/thumbs/IMG_0540.jpg", "note": "", "rotation": 2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/web/IMG_0562.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/thumbs/IMG_0562.jpg", "note": "", "rotation": 3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/web/IMG_0595.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/thumbs/IMG_0595.jpg", "note": "", "rotation": -2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/web/IMG_0630.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/thumbs/IMG_0630.jpg", "note": "", "rotation": 1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/web/IMG_0828.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/thumbs/IMG_0828.jpg", "note": "", "rotation": -1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/web/IMG_0834.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/thumbs/IMG_0834.jpg", "note": "", "rotation": 3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/web/IMG_0870.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/manchester-2024/thumbs/IMG_0870.jpg", "note": "", "rotation": 2 }
+      ]
+    },
+    {
+      "id": "london-2025",
+      "name": "London",
+      "date": "2025-06",
+      "location": "England",
+      "y": 0.38,
+      "photos": [
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_1508.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_1508.jpg", "note": "", "rotation": -3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_1718.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_1718.jpg", "note": "", "rotation": -2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_2843.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_2843.jpg", "note": "", "rotation": -1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_3098.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_3098.jpg", "note": "", "rotation": 1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_3723.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_3723.jpg", "note": "a university that never sleeps", "rotation": 2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_3806.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_3806.jpg", "note": "", "rotation": 3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_3883.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_3883.jpg", "note": "", "rotation": -2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_4136.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_4136.jpg", "note": "the start of our first film", "rotation": 1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_4149.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_4149.jpg", "note": "", "rotation": -1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_5147.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_5147.jpg", "note": "", "rotation": 3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_5167.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_5167.jpg", "note": "", "rotation": 2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_5265.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_5265.jpg", "note": "", "rotation": -3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_5274.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_5274.jpg", "note": "", "rotation": -3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_5285.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_5285.jpg", "note": "", "rotation": -2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_5317.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_5317.jpg", "note": "", "rotation": -1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_5610.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_5610.jpg", "note": "", "rotation": 1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_5630.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_5630.jpg", "note": "", "rotation": 2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_5639.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_5639.jpg", "note": "", "rotation": 3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_5724.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_5724.jpg", "note": "", "rotation": -2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_5877.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_5877.jpg", "note": "", "rotation": 1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_E5206.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_E5206.jpg", "note": "", "rotation": -1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/web/IMG_E5631.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2025/thumbs/IMG_E5631.jpg", "note": "", "rotation": 3 }
+      ]
+    },
+    {
+      "id": "london-2026",
+      "name": "London",
+      "date": "2026-01",
+      "location": "England",
+      "y": 0.52,
+      "photos": [
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_6567.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_6567.jpg", "note": "", "rotation": -3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_6586.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_6586.jpg", "note": "", "rotation": -2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_7077.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_7077.jpg", "note": "", "rotation": -1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_7102.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_7102.jpg", "note": "", "rotation": 1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_7118.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_7118.jpg", "note": "", "rotation": 2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_7199.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_7199.jpg", "note": "", "rotation": 3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_7243.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_7243.jpg", "note": "perfectly timed", "rotation": -2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_7244.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_7244.jpg", "note": "", "rotation": 1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_7247.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_7247.jpg", "note": "", "rotation": -1 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_7268.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_7268.jpg", "note": "", "rotation": 3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_7278.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_7278.jpg", "note": "", "rotation": 2 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_7280.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_7280.jpg", "note": "", "rotation": -3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_7283.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_7283.jpg", "note": "", "rotation": -3 },
+        { "src": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/web/IMG_7292.jpg", "thumb": "https://pub-06cb9d7ef5df402a9c140061a32b7f8d.r2.dev/london-2026/thumbs/IMG_7292.jpg", "note": "", "rotation": -2 }
+      ]
+    }
+  ]
+}
