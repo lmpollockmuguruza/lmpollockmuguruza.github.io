@@ -243,7 +243,6 @@
             position: absolute;
             top: 0;
             left: 0;
-            height: 100%;
             will-change: transform;
             transition: none;
         }
@@ -889,9 +888,10 @@
         <div class="help-card">
             <h3>how to explore</h3>
             <div class="help-row"><span class="help-key">Scroll</span><span class="help-desc">Move through the timeline</span></div>
+            <div class="help-row"><span class="help-key">Drag</span><span class="help-desc">Pan in any direction</span></div>
             <div class="help-row"><span class="help-key">Hover</span><span class="help-desc">Enlarge a photo & read its note</span></div>
             <div class="help-row"><span class="help-key">Click</span><span class="help-desc">Open full view</span></div>
-            <div class="help-row"><span class="help-key">← →</span><span class="help-desc">Navigate in full view</span></div>
+            <div class="help-row"><span class="help-key">← → ↑ ↓</span><span class="help-desc">Navigate the canvas</span></div>
             <div class="help-row"><span class="help-key">Esc</span><span class="help-desc">Close full view or this panel</span></div>
             <div class="help-row"><span class="help-key">Timeline</span><span class="help-desc">Click a date to jump there</span></div>
         </div>
@@ -915,12 +915,17 @@
            ═══════════════════════════════════════ */
         let galleryData = null;
         let allPhotos = [];            // flat list for lightbox nav
-        let scrollTarget = 0;
-        let scrollCurrent = 0;
+        let scrollTargetX = 0;
+        let scrollCurrentX = 0;
+        let scrollTargetY = 0;
+        let scrollCurrentY = 0;
         let canvasWidth = 0;
+        let canvasHeight = 0;
         let isDragging = false;
         let dragStartX = 0;
-        let dragScrollStart = 0;
+        let dragStartY = 0;
+        let dragScrollStartX = 0;
+        let dragScrollStartY = 0;
         let lightboxIndex = -1;
         let animFrame = null;
 
@@ -990,9 +995,13 @@
 
             allPhotos = [];
 
+            // First pass: calculate all cluster heights to determine canvas height
+            let maxBottom = 0;
+
             trips.forEach((trip, ti) => {
                 const clusterX = CANVAS_PAD_LEFT + ti * CLUSTER_GAP;
-                const clusterY = (trip.y || 0.4) * window.innerHeight;
+                // Use y as a pixel offset from top (scaled to a reasonable range)
+                const clusterY = (trip.y || 0.4) * 800;
 
                 const cluster = document.createElement('div');
                 cluster.className = 'trip-cluster';
@@ -1006,8 +1015,13 @@
                 // Arrange photos in a scattered grid
                 const cols = Math.ceil(Math.sqrt(trip.photos.length));
                 const rows = Math.ceil(trip.photos.length / cols);
+                const containerHeight = rows * PHOTO_SPREAD_Y + 40;
                 photosContainer.style.width = (cols * PHOTO_SPREAD_X + 40) + 'px';
-                photosContainer.style.height = (rows * PHOTO_SPREAD_Y + 40) + 'px';
+                photosContainer.style.height = containerHeight + 'px';
+
+                // Track maximum bottom edge
+                const clusterBottom = clusterY + containerHeight + 80; // 80 for label
+                if (clusterBottom > maxBottom) maxBottom = clusterBottom;
 
                 trip.photos.forEach((photo, pi) => {
                     const col = pi % cols;
@@ -1087,6 +1101,10 @@
 
                 canvas.appendChild(cluster);
             });
+
+            // Set canvas height to encompass all content
+            canvasHeight = maxBottom + 60;
+            canvas.style.height = canvasHeight + 'px';
         }
 
         /* ═══════════════════════════════════════
@@ -1106,8 +1124,8 @@
                     <span class="timeline-label">${formatDateShort(trip.date)}</span>
                 `;
                 marker.addEventListener('click', () => {
-                    scrollTarget = CANVAS_PAD_LEFT + i * CLUSTER_GAP - window.innerWidth * 0.3;
-                    scrollTarget = clampScroll(scrollTarget);
+                    scrollTargetX = CANVAS_PAD_LEFT + i * CLUSTER_GAP - window.innerWidth * 0.3;
+                    scrollTargetX = clampScrollX(scrollTargetX);
                 });
                 track.appendChild(marker);
             });
@@ -1129,75 +1147,100 @@
             minimap.addEventListener('click', (e) => {
                 const rect = minimap.getBoundingClientRect();
                 const pct = (e.clientX - rect.left) / rect.width;
-                scrollTarget = pct * (canvasWidth - window.innerWidth);
-                scrollTarget = clampScroll(scrollTarget);
+                scrollTargetX = pct * (canvasWidth - window.innerWidth);
+                scrollTargetX = clampScrollX(scrollTargetX);
             });
         }
 
         /* ═══════════════════════════════════════
            SCROLL SYSTEM
            ═══════════════════════════════════════ */
-        function clampScroll(val) {
+        function clampScrollX(val) {
             return Math.max(0, Math.min(val, canvasWidth - window.innerWidth));
         }
+        function clampScrollY(val) {
+            const maxY = Math.max(0, canvasHeight - window.innerHeight + 60);
+            return Math.max(0, Math.min(val, maxY));
+        }
 
-        // Mouse wheel → horizontal scroll
+        // Mouse wheel → horizontal scroll (shift+wheel or horizontal trackpad = vertical)
         viewport.addEventListener('wheel', (e) => {
             e.preventDefault();
-            const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-            scrollTarget += delta * SCROLL_SPEED;
-            scrollTarget = clampScroll(scrollTarget);
+            // Horizontal: use deltaY as primary horizontal driver
+            // If shift is held or deltaX is dominant, use deltaX for horizontal
+            if (e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                const delta = e.shiftKey ? e.deltaY : e.deltaX;
+                scrollTargetX += delta * SCROLL_SPEED;
+            } else {
+                // Normal scroll: deltaY drives horizontal, but allow some vertical movement
+                scrollTargetX += e.deltaY * SCROLL_SPEED;
+            }
+            scrollTargetX = clampScrollX(scrollTargetX);
+            scrollTargetY = clampScrollY(scrollTargetY);
         }, { passive: false });
 
-        // Drag to pan
+        // Drag to pan (2D)
         viewport.addEventListener('mousedown', (e) => {
             if (e.target.closest('.photo-item')) return;
             isDragging = true;
             dragStartX = e.clientX;
-            dragScrollStart = scrollTarget;
+            dragStartY = e.clientY;
+            dragScrollStartX = scrollTargetX;
+            dragScrollStartY = scrollTargetY;
             document.body.style.cursor = 'grabbing';
         });
         window.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
             const dx = dragStartX - e.clientX;
-            scrollTarget = clampScroll(dragScrollStart + dx);
+            const dy = dragStartY - e.clientY;
+            scrollTargetX = clampScrollX(dragScrollStartX + dx);
+            scrollTargetY = clampScrollY(dragScrollStartY + dy);
         });
         window.addEventListener('mouseup', () => {
             isDragging = false;
             document.body.style.cursor = '';
         });
 
-        // Touch support
+        // Touch support (2D)
         let touchStartX = 0;
-        let touchScrollStart = 0;
+        let touchStartY = 0;
+        let touchScrollStartX = 0;
+        let touchScrollStartY = 0;
         viewport.addEventListener('touchstart', (e) => {
             touchStartX = e.touches[0].clientX;
-            touchScrollStart = scrollTarget;
+            touchStartY = e.touches[0].clientY;
+            touchScrollStartX = scrollTargetX;
+            touchScrollStartY = scrollTargetY;
         }, { passive: true });
         viewport.addEventListener('touchmove', (e) => {
             const dx = touchStartX - e.touches[0].clientX;
-            scrollTarget = clampScroll(touchScrollStart + dx);
+            const dy = touchStartY - e.touches[0].clientY;
+            scrollTargetX = clampScrollX(touchScrollStartX + dx);
+            scrollTargetY = clampScrollY(touchScrollStartY + dy);
         }, { passive: true });
 
         // Keyboard
         window.addEventListener('keydown', (e) => {
             if (document.getElementById('lightbox').classList.contains('open')) return;
-            if (e.key === 'ArrowRight') { scrollTarget = clampScroll(scrollTarget + 300); e.preventDefault(); }
-            if (e.key === 'ArrowLeft') { scrollTarget = clampScroll(scrollTarget - 300); e.preventDefault(); }
+            if (e.key === 'ArrowRight') { scrollTargetX = clampScrollX(scrollTargetX + 300); e.preventDefault(); }
+            if (e.key === 'ArrowLeft') { scrollTargetX = clampScrollX(scrollTargetX - 300); e.preventDefault(); }
+            if (e.key === 'ArrowDown') { scrollTargetY = clampScrollY(scrollTargetY + 200); e.preventDefault(); }
+            if (e.key === 'ArrowUp') { scrollTargetY = clampScrollY(scrollTargetY - 200); e.preventDefault(); }
         });
 
         // Smooth scroll animation loop
         function startScrollLoop() {
             function tick() {
-                scrollCurrent += (scrollTarget - scrollCurrent) * SMOOTH_FACTOR;
-                // Snap when close enough
-                if (Math.abs(scrollTarget - scrollCurrent) < 0.5) scrollCurrent = scrollTarget;
+                scrollCurrentX += (scrollTargetX - scrollCurrentX) * SMOOTH_FACTOR;
+                scrollCurrentY += (scrollTargetY - scrollCurrentY) * SMOOTH_FACTOR;
+                if (Math.abs(scrollTargetX - scrollCurrentX) < 0.5) scrollCurrentX = scrollTargetX;
+                if (Math.abs(scrollTargetY - scrollCurrentY) < 0.5) scrollCurrentY = scrollTargetY;
 
-                canvas.style.transform = `translateX(${-scrollCurrent}px)`;
+                canvas.style.transform = `translate(${-scrollCurrentX}px, ${-scrollCurrentY}px)`;
 
-                // Update indicators
-                const maxScroll = canvasWidth - window.innerWidth;
-                const pct = maxScroll > 0 ? scrollCurrent / maxScroll : 0;
+                // Update indicators (based on horizontal position)
+                const maxScrollX = canvasWidth - window.innerWidth;
+                const pct = maxScrollX > 0 ? scrollCurrentX / maxScrollX : 0;
                 scrollFill.style.width = (pct * 100) + '%';
 
                 // Minimap viewport
@@ -1303,7 +1346,8 @@
            WINDOW RESIZE
            ═══════════════════════════════════════ */
         window.addEventListener('resize', () => {
-            scrollTarget = clampScroll(scrollTarget);
+            scrollTargetX = clampScrollX(scrollTargetX);
+            scrollTargetY = clampScrollY(scrollTargetY);
         });
 
         /* ═══════════════════════════════════════
