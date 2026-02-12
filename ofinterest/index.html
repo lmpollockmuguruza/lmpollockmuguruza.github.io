@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,9 +25,12 @@
 
         /* ─── Palette ─── */
         :root {
-            --bg: #f7f5f0;
-            --bg-card: #fdfcfa;
-            --bg-card-hover: #ffffff;
+            --bg: #f2efe9;
+            --bg-warm: #e9e5dd;
+            --bg-card: rgba(255, 255, 255, 0.55);
+            --bg-card-hover: rgba(255, 255, 255, 0.75);
+            --bg-glass: rgba(255, 255, 255, 0.35);
+            --bg-glass-strong: rgba(255, 255, 255, 0.5);
             --ink: #1a1816;
             --ink-soft: #3d3833;
             --ink-muted: #7a7368;
@@ -36,21 +40,32 @@
             --burgundy-soft: #8b3747;
             --burgundy-wash: rgba(107, 39, 55, 0.05);
             --burgundy-glow: rgba(107, 39, 55, 0.10);
-            --border: rgba(26, 24, 22, 0.07);
-            --border-hover: rgba(107, 39, 55, 0.18);
-            --shadow-card: 0 1px 3px rgba(26, 24, 22, 0.03), 0 6px 24px rgba(26, 24, 22, 0.04);
-            --shadow-card-hover: 0 2px 8px rgba(26, 24, 22, 0.05), 0 12px 40px rgba(26, 24, 22, 0.07);
-            --radius: 14px;
-            --radius-sm: 8px;
+            --border: rgba(255, 255, 255, 0.6);
+            --border-subtle: rgba(26, 24, 22, 0.06);
+            --border-hover: rgba(107, 39, 55, 0.2);
+            --glass-blur: 20px;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.55);
+            --glass-shadow: 0 4px 24px rgba(26, 24, 22, 0.04), 0 1px 3px rgba(26, 24, 22, 0.03);
+            --glass-shadow-hover: 0 8px 32px rgba(107, 39, 55, 0.07), 0 2px 8px rgba(107, 39, 55, 0.04), 0 4px 16px rgba(26, 24, 22, 0.04);
+            --glass-shadow-elevated: 0 12px 44px rgba(107, 39, 55, 0.1), 0 4px 12px rgba(107, 39, 55, 0.05), 0 6px 20px rgba(26, 24, 22, 0.04);
+            --radius: 20px;
+            --radius-sm: 12px;
+            --radius-xs: 8px;
             --ease: cubic-bezier(0.4, 0, 0.2, 1);
             --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
-            --transition: 0.35s var(--ease);
+            --ease-out: cubic-bezier(0, 0, 0.2, 1);
+            --ease-hover: cubic-bezier(0.2, 0, 0, 1);
+            --transition: 0s;
+            --transition-slow: 0.45s var(--ease-spring);
         }
 
         [data-theme="dark"] {
-            --bg: #141311;
-            --bg-card: #1e1c19;
-            --bg-card-hover: #252320;
+            --bg: #111110;
+            --bg-warm: #1a1917;
+            --bg-card: rgba(255, 255, 255, 0.04);
+            --bg-card-hover: rgba(255, 255, 255, 0.07);
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --bg-glass-strong: rgba(255, 255, 255, 0.06);
             --ink: #e8e4dd;
             --ink-soft: #c8c2b8;
             --ink-muted: #8a8279;
@@ -60,10 +75,13 @@
             --burgundy-soft: #d4909f;
             --burgundy-wash: rgba(196, 112, 127, 0.06);
             --burgundy-glow: rgba(196, 112, 127, 0.12);
-            --border: rgba(232, 228, 221, 0.06);
-            --border-hover: rgba(196, 112, 127, 0.2);
-            --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.12), 0 6px 24px rgba(0, 0, 0, 0.15);
-            --shadow-card-hover: 0 2px 8px rgba(0, 0, 0, 0.15), 0 12px 40px rgba(0, 0, 0, 0.2);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-subtle: rgba(255, 255, 255, 0.04);
+            --border-hover: rgba(196, 112, 127, 0.22);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+            --glass-shadow-hover: 0 8px 32px rgba(196, 112, 127, 0.12), 0 2px 8px rgba(196, 112, 127, 0.06), 0 4px 16px rgba(0, 0, 0, 0.12);
+            --glass-shadow-elevated: 0 12px 44px rgba(196, 112, 127, 0.15), 0 4px 12px rgba(196, 112, 127, 0.08), 0 6px 20px rgba(0, 0, 0, 0.15);
         }
 
         html {
@@ -81,6 +99,7 @@
             min-height: 100dvh;
             line-height: 1.65;
             transition: background-color 0.5s var(--ease), color 0.5s var(--ease);
+            overflow-x: hidden;
         }
 
         /* Grain overlay */
@@ -90,14 +109,62 @@
             inset: 0;
             pointer-events: none;
             z-index: 9999;
-            opacity: 0.018;
+            opacity: 0.02;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
             background-repeat: repeat;
             background-size: 256px;
         }
 
         [data-theme="dark"] body::before {
-            opacity: 0.03;
+            opacity: 0.035;
+        }
+
+        /* Ambient gradient orbs */
+        .ambient {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .ambient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.12;
+            animation: orbDrift 25s var(--ease) infinite alternate;
+        }
+
+        .ambient-orb:nth-child(1) {
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(107, 39, 55, 0.3), transparent 70%);
+            top: -10%; right: -5%;
+            animation-duration: 28s;
+        }
+
+        .ambient-orb:nth-child(2) {
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(139, 96, 66, 0.2), transparent 70%);
+            bottom: 15%; left: -8%;
+            animation-delay: -8s;
+            animation-duration: 22s;
+        }
+
+        .ambient-orb:nth-child(3) {
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(107, 39, 55, 0.15), transparent 70%);
+            top: 40%; right: -12%;
+            animation-delay: -15s;
+            animation-duration: 30s;
+        }
+
+        [data-theme="dark"] .ambient-orb { opacity: 0.06; }
+
+        @keyframes orbDrift {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-30px, 20px) scale(1.08); }
+            100% { transform: translate(15px, -15px) scale(0.95); }
         }
 
         ::selection {
@@ -107,7 +174,9 @@
 
         /* ─── Layout ─── */
         .page {
-            max-width: 620px;
+            position: relative;
+            z-index: 1;
+            max-width: 780px;
             margin: 0 auto;
             padding: 0 2rem;
         }
@@ -124,14 +193,15 @@
             align-items: center;
             justify-content: space-between;
             background: transparent;
-            transition: all 0.4s var(--ease);
+            transition: all 0.5s var(--ease);
         }
 
         .topbar.scrolled {
-            background: color-mix(in srgb, var(--bg) 85%, transparent);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border);
+            background: var(--bg-glass);
+            backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+            border-bottom: var(--glass-border);
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.02);
         }
 
         .back-link {
@@ -146,32 +216,27 @@
             transition: color var(--transition);
         }
 
-        .back-link:hover {
-            color: var(--burgundy);
-        }
+        .back-link:hover { color: var(--burgundy); }
 
         .back-link svg {
-            width: 15px;
-            height: 15px;
-            stroke: currentColor;
-            fill: none;
+            width: 15px; height: 15px;
+            stroke: currentColor; fill: none;
             stroke-width: 1.5;
             transition: transform var(--transition);
         }
 
-        .back-link:hover svg {
-            transform: translateX(-3px);
-        }
+        .back-link:hover svg { transform: translateX(-3px); }
 
         .theme-toggle {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 34px;
-            height: 34px;
-            border: 1px solid var(--border);
+            width: 36px; height: 36px;
+            border: var(--glass-border);
             border-radius: 50%;
-            background: var(--bg-card);
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             cursor: pointer;
             transition: all var(--transition);
             color: var(--ink-muted);
@@ -180,67 +245,74 @@
         .theme-toggle:hover {
             border-color: var(--border-hover);
             color: var(--burgundy);
-            background: var(--burgundy-wash);
+            background: var(--bg-glass-strong);
+            box-shadow: 0 2px 12px rgba(107, 39, 55, 0.08);
         }
 
         .theme-toggle svg {
-            width: 15px;
-            height: 15px;
+            width: 15px; height: 15px;
             fill: currentColor;
             transition: transform 0.5s var(--ease-spring);
         }
 
-        .theme-toggle:hover svg {
-            transform: rotate(30deg);
-        }
+        .theme-toggle:hover svg { transform: rotate(30deg); }
 
         .theme-toggle .icon-sun { display: none; }
         .theme-toggle .icon-moon { display: block; }
         [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
         [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
 
-
         /* ─── Header ─── */
         .header {
-            padding-top: 7rem;
+            padding-top: 7.5rem;
             padding-bottom: 1rem;
             text-align: left;
         }
 
-        .header-star {
-            display: inline-block;
+        .header-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.6rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--ink-faint);
             margin-bottom: 1.5rem;
             opacity: 0;
             animation: fadeUp 0.8s var(--ease-spring) 0.1s forwards;
         }
 
-        .header-star svg {
-            width: 20px;
-            height: 20px;
-            stroke: var(--burgundy);
-            fill: none;
-            stroke-width: 1.3;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+        .header-label::before, .header-label::after {
+            content: '';
+            width: 4px; height: 4px;
+            border-radius: 1px;
+            background: var(--ink-ghost);
+            transform: rotate(45deg);
         }
 
         .header h1 {
             font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
-            font-size: 2.8rem;
+            font-size: 3.6rem;
             font-weight: 400;
-            letter-spacing: -0.03em;
-            line-height: 1.15;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
             color: var(--ink);
             margin-bottom: 1.5rem;
             opacity: 0;
             animation: fadeUp 0.8s var(--ease-spring) 0.2s forwards;
         }
 
+        .header h1 em {
+            font-style: italic;
+            color: var(--burgundy);
+        }
+
         .header-intro {
-            font-size: 0.95rem;
-            line-height: 1.75;
+            font-size: 0.92rem;
+            line-height: 1.8;
             color: var(--ink-muted);
-            max-width: 500px;
+            max-width: 520px;
             opacity: 0;
             animation: fadeUp 0.8s var(--ease-spring) 0.35s forwards;
         }
@@ -252,132 +324,462 @@
             font-style: italic;
         }
 
-        /* ─── Divider ─── */
-        .section-line {
-            width: 100%;
-            height: 1px;
-            background: var(--border);
-            margin: 2.5rem 0;
-            opacity: 0;
-            animation: fadeUp 0.6s var(--ease-spring) 0.5s forwards;
-        }
-
-        /* ─── Items ─── */
-        .items {
-            padding-bottom: 2rem;
-        }
-
-        .item {
-            display: block;
-            text-decoration: none;
-            color: inherit;
-            padding: 1.5rem 1.75rem;
-            margin-bottom: 1rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-card);
-            transition: all var(--transition);
-            position: relative;
+        /* ─── Section headings ─── */
+        .section-marker {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 3.5rem 0 2rem;
             opacity: 0;
             transform: translateY(16px);
         }
 
-        .item.visible {
+        .section-marker.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
-        .item:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-hover);
-            box-shadow: var(--shadow-card-hover);
-            transform: translateY(-2px);
+        .section-marker-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-subtle) 0%, transparent 100%);
         }
 
-        .item:active {
+        .section-marker-line:first-child {
+            background: linear-gradient(90deg, transparent 0%, var(--border-subtle) 100%);
+        }
+
+        .section-marker-text {
+            font-size: 0.58rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--ink-faint);
+            white-space: nowrap;
+            padding: 0.35rem 0.9rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: var(--glass-border);
+            border-radius: 100px;
+        }
+
+        .section-count {
+            font-variant-numeric: tabular-nums;
+            font-size: 0.55rem;
+            color: var(--burgundy);
+            opacity: 0.7;
+            margin-left: 0.1rem;
+        }
+
+        /* ─── BUILT section (vibe-coded projects) ─── */
+        .built-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .built-card {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            padding: 1.5rem;
+            background:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E") repeat,
+                var(--bg-card);
+            background-size: 128px, auto;
+            backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+            border: var(--glass-border);
+            border-radius: var(--radius);
+            box-shadow: var(--glass-shadow);
+            transition:
+                background 0s,
+                border-color 0s,
+                box-shadow 0s;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            will-change: transform;
+        }
+
+        .built-card.visible {
+            opacity: 1;
             transform: translateY(0);
-            box-shadow: var(--shadow-card);
         }
 
-        .item-top {
+        /* Glass sheen */
+        .built-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.12) 0%,
+                rgba(255, 255, 255, 0) 40%,
+                rgba(255, 255, 255, 0) 60%,
+                rgba(255, 255, 255, 0.04) 100%
+            );
+            pointer-events: none;
+            border-radius: inherit;
+            transition: opacity 0s;
+        }
+
+        [data-theme="dark"] .built-card::before {
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.04) 0%,
+                rgba(255, 255, 255, 0) 40%,
+                rgba(255, 255, 255, 0) 60%,
+                rgba(255, 255, 255, 0.02) 100%
+            );
+        }
+
+        /* Rim light — top edge highlight */
+        .built-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 6%;
+            right: 6%;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.8) 25%,
+                rgba(255, 255, 255, 1) 50%,
+                rgba(255, 255, 255, 0.8) 75%,
+                transparent 100%
+            );
+            opacity: 0.75;
+            pointer-events: none;
+            transition: opacity 0s;
+        }
+
+        [data-theme="dark"] .built-card::after {
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.15) 25%,
+                rgba(255, 255, 255, 0.28) 50%,
+                rgba(255, 255, 255, 0.15) 75%,
+                transparent 100%
+            );
+            opacity: 0.55;
+        }
+
+        .built-card:hover {
+            background:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E") repeat,
+                var(--bg-card-hover);
+            background-size: 128px, auto;
+            border-color: var(--border-hover);
+            box-shadow: var(--glass-shadow-elevated);
+        }
+
+        .built-card:hover::after {
+            opacity: 1;
+        }
+
+        [data-theme="dark"] .built-card:hover::after {
+            opacity: 0.8;
+        }
+
+        .built-card:active {
+            box-shadow: var(--glass-shadow);
+        }
+
+        /* Full-width card for featured project */
+        .built-card.featured {
+            grid-column: 1 / -1;
+        }
+
+        .built-card-top {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            gap: 1rem;
-            margin-bottom: 0.5rem;
+            gap: 0.75rem;
+            margin-bottom: 0.65rem;
         }
 
-        .item-title {
+        .built-card-title {
             font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 500;
-            line-height: 1.35;
+            line-height: 1.25;
             color: var(--ink);
-            transition: color var(--transition);
+            transition: color 0s;
         }
 
-        .item:hover .item-title {
+        .built-card:hover .built-card-title {
             color: var(--burgundy);
         }
 
-        .item-arrow {
+        .built-card-arrow {
             flex-shrink: 0;
-            width: 18px;
-            height: 18px;
-            stroke: var(--ink-faint);
+            width: 20px; height: 20px;
+            stroke: var(--ink-ghost);
             fill: none;
             stroke-width: 1.5;
             stroke-linecap: round;
             stroke-linejoin: round;
-            transition: all var(--transition);
-            margin-top: 0.2rem;
+            transition: all 0s;
+            margin-top: 0.15rem;
         }
 
-        .item:hover .item-arrow {
+        .built-card:hover .built-card-arrow {
+            stroke: var(--burgundy);
+            transform: translate(3px, -3px);
+        }
+
+        .built-card-note {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 0.95rem;
+            font-style: italic;
+            line-height: 1.55;
+            color: var(--ink-muted);
+            flex: 1;
+        }
+
+        .built-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-top: 1.1rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .built-card-meta {
+            font-size: 0.68rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.02em;
+        }
+
+        .built-card-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.58rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--burgundy);
+            background: var(--burgundy-wash);
+            border: 1px solid var(--burgundy-glow);
+            padding: 0.2rem 0.5rem;
+            border-radius: 100px;
+            transition: all 0s;
+        }
+
+        .built-card-tag::before {
+            content: '';
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--burgundy);
+            opacity: 0.5;
+        }
+
+        .built-card:hover .built-card-tag {
+            background: var(--burgundy-glow);
+        }
+
+        /* ─── FOUND section (curated items) ─── */
+        .found-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding-bottom: 1rem;
+        }
+
+        .found-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            text-decoration: none;
+            color: inherit;
+            padding: 1.15rem 1.4rem;
+            background:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E") repeat,
+                var(--bg-glass);
+            background-size: 128px, auto;
+            backdrop-filter: blur(12px) saturate(1.2);
+            -webkit-backdrop-filter: blur(12px) saturate(1.2);
+            border: var(--glass-border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--glass-shadow);
+            transition:
+                background 0s,
+                border-color 0s,
+                box-shadow 0s,
+                transform 0s;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(14px);
+        }
+
+        .found-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Rim light — found items */
+        .found-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 8%;
+            right: 8%;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.7) 25%,
+                rgba(255, 255, 255, 0.95) 50%,
+                rgba(255, 255, 255, 0.7) 75%,
+                transparent 100%
+            );
+            opacity: 0.6;
+            pointer-events: none;
+            transition: opacity 0s;
+        }
+
+        [data-theme="dark"] .found-item::after {
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.12) 25%,
+                rgba(255, 255, 255, 0.22) 50%,
+                rgba(255, 255, 255, 0.12) 75%,
+                transparent 100%
+            );
+            opacity: 0.45;
+        }
+
+        .found-item:hover {
+            background:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E") repeat,
+                var(--bg-card-hover);
+            background-size: 128px, auto;
+            border-color: var(--border-hover);
+            box-shadow: var(--glass-shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .found-item:hover::after {
+            opacity: 0.9;
+        }
+
+        [data-theme="dark"] .found-item:hover::after {
+            opacity: 0.65;
+        }
+
+        .found-item:active {
+            transform: translateY(0);
+        }
+
+        .found-item-number {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: var(--ink-ghost);
+            line-height: 1;
+            min-width: 1.6rem;
+            padding-top: 0.15rem;
+            transition: color 0s;
+        }
+
+        .found-item:hover .found-item-number {
+            color: var(--burgundy);
+            opacity: 0.5;
+        }
+
+        .found-item-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .found-item-title {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            line-height: 1.35;
+            color: var(--ink);
+            transition: color 0s;
+            margin-bottom: 0.25rem;
+        }
+
+        .found-item:hover .found-item-title {
+            color: var(--burgundy);
+        }
+
+        .found-item-meta {
+            font-size: 0.72rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.015em;
+            margin-bottom: 0.45rem;
+        }
+
+        .found-item-note {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 0.92rem;
+            font-style: italic;
+            line-height: 1.55;
+            color: var(--ink-muted);
+        }
+
+        .found-item-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+            flex-shrink: 0;
+            padding-top: 0.1rem;
+        }
+
+        .found-item-tag {
+            font-size: 0.58rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--ink-faint);
+            background: var(--bg-glass-strong);
+            border: 1px solid var(--border-subtle);
+            padding: 0.18rem 0.45rem;
+            border-radius: 100px;
+            transition: all 0s;
+            white-space: nowrap;
+        }
+
+        .found-item:hover .found-item-tag {
+            color: var(--burgundy);
+            border-color: var(--burgundy-glow);
+            background: var(--burgundy-wash);
+        }
+
+        .found-item-arrow {
+            width: 16px; height: 16px;
+            stroke: var(--ink-ghost);
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all 0s;
+        }
+
+        .found-item:hover .found-item-arrow {
             stroke: var(--burgundy);
             transform: translate(2px, -2px);
         }
 
-        .item-meta {
-            font-size: 0.78rem;
-            color: var(--ink-faint);
-            letter-spacing: 0.015em;
-            margin-bottom: 0.65rem;
-        }
-
-        .item-note {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1rem;
-            font-style: italic;
-            line-height: 1.6;
-            color: var(--ink-muted);
-        }
-
-        /* Tag pills */
-        .item-tag {
-            display: inline-block;
-            font-size: 0.65rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--burgundy);
-            background: var(--burgundy-wash);
-            border: 1px solid var(--burgundy-glow);
-            padding: 0.2rem 0.55rem;
-            border-radius: 4px;
-            margin-top: 0.75rem;
-            transition: all var(--transition);
-        }
-
-        .item:hover .item-tag {
-            background: var(--burgundy-glow);
-        }
-
         /* ─── Footer ─── */
         .page-footer {
-            padding: 2.5rem 0 3rem;
-            border-top: 1px solid var(--border);
+            padding: 3rem 0 3.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -397,9 +799,7 @@
             transition: color var(--transition);
         }
 
-        .footer-left a:hover {
-            color: var(--burgundy);
-        }
+        .footer-left a:hover { color: var(--burgundy); }
 
         .footer-right {
             font-family: 'EB Garamond', Georgia, serif;
@@ -415,55 +815,52 @@
             background: var(--ink-ghost);
             border-radius: 3px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--ink-faint);
-        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
 
         /* ─── Animations ─── */
         @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(16px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ─── Mobile ─── */
         @media (max-width: 640px) {
-            .page {
-                padding: 0 1.25rem;
+            .page { padding: 0 1.25rem; }
+            .topbar { padding: 0.75rem 1.25rem; }
+            .header { padding-top: 5.5rem; }
+            .header h1 { font-size: 2.5rem; }
+            .header-intro { font-size: 0.88rem; }
+
+            .built-grid {
+                grid-template-columns: 1fr;
             }
 
-            .topbar {
-                padding: 0.75rem 1.25rem;
+            .built-card { padding: 1.25rem; }
+            .built-card-title { font-size: 1.15rem; }
+            .built-card-note { font-size: 0.9rem; }
+
+            /* Disable tilt on mobile */
+            .built-card {
+                transform: translateY(20px) !important;
+            }
+            .built-card.visible {
+                transform: translateY(0) !important;
             }
 
-            .header {
-                padding-top: 5.5rem;
+            .found-item {
+                padding: 1rem 1.15rem;
+                gap: 0.85rem;
             }
 
-            .header h1 {
-                font-size: 2.1rem;
-            }
+            .found-item-number { display: none; }
 
-            .header-intro {
-                font-size: 0.88rem;
-            }
+            .found-item-title { font-size: 1.02rem; }
+            .found-item-note { font-size: 0.88rem; }
 
-            .item {
-                padding: 1.25rem 1.25rem;
-                margin-bottom: 0.75rem;
-            }
+            .found-item-right { display: none; }
 
-            .item-title {
-                font-size: 1.08rem;
-            }
-
-            .item-note {
-                font-size: 0.92rem;
+            .found-item-tag-mobile {
+                display: inline-block !important;
             }
 
             .page-footer {
@@ -471,6 +868,23 @@
                 gap: 0.75rem;
                 text-align: center;
             }
+
+            .section-marker { margin: 2.5rem 0 1.5rem; }
+        }
+
+        /* Mobile-only tag display */
+        .found-item-tag-mobile {
+            display: none;
+            font-size: 0.55rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--ink-faint);
+            background: var(--bg-glass-strong);
+            border: 1px solid var(--border-subtle);
+            padding: 0.15rem 0.4rem;
+            border-radius: 100px;
+            margin-top: 0.4rem;
         }
 
         /* ─── Reduced motion ─── */
@@ -479,10 +893,18 @@
                 animation-duration: 0.01ms !important;
                 transition-duration: 0.01ms !important;
             }
+            .ambient-orb { animation: none !important; }
         }
     </style>
 </head>
 <body>
+    <!-- Ambient light -->
+    <div class="ambient">
+        <div class="ambient-orb"></div>
+        <div class="ambient-orb"></div>
+        <div class="ambient-orb"></div>
+    </div>
+
     <!-- Top bar -->
     <nav class="topbar" id="topbar">
         <a href="../" class="back-link">
@@ -505,78 +927,131 @@
     <div class="page">
         <!-- Header -->
         <header class="header">
-            <div class="header-star">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                </svg>
+            <div class="header-label">
+                <span>curated collection</span>
             </div>
-            <h1>Of interest</h1>
-            <p class="header-intro">A small, curated collection of things I stumbled on and didn't want to&nbsp;gatekeep. Articles, tools, side&nbsp;projects, and the occasional piece that made me stop scrolling. As <em>a very important person of great intellect and character</em> probably once said: keep&nbsp;exploring.</p>
+            <h1>Of <em>interest</em></h1>
+            <p class="header-intro">Things I stumbled on and didn't want to gatekeep. Side projects, articles, tools, and the occasional piece that made me stop scrolling. As <em>a very important person of great intellect and character</em> probably once said: keep&nbsp;exploring.</p>
         </header>
 
-        <div class="section-line"></div>
+        <!-- ═══ THINGS I BUILT ═══ -->
+        <div class="section-marker" data-anim="marker">
+            <span class="section-marker-line"></span>
+            <span class="section-marker-text">Things I built <span class="section-count">· 6</span></span>
+            <span class="section-marker-line"></span>
+        </div>
 
-        <!-- Items -->
-        <div class="items">
+        <div class="built-grid">
 
-            <a href="https://lmpollockmuguruza.github.io/architecture/" target="_blank" rel="noopener" class="item">
-                <div class="item-top">
-                    <span class="item-title">Architecture</span>
-                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+            <a href="https://lmpollockmuguruza.github.io/gallery/" target="_blank" rel="noopener" class="built-card" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">Gallery</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
                 </div>
-                <div class="item-meta">by Lucas Pollock Muguruza · 2025.2026 · added 7 Feb 2026</div>
-                <p class="item-note">An unprincipled idea of what I think architecture should be (or at least from what my eyes have seen)</p>
-                <span class="item-tag">vibe-coded</span>
+                <p class="built-card-note">A gallery of my own pictures with a scrolling and visualisation idea that helps you actually look at pictures rather than scroll past them</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2026 · added 12 Feb 2026</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
             </a>
 
-            <a href="https://econvery-nextjs.vercel.app/" target="_blank" rel="noopener" class="item">
-                <div class="item-top">
-                    <span class="item-title">Econvery</span>
-                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+            <a href="https://lmpollockmuguruza.github.io/did-it-rain/" target="_blank" rel="noopener" class="built-card" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">Did it rain?</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
                 </div>
-                <div class="item-meta">by Lucas Pollock Muguruza · 2026 · added 4 Feb 2026</div>
-                <p class="item-note">A tool I am currently developing, hosted on Vercel. Next steps include AI integration (relevance scoring, keyword / content matching, summary generation) through Gemini's API, expanding onto other fields (e.g., STEM), and newsletter.</p>
-                <span class="item-tag">vibe-coded</span>
+                <p class="built-card-note">A tool that tells you how long it's been raining straight in London and Manchester, plus 200 other cities around the world</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2026 · added 12 Feb 2026</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
             </a>
 
-            <a href="https://lmpollockmuguruza.github.io/fund-strategy-game/" class="item">
-                <div class="item-top">
-                    <span class="item-title">Fund Strategy — Private Markets Simulator</span>
-                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+            <a href="https://lmpollockmuguruza.github.io/architecture/" target="_blank" rel="noopener" class="built-card" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">Architecture</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
                 </div>
-                <div class="item-meta">by Lucas Pollock Muguruza · 2026 · added 10 Jan 2026</div>
-                <p class="item-note">A simulator of being your own VC/PE fund. Took a lot of time to get it where it is, even if it still has some pretty funky things. Cool and fun for 10–20 min, even if I have no idea what it is to be a VC/PE GP. Buy companies, improve your fund, make your investors happy. I guess it's as simple as that. If you have any suggestions to add or remove to the game, please do share through pigeon. For feedback, reach out to Claude.</p>
-                <span class="item-tag">vibe-coded</span>
+                <p class="built-card-note">An unprincipled idea of what I think architecture should be (or at least from what my eyes have seen)</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2025.2026 · added 7 Feb 2026</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
             </a>
 
-            <a href="https://lmpollockmuguruza.github.io/pl-vibe-quiz/" class="item">
-                <div class="item-top">
-                    <span class="item-title">Premier League Quiz</span>
-                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+            <a href="https://econvery-nextjs.vercel.app/" target="_blank" rel="noopener" class="built-card" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">Econvery</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
                 </div>
-                <div class="item-meta">by Lucas Pollock Muguruza · 2026 · added 10 Jan 2026</div>
-                <p class="item-note">A "what's my team" quiz I vibe coded with Claude. It's really worth a click, even if just for the vibes yk?</p>
-                <span class="item-tag">vibe-coded</span>
+                <p class="built-card-note">A tool I am currently developing, hosted on Vercel. Next steps include AI integration through Gemini's API, expanding onto other fields, and newsletter</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2026 · added 4 Feb 2026</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
             </a>
 
-            <a href="https://danioffline.substack.com/p/everyone-wants-to-be-a-dj-no-one" target="_blank" rel="noopener" class="item">
-                <div class="item-top">
-                    <span class="item-title">everyone wants to be a DJ, no one wants to dance</span>
-                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+            <a href="https://lmpollockmuguruza.github.io/fund-strategy-game/" target="_blank" rel="noopener" class="built-card" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">Fund Strategy — Private Markets Simulator</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
                 </div>
-                <div class="item-meta">by Dani Offline · 2025 · added 29 Dec 2025</div>
-                <p class="item-note">A wonderful essay I have interpreted as a call to enjoy art rather than use it for the well-intentioned goal of being artists.</p>
-                <span class="item-tag">essay</span>
+                <p class="built-card-note">A simulator of being your own VC/PE fund. Buy companies, improve your fund, make your investors happy. For feedback, reach out to Claude.</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2026 · added 10 Jan 2026</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
             </a>
 
-            <a href="https://www.newyorker.com/culture/open-questions/should-you-just-give-up" target="_blank" rel="noopener" class="item">
-                <div class="item-top">
-                    <span class="item-title">Should you just give up?</span>
-                    <svg class="item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+            <a href="https://lmpollockmuguruza.github.io/pl-vibe-quiz/" target="_blank" rel="noopener" class="built-card" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">Premier League Quiz</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
                 </div>
-                <div class="item-meta">by Joshua Rothman · 2024 · added 29 Dec 2025</div>
-                <p class="item-note">An article that is best described by its deck: Sisyphus couldn't stop pushing his boulder — but you can.</p>
-                <span class="item-tag">article</span>
+                <p class="built-card-note">A "what's my team" quiz I vibe coded with Claude. It's really worth a click, even if just for the vibes yk?</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2026 · added 10 Jan 2026</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- ═══ THINGS I FOUND ═══ -->
+        <div class="section-marker" data-anim="marker">
+            <span class="section-marker-line"></span>
+            <span class="section-marker-text">Things I found <span class="section-count">· 2</span></span>
+            <span class="section-marker-line"></span>
+        </div>
+
+        <div class="found-list">
+
+            <a href="https://danioffline.substack.com/p/everyone-wants-to-be-a-dj-no-one" target="_blank" rel="noopener" class="found-item" data-anim="card">
+                <span class="found-item-number">1</span>
+                <div class="found-item-content">
+                    <div class="found-item-title">everyone wants to be a DJ, no one wants to dance</div>
+                    <div class="found-item-meta">by Dani Offline · 2025 · added 29 Dec 2025</div>
+                    <p class="found-item-note">A wonderful essay I have interpreted as a call to enjoy art rather than use it for the well-intentioned goal of being artists.</p>
+                    <span class="found-item-tag-mobile">essay</span>
+                </div>
+                <div class="found-item-right">
+                    <span class="found-item-tag">essay</span>
+                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+            </a>
+
+            <a href="https://www.newyorker.com/culture/open-questions/should-you-just-give-up" target="_blank" rel="noopener" class="found-item" data-anim="card">
+                <span class="found-item-number">2</span>
+                <div class="found-item-content">
+                    <div class="found-item-title">Should you just give up?</div>
+                    <div class="found-item-meta">by Joshua Rothman · 2024 · added 29 Dec 2025</div>
+                    <p class="found-item-note">An article that is best described by its deck: Sisyphus couldn't stop pushing his boulder — but you can.</p>
+                    <span class="found-item-tag-mobile">article</span>
+                </div>
+                <div class="found-item-right">
+                    <span class="found-item-tag">article</span>
+                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
             </a>
 
         </div>
@@ -595,7 +1070,6 @@
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;
 
-        // Respect main site's saved theme, fall back to system preference
         function getInitialTheme() {
             const saved = localStorage.getItem('theme');
             if (saved === 'dark') return 'dark';
@@ -623,7 +1097,6 @@
             localStorage.setItem('theme', newTheme);
         });
 
-        // System preference listener
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
             const saved = localStorage.getItem('theme');
             if (saved === 'auto' || !saved) {
@@ -645,28 +1118,101 @@
             }
         });
 
-        // ─── Staggered card entrance ───
-        const items = document.querySelectorAll('.item');
+        // ─── Staggered entrance animations ───
+        const animElements = document.querySelectorAll('[data-anim]');
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
                     observer.unobserve(entry.target);
+                    // Clear inline transition styles after entrance so they don't fight hover/tilt
+                    const delay = parseFloat(entry.target.style.transitionDelay || '0') * 1000;
+                    setTimeout(() => {
+                        entry.target.style.transitionDuration = '';
+                        entry.target.style.transitionTimingFunction = '';
+                        entry.target.style.transitionProperty = '';
+                        entry.target.style.transitionDelay = '';
+                    }, delay + 800);
                 }
             });
         }, {
-            threshold: 0.08,
-            rootMargin: '0px 0px -40px 0px'
+            threshold: 0.06,
+            rootMargin: '0px 0px -30px 0px'
         });
 
-        items.forEach((item, i) => {
-            item.style.transitionDelay = `${0.5 + i * 0.1}s`;
-            item.style.transitionDuration = '0.7s';
-            item.style.transitionTimingFunction = 'cubic-bezier(0.16, 1, 0.3, 1)';
-            item.style.transitionProperty = 'opacity, transform';
-            observer.observe(item);
+        // Group by section for staggered delay
+        let builtIndex = 0;
+        let foundIndex = 0;
+        let markerIndex = 0;
+
+        animElements.forEach((el) => {
+            const type = el.dataset.anim;
+
+            if (type === 'marker') {
+                el.style.transitionDelay = `${0.4 + markerIndex * 0.8}s`;
+                el.style.transitionDuration = '0.7s';
+                el.style.transitionTimingFunction = 'cubic-bezier(0.16, 1, 0.3, 1)';
+                el.style.transitionProperty = 'opacity, transform';
+                markerIndex++;
+            } else if (type === 'card') {
+                const parent = el.closest('.built-grid');
+                if (parent) {
+                    el.style.transitionDelay = `${0.55 + builtIndex * 0.08}s`;
+                    builtIndex++;
+                } else {
+                    el.style.transitionDelay = `${0.3 + foundIndex * 0.08}s`;
+                    foundIndex++;
+                }
+                el.style.transitionDuration = '0.7s';
+                el.style.transitionTimingFunction = 'cubic-bezier(0.16, 1, 0.3, 1)';
+                el.style.transitionProperty = 'opacity, transform';
+            }
+
+            observer.observe(el);
         });
+
+        // ─── Cursor-responsive tilt on built cards ───
+        const isMobile = window.matchMedia('(max-width: 640px)').matches;
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (!isMobile && !prefersReduced) {
+            const builtCards = document.querySelectorAll('.built-card');
+            const MAX_TILT = 3.5;
+
+            builtCards.forEach(card => {
+                let springRaf = null;
+                let cx = 0, cy = 0;
+
+                // Direct set on every mouse move — no rAF gating, no lerp
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+                    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+                    cx = -y * MAX_TILT;
+                    cy = x * MAX_TILT;
+                    card.style.transform =
+                        `perspective(600px) rotateX(${cx}deg) rotateY(${cy}deg) translateY(-5px) scale(1.012)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    // Spring back to flat
+                    if (springRaf) cancelAnimationFrame(springRaf);
+                    (function springBack() {
+                        cx *= 0.88;
+                        cy *= 0.88;
+                        if (Math.abs(cx) > 0.02 || Math.abs(cy) > 0.02) {
+                            card.style.transform =
+                                `perspective(600px) rotateX(${cx}deg) rotateY(${cy}deg)`;
+                            springRaf = requestAnimationFrame(springBack);
+                        } else {
+                            card.style.transform = '';
+                            springRaf = null;
+                        }
+                    })();
+                });
+            });
+        }
     </script>
 </body>
 </html>
