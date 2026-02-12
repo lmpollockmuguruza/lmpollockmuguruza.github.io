@@ -1,0 +1,1397 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>did it rain? — london & manchester</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #f7f5f0;
+            --bg-card: #fdfcfa;
+            --bg-card-hover: #ffffff;
+            --ink: #1a1816;
+            --ink-soft: #3d3833;
+            --ink-muted: #7a7368;
+            --ink-faint: #b0a99e;
+            --ink-ghost: #d4cfc8;
+            --rain: #4a6fa5;
+            --rain-soft: #6b8fc5;
+            --rain-wash: rgba(74, 111, 165, 0.06);
+            --rain-glow: rgba(74, 111, 165, 0.12);
+            --dry: #c4884a;
+            --dry-wash: rgba(196, 136, 74, 0.06);
+            --burgundy: #6b2737;
+            --burgundy-soft: #8b3747;
+            --burgundy-wash: rgba(107, 39, 55, 0.05);
+            --burgundy-glow: rgba(107, 39, 55, 0.10);
+            --border: rgba(26, 24, 22, 0.07);
+            --border-hover: rgba(74, 111, 165, 0.18);
+            --shadow-sm: 0 1px 3px rgba(26,24,22,.03), 0 4px 12px rgba(26,24,22,.04);
+            --shadow-md: 0 2px 8px rgba(26,24,22,.05), 0 12px 40px rgba(26,24,22,.07);
+            --shadow-lg: 0 8px 40px rgba(26,24,22,.10), 0 2px 12px rgba(26,24,22,.05);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+            --ease: cubic-bezier(.4, 0, .2, 1);
+            --ease-spring: cubic-bezier(.16, 1, .3, 1);
+            --transition: .35s var(--ease);
+        }
+
+        [data-theme="dark"] {
+            --bg: #141311;
+            --bg-card: #1e1c19;
+            --bg-card-hover: #252320;
+            --ink: #e8e4dd;
+            --ink-soft: #c8c2b8;
+            --ink-muted: #8a8279;
+            --ink-faint: #5a554e;
+            --ink-ghost: #3a3632;
+            --rain: #7baaf0;
+            --rain-soft: #9bc2ff;
+            --rain-wash: rgba(123, 170, 240, 0.08);
+            --rain-glow: rgba(123, 170, 240, 0.14);
+            --dry: #e0aa6a;
+            --dry-wash: rgba(224, 170, 106, 0.08);
+            --burgundy: #c4707f;
+            --burgundy-soft: #d4909f;
+            --burgundy-wash: rgba(196, 112, 127, 0.06);
+            --burgundy-glow: rgba(196, 112, 127, 0.12);
+            --border: rgba(232, 228, 221, 0.06);
+            --border-hover: rgba(123, 170, 240, 0.2);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.15);
+            --shadow-md: 0 2px 8px rgba(0,0,0,.15), 0 12px 40px rgba(0,0,0,.2);
+            --shadow-lg: 0 8px 40px rgba(0,0,0,.30), 0 2px 12px rgba(0,0,0,.15);
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--ink-soft);
+            min-height: 100vh;
+            min-height: 100dvh;
+            line-height: 1.65;
+            transition: background-color .5s var(--ease), color .5s var(--ease);
+        }
+
+        /* Noise overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: .018;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 256px;
+        }
+        [data-theme="dark"] body::before { opacity: .03; }
+
+        ::selection { background: rgba(74, 111, 165, .18); color: var(--ink); }
+
+        /* ─── TOPBAR ─── */
+        .topbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 500;
+            padding: 1rem 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: transparent;
+            transition: all .4s var(--ease);
+        }
+        .topbar.scrolled {
+            background: color-mix(in srgb, var(--bg) 85%, transparent);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: .78rem;
+            font-weight: 400;
+            color: var(--ink-muted);
+            text-decoration: none;
+            letter-spacing: .02em;
+            transition: color var(--transition);
+        }
+        .back-link:hover { color: var(--rain); }
+        .back-link svg {
+            width: 15px; height: 15px;
+            stroke: currentColor; fill: none; stroke-width: 1.5;
+            transition: transform var(--transition);
+        }
+        .back-link:hover svg { transform: translateX(-3px); }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px; height: 34px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: var(--bg-card);
+            cursor: pointer;
+            transition: all var(--transition);
+            color: var(--ink-muted);
+        }
+        .theme-toggle:hover {
+            border-color: var(--border-hover);
+            color: var(--rain);
+            background: var(--rain-wash);
+        }
+        .theme-toggle svg {
+            width: 15px; height: 15px;
+            fill: currentColor;
+            transition: transform .5s var(--ease-spring);
+        }
+        .theme-toggle:hover svg { transform: rotate(30deg); }
+        .theme-toggle .icon-sun { display: none; }
+        .theme-toggle .icon-moon { display: block; }
+        [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+        [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+        /* ─── LAYOUT ─── */
+        .page {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ─── HEADER ─── */
+        .header {
+            padding-top: 7.5rem;
+            padding-bottom: 1rem;
+            text-align: center;
+        }
+
+        .rain-icon-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            background: var(--rain-wash);
+            border: 1px solid var(--rain-glow);
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeUp .8s var(--ease-spring) .1s forwards;
+        }
+        .rain-icon-wrap svg {
+            width: 26px; height: 26px;
+            stroke: var(--rain);
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* Animated rain drops behind icon */
+        .rain-icon-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 40%, var(--rain-glow) 100%);
+            animation: iconPulse 3s ease-in-out infinite;
+        }
+        @keyframes iconPulse {
+            0%, 100% { opacity: .3; }
+            50% { opacity: .8; }
+        }
+
+        .header h1 {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 3.2rem;
+            font-weight: 400;
+            letter-spacing: -.03em;
+            line-height: 1.1;
+            color: var(--ink);
+            margin-bottom: .6rem;
+            opacity: 0;
+            animation: fadeUp .8s var(--ease-spring) .2s forwards;
+        }
+
+        .header-sub {
+            font-size: .88rem;
+            line-height: 1.65;
+            color: var(--ink-muted);
+            max-width: 420px;
+            margin: 0 auto;
+            opacity: 0;
+            animation: fadeUp .8s var(--ease-spring) .35s forwards;
+        }
+        .header-sub em {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1rem;
+            color: var(--ink-soft);
+            font-style: italic;
+        }
+
+        /* ─── LOADING STATE ─── */
+        .loading-state {
+            text-align: center;
+            padding: 4rem 1rem;
+            opacity: 0;
+            animation: fadeUp .6s var(--ease-spring) .5s forwards;
+        }
+        .loading-spinner {
+            width: 28px; height: 28px;
+            border: 2px solid var(--ink-ghost);
+            border-top-color: var(--rain);
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1rem;
+            font-style: italic;
+            color: var(--ink-faint);
+        }
+
+        /* ─── CITY CARDS ─── */
+        .cities-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+            opacity: 0;
+            animation: fadeUp .7s var(--ease-spring) .15s forwards;
+        }
+
+        .city-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.75rem 1.5rem 1.5rem;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .city-card:hover {
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        /* Streak glow behind card */
+        .city-card::before {
+            content: '';
+            position: absolute;
+            top: -40%; left: -20%; right: -20%;
+            height: 80%;
+            border-radius: 50%;
+            background: var(--rain-glow);
+            opacity: 0;
+            transition: opacity .6s var(--ease);
+            pointer-events: none;
+            filter: blur(40px);
+        }
+        .city-card.raining::before { opacity: 1; }
+        .city-card.dry::before { background: var(--dry-wash); opacity: .6; }
+
+        .city-name {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: var(--ink);
+            letter-spacing: -.02em;
+            line-height: 1.2;
+            margin-bottom: .15rem;
+        }
+
+        .city-country {
+            font-size: .68rem;
+            color: var(--ink-faint);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-weight: 500;
+            margin-bottom: 1.25rem;
+        }
+
+        .streak-number {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 4.5rem;
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: -.04em;
+            margin-bottom: .15rem;
+            transition: color .4s var(--ease);
+        }
+        .city-card.raining .streak-number { color: var(--rain); }
+        .city-card.dry .streak-number { color: var(--dry); }
+
+        .streak-label {
+            font-size: .72rem;
+            color: var(--ink-faint);
+            letter-spacing: .03em;
+            margin-bottom: 1.25rem;
+        }
+
+        .streak-quip {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: .92rem;
+            font-style: italic;
+            color: var(--ink-muted);
+            line-height: 1.55;
+            padding-top: .85rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Today's status pill */
+        .today-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .25rem .65rem;
+            border-radius: 100px;
+            font-size: .65rem;
+            font-weight: 500;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        .today-pill.rain-pill {
+            background: var(--rain-wash);
+            color: var(--rain);
+            border: 1px solid var(--rain-glow);
+        }
+        .today-pill.dry-pill {
+            background: var(--dry-wash);
+            color: var(--dry);
+            border: 1px solid rgba(196, 136, 74, 0.12);
+        }
+        .today-pill .pill-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            animation: pillPulse 2s ease-in-out infinite;
+        }
+        .rain-pill .pill-dot { background: var(--rain); }
+        .dry-pill .pill-dot { background: var(--dry); }
+        @keyframes pillPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .4; transform: scale(.7); }
+        }
+
+        /* ─── DATE LOOKUP ─── */
+        .lookup-section {
+            margin-top: 2.5rem;
+            opacity: 0;
+            animation: fadeUp .7s var(--ease-spring) .3s forwards;
+        }
+
+        .section-label {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.35rem;
+            font-weight: 500;
+            color: var(--ink);
+            margin-bottom: .6rem;
+            letter-spacing: -.01em;
+        }
+
+        .section-desc {
+            font-size: .82rem;
+            color: var(--ink-muted);
+            margin-bottom: 1.25rem;
+            max-width: 480px;
+        }
+
+        .lookup-form {
+            display: flex;
+            gap: .6rem;
+            align-items: stretch;
+        }
+
+        .date-input-wrap {
+            position: relative;
+            flex: 1;
+        }
+
+        .date-input {
+            width: 100%;
+            padding: .7rem 1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .85rem;
+            color: var(--ink-soft);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            outline: none;
+            transition: all var(--transition);
+            -webkit-appearance: none;
+        }
+        .date-input:focus {
+            border-color: var(--border-hover);
+            box-shadow: 0 0 0 3px var(--rain-wash);
+        }
+
+        .lookup-btn {
+            padding: .7rem 1.5rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .78rem;
+            font-weight: 500;
+            letter-spacing: .03em;
+            color: #fff;
+            background: var(--rain);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .lookup-btn:hover {
+            background: var(--rain-soft);
+            box-shadow: 0 4px 16px rgba(74, 111, 165, .25);
+            transform: translateY(-1px);
+        }
+        .lookup-btn:active { transform: translateY(0); }
+        .lookup-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .lookup-result {
+            margin-top: 1rem;
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            display: none;
+        }
+        .lookup-result.visible { display: block; }
+        .lookup-result.rain-result { border-left: 3px solid var(--rain); }
+        .lookup-result.dry-result { border-left: 3px solid var(--dry); }
+
+        .result-title {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--ink);
+            margin-bottom: .25rem;
+        }
+        .result-detail {
+            font-size: .78rem;
+            color: var(--ink-muted);
+            line-height: 1.6;
+        }
+        .result-detail strong {
+            color: var(--ink-soft);
+            font-weight: 500;
+        }
+
+        /* ─── RECENT DAYS TIMELINE ─── */
+        .timeline-section {
+            margin-top: 2.5rem;
+            opacity: 0;
+            animation: fadeUp .7s var(--ease-spring) .4s forwards;
+        }
+
+        .timeline-grid {
+            display: flex;
+            gap: 3px;
+            margin-top: .75rem;
+        }
+
+        .timeline-day {
+            flex: 1;
+            aspect-ratio: 1;
+            border-radius: var(--radius-xs);
+            position: relative;
+            cursor: default;
+            transition: all .25s var(--ease);
+            min-width: 0;
+        }
+        .timeline-day.rain-day { background: var(--rain-glow); }
+        .timeline-day.dry-day { background: var(--border); }
+        .timeline-day.today-marker {
+            outline: 2px solid var(--ink-faint);
+            outline-offset: 1px;
+        }
+        .timeline-day:hover { transform: scaleY(1.3); z-index: 2; }
+
+        .timeline-tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) scale(.95);
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: .45rem .65rem;
+            font-size: .65rem;
+            color: var(--ink-soft);
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .2s var(--ease), transform .2s var(--ease-spring);
+            box-shadow: var(--shadow-sm);
+            z-index: 10;
+        }
+        .timeline-day:hover .timeline-tooltip {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        .timeline-legend {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: .6rem;
+            font-size: .65rem;
+            color: var(--ink-faint);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: .3rem;
+        }
+        .legend-dot {
+            width: 8px; height: 8px;
+            border-radius: 2px;
+        }
+        .legend-dot.rain-dot { background: var(--rain-glow); }
+        .legend-dot.dry-dot { background: var(--border); }
+
+        /* ─── MONTHLY HEATMAP ─── */
+        .heatmap-section {
+            margin-top: 2.5rem;
+            opacity: 0;
+            animation: fadeUp .7s var(--ease-spring) .5s forwards;
+        }
+
+        .heatmap-nav {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            margin-bottom: .75rem;
+        }
+        .heatmap-nav-btn {
+            width: 30px; height: 30px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            background: var(--bg-card);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--ink-faint);
+            transition: all var(--transition);
+        }
+        .heatmap-nav-btn:hover {
+            border-color: var(--border-hover);
+            color: var(--rain);
+            background: var(--rain-wash);
+        }
+        .heatmap-nav-btn svg {
+            width: 13px; height: 13px;
+            stroke: currentColor; fill: none; stroke-width: 1.5;
+        }
+        .heatmap-month-label {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--ink);
+            min-width: 140px;
+            text-align: center;
+        }
+
+        .heatmap-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+            margin-bottom: 3px;
+        }
+        .heatmap-weekday {
+            text-align: center;
+            font-size: .55rem;
+            color: var(--ink-ghost);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-weight: 500;
+            padding-bottom: 2px;
+        }
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+        }
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            transition: all .2s var(--ease);
+            position: relative;
+            cursor: default;
+        }
+        .heatmap-cell.empty { background: transparent; }
+        .heatmap-cell.rain-cell { background: var(--rain); opacity: .65; }
+        .heatmap-cell.rain-cell.heavy { opacity: 1; }
+        .heatmap-cell.dry-cell { background: var(--border); }
+        .heatmap-cell.future-cell { background: var(--border); opacity: .3; }
+        .heatmap-cell.today-cell { outline: 2px solid var(--ink-faint); outline-offset: 1px; }
+        .heatmap-cell:not(.empty):hover { transform: scale(1.2); z-index: 2; }
+        .heatmap-cell:not(.empty):hover .heatmap-tip {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        .heatmap-tip {
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%) scale(.95);
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: .35rem .55rem;
+            font-size: .6rem;
+            color: var(--ink-soft);
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .2s var(--ease), transform .2s var(--ease-spring);
+            box-shadow: var(--shadow-sm);
+            z-index: 10;
+        }
+
+        .heatmap-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: .75rem;
+            padding-top: .75rem;
+            border-top: 1px solid var(--border);
+        }
+        .heatmap-stat {
+            font-size: .72rem;
+            color: var(--ink-faint);
+        }
+        .heatmap-stat strong {
+            color: var(--ink-soft);
+            font-weight: 500;
+        }
+
+        /* ─── CITY TOGGLE (for heatmap & lookup) ─── */
+        .city-toggle {
+            display: inline-flex;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            padding: 3px;
+            margin-bottom: .75rem;
+        }
+        .city-toggle-btn {
+            padding: .35rem .85rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .7rem;
+            font-weight: 500;
+            letter-spacing: .02em;
+            border: none;
+            border-radius: 100px;
+            background: transparent;
+            color: var(--ink-faint);
+            cursor: pointer;
+            transition: all .25s var(--ease);
+        }
+        .city-toggle-btn.active {
+            background: var(--rain);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(74, 111, 165, .25);
+        }
+
+        /* ─── FOOTER ─── */
+        .page-footer {
+            padding: 3rem 0 2.5rem;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            opacity: 0;
+            animation: fadeUp .6s var(--ease-spring) .6s forwards;
+        }
+        .footer-left {
+            font-size: .72rem;
+            color: var(--ink-faint);
+            font-weight: 300;
+        }
+        .footer-left a {
+            color: var(--ink-muted);
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+        .footer-left a:hover { color: var(--rain); }
+        .footer-right {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: .8rem;
+            font-style: italic;
+            color: var(--ink-faint);
+        }
+
+        .source-note {
+            font-size: .62rem;
+            color: var(--ink-ghost);
+            text-align: center;
+            margin-top: .5rem;
+        }
+        .source-note a {
+            color: var(--ink-faint);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--ink-ghost);
+        }
+        .source-note a:hover { color: var(--rain); }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Raindrop animations for raining cards */
+        @keyframes rainDrop {
+            0% { transform: translateY(-10px); opacity: 0; }
+            10% { opacity: .6; }
+            100% { transform: translateY(60px); opacity: 0; }
+        }
+        .rain-drops {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            border-radius: var(--radius);
+        }
+        .rain-drop {
+            position: absolute;
+            width: 1px;
+            height: 8px;
+            background: var(--rain);
+            opacity: 0;
+            border-radius: 1px;
+        }
+
+        /* ─── ERROR STATE ─── */
+        .error-state {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        .error-state p {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.05rem;
+            color: var(--ink-muted);
+            font-style: italic;
+        }
+        .retry-btn {
+            margin-top: 1rem;
+            padding: .55rem 1.2rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .75rem;
+            color: var(--rain);
+            background: var(--rain-wash);
+            border: 1px solid var(--rain-glow);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .retry-btn:hover {
+            background: var(--rain-glow);
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 640px) {
+            .page { padding: 0 1.25rem; }
+            .topbar { padding: .75rem 1.25rem; }
+            .header { padding-top: 5.5rem; }
+            .header h1 { font-size: 2.4rem; }
+            .cities-grid { grid-template-columns: 1fr; }
+            .streak-number { font-size: 3.5rem; }
+            .lookup-form { flex-direction: column; }
+            .page-footer { flex-direction: column; gap: .75rem; text-align: center; }
+            .heatmap-stats { flex-wrap: wrap; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                transition-duration: .01ms !important;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--ink-ghost); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
+    </style>
+</head>
+<body>
+    <nav class="topbar" id="topbar">
+        <a href="../" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            Lucas Pollock Muguruza
+        </a>
+        <div class="topbar-right">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <svg class="icon-moon" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+                <svg class="icon-sun" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
+            </button>
+        </div>
+    </nav>
+
+    <div class="page">
+        <header class="header">
+            <div class="rain-icon-wrap">
+                <svg viewBox="0 0 24 24"><path d="M16 13V21"/><path d="M8 13V21"/><path d="M12 15V23"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>
+            </div>
+            <h1>did it rain?</h1>
+            <p class="header-sub">Tracking consecutive rainy days in <em>London</em> and <em>Manchester</em>. Because someone has to keep score.</p>
+        </header>
+
+        <div id="mainContent">
+            <div class="loading-state" id="loadingState">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">checking the skies…</div>
+            </div>
+        </div>
+
+        <footer class="page-footer">
+            <div class="footer-left">
+                <a href="../">← back to portfolio</a> · data via <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
+            </div>
+            <div class="footer-right">it's always raining somewhere</div>
+        </footer>
+    </div>
+
+<script>
+(() => {
+    /* ═══════════════════════════════════════
+       CONFIG
+       ═══════════════════════════════════════ */
+    const CITIES = {
+        london: { name: 'London', country: 'England', lat: 51.5074, lng: -0.1278 },
+        manchester: { name: 'Manchester', country: 'England', lat: 53.4808, lng: -2.2426 }
+    };
+
+    const RAIN_THRESHOLD = 0.2; // mm - anything above this = rained
+    const LOOKBACK_DAYS = 60;   // days to check for streaks
+    const TIMELINE_DAYS = 30;   // days shown in the visual timeline
+
+    /* ═══════════════════════════════════════
+       QUIPS (soulful personality)
+       ═══════════════════════════════════════ */
+    const RAIN_QUIPS = [
+        "Grab an umbrella. Or don't. Embrace it.",
+        "The sky has opinions today.",
+        "Another day, another puddle.",
+        "Petrichor season continues.",
+        "The clouds are really committed.",
+        "Nature's pressure wash, day {n}.",
+        "Wellies: still a wise investment.",
+        "The ducks are thriving.",
+        "Even the pigeons look fed up.",
+        "At least the parks will be green."
+    ];
+    const DRY_QUIPS = [
+        "Cherish this. It won't last.",
+        "A rare specimen: the dry day.",
+        "The umbrella rests. For now.",
+        "Don't get used to it.",
+        "Quick, go outside.",
+        "The sun made an appearance. Briefly.",
+        "No rain? In this economy?",
+        "The pavement is confused.",
+        "A plot twist in the forecast.",
+        "Savour every dry minute."
+    ];
+
+    function getQuip(isRaining, streak) {
+        const pool = isRaining ? RAIN_QUIPS : DRY_QUIPS;
+        const quip = pool[Math.floor(Math.random() * pool.length)];
+        return quip.replace('{n}', streak);
+    }
+
+    /* ═══════════════════════════════════════
+       API HELPERS
+       ═══════════════════════════════════════ */
+    function formatDate(d) {
+        return d.toISOString().split('T')[0];
+    }
+
+    async function fetchDailyRain(city, startDate, endDate) {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lng}&daily=precipitation_sum&start_date=${startDate}&end_date=${endDate}&timezone=Europe%2FLondon&past_days=0`;
+
+        // Try forecast API with past_days first, then archive
+        const archiveUrl = `https://archive-api.open-meteo.com/v1/archive?latitude=${city.lat}&longitude=${city.lng}&daily=precipitation_sum&start_date=${startDate}&end_date=${endDate}&timezone=Europe%2FLondon`;
+
+        // Use the forecast API for recent data (it includes past days)
+        const today = new Date();
+        const start = new Date(startDate);
+        const daysDiff = Math.floor((today - start) / 86400000);
+
+        let fetchUrl;
+        if (daysDiff <= 92) {
+            fetchUrl = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lng}&daily=precipitation_sum&start_date=${startDate}&end_date=${endDate}&timezone=Europe%2FLondon&past_days=${Math.min(daysDiff + 1, 92)}`;
+        } else {
+            fetchUrl = archiveUrl;
+        }
+
+        const resp = await fetch(fetchUrl);
+        if (!resp.ok) throw new Error(`API error: ${resp.status}`);
+        const data = await resp.json();
+        if (data.error) throw new Error(data.reason || 'API error');
+        return data.daily;
+    }
+
+    /* ═══════════════════════════════════════
+       STREAK CALCULATION
+       ═══════════════════════════════════════ */
+    function calculateStreak(dates, precip) {
+        // Work backwards from the most recent day with data
+        let streak = 0;
+        let isCurrentlyRaining = null;
+
+        for (let i = dates.length - 1; i >= 0; i--) {
+            const rained = precip[i] !== null && precip[i] > RAIN_THRESHOLD;
+
+            if (isCurrentlyRaining === null) {
+                isCurrentlyRaining = rained;
+                streak = 1;
+            } else if (rained === isCurrentlyRaining) {
+                streak++;
+            } else {
+                break;
+            }
+        }
+
+        return { streak, isRaining: isCurrentlyRaining };
+    }
+
+    /* ═══════════════════════════════════════
+       UI RENDERING
+       ═══════════════════════════════════════ */
+    function renderApp(londonData, manchesterData) {
+        const content = document.getElementById('mainContent');
+
+        // Calculate streaks
+        const londonStreak = calculateStreak(londonData.dates, londonData.precip);
+        const manchesterStreak = calculateStreak(manchesterData.dates, manchesterData.precip);
+
+        const html = `
+            <!-- City Cards -->
+            <div class="cities-grid">
+                ${renderCityCard('london', CITIES.london, londonStreak, londonData)}
+                ${renderCityCard('manchester', CITIES.manchester, manchesterStreak, manchesterData)}
+            </div>
+
+            <!-- Date Lookup -->
+            <div class="lookup-section">
+                <div class="section-label">Look up a date</div>
+                <p class="section-desc">Pick any date to see whether it rained in London or Manchester.</p>
+                <div class="lookup-form">
+                    <div class="date-input-wrap">
+                        <input type="date" class="date-input" id="lookupDate" max="${formatDate(new Date())}">
+                    </div>
+                    <button class="lookup-btn" id="lookupBtn" onclick="doLookup()">Check</button>
+                </div>
+                <div class="lookup-result" id="lookupResult"></div>
+            </div>
+
+            <!-- 30-Day Timeline -->
+            <div class="timeline-section">
+                <div class="section-label">Last ${TIMELINE_DAYS} days</div>
+                <div class="city-toggle" id="timelineToggle">
+                    <button class="city-toggle-btn active" data-city="london" onclick="switchTimeline('london')">London</button>
+                    <button class="city-toggle-btn" data-city="manchester" onclick="switchTimeline('manchester')">Manchester</button>
+                </div>
+                <div id="timelineLondon">${renderTimeline(londonData)}</div>
+                <div id="timelineManchester" style="display:none">${renderTimeline(manchesterData)}</div>
+                <div class="timeline-legend">
+                    <div class="legend-item"><div class="legend-dot rain-dot"></div> Rain</div>
+                    <div class="legend-item"><div class="legend-dot dry-dot"></div> Dry</div>
+                </div>
+            </div>
+
+            <!-- Monthly Heatmap -->
+            <div class="heatmap-section">
+                <div class="section-label">Monthly view</div>
+                <div class="city-toggle" id="heatmapCityToggle">
+                    <button class="city-toggle-btn active" data-city="london" onclick="switchHeatmapCity('london')">London</button>
+                    <button class="city-toggle-btn" data-city="manchester" onclick="switchHeatmapCity('manchester')">Manchester</button>
+                </div>
+                <div class="heatmap-nav">
+                    <button class="heatmap-nav-btn" onclick="changeMonth(-1)">
+                        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="heatmap-month-label" id="heatmapMonthLabel"></div>
+                    <button class="heatmap-nav-btn" onclick="changeMonth(1)">
+                        <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+                <div id="heatmapContainer"></div>
+            </div>
+
+            <p class="source-note">Weather data from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo.com</a>. Rain threshold: >${RAIN_THRESHOLD}mm/day. Updated near real-time.</p>
+        `;
+
+        content.innerHTML = html;
+
+        // Init heatmap
+        window._heatmapCity = 'london';
+        window._heatmapMonth = new Date().getMonth();
+        window._heatmapYear = new Date().getFullYear();
+        renderHeatmap();
+
+        // Trigger rain animations
+        document.querySelectorAll('.city-card.raining').forEach(addRainDrops);
+    }
+
+    function renderCityCard(key, city, streakData, weatherData) {
+        const { streak, isRaining } = streakData;
+        const stateClass = isRaining ? 'raining' : 'dry';
+        const todayPrecip = weatherData.precip[weatherData.precip.length - 1];
+        const todayRained = todayPrecip !== null && todayPrecip > RAIN_THRESHOLD;
+        const pillClass = todayRained ? 'rain-pill' : 'dry-pill';
+        const pillText = todayRained ? `Raining · ${todayPrecip.toFixed(1)}mm` : 'Dry today';
+        const quip = getQuip(isRaining, streak);
+        const streakType = isRaining ? 'consecutive rainy days' : 'consecutive dry days';
+
+        return `
+            <div class="city-card ${stateClass}">
+                ${isRaining ? '<div class="rain-drops" id="rain-' + key + '"></div>' : ''}
+                <div class="city-name">${city.name}</div>
+                <div class="city-country">${city.country}</div>
+                <div class="today-pill ${pillClass}">
+                    <span class="pill-dot"></span>
+                    ${pillText}
+                </div>
+                <div class="streak-number">${streak}</div>
+                <div class="streak-label">${streakType}</div>
+                <div class="streak-quip">${quip}</div>
+            </div>
+        `;
+    }
+
+    function renderTimeline(data) {
+        const days = [];
+        const len = data.dates.length;
+        const start = Math.max(0, len - TIMELINE_DAYS);
+        const today = formatDate(new Date());
+
+        for (let i = start; i < len; i++) {
+            const rained = data.precip[i] !== null && data.precip[i] > RAIN_THRESHOLD;
+            const isToday = data.dates[i] === today;
+            const d = new Date(data.dates[i]);
+            const dayName = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+            const precText = data.precip[i] !== null ? data.precip[i].toFixed(1) + 'mm' : 'no data';
+
+            days.push(`
+                <div class="timeline-day ${rained ? 'rain-day' : 'dry-day'} ${isToday ? 'today-marker' : ''}">
+                    <div class="timeline-tooltip">${dayName} · ${rained ? '🌧 ' + precText : '☀ dry'}</div>
+                </div>
+            `);
+        }
+
+        return `<div class="timeline-grid">${days.join('')}</div>`;
+    }
+
+    function addRainDrops(card) {
+        const container = card.querySelector('.rain-drops');
+        if (!container) return;
+        for (let i = 0; i < 12; i++) {
+            const drop = document.createElement('div');
+            drop.className = 'rain-drop';
+            drop.style.left = (Math.random() * 100) + '%';
+            drop.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+            drop.style.animationDelay = (Math.random() * 3) + 's';
+            drop.style.animation = `rainDrop ${1.5 + Math.random() * 2}s linear ${Math.random() * 3}s infinite`;
+            container.appendChild(drop);
+        }
+    }
+
+    /* ═══════════════════════════════════════
+       TIMELINE TOGGLE
+       ═══════════════════════════════════════ */
+    window.switchTimeline = function(city) {
+        document.getElementById('timelineLondon').style.display = city === 'london' ? 'block' : 'none';
+        document.getElementById('timelineManchester').style.display = city === 'manchester' ? 'block' : 'none';
+        document.querySelectorAll('#timelineToggle .city-toggle-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.city === city);
+        });
+    };
+
+    /* ═══════════════════════════════════════
+       HEATMAP
+       ═══════════════════════════════════════ */
+    window.switchHeatmapCity = function(city) {
+        window._heatmapCity = city;
+        document.querySelectorAll('#heatmapCityToggle .city-toggle-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.city === city);
+        });
+        renderHeatmap();
+    };
+
+    window.changeMonth = function(delta) {
+        window._heatmapMonth += delta;
+        if (window._heatmapMonth > 11) { window._heatmapMonth = 0; window._heatmapYear++; }
+        if (window._heatmapMonth < 0) { window._heatmapMonth = 11; window._heatmapYear--; }
+
+        // Don't go into future
+        const now = new Date();
+        if (window._heatmapYear > now.getFullYear() || (window._heatmapYear === now.getFullYear() && window._heatmapMonth > now.getMonth())) {
+            window._heatmapMonth = now.getMonth();
+            window._heatmapYear = now.getFullYear();
+            return;
+        }
+        // Don't go too far back
+        if (window._heatmapYear < 2020) { window._heatmapYear = 2020; window._heatmapMonth = 0; return; }
+
+        renderHeatmap();
+    };
+
+    async function renderHeatmap() {
+        const container = document.getElementById('heatmapContainer');
+        const label = document.getElementById('heatmapMonthLabel');
+        const city = CITIES[window._heatmapCity];
+        const year = window._heatmapYear;
+        const month = window._heatmapMonth;
+
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        label.textContent = `${months[month]} ${year}`;
+
+        container.innerHTML = '<div style="text-align:center;padding:1rem;font-size:.75rem;color:var(--ink-faint)">Loading…</div>';
+
+        const startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+        const lastDay = new Date(year, month + 1, 0).getDate();
+        const endDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
+        // Clamp end date to today
+        const today = new Date();
+        const todayStr = formatDate(today);
+        const actualEnd = endDate > todayStr ? todayStr : endDate;
+
+        try {
+            const data = await fetchDailyRain(city, startDate, actualEnd);
+
+            // Build lookup
+            const precipMap = {};
+            data.time.forEach((d, i) => { precipMap[d] = data.precipitation_sum[i]; });
+
+            const firstDow = new Date(year, month, 1).getDay(); // 0=Sun
+            const adjustedDow = firstDow === 0 ? 6 : firstDow - 1; // Mon=0
+
+            let rainDays = 0, totalPrecip = 0;
+
+            let cells = '';
+            // Weekday headers
+            cells += '<div class="heatmap-weekdays">';
+            ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach(d => {
+                cells += `<div class="heatmap-weekday">${d}</div>`;
+            });
+            cells += '</div><div class="heatmap-grid">';
+
+            // Empty cells before first day
+            for (let i = 0; i < adjustedDow; i++) {
+                cells += '<div class="heatmap-cell empty"></div>';
+            }
+
+            for (let d = 1; d <= lastDay; d++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const precip = precipMap[dateStr];
+                const isToday = dateStr === todayStr;
+                const isFuture = dateStr > todayStr;
+
+                let cellClass = 'heatmap-cell';
+                let tipText = '';
+
+                if (isFuture) {
+                    cellClass += ' future-cell';
+                    tipText = `${d} ${months[month].slice(0, 3)} · upcoming`;
+                } else if (precip !== undefined && precip !== null) {
+                    const rained = precip > RAIN_THRESHOLD;
+                    if (rained) {
+                        rainDays++;
+                        totalPrecip += precip;
+                        cellClass += precip > 5 ? ' rain-cell heavy' : ' rain-cell';
+                        tipText = `${d} ${months[month].slice(0, 3)} · 🌧 ${precip.toFixed(1)}mm`;
+                    } else {
+                        cellClass += ' dry-cell';
+                        tipText = `${d} ${months[month].slice(0, 3)} · ☀ dry`;
+                    }
+                } else {
+                    cellClass += ' dry-cell';
+                    tipText = `${d} ${months[month].slice(0, 3)} · no data`;
+                }
+
+                if (isToday) cellClass += ' today-cell';
+
+                cells += `<div class="${cellClass}"><div class="heatmap-tip">${tipText}</div></div>`;
+            }
+            cells += '</div>';
+
+            const daysWithData = Object.keys(precipMap).length;
+            const stats = `
+                <div class="heatmap-stats">
+                    <div class="heatmap-stat"><strong>${rainDays}</strong> rainy days</div>
+                    <div class="heatmap-stat"><strong>${totalPrecip.toFixed(1)}mm</strong> total</div>
+                    <div class="heatmap-stat"><strong>${daysWithData > 0 ? Math.round((rainDays / daysWithData) * 100) : 0}%</strong> of days</div>
+                </div>
+            `;
+
+            container.innerHTML = cells + stats;
+        } catch (err) {
+            container.innerHTML = `<div style="text-align:center;padding:1rem;font-size:.78rem;color:var(--ink-faint);font-style:italic">Could not load data for this month.</div>`;
+        }
+    }
+
+    /* ═══════════════════════════════════════
+       DATE LOOKUP
+       ═══════════════════════════════════════ */
+    window.doLookup = async function() {
+        const input = document.getElementById('lookupDate');
+        const result = document.getElementById('lookupResult');
+        const btn = document.getElementById('lookupBtn');
+        const dateStr = input.value;
+
+        if (!dateStr) { result.className = 'lookup-result'; result.style.display = 'none'; return; }
+
+        btn.disabled = true;
+        btn.textContent = 'Checking…';
+
+        try {
+            const [londonResp, manchesterResp] = await Promise.all([
+                fetchDailyRain(CITIES.london, dateStr, dateStr),
+                fetchDailyRain(CITIES.manchester, dateStr, dateStr)
+            ]);
+
+            const londonPrecip = londonResp.precipitation_sum[0];
+            const manchesterPrecip = manchesterResp.precipitation_sum[0];
+            const londonRained = londonPrecip !== null && londonPrecip > RAIN_THRESHOLD;
+            const manchesterRained = manchesterPrecip !== null && manchesterPrecip > RAIN_THRESHOLD;
+
+            const d = new Date(dateStr);
+            const niceDate = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            const anyRain = londonRained || manchesterRained;
+
+            result.className = `lookup-result visible ${anyRain ? 'rain-result' : 'dry-result'}`;
+            result.innerHTML = `
+                <div class="result-title">${niceDate}</div>
+                <div class="result-detail">
+                    <strong>London:</strong> ${londonRained ? '🌧 Yes — ' + londonPrecip.toFixed(1) + 'mm' : '☀ No rain'}<br>
+                    <strong>Manchester:</strong> ${manchesterRained ? '🌧 Yes — ' + manchesterPrecip.toFixed(1) + 'mm' : '☀ No rain'}
+                </div>
+            `;
+        } catch (err) {
+            result.className = 'lookup-result visible';
+            result.innerHTML = `<div class="result-detail" style="color:var(--ink-faint);font-style:italic">Couldn't fetch data for that date. Try a more recent date.</div>`;
+        }
+
+        btn.disabled = false;
+        btn.textContent = 'Check';
+    };
+
+    /* ═══════════════════════════════════════
+       INIT
+       ═══════════════════════════════════════ */
+    async function init() {
+        const today = new Date();
+        const pastDate = new Date(today);
+        pastDate.setDate(pastDate.getDate() - LOOKBACK_DAYS);
+
+        const startStr = formatDate(pastDate);
+        const endStr = formatDate(today);
+
+        try {
+            const [londonRaw, manchesterRaw] = await Promise.all([
+                fetchDailyRain(CITIES.london, startStr, endStr),
+                fetchDailyRain(CITIES.manchester, startStr, endStr)
+            ]);
+
+            const londonData = { dates: londonRaw.time, precip: londonRaw.precipitation_sum };
+            const manchesterData = { dates: manchesterRaw.time, precip: manchesterRaw.precipitation_sum };
+
+            // Store globally for heatmap
+            window._londonData = londonData;
+            window._manchesterData = manchesterData;
+
+            renderApp(londonData, manchesterData);
+        } catch (err) {
+            document.getElementById('mainContent').innerHTML = `
+                <div class="error-state">
+                    <p>The skies are unclear — couldn't fetch weather data.</p>
+                    <button class="retry-btn" onclick="location.reload()">Try again</button>
+                </div>
+            `;
+        }
+    }
+
+    /* ═══════════════════════════════════════
+       THEME
+       ═══════════════════════════════════════ */
+    const htmlEl = document.documentElement;
+    function getTheme() {
+        const s = localStorage.getItem('rain-theme');
+        if (s === 'dark') return 'dark';
+        if (s === 'light') return 'light';
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    function setTheme(t) {
+        if (t === 'dark') htmlEl.setAttribute('data-theme', 'dark');
+        else htmlEl.removeAttribute('data-theme');
+    }
+    setTheme(getTheme());
+    document.getElementById('themeToggle').addEventListener('click', () => {
+        const isDark = htmlEl.getAttribute('data-theme') === 'dark';
+        const next = isDark ? 'light' : 'dark';
+        setTheme(next);
+        localStorage.setItem('rain-theme', next);
+    });
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (!localStorage.getItem('rain-theme')) setTheme(e.matches ? 'dark' : 'light');
+    });
+
+    /* ═══════════════════════════════════════
+       TOPBAR SCROLL
+       ═══════════════════════════════════════ */
+    const topbar = document.getElementById('topbar');
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                topbar.classList.toggle('scrolled', window.scrollY > 40);
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    /* GO */
+    init();
+})();
+</script>
+</body>
+</html>
