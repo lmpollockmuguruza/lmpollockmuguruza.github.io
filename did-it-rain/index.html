@@ -1,1396 +1,534 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>did it rain? — london & manchester</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>did it rain? — london · manchester</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+    --bg:#f5f1eb;--bg-card:#ece8e0;--bg-deep:#e3ded5;
+    --ink:#1a1714;--ink-s:#3d3830;--ink-m:#7a7368;--ink-f:#a09890;--ink-g:#c8c2b8;
+    --blue:#3d6a9f;--blue-h:#2d5580;--blue-p:#a8c8e8;--blue-w:rgba(61,106,159,.07);--blue-gl:rgba(61,106,159,.14);
+    --dry:#b8935a;--dry-w:rgba(184,147,90,.07);--dry-gl:rgba(184,147,90,.14);
+    --brd:rgba(26,24,22,.07);
+    --r:20px;--rs:12px;
+    --e:cubic-bezier(.4,0,.2,1);--es:cubic-bezier(.16,1,.3,1);
+    --spring:cubic-bezier(.34,1.56,.64,1);
+    --section-r:28px;
+    --glass-bg:rgba(255,255,255,.45);--glass-brd:rgba(255,255,255,.65);--glass-sh:0 8px 32px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04);--glass-blur:20px;
+}
+[data-theme="dark"]{
+    --bg:#111010;--bg-card:#1a1918;--bg-deep:#141312;
+    --ink:#e8e4dd;--ink-s:#c8c2b8;--ink-m:#8a8279;--ink-f:#5a554e;--ink-g:#2e2b28;
+    --blue:#7baaf0;--blue-h:#9dc4ff;--blue-p:#4a6a8f;--blue-w:rgba(123,170,240,.08);--blue-gl:rgba(123,170,240,.15);
+    --dry:#ddb070;--dry-w:rgba(221,176,112,.08);--dry-gl:rgba(221,176,112,.15);
+    --brd:rgba(232,228,221,.06);
+    --glass-bg:rgba(30,28,26,.5);--glass-brd:rgba(255,255,255,.08);--glass-sh:0 8px 32px rgba(0,0,0,.2);
+}
+html{font-size:16px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:var(--ink-s);min-height:100vh;line-height:1.6;transition:background .5s var(--e),color .5s var(--e);overflow-x:hidden}
+::selection{background:rgba(61,106,159,.2);color:var(--ink)}
 
-        :root {
-            --bg: #f7f5f0;
-            --bg-card: #fdfcfa;
-            --bg-card-hover: #ffffff;
-            --ink: #1a1816;
-            --ink-soft: #3d3833;
-            --ink-muted: #7a7368;
-            --ink-faint: #b0a99e;
-            --ink-ghost: #d4cfc8;
-            --rain: #4a6fa5;
-            --rain-soft: #6b8fc5;
-            --rain-wash: rgba(74, 111, 165, 0.06);
-            --rain-glow: rgba(74, 111, 165, 0.12);
-            --dry: #c4884a;
-            --dry-wash: rgba(196, 136, 74, 0.06);
-            --burgundy: #6b2737;
-            --burgundy-soft: #8b3747;
-            --burgundy-wash: rgba(107, 39, 55, 0.05);
-            --burgundy-glow: rgba(107, 39, 55, 0.10);
-            --border: rgba(26, 24, 22, 0.07);
-            --border-hover: rgba(74, 111, 165, 0.18);
-            --shadow-sm: 0 1px 3px rgba(26,24,22,.03), 0 4px 12px rgba(26,24,22,.04);
-            --shadow-md: 0 2px 8px rgba(26,24,22,.05), 0 12px 40px rgba(26,24,22,.07);
-            --shadow-lg: 0 8px 40px rgba(26,24,22,.10), 0 2px 12px rgba(26,24,22,.05);
-            --radius: 16px;
-            --radius-sm: 10px;
-            --radius-xs: 6px;
-            --ease: cubic-bezier(.4, 0, .2, 1);
-            --ease-spring: cubic-bezier(.16, 1, .3, 1);
-            --transition: .35s var(--ease);
-        }
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:500;padding:1.1rem 2.2rem;display:flex;align-items:center;justify-content:space-between;transition:all .4s var(--e)}
+.topbar.scrolled{background:var(--bg);border-bottom:1px solid var(--brd)}
+.back-link{display:inline-flex;align-items:center;gap:.45rem;font-family:'DM Mono',monospace;font-size:.7rem;font-weight:400;color:var(--ink-m);text-decoration:none;letter-spacing:.01em;transition:color .3s var(--e)}
+.back-link:hover{color:var(--blue)}
+.back-link svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;transition:transform .3s var(--e)}
+.back-link:hover svg{transform:translateX(-3px)}
+.topbar-right{display:flex;align-items:center;gap:.6rem}
+.icon-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--brd);border-radius:50%;background:transparent;cursor:pointer;transition:all .3s var(--e);color:var(--ink-f)}
+.icon-btn:hover{border-color:var(--blue-gl);color:var(--blue);background:var(--blue-w)}
+.icon-btn svg{width:14px;height:14px;fill:currentColor;transition:transform .4s var(--es)}
+.icon-btn:hover svg{transform:rotate(20deg)}
+.icon-btn .icon-sun{display:none}.icon-btn .icon-moon{display:block}
+[data-theme="dark"] .icon-btn .icon-sun{display:block}[data-theme="dark"] .icon-btn .icon-moon{display:none}
 
-        [data-theme="dark"] {
-            --bg: #141311;
-            --bg-card: #1e1c19;
-            --bg-card-hover: #252320;
-            --ink: #e8e4dd;
-            --ink-soft: #c8c2b8;
-            --ink-muted: #8a8279;
-            --ink-faint: #5a554e;
-            --ink-ghost: #3a3632;
-            --rain: #7baaf0;
-            --rain-soft: #9bc2ff;
-            --rain-wash: rgba(123, 170, 240, 0.08);
-            --rain-glow: rgba(123, 170, 240, 0.14);
-            --dry: #e0aa6a;
-            --dry-wash: rgba(224, 170, 106, 0.08);
-            --burgundy: #c4707f;
-            --burgundy-soft: #d4909f;
-            --burgundy-wash: rgba(196, 112, 127, 0.06);
-            --burgundy-glow: rgba(196, 112, 127, 0.12);
-            --border: rgba(232, 228, 221, 0.06);
-            --border-hover: rgba(123, 170, 240, 0.2);
-            --shadow-sm: 0 1px 3px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.15);
-            --shadow-md: 0 2px 8px rgba(0,0,0,.15), 0 12px 40px rgba(0,0,0,.2);
-            --shadow-lg: 0 8px 40px rgba(0,0,0,.30), 0 2px 12px rgba(0,0,0,.15);
-        }
+/* SCROLL HERO */
+.scroll-hero{position:relative;height:155vh;overflow:hidden}
+.scroll-hero-sticky{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.hero-text{position:relative;z-index:1;text-align:center;pointer-events:none}
+.hero-line-1{font-family:'Instrument Serif',Georgia,serif;font-size:5.5rem;font-weight:400;letter-spacing:-.05em;line-height:.9;color:var(--ink);opacity:0;transform:translateY(30px);transition:all .8s var(--es)}
+.hero-line-1.vis{opacity:1;transform:translateY(0)}
+.hero-line-2{font-family:'Instrument Serif',Georgia,serif;font-size:7rem;font-weight:400;font-style:italic;letter-spacing:-.05em;line-height:.85;color:var(--blue);opacity:0;transform:translateY(40px);transition:all .9s var(--es) .15s}
+.hero-line-2.vis{opacity:1;transform:translateY(0)}
+.hero-lbl{font-family:'DM Mono',monospace;font-size:.55rem;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-f);margin-bottom:1rem;opacity:0;transform:translateY(15px);transition:all .6s var(--es);display:flex;align-items:center;justify-content:center;gap:.5rem}
+.hero-lbl::before,.hero-lbl::after{content:'';width:5px;height:5px;border-radius:1px;background:var(--ink-g);display:inline-block}
+.hero-lbl.vis{opacity:1;transform:translateY(0)}
+.hero-sub{font-size:.85rem;color:var(--ink-m);margin-top:1.5rem;line-height:1.65;max-width:340px;margin-left:auto;margin-right:auto;opacity:0;transform:translateY(20px);transition:all .7s var(--es) .35s}
+.hero-sub.vis{opacity:1;transform:translateY(0)}
+.hero-sub em{font-family:'Instrument Serif',Georgia,serif;font-size:.95rem;color:var(--ink-s);font-style:italic}
+.scroll-hint{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;opacity:0;transition:opacity .6s var(--e) .8s;z-index:1}
+.scroll-hint.vis{opacity:1}
+.scroll-hint-label{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-f)}
+.scroll-hint-line{width:1px;height:28px;background:linear-gradient(to bottom,var(--ink-f),transparent);animation:scrollPulse 2s ease-in-out infinite}
+@keyframes scrollPulse{0%,100%{opacity:.3;transform:scaleY(.7)}50%{opacity:1;transform:scaleY(1)}}
 
-        html {
-            font-size: 16px;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            scroll-behavior: smooth;
-        }
+/* PAGE */
+.page{max-width:680px;margin:0 auto;padding:0 2rem;position:relative;z-index:1}
 
-        body {
-            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg);
-            color: var(--ink-soft);
-            min-height: 100vh;
-            min-height: 100dvh;
-            line-height: 1.65;
-            transition: background-color .5s var(--ease), color .5s var(--ease);
-        }
+/* CITY SWITCHER */
+.city-sw{display:flex;justify-content:center;margin:0 auto 2.5rem;padding:4px;max-width:260px;border-radius:100px;background:var(--bg-card);border:1px solid var(--brd)}
+.city-btn{flex:1;padding:.55rem 1rem;font-family:'DM Mono',monospace;font-size:.68rem;font-weight:400;letter-spacing:.04em;border:none;border-radius:100px;background:transparent;color:var(--ink-f);cursor:pointer;transition:all .3s var(--e)}
+.city-btn.active{background:var(--blue);color:#fff;box-shadow:0 2px 12px rgba(61,106,159,.3)}
+[data-theme="dark"] .city-btn.active{box-shadow:0 2px 12px rgba(123,170,240,.2)}
+.city-btn:not(.active):hover{color:var(--ink-s)}
 
-        /* Noise overlay */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: .018;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            background-repeat: repeat;
-            background-size: 256px;
-        }
-        [data-theme="dark"] body::before { opacity: .03; }
+/* SECTION PANELS */
+.section-panel{background:var(--bg-card);border-radius:var(--section-r);padding:2.5rem 2.25rem;margin-bottom:1rem;border:1px solid var(--brd);opacity:0;transform:translateY(24px);transition:opacity .6s var(--es),transform .6s var(--es)}
+.section-panel.revealed{opacity:1;transform:translateY(0)}
 
-        ::selection { background: rgba(74, 111, 165, .18); color: var(--ink); }
+/* STREAK CARD */
+.mc{position:relative;overflow:hidden;transition:all .5s var(--e)}
+.mc-mood{position:absolute;inset:0;pointer-events:none;border-radius:var(--section-r);z-index:0;opacity:.35;transition:opacity 1s var(--e)}
+.mc.raining .mc-mood{background:radial-gradient(ellipse at 30% 20%,rgba(61,106,159,.15),transparent 70%),radial-gradient(ellipse at 70% 80%,rgba(100,160,220,.1),transparent 60%);animation:moodShift 8s ease-in-out infinite alternate}
+.mc.dry .mc-mood{background:radial-gradient(ellipse at 30% 20%,rgba(184,147,90,.12),transparent 70%),radial-gradient(ellipse at 70% 80%,rgba(220,180,110,.08),transparent 60%);animation:moodShift 10s ease-in-out infinite alternate}
+[data-theme="dark"] .mc-mood{opacity:.2}
+@keyframes moodShift{0%{transform:scale(1) rotate(0deg)}100%{transform:scale(1.1) rotate(3deg)}}
 
-        /* ─── TOPBAR ─── */
-        .topbar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 500;
-            padding: 1rem 2.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: transparent;
-            transition: all .4s var(--ease);
-        }
-        .topbar.scrolled {
-            background: color-mix(in srgb, var(--bg) 85%, transparent);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border);
-        }
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: .5rem;
-            font-size: .78rem;
-            font-weight: 400;
-            color: var(--ink-muted);
-            text-decoration: none;
-            letter-spacing: .02em;
-            transition: color var(--transition);
-        }
-        .back-link:hover { color: var(--rain); }
-        .back-link svg {
-            width: 15px; height: 15px;
-            stroke: currentColor; fill: none; stroke-width: 1.5;
-            transition: transform var(--transition);
-        }
-        .back-link:hover svg { transform: translateX(-3px); }
+.pill{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .7rem;border-radius:100px;font-family:'DM Mono',monospace;font-size:.55rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase}
+.pill.rp{background:var(--blue-w);color:var(--blue);border:1px solid var(--blue-gl)}
+.pill.dp{background:var(--dry-w);color:var(--dry);border:1px solid var(--dry-gl)}
+.pdot{width:5px;height:5px;border-radius:50%;animation:pls 2s ease-in-out infinite}
+.rp .pdot{background:var(--blue)}.dp .pdot{background:var(--dry)}
+@keyframes pls{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
 
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: .6rem;
-        }
+/* DIGIT ROLLER */
+.sd{text-align:center;margin-top:.5rem}
+.digit-roller{display:inline-flex;justify-content:center;align-items:flex-end;overflow:visible;height:1em;line-height:1;font-family:'Instrument Serif',Georgia,serif;font-size:9rem;font-weight:400;letter-spacing:-.03em}
+.digit-col{display:inline-block;width:.58em;height:1em;overflow:hidden;position:relative}
+.digit-strip{display:flex;flex-direction:column;transition:transform .7s var(--spring)}
+.digit-strip span{display:block;width:100%;height:1em;line-height:1;text-align:center}
+.mc.raining .digit-roller{color:var(--blue)}.mc.dry .digit-roller{color:var(--dry)}
+.digit-roller.breathing{animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.012)}}
+.su{display:block;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-f);margin-top:.6rem}
+.quip{margin-top:2rem;text-align:center;font-family:'Instrument Serif',Georgia,serif;font-size:1.05rem;font-style:italic;color:var(--ink-m);line-height:1.55;padding-top:1.5rem;border-top:1px solid var(--brd);min-height:2.5em;transition:opacity .4s var(--e)}
+.card-rain{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:var(--section-r);z-index:0}
+.card-drop{position:absolute;width:1.5px;background:var(--blue-p);opacity:0;border-radius:1px}
+@keyframes dropFall{0%{transform:translateY(-12px);opacity:0}8%{opacity:.4}100%{transform:translateY(80px);opacity:0}}
+.live-dot{display:inline-flex;align-items:center;gap:.35rem;font-family:'DM Mono',monospace;font-size:.5rem;color:var(--ink-f);letter-spacing:.04em;position:absolute;top:1.2rem;right:1.5rem;z-index:2}
+.live-dot::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--blue);animation:livePulse 3s ease-in-out infinite}
+.mc.dry .live-dot::before{background:var(--dry)}
+@keyframes livePulse{0%,100%{opacity:.4;box-shadow:0 0 0 0 transparent}50%{opacity:1;box-shadow:0 0 6px 2px rgba(61,106,159,.25)}}
+.city-label{position:absolute;top:1.2rem;left:1.5rem;font-family:'DM Mono',monospace;font-size:.5rem;color:var(--ink-f);letter-spacing:.08em;text-transform:uppercase;z-index:2}
 
-        .theme-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 34px; height: 34px;
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            background: var(--bg-card);
-            cursor: pointer;
-            transition: all var(--transition);
-            color: var(--ink-muted);
-        }
-        .theme-toggle:hover {
-            border-color: var(--border-hover);
-            color: var(--rain);
-            background: var(--rain-wash);
-        }
-        .theme-toggle svg {
-            width: 15px; height: 15px;
-            fill: currentColor;
-            transition: transform .5s var(--ease-spring);
-        }
-        .theme-toggle:hover svg { transform: rotate(30deg); }
-        .theme-toggle .icon-sun { display: none; }
-        .theme-toggle .icon-moon { display: block; }
-        [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
-        [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+/* DATA ROW */
+.td{display:flex;justify-content:center;gap:2.5rem;margin-top:.25rem}
+.di{text-align:center}
+.dv{font-family:'Instrument Serif',Georgia,serif;font-size:1.25rem;font-weight:400;color:var(--ink)}
+.dl{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--ink-f);letter-spacing:.08em;text-transform:uppercase;margin-top:.15rem}
 
-        /* ─── LAYOUT ─── */
-        .page {
-            max-width: 860px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
+/* SECTION HEADINGS */
+.sec-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.8rem}
+.sec-t{font-family:'Instrument Serif',Georgia,serif;font-size:1.2rem;font-weight:400;color:var(--ink);letter-spacing:-.01em}
+.sec-s{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--ink-f)}.sec-s strong{color:var(--ink-m);font-weight:500}
 
-        /* ─── HEADER ─── */
-        .header {
-            padding-top: 7.5rem;
-            padding-bottom: 1rem;
-            text-align: center;
-        }
+/* BAR CHART */
+.bar-g{display:flex;gap:2px;align-items:flex-end;height:65px}
+.bw{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;position:relative}
+.bf{width:100%;border-radius:3px 3px 1px 1px;transition:opacity .2s var(--e);transform-origin:bottom;animation:barGrow .5s var(--es) both}
+.bf.rb{background:var(--blue);opacity:.5}.bf.rb.hv{opacity:.8}.bf.db{background:var(--ink-g);min-height:3px}
+.bw.tb .bf{outline:1.5px solid var(--ink-f);outline-offset:1px;border-radius:3px}
+.bw.tb::after{content:'today';position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:.4rem;color:var(--ink-f);letter-spacing:.04em;white-space:nowrap}
+.bw:hover .bf{opacity:1!important}
+.bw:hover .tip{opacity:1;transform:translateX(-50%) translateY(0)}
+.tip{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(4px);padding:.45rem .7rem;font-size:.6rem;color:var(--ink-s);white-space:nowrap;pointer-events:none;opacity:0;transition:all .2s var(--es);z-index:10;border-radius:10px;background:var(--bg);border:1px solid var(--brd);box-shadow:0 4px 20px rgba(0,0,0,.08)}
+.bar-leg{display:flex;gap:.8rem;margin-top:1.1rem;justify-content:flex-end}
+.leg-i{display:flex;align-items:center;gap:.25rem;font-family:'DM Mono',monospace;font-size:.52rem;color:var(--ink-f)}
+.leg-s{width:8px;height:8px;border-radius:2px}.leg-s.rs{background:var(--blue);opacity:.6}.leg-s.ds{background:var(--ink-g)}
+@keyframes barGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
-        .rain-icon-wrap {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 56px; height: 56px;
-            border-radius: 16px;
-            background: var(--rain-wash);
-            border: 1px solid var(--rain-glow);
-            margin-bottom: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            opacity: 0;
-            animation: fadeUp .8s var(--ease-spring) .1s forwards;
-        }
-        .rain-icon-wrap svg {
-            width: 26px; height: 26px;
-            stroke: var(--rain);
-            fill: none;
-            stroke-width: 1.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            z-index: 1;
-            position: relative;
-        }
+/* CALENDAR */
+.cal-nav{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}
+.cal-btn{width:30px;height:30px;border:1px solid var(--brd);border-radius:50%;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink-f);transition:all .3s var(--e)}
+.cal-btn:hover{border-color:var(--blue-gl);color:var(--blue)}
+.cal-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.5}
+.cal-mo{font-family:'Instrument Serif',Georgia,serif;font-size:1rem;font-weight:400;color:var(--ink);min-width:130px;text-align:center}
+.cal-wk{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:2px}
+.wkd{text-align:center;font-family:'DM Mono',monospace;font-size:.45rem;color:var(--ink-g);letter-spacing:.06em;text-transform:uppercase;font-weight:400;padding-bottom:3px}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cell{aspect-ratio:1;border-radius:5px;position:relative;cursor:default;transition:transform .15s var(--e);display:flex;align-items:center;justify-content:center;font-size:.48rem;color:transparent;opacity:0;animation:cellIn .3s var(--es) both}
+.cell:not(.em):hover{transform:scale(1.25);z-index:2;color:var(--bg);font-weight:600}
+.cell:not(.em):hover .ctip{opacity:1;transform:translateX(-50%) scale(1)}
+.cell.em{background:transparent;opacity:1;animation:none}.cell.rc{background:var(--blue);opacity:.5}.cell.rc.hc{opacity:.8}.cell.dc{background:var(--ink-g)}.cell.fc{background:var(--brd);opacity:.35}.cell.toc{outline:2px solid var(--ink-f);outline-offset:1px}
+.ctip{position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%) scale(.95);padding:.35rem .55rem;font-size:.52rem;color:var(--ink-s);white-space:nowrap;pointer-events:none;opacity:0;transition:all .15s var(--es);z-index:10;border-radius:8px;background:var(--bg);border:1px solid var(--brd);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.cal-st{display:flex;gap:1.25rem;margin-top:.7rem}
+.csi{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--ink-f)}.csi strong{color:var(--ink-m);font-weight:500}
+@keyframes cellIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
 
-        /* Animated rain drops behind icon */
-        .rain-icon-wrap::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, transparent 40%, var(--rain-glow) 100%);
-            animation: iconPulse 3s ease-in-out infinite;
-        }
-        @keyframes iconPulse {
-            0%, 100% { opacity: .3; }
-            50% { opacity: .8; }
-        }
+/* DATE LOOKUP */
+.lk-row{display:flex;gap:.5rem}
+.lk-in{flex:1;padding:.65rem .9rem;font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--ink-s);background:var(--bg);border:1px solid var(--brd);border-radius:var(--rs);outline:none;transition:all .3s var(--e);-webkit-appearance:none}
+.lk-in:focus{border-color:var(--blue-gl);box-shadow:0 0 0 3px var(--blue-w)}
+.lk-bt{padding:.65rem 1.3rem;font-family:'DM Mono',monospace;font-size:.68rem;font-weight:400;letter-spacing:.04em;color:#fff;background:var(--blue);border:none;border-radius:var(--rs);cursor:pointer;transition:all .3s var(--e);white-space:nowrap}
+.lk-bt:hover{background:var(--blue-h);box-shadow:0 4px 16px rgba(61,106,159,.2);transform:translateY(-1px)}
+.lk-bt:active{transform:translateY(0)}.lk-bt:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.lk-res{margin-top:.75rem;padding:1rem 1.25rem;display:none;border-radius:var(--rs);background:var(--bg);border:1px solid var(--brd)}
+.lk-res.vis{display:block}.lk-res.rr{border-left:3px solid var(--blue)}.lk-res.dr{border-left:3px solid var(--dry)}
+.res-t{font-family:'Instrument Serif',Georgia,serif;font-size:.95rem;font-weight:400;color:var(--ink);margin-bottom:.2rem}
+.res-b{font-size:.72rem;color:var(--ink-m);line-height:1.6}.res-b strong{color:var(--ink-s);font-weight:500}
+.lk-shimmer{margin-top:.75rem;padding:1rem 1.25rem;border-radius:var(--rs);background:var(--bg);border:1px solid var(--brd);overflow:hidden;position:relative}
+.lk-shimmer::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--bg-card),transparent);animation:shimmer 1.2s ease-in-out infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.lk-shimmer-line{height:10px;border-radius:4px;background:var(--brd);margin-bottom:.5rem}
+.lk-shimmer-line:last-child{width:60%;margin-bottom:0}
 
-        .header h1 {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 3.2rem;
-            font-weight: 400;
-            letter-spacing: -.03em;
-            line-height: 1.1;
-            color: var(--ink);
-            margin-bottom: .6rem;
-            opacity: 0;
-            animation: fadeUp .8s var(--ease-spring) .2s forwards;
-        }
+/* CUSTOM CITY SEARCH */
+.city-search-trigger{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.8rem;font-family:'DM Mono',monospace;font-size:.6rem;color:var(--ink-f);cursor:pointer;letter-spacing:.03em;transition:color .3s var(--e);border:none;background:none;width:100%;margin-top:-.25rem;margin-bottom:.5rem}
+.city-search-trigger:hover{color:var(--blue)}
+.city-search-trigger svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.5;transition:transform .3s var(--e)}
+.city-search-trigger.open svg{transform:rotate(45deg)}
+.city-search-trigger:hover svg{color:var(--blue)}
+.city-search-panel{overflow:hidden;max-height:0;opacity:0;transition:max-height .5s var(--es),opacity .4s var(--e),margin .4s var(--e);margin-bottom:0}
+.city-search-panel.open{max-height:500px;opacity:1;margin-bottom:1rem}
+.city-search-inner{background:var(--bg-card);border-radius:var(--section-r);padding:2rem 2.25rem;border:1px solid var(--brd)}
+.cs-title{font-family:'Instrument Serif',Georgia,serif;font-size:1.15rem;font-weight:400;color:var(--ink);margin-bottom:.3rem}
+.cs-desc{font-size:.72rem;color:var(--ink-m);margin-bottom:1rem;line-height:1.5}
+.cs-row{display:flex;gap:.5rem}
+.cs-input{flex:1;padding:.65rem .9rem;font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--ink-s);background:var(--bg);border:1px solid var(--brd);border-radius:var(--rs);outline:none;transition:all .3s var(--e)}
+.cs-input:focus{border-color:var(--blue-gl);box-shadow:0 0 0 3px var(--blue-w)}
+.cs-input::placeholder{color:var(--ink-g)}
+.cs-go{padding:.65rem 1.3rem;font-family:'DM Mono',monospace;font-size:.68rem;font-weight:400;letter-spacing:.04em;color:#fff;background:var(--blue);border:none;border-radius:var(--rs);cursor:pointer;transition:all .3s var(--e);white-space:nowrap}
+.cs-go:hover{background:var(--blue-h);transform:translateY(-1px)}
+.cs-go:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.cs-result{margin-top:1rem;padding:1.25rem;border-radius:var(--rs);background:var(--bg);border:1px solid var(--brd);display:none}
+.cs-result.vis{display:block}
+.cs-result-city{font-family:'Instrument Serif',Georgia,serif;font-size:1.3rem;font-weight:400;color:var(--ink);margin-bottom:.1rem}
+.cs-result-country{font-family:'DM Mono',monospace;font-size:.55rem;color:var(--ink-f);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.8rem}
+.cs-result-streak{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.25rem}
+.cs-result-num{font-family:'Instrument Serif',Georgia,serif;font-size:2.8rem;font-weight:400;line-height:1;letter-spacing:-.04em}
+.cs-result.is-rain .cs-result-num{color:var(--blue)}.cs-result.is-dry .cs-result-num{color:var(--dry)}
+.cs-result-label{font-family:'DM Mono',monospace;font-size:.55rem;color:var(--ink-f);letter-spacing:.06em;text-transform:uppercase}
+.cs-result-quip{font-family:'Instrument Serif',Georgia,serif;font-size:.88rem;font-style:italic;color:var(--ink-m);padding-top:.6rem;border-top:1px solid var(--brd);margin-top:.6rem}
 
-        .header-sub {
-            font-size: .88rem;
-            line-height: 1.65;
-            color: var(--ink-muted);
-            max-width: 420px;
-            margin: 0 auto;
-            opacity: 0;
-            animation: fadeUp .8s var(--ease-spring) .35s forwards;
-        }
-        .header-sub em {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1rem;
-            color: var(--ink-soft);
-            font-style: italic;
-        }
+/* FOOTER */
+.pf{padding:2.5rem 0 3rem;margin-top:1rem;display:flex;align-items:center;justify-content:space-between}
+.pfl{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--ink-f)}.pfl a{color:var(--ink-m);text-decoration:none;transition:color .3s var(--e)}.pfl a:hover{color:var(--blue)}
+.pfr{font-family:'Instrument Serif',Georgia,serif;font-size:.78rem;font-style:italic;color:var(--ink-f)}
+.src{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--ink-g);text-align:center;margin-top:.35rem}.src a{color:var(--ink-f);text-decoration:none;border-bottom:1px dotted var(--ink-g)}.src a:hover{color:var(--blue)}
 
-        /* ─── LOADING STATE ─── */
-        .loading-state {
-            text-align: center;
-            padding: 4rem 1rem;
-            opacity: 0;
-            animation: fadeUp .6s var(--ease-spring) .5s forwards;
-        }
-        .loading-spinner {
-            width: 28px; height: 28px;
-            border: 2px solid var(--ink-ghost);
-            border-top-color: var(--rain);
-            border-radius: 50%;
-            animation: spin .8s linear infinite;
-            margin: 0 auto 1rem;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1rem;
-            font-style: italic;
-            color: var(--ink-faint);
-        }
+/* UTILITY */
+.loading{text-align:center;padding:5rem 1rem}
+.spinner{width:24px;height:24px;border:2px solid var(--ink-g);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto .8rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-t{font-family:'Instrument Serif',Georgia,serif;font-size:.95rem;font-style:italic;color:var(--ink-f)}
+.demo-b{display:flex;align-items:center;justify-content:center;gap:.4rem;padding:.6rem 1rem;margin-bottom:1rem;background:var(--dry-w);border:1px solid var(--dry-gl);border-radius:var(--rs);font-family:'DM Mono',monospace;font-size:.6rem;color:var(--dry)}
+.demo-b em{font-style:italic;opacity:.7}
+#app{transition:opacity .3s var(--e)}
+#app.fading{opacity:0}
 
-        /* ─── CITY CARDS ─── */
-        .cities-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.25rem;
-            margin-top: 1.5rem;
-            opacity: 0;
-            animation: fadeUp .7s var(--ease-spring) .15s forwards;
-        }
-
-        .city-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.75rem 1.5rem 1.5rem;
-            transition: all var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-        .city-card:hover {
-            border-color: var(--border-hover);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-        }
-
-        /* Streak glow behind card */
-        .city-card::before {
-            content: '';
-            position: absolute;
-            top: -40%; left: -20%; right: -20%;
-            height: 80%;
-            border-radius: 50%;
-            background: var(--rain-glow);
-            opacity: 0;
-            transition: opacity .6s var(--ease);
-            pointer-events: none;
-            filter: blur(40px);
-        }
-        .city-card.raining::before { opacity: 1; }
-        .city-card.dry::before { background: var(--dry-wash); opacity: .6; }
-
-        .city-name {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1.6rem;
-            font-weight: 500;
-            color: var(--ink);
-            letter-spacing: -.02em;
-            line-height: 1.2;
-            margin-bottom: .15rem;
-        }
-
-        .city-country {
-            font-size: .68rem;
-            color: var(--ink-faint);
-            letter-spacing: .06em;
-            text-transform: uppercase;
-            font-weight: 500;
-            margin-bottom: 1.25rem;
-        }
-
-        .streak-number {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 4.5rem;
-            font-weight: 400;
-            line-height: 1;
-            letter-spacing: -.04em;
-            margin-bottom: .15rem;
-            transition: color .4s var(--ease);
-        }
-        .city-card.raining .streak-number { color: var(--rain); }
-        .city-card.dry .streak-number { color: var(--dry); }
-
-        .streak-label {
-            font-size: .72rem;
-            color: var(--ink-faint);
-            letter-spacing: .03em;
-            margin-bottom: 1.25rem;
-        }
-
-        .streak-quip {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: .92rem;
-            font-style: italic;
-            color: var(--ink-muted);
-            line-height: 1.55;
-            padding-top: .85rem;
-            border-top: 1px solid var(--border);
-        }
-
-        /* Today's status pill */
-        .today-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: .35rem;
-            padding: .25rem .65rem;
-            border-radius: 100px;
-            font-size: .65rem;
-            font-weight: 500;
-            letter-spacing: .04em;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-        }
-        .today-pill.rain-pill {
-            background: var(--rain-wash);
-            color: var(--rain);
-            border: 1px solid var(--rain-glow);
-        }
-        .today-pill.dry-pill {
-            background: var(--dry-wash);
-            color: var(--dry);
-            border: 1px solid rgba(196, 136, 74, 0.12);
-        }
-        .today-pill .pill-dot {
-            width: 5px; height: 5px;
-            border-radius: 50%;
-            animation: pillPulse 2s ease-in-out infinite;
-        }
-        .rain-pill .pill-dot { background: var(--rain); }
-        .dry-pill .pill-dot { background: var(--dry); }
-        @keyframes pillPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: .4; transform: scale(.7); }
-        }
-
-        /* ─── DATE LOOKUP ─── */
-        .lookup-section {
-            margin-top: 2.5rem;
-            opacity: 0;
-            animation: fadeUp .7s var(--ease-spring) .3s forwards;
-        }
-
-        .section-label {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1.35rem;
-            font-weight: 500;
-            color: var(--ink);
-            margin-bottom: .6rem;
-            letter-spacing: -.01em;
-        }
-
-        .section-desc {
-            font-size: .82rem;
-            color: var(--ink-muted);
-            margin-bottom: 1.25rem;
-            max-width: 480px;
-        }
-
-        .lookup-form {
-            display: flex;
-            gap: .6rem;
-            align-items: stretch;
-        }
-
-        .date-input-wrap {
-            position: relative;
-            flex: 1;
-        }
-
-        .date-input {
-            width: 100%;
-            padding: .7rem 1rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: .85rem;
-            color: var(--ink-soft);
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            outline: none;
-            transition: all var(--transition);
-            -webkit-appearance: none;
-        }
-        .date-input:focus {
-            border-color: var(--border-hover);
-            box-shadow: 0 0 0 3px var(--rain-wash);
-        }
-
-        .lookup-btn {
-            padding: .7rem 1.5rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: .78rem;
-            font-weight: 500;
-            letter-spacing: .03em;
-            color: #fff;
-            background: var(--rain);
-            border: none;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all var(--transition);
-            white-space: nowrap;
-        }
-        .lookup-btn:hover {
-            background: var(--rain-soft);
-            box-shadow: 0 4px 16px rgba(74, 111, 165, .25);
-            transform: translateY(-1px);
-        }
-        .lookup-btn:active { transform: translateY(0); }
-        .lookup-btn:disabled {
-            opacity: .5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .lookup-result {
-            margin-top: 1rem;
-            padding: 1.25rem 1.5rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            display: none;
-        }
-        .lookup-result.visible { display: block; }
-        .lookup-result.rain-result { border-left: 3px solid var(--rain); }
-        .lookup-result.dry-result { border-left: 3px solid var(--dry); }
-
-        .result-title {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1.05rem;
-            font-weight: 500;
-            color: var(--ink);
-            margin-bottom: .25rem;
-        }
-        .result-detail {
-            font-size: .78rem;
-            color: var(--ink-muted);
-            line-height: 1.6;
-        }
-        .result-detail strong {
-            color: var(--ink-soft);
-            font-weight: 500;
-        }
-
-        /* ─── RECENT DAYS TIMELINE ─── */
-        .timeline-section {
-            margin-top: 2.5rem;
-            opacity: 0;
-            animation: fadeUp .7s var(--ease-spring) .4s forwards;
-        }
-
-        .timeline-grid {
-            display: flex;
-            gap: 3px;
-            margin-top: .75rem;
-        }
-
-        .timeline-day {
-            flex: 1;
-            aspect-ratio: 1;
-            border-radius: var(--radius-xs);
-            position: relative;
-            cursor: default;
-            transition: all .25s var(--ease);
-            min-width: 0;
-        }
-        .timeline-day.rain-day { background: var(--rain-glow); }
-        .timeline-day.dry-day { background: var(--border); }
-        .timeline-day.today-marker {
-            outline: 2px solid var(--ink-faint);
-            outline-offset: 1px;
-        }
-        .timeline-day:hover { transform: scaleY(1.3); z-index: 2; }
-
-        .timeline-tooltip {
-            position: absolute;
-            bottom: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%) scale(.95);
-            background: var(--bg-card-hover);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: .45rem .65rem;
-            font-size: .65rem;
-            color: var(--ink-soft);
-            white-space: nowrap;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity .2s var(--ease), transform .2s var(--ease-spring);
-            box-shadow: var(--shadow-sm);
-            z-index: 10;
-        }
-        .timeline-day:hover .timeline-tooltip {
-            opacity: 1;
-            transform: translateX(-50%) scale(1);
-        }
-
-        .timeline-legend {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-top: .6rem;
-            font-size: .65rem;
-            color: var(--ink-faint);
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: .3rem;
-        }
-        .legend-dot {
-            width: 8px; height: 8px;
-            border-radius: 2px;
-        }
-        .legend-dot.rain-dot { background: var(--rain-glow); }
-        .legend-dot.dry-dot { background: var(--border); }
-
-        /* ─── MONTHLY HEATMAP ─── */
-        .heatmap-section {
-            margin-top: 2.5rem;
-            opacity: 0;
-            animation: fadeUp .7s var(--ease-spring) .5s forwards;
-        }
-
-        .heatmap-nav {
-            display: flex;
-            align-items: center;
-            gap: .75rem;
-            margin-bottom: .75rem;
-        }
-        .heatmap-nav-btn {
-            width: 30px; height: 30px;
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            background: var(--bg-card);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--ink-faint);
-            transition: all var(--transition);
-        }
-        .heatmap-nav-btn:hover {
-            border-color: var(--border-hover);
-            color: var(--rain);
-            background: var(--rain-wash);
-        }
-        .heatmap-nav-btn svg {
-            width: 13px; height: 13px;
-            stroke: currentColor; fill: none; stroke-width: 1.5;
-        }
-        .heatmap-month-label {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1.05rem;
-            font-weight: 500;
-            color: var(--ink);
-            min-width: 140px;
-            text-align: center;
-        }
-
-        .heatmap-weekdays {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 3px;
-            margin-bottom: 3px;
-        }
-        .heatmap-weekday {
-            text-align: center;
-            font-size: .55rem;
-            color: var(--ink-ghost);
-            letter-spacing: .06em;
-            text-transform: uppercase;
-            font-weight: 500;
-            padding-bottom: 2px;
-        }
-        .heatmap-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 3px;
-        }
-        .heatmap-cell {
-            aspect-ratio: 1;
-            border-radius: 4px;
-            transition: all .2s var(--ease);
-            position: relative;
-            cursor: default;
-        }
-        .heatmap-cell.empty { background: transparent; }
-        .heatmap-cell.rain-cell { background: var(--rain); opacity: .65; }
-        .heatmap-cell.rain-cell.heavy { opacity: 1; }
-        .heatmap-cell.dry-cell { background: var(--border); }
-        .heatmap-cell.future-cell { background: var(--border); opacity: .3; }
-        .heatmap-cell.today-cell { outline: 2px solid var(--ink-faint); outline-offset: 1px; }
-        .heatmap-cell:not(.empty):hover { transform: scale(1.2); z-index: 2; }
-        .heatmap-cell:not(.empty):hover .heatmap-tip {
-            opacity: 1;
-            transform: translateX(-50%) scale(1);
-        }
-
-        .heatmap-tip {
-            position: absolute;
-            bottom: calc(100% + 6px);
-            left: 50%;
-            transform: translateX(-50%) scale(.95);
-            background: var(--bg-card-hover);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: .35rem .55rem;
-            font-size: .6rem;
-            color: var(--ink-soft);
-            white-space: nowrap;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity .2s var(--ease), transform .2s var(--ease-spring);
-            box-shadow: var(--shadow-sm);
-            z-index: 10;
-        }
-
-        .heatmap-stats {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: .75rem;
-            padding-top: .75rem;
-            border-top: 1px solid var(--border);
-        }
-        .heatmap-stat {
-            font-size: .72rem;
-            color: var(--ink-faint);
-        }
-        .heatmap-stat strong {
-            color: var(--ink-soft);
-            font-weight: 500;
-        }
-
-        /* ─── CITY TOGGLE (for heatmap & lookup) ─── */
-        .city-toggle {
-            display: inline-flex;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            padding: 3px;
-            margin-bottom: .75rem;
-        }
-        .city-toggle-btn {
-            padding: .35rem .85rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: .7rem;
-            font-weight: 500;
-            letter-spacing: .02em;
-            border: none;
-            border-radius: 100px;
-            background: transparent;
-            color: var(--ink-faint);
-            cursor: pointer;
-            transition: all .25s var(--ease);
-        }
-        .city-toggle-btn.active {
-            background: var(--rain);
-            color: #fff;
-            box-shadow: 0 2px 8px rgba(74, 111, 165, .25);
-        }
-
-        /* ─── FOOTER ─── */
-        .page-footer {
-            padding: 3rem 0 2.5rem;
-            margin-top: 3rem;
-            border-top: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            opacity: 0;
-            animation: fadeUp .6s var(--ease-spring) .6s forwards;
-        }
-        .footer-left {
-            font-size: .72rem;
-            color: var(--ink-faint);
-            font-weight: 300;
-        }
-        .footer-left a {
-            color: var(--ink-muted);
-            text-decoration: none;
-            transition: color var(--transition);
-        }
-        .footer-left a:hover { color: var(--rain); }
-        .footer-right {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: .8rem;
-            font-style: italic;
-            color: var(--ink-faint);
-        }
-
-        .source-note {
-            font-size: .62rem;
-            color: var(--ink-ghost);
-            text-align: center;
-            margin-top: .5rem;
-        }
-        .source-note a {
-            color: var(--ink-faint);
-            text-decoration: none;
-            border-bottom: 1px dotted var(--ink-ghost);
-        }
-        .source-note a:hover { color: var(--rain); }
-
-        /* ─── ANIMATIONS ─── */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Raindrop animations for raining cards */
-        @keyframes rainDrop {
-            0% { transform: translateY(-10px); opacity: 0; }
-            10% { opacity: .6; }
-            100% { transform: translateY(60px); opacity: 0; }
-        }
-        .rain-drops {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            overflow: hidden;
-            border-radius: var(--radius);
-        }
-        .rain-drop {
-            position: absolute;
-            width: 1px;
-            height: 8px;
-            background: var(--rain);
-            opacity: 0;
-            border-radius: 1px;
-        }
-
-        /* ─── ERROR STATE ─── */
-        .error-state {
-            text-align: center;
-            padding: 3rem 1rem;
-        }
-        .error-state p {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1.05rem;
-            color: var(--ink-muted);
-            font-style: italic;
-        }
-        .retry-btn {
-            margin-top: 1rem;
-            padding: .55rem 1.2rem;
-            font-family: 'DM Sans', sans-serif;
-            font-size: .75rem;
-            color: var(--rain);
-            background: var(--rain-wash);
-            border: 1px solid var(--rain-glow);
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            transition: all var(--transition);
-        }
-        .retry-btn:hover {
-            background: var(--rain-glow);
-        }
-
-        /* ─── RESPONSIVE ─── */
-        @media (max-width: 640px) {
-            .page { padding: 0 1.25rem; }
-            .topbar { padding: .75rem 1.25rem; }
-            .header { padding-top: 5.5rem; }
-            .header h1 { font-size: 2.4rem; }
-            .cities-grid { grid-template-columns: 1fr; }
-            .streak-number { font-size: 3.5rem; }
-            .lookup-form { flex-direction: column; }
-            .page-footer { flex-direction: column; gap: .75rem; text-align: center; }
-            .heatmap-stats { flex-wrap: wrap; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: .01ms !important;
-                transition-duration: .01ms !important;
-            }
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--ink-ghost); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
-    </style>
+/* RESPONSIVE */
+@media(max-width:600px){
+    .page{padding:0 1rem}
+    .topbar{padding:.75rem 1rem}
+    .scroll-hero{height:125vh}
+    .hero-line-1{font-size:3.2rem}
+    .hero-line-2{font-size:4.2rem}
+    .digit-roller{font-size:6rem}
+    .section-panel{padding:2rem 1.5rem;border-radius:22px}
+    .live-dot{top:.9rem;right:1.1rem;font-size:.45rem}
+    .city-label{top:.9rem;left:1.1rem;font-size:.45rem}
+    .lk-row,.cs-row{flex-direction:column}
+    .pf{flex-direction:column;gap:.5rem;text-align:center}
+    .td{gap:1.5rem}
+    .bar-g{height:50px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--ink-g);border-radius:3px}
+</style>
 </head>
 <body>
-    <nav class="topbar" id="topbar">
-        <a href="../" class="back-link">
-            <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-            Lucas Pollock Muguruza
-        </a>
-        <div class="topbar-right">
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                <svg class="icon-moon" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
-                <svg class="icon-sun" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
-            </button>
+
+<nav class="topbar" id="topbar">
+    <a href="../" class="back-link"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>Lucas Pollock Muguruza</a>
+    <div class="topbar-right">
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme"><svg class="icon-moon" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg><svg class="icon-sun" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg></button>
+    </div>
+</nav>
+
+<div class="scroll-hero" id="scrollHero">
+    <div class="scroll-hero-sticky">
+        <div class="hero-text">
+            <div class="hero-lbl" id="heroLbl">weather tracker</div>
+            <div class="hero-line-1" id="heroL1">did it</div>
+            <div class="hero-line-2" id="heroL2">rain?</div>
+            <p class="hero-sub" id="heroSub">Tracking consecutive rainy days in London and Manchester. <em>Because someone has to keep score.</em></p>
         </div>
-    </nav>
-
-    <div class="page">
-        <header class="header">
-            <div class="rain-icon-wrap">
-                <svg viewBox="0 0 24 24"><path d="M16 13V21"/><path d="M8 13V21"/><path d="M12 15V23"/><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg>
-            </div>
-            <h1>did it rain?</h1>
-            <p class="header-sub">Tracking consecutive rainy days in <em>London</em> and <em>Manchester</em>. Because someone has to keep score.</p>
-        </header>
-
-        <div id="mainContent">
-            <div class="loading-state" id="loadingState">
-                <div class="loading-spinner"></div>
-                <div class="loading-text">checking the skies…</div>
-            </div>
+        <div class="scroll-hint" id="scrollHint">
+            <span class="scroll-hint-label">scroll</span>
+            <div class="scroll-hint-line"></div>
         </div>
+    </div>
+</div>
 
-        <footer class="page-footer">
-            <div class="footer-left">
-                <a href="../">← back to portfolio</a> · data via <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a>
-            </div>
-            <div class="footer-right">it's always raining somewhere</div>
-        </footer>
+<div class="page">
+    <div class="city-sw" id="citySw">
+        <button class="city-btn active" data-city="london">London</button>
+        <button class="city-btn" data-city="manchester">Manchester</button>
     </div>
 
+    <div id="app">
+        <div class="loading"><div class="spinner"></div><div class="load-t">checking the skies&hellip;</div></div>
+    </div>
+
+    <button class="city-search-trigger" id="csTrigger">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        try your own city
+    </button>
+    <div class="city-search-panel" id="csPanel">
+        <div class="city-search-inner">
+            <div class="cs-title">What about your city?</div>
+            <div class="cs-desc">Search any city in the world to see its current rain streak.</div>
+            <div class="cs-row">
+                <input type="text" class="cs-input" id="csInput" placeholder="e.g. Tokyo, Paris, S&atilde;o Paulo&hellip;">
+                <button class="cs-go" id="csGo">Search</button>
+            </div>
+            <div class="cs-result" id="csResult"></div>
+        </div>
+    </div>
+
+    <footer class="pf">
+        <div class="pfl"><a href="../">&larr; portfolio</a> &middot; data via <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a></div>
+        <div class="pfr" id="footerQuote"></div>
+    </footer>
+</div>
+
 <script>
-(() => {
-    /* ═══════════════════════════════════════
-       CONFIG
-       ═══════════════════════════════════════ */
-    const CITIES = {
-        london: { name: 'London', country: 'England', lat: 51.5074, lng: -0.1278 },
-        manchester: { name: 'Manchester', country: 'England', lat: 53.4808, lng: -2.2426 }
-    };
+(function(){
+var C={london:{name:'London',lat:51.5074,lng:-0.1278},manchester:{name:'Manchester',lat:53.4808,lng:-2.2426}};
+var TH=0.2,LK=60,BD=30;
+var MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var FQ=["it's always raining somewhere","the sky remembers everything","some call it weather, we call it content","rain is just sky crying because it lives in England","the cloud's PR team is on holiday","umbrella optional, regret guaranteed","the forecast is: British"];
+var fqEl=document.getElementById('footerQuote');if(fqEl)fqEl.textContent=FQ[Math.floor(Math.random()*FQ.length)];
 
-    const RAIN_THRESHOLD = 0.2; // mm - anything above this = rained
-    const LOOKBACK_DAYS = 60;   // days to check for streaks
-    const TIMELINE_DAYS = 30;   // days shown in the visual timeline
+var QR=["one rainy day. relatable.","okay two in a row, classic UK behaviour","three days?? the sky is personally targeting you","four days of rain. your socks are never dry again","five straight. this isn't weather, it's a lifestyle","SIX DAYS. the ducks have claimed your garden","seven days. biblically suspicious at this point","a whole week of rain. noah is typing...","genuinely forgot what the sun looks like","double digits of consecutive rain?? touch grass (it's wet)","the umbrella industry is THRIVING rn","at this point the rain is your personality","two weeks of rain. you're basically a fish now","the sun is a myth propagated by Big Sunscreen","honestly the Thames is getting too confident","three weeks?? this is an aquatic civilisation now","the pigeons have evolved gills","rain has won. we acknowledge rain's dominance","a month of rain. water is the new air","this is genuinely unprecedented and also very British"];
+var QD=["one dry day. don't get excited","two dry days?? suspicious","three days no rain. the plants are panicking","four days dry. is this... summer??","FIVE dry days in the UK?? screenshot this","six days without rain. scientists are baffled","a WEEK without rain. check if you're still in England","okay this is getting weird now. where's the rain","genuinely concerned. has the sky forgotten how to rain","double digit dry streak. unprecedented scenes","the umbrellas are collecting dust","this is a glitch in the matrix fr","two weeks dry. the grass is filing a complaint","we've entered an alternate timeline apparently","BBC Weather is in shambles rn","three weeks dry?? this violates the terms and conditions of being British","honestly starting to miss the rain","impossible. the simulation is broken","dry for a month. we don't deserve this","this can't last. nothing good ever does"];
+function quip(raining,n){var p=raining?QR:QD;var i=Math.min(n-1,p.length-1);return p[Math.max(0,i)]}
 
-    /* ═══════════════════════════════════════
-       QUIPS (soulful personality)
-       ═══════════════════════════════════════ */
-    const RAIN_QUIPS = [
-        "Grab an umbrella. Or don't. Embrace it.",
-        "The sky has opinions today.",
-        "Another day, another puddle.",
-        "Petrichor season continues.",
-        "The clouds are really committed.",
-        "Nature's pressure wash, day {n}.",
-        "Wellies: still a wise investment.",
-        "The ducks are thriving.",
-        "Even the pigeons look fed up.",
-        "At least the parks will be green."
-    ];
-    const DRY_QUIPS = [
-        "Cherish this. It won't last.",
-        "A rare specimen: the dry day.",
-        "The umbrella rests. For now.",
-        "Don't get used to it.",
-        "Quick, go outside.",
-        "The sun made an appearance. Briefly.",
-        "No rain? In this economy?",
-        "The pavement is confused.",
-        "A plot twist in the forecast.",
-        "Savour every dry minute."
-    ];
+var city='london',wc={},isDemo=false,calM=new Date().getMonth(),calY=new Date().getFullYear();
+function fmt(d){return d.toISOString().split('T')[0]}
 
-    function getQuip(isRaining, streak) {
-        const pool = isRaining ? RAIN_QUIPS : DRY_QUIPS;
-        const quip = pool[Math.floor(Math.random() * pool.length)];
-        return quip.replace('{n}', streak);
+// SCROLL HERO
+(function(){
+    var lbl=document.getElementById('heroLbl'),l1=document.getElementById('heroL1'),l2=document.getElementById('heroL2'),
+        sub=document.getElementById('heroSub'),hint=document.getElementById('scrollHint');
+    setTimeout(function(){lbl.classList.add('vis')},100);
+    setTimeout(function(){l1.classList.add('vis')},250);
+    setTimeout(function(){l2.classList.add('vis')},450);
+    setTimeout(function(){sub.classList.add('vis')},650);
+    setTimeout(function(){hint.classList.add('vis')},1000);
+    var hero=document.getElementById('scrollHero');
+    function onScroll(){
+        var rect=hero.getBoundingClientRect();
+        var progress=Math.min(Math.max(-rect.top/(rect.height-window.innerHeight),0),1);
+        lbl.style.transform='translateY('+(progress*-80)+'px)';
+        lbl.style.opacity=Math.max(1-progress*3,0);
+        l1.style.transform='translateY('+(progress*-60)+'px)';
+        l2.style.transform='translateY('+(progress*-35)+'px)';
+        sub.style.opacity=Math.max(1-progress*2.5,0);
+        hint.style.opacity=Math.max(1-progress*4,0);
+        var fadeStart=0.6;
+        if(progress>fadeStart){var fo=(progress-fadeStart)/(1-fadeStart);l1.style.opacity=1-fo;l2.style.opacity=1-fo}
     }
+    window.addEventListener('scroll',onScroll,{passive:true});
+    onScroll();
+})();
 
-    /* ═══════════════════════════════════════
-       API HELPERS
-       ═══════════════════════════════════════ */
-    function formatDate(d) {
-        return d.toISOString().split('T')[0];
-    }
+// INTERSECTION OBSERVER
+var revealObs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('revealed');revealObs.unobserve(e.target)}})},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
 
-    async function fetchDailyRain(city, startDate, endDate) {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lng}&daily=precipitation_sum&start_date=${startDate}&end_date=${endDate}&timezone=Europe%2FLondon&past_days=0`;
+// DIGIT ROLLER
+function buildRoller(container,targetNum){
+    var digits=String(targetNum).split('');container.innerHTML='';var cols=[];
+    digits.forEach(function(d){
+        var col=document.createElement('div');col.className='digit-col';
+        var strip=document.createElement('div');strip.className='digit-strip';
+        for(var n=0;n<=9;n++){var s=document.createElement('span');s.textContent=n;strip.appendChild(s)}
+        col.appendChild(strip);container.appendChild(col);cols.push({strip:strip,target:parseInt(d)});
+    });return cols;
+}
+function rollTo(cols,step,target){
+    var digits=String(step).padStart(String(target).length,'0').split('');
+    cols.forEach(function(c,i){c.strip.style.transform='translateY(-'+parseInt(digits[i])+'0%)';c.strip.style.transitionDelay=(i*0.08)+'s'});
+}
 
-        // Try forecast API with past_days first, then archive
-        const archiveUrl = `https://archive-api.open-meteo.com/v1/archive?latitude=${city.lat}&longitude=${city.lng}&daily=precipitation_sum&start_date=${startDate}&end_date=${endDate}&timezone=Europe%2FLondon`;
+function apiRaw(lat,lng,s,e){
+    var now=new Date(),diff=Math.floor((now-new Date(s))/864e5),errs=[];
+    return new Promise(function(resolve,reject){
+        function tryF(){if(diff>92)return tryA();var pd=Math.min(diff+1,92);fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lng+'&daily=precipitation_sum&timezone=auto&past_days='+pd+'&forecast_days=1').then(function(r){if(!r.ok)throw new Error('H'+r.status);return r.json()}).then(function(d){if(d.error)throw new Error(d.reason);resolve(filt(d.daily,s,e))}).catch(function(x){errs.push(x.message);tryA()})}
+        function tryA(){fetch('https://archive-api.open-meteo.com/v1/archive?latitude='+lat+'&longitude='+lng+'&daily=precipitation_sum&start_date='+s+'&end_date='+e+'&timezone=auto').then(function(r){if(!r.ok)throw new Error('a'+r.status);return r.json()}).then(function(d){if(d.error)throw new Error(d.reason);resolve(d.daily)}).catch(function(x){errs.push(x.message);reject(new Error(errs.join('; ')))})}
+        tryF();
+    });
+}
+function api(c,s,e){var ci=C[c];return apiRaw(ci.lat,ci.lng,s,e)}
+function filt(d,s,e){var t=[],p=[];d.time.forEach(function(x,i){if(x>=s&&x<=e){t.push(x);p.push(d.precipitation_sum[i])}});return{time:t,precipitation_sum:p}}
+function stk(dates,precip){var s=0,r=null;for(var i=dates.length-1;i>=0;i--){var x=precip[i]!=null&&precip[i]>TH;if(r===null){r=x;s=1}else if(x===r)s++;else break}return{streak:s,raining:r}}
+function mkDemo(days,ch){var dates=[],precip=[],t=new Date();for(var i=days;i>=0;i--){var d=new Date(t);d.setDate(d.getDate()-i);dates.push(fmt(d));var seed=Math.sin((d.getDate()*31+d.getMonth()*7+13)*9301)*.5+.5;precip.push(seed<ch?+((0.3+seed*8).toFixed(1)):0)}return{dates:dates,precip:precip}}
 
-        // Use the forecast API for recent data (it includes past days)
-        const today = new Date();
-        const start = new Date(startDate);
-        const daysDiff = Math.floor((today - start) / 86400000);
+function render(){
+    var data=wc[city];if(!data)return;
+    var s=stk(data.dates,data.precip),tp=data.precip[data.precip.length-1]||0,tr=tp>TH;
+    var l30=data.precip.slice(-BD),l30d=data.dates.slice(-BD);
+    var rc=0;l30.forEach(function(p){if(p!=null&&p>TH)rc++});
+    var tm=0;l30.forEach(function(p){tm+=(p||0)});
+    var ts=fmt(new Date()),mx=1;l30.forEach(function(p){if((p||0)>mx)mx=p});
+    var bars='';
+    l30.forEach(function(p,i){var r=p!=null&&p>TH,h=r?Math.max(12,(p/mx)*100):5,it=l30d[i]===ts;var d=new Date(l30d[i]),lb=d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});var del=(i*0.02).toFixed(2);bars+='<div class="bw'+(it?' tb':'')+'"><div class="tip">'+lb+' \u00b7 '+(r?'\u{1F327}\uFE0F '+p.toFixed(1)+'mm':'\u2600\uFE0F dry')+'</div><div class="bf '+(r?'rb':'db')+(r&&p>4?' hv':'')+'" style="height:'+h+'%;animation-delay:'+del+'s"></div></div>'});
 
-        let fetchUrl;
-        if (daysDiff <= 92) {
-            fetchUrl = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lng}&daily=precipitation_sum&start_date=${startDate}&end_date=${endDate}&timezone=Europe%2FLondon&past_days=${Math.min(daysDiff + 1, 92)}`;
-        } else {
-            fetchUrl = archiveUrl;
+    var html=(isDemo?'<div class="demo-b">\u26A0\uFE0F Preview mode \u2014 simulated data. <em>Live data loads on GitHub Pages.</em></div>':'')+
+    '<div class="section-panel mc '+(s.raining?'raining':'dry')+'" id="mainCard"><div class="mc-mood"></div>'+(s.raining?'<div class="card-rain" id="cardRain"></div>':'')+
+    '<div class="live-dot" id="liveDot">live</div><div class="city-label">'+C[city].name+'</div>'+
+    '<div style="text-align:center;position:relative;z-index:1"><div class="pill '+(tr?'rp':'dp')+'"><span class="pdot"></span>'+(tr?'Raining \u00b7 '+tp.toFixed(1)+'mm':'Dry right now')+'</div></div>'+
+    '<div class="sd"><div class="digit-roller" id="digitRoller"></div><span class="su">'+(s.raining?'consecutive rainy days':'consecutive dry days')+'</span></div>'+
+    '<div class="quip" id="quipText"></div></div>'+
+    '<div class="section-panel"><div class="td"><div class="di"><div class="dv">'+tp.toFixed(1)+'mm</div><div class="dl">Today</div></div><div class="di"><div class="dv">'+tm.toFixed(0)+'mm</div><div class="dl">Last 30d</div></div><div class="di"><div class="dv">'+Math.round(rc/BD*100)+'%</div><div class="dl">Rain rate</div></div></div></div>'+
+    '<div class="section-panel"><div class="sec-hd"><div class="sec-t">Last 30 days</div><div class="sec-s"><strong>'+rc+'</strong> rainy \u00b7 <strong>'+(BD-rc)+'</strong> dry</div></div><div class="bar-g">'+bars+'</div><div class="bar-leg"><div class="leg-i"><div class="leg-s rs"></div>Rain</div><div class="leg-i"><div class="leg-s ds"></div>Dry</div></div></div>'+
+    '<div class="section-panel"><div class="sec-hd"><div class="sec-t">Monthly view</div></div><div class="cal-nav"><button class="cal-btn" onclick="APP.chM(-1)"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><div class="cal-mo" id="calMo"></div><button class="cal-btn" onclick="APP.chM(1)"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button></div><div id="calC"></div></div>'+
+    '<div class="section-panel"><div class="sec-hd"><div class="sec-t">Check any date</div></div><div class="lk-row"><input type="date" class="lk-in" id="lkD" max="'+ts+'"><button class="lk-bt" id="lkB" onclick="APP.lk()">Check</button></div><div class="lk-res" id="lkR"></div></div>'+
+    '<p class="src">Data from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> \u00b7 Rain threshold >'+TH+'mm/day</p>';
+
+    document.getElementById('app').innerHTML=html;
+    document.querySelectorAll('.section-panel').forEach(function(p){revealObs.observe(p)});
+
+    // DIGIT ROLLER COUNT-UP — deferred until card is visible
+    var roller=document.getElementById('digitRoller'),quipEl=document.getElementById('quipText');
+    var target=s.streak;
+    if(target<=0){roller.textContent='0';return}
+    var cols=buildRoller(roller,target);
+    rollTo(cols,0,target);
+
+    function startCountUp(){
+        var step=0;
+        function showStep(){
+            step++;if(step>target)return;
+            rollTo(cols,step,target);
+            quipEl.style.opacity='0';
+            var cur=step;
+            setTimeout(function(){quipEl.textContent='\u201C'+quip(s.raining,cur)+'\u201D';quipEl.style.opacity='1'},150);
+            if(step<target){
+                var progress=step/target;var delay;
+                if(target<=3){delay=1000}
+                else if(progress<0.2){delay=950-progress*500}
+                else if(progress<0.45){delay=850-progress*900}
+                else if(progress<0.7){delay=460-progress*400}
+                else{delay=Math.max(55,200-progress*180)}
+                setTimeout(showStep,delay);
+            }else{setTimeout(function(){roller.classList.add('breathing')},400)}
         }
-
-        const resp = await fetch(fetchUrl);
-        if (!resp.ok) throw new Error(`API error: ${resp.status}`);
-        const data = await resp.json();
-        if (data.error) throw new Error(data.reason || 'API error');
-        return data.daily;
+        setTimeout(showStep,400);
     }
+    // Wait for the card to enter the viewport
+    var cardEl=document.getElementById('mainCard');
+    var rollerObs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){startCountUp();rollerObs.unobserve(e.target)}})},{threshold:0.15});
+    rollerObs.observe(cardEl);
 
-    /* ═══════════════════════════════════════
-       STREAK CALCULATION
-       ═══════════════════════════════════════ */
-    function calculateStreak(dates, precip) {
-        // Work backwards from the most recent day with data
-        let streak = 0;
-        let isCurrentlyRaining = null;
+    if(s.raining){var el=document.getElementById('cardRain');if(el)for(var i=0;i<18;i++){var dr=document.createElement('div');dr.className='card-drop';dr.style.left=Math.random()*100+'%';dr.style.height=(6+Math.random()*8)+'px';dr.style.animation='dropFall '+(1.2+Math.random()*1.8)+'s linear '+(Math.random()*3)+'s infinite';el.appendChild(dr)}}
+    calM=new Date().getMonth();calY=new Date().getFullYear();renderCal();
+    updateMeta(s.raining);
+    var dot=document.getElementById('liveDot');if(dot){var now=new Date();dot.textContent='live \u00b7 '+now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}
+}
 
-        for (let i = dates.length - 1; i >= 0; i--) {
-            const rained = precip[i] !== null && precip[i] > RAIN_THRESHOLD;
-
-            if (isCurrentlyRaining === null) {
-                isCurrentlyRaining = rained;
-                streak = 1;
-            } else if (rained === isCurrentlyRaining) {
-                streak++;
-            } else {
-                break;
-            }
-        }
-
-        return { streak, isRaining: isCurrentlyRaining };
+window.APP={};
+APP.chM=function(d){calM+=d;if(calM>11){calM=0;calY++}if(calM<0){calM=11;calY--}var now=new Date();if(calY>now.getFullYear()||(calY===now.getFullYear()&&calM>now.getMonth())){calM=now.getMonth();calY=now.getFullYear();return}if(calY<2020){calY=2020;calM=0;return}renderCal()};
+function renderCal(){
+    var con=document.getElementById('calC'),lab=document.getElementById('calMo');if(!con||!lab)return;
+    lab.textContent=MN[calM]+' '+calY;con.innerHTML='<div style="text-align:center;padding:.75rem;font-size:.6rem;color:var(--ink-f);font-family:DM Mono,monospace">Loading\u2026</div>';
+    var y=calY,m=calM,start=y+'-'+String(m+1).padStart(2,'0')+'-01',last=new Date(y,m+1,0).getDate(),end=y+'-'+String(m+1).padStart(2,'0')+'-'+String(last).padStart(2,'0'),ts=fmt(new Date()),ae=end>ts?ts:end;
+    function build(data){
+        var pMap={};data.time.forEach(function(d,i){pMap[d]=data.precipitation_sum[i]});
+        var dow=new Date(y,m,1).getDay(),adj=dow===0?6:dow-1,rainD=0,total=0;
+        var h='<div class="cal-wk">';['M','T','W','T','F','S','S'].forEach(function(d){h+='<div class="wkd">'+d+'</div>'});h+='</div><div class="cal-g">';
+        for(var i=0;i<adj;i++)h+='<div class="cell em"></div>';
+        var ci=0;
+        for(var d=1;d<=last;d++){var ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'),p=pMap[ds],isTo=ds===ts,isF=ds>ts,cls='cell',tip='';
+        if(isF){cls+=' fc';tip=d+' '+MN[m].slice(0,3)}else if(p!=null&&p!==undefined){var r=p>TH;if(r){rainD++;total+=p;cls+=p>5?' rc hc':' rc';tip=d+' '+MN[m].slice(0,3)+' \u00b7 \u{1F327}\uFE0F '+p.toFixed(1)+'mm'}else{cls+=' dc';tip=d+' '+MN[m].slice(0,3)+' \u00b7 \u2600\uFE0F'}}else{cls+=' dc';tip=d+' '+MN[m].slice(0,3)}
+        if(isTo)cls+=' toc';var cd=(ci*0.015).toFixed(3);h+='<div class="'+cls+'" style="animation-delay:'+cd+'s"><span>'+d+'</span><div class="ctip">'+tip+'</div></div>';ci++}
+        h+='</div>';var dwd=Object.keys(pMap).length;
+        h+='<div class="cal-st"><div class="csi"><strong>'+rainD+'</strong> rainy</div><div class="csi"><strong>'+total.toFixed(0)+'mm</strong> total</div><div class="csi"><strong>'+(dwd?Math.round(rainD/dwd*100):0)+'%</strong> of days</div></div>';con.innerHTML=h;
     }
+    if(isDemo){var data={time:[],precipitation_sum:[]};for(var d=1;d<=last;d++){var ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');if(ds>ts)break;data.time.push(ds);var seed=Math.sin((d*31+(m+1)*7+y)*9301)*.5+.5;data.precipitation_sum.push(seed<(city==='manchester'?.52:.45)?+((0.3+seed*8).toFixed(1)):0)}build(data)}
+    else{api(city,start,ae).then(build).catch(function(){con.innerHTML='<div style="text-align:center;padding:.75rem;font-size:.65rem;color:var(--ink-f);font-style:italic">Could not load this month.</div>'})}
+}
+APP.lk=function(){
+    var inp=document.getElementById('lkD'),res=document.getElementById('lkR'),btn=document.getElementById('lkB'),ds=inp.value;if(!ds)return;btn.disabled=true;btn.textContent='Checking\u2026';
+    res.className='lk-res';res.style.display='none';
+    var shimmer=document.createElement('div');shimmer.className='lk-shimmer';shimmer.innerHTML='<div class="lk-shimmer-line"></div><div class="lk-shimmer-line"></div>';
+    res.parentNode.insertBefore(shimmer,res.nextSibling);
+    function rmShim(){var sh=document.querySelector('.lk-shimmer');if(sh)sh.remove()}
+    function show(lp,mp){rmShim();var lr=lp>TH,mr=mp>TH,any=lr||mr;var d=new Date(ds),nice=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});res.className='lk-res vis '+(any?'rr':'dr');res.innerHTML='<div class="res-t">'+nice+'</div><div class="res-b"><strong>London:</strong> '+(lr?'\u{1F327}\uFE0F '+lp.toFixed(1)+'mm':'\u2600\uFE0F No rain')+' \u00b7 <strong>Manchester:</strong> '+(mr?'\u{1F327}\uFE0F '+mp.toFixed(1)+'mm':'\u2600\uFE0F No rain')+'</div>';btn.disabled=false;btn.textContent='Check'}
+    function fail(){rmShim();res.className='lk-res vis';res.innerHTML='<div class="res-b" style="font-style:italic;color:var(--ink-f)">Could not fetch data for that date.</div>';btn.disabled=false;btn.textContent='Check'}
+    if(isDemo){var seed=ds.split('-').reduce(function(a,b){return a+parseInt(b)},0);var rng=Math.sin(seed*9301)*.5+.5;show(rng<.45?(0.5+rng*6):0,rng<.52?(0.8+rng*7):0)}
+    else{Promise.all([api('london',ds,ds),api('manchester',ds,ds)]).then(function(r){show(r[0].precipitation_sum[0]||0,r[1].precipitation_sum[0]||0)}).catch(fail)}
+};
 
-    /* ═══════════════════════════════════════
-       UI RENDERING
-       ═══════════════════════════════════════ */
-    function renderApp(londonData, manchesterData) {
-        const content = document.getElementById('mainContent');
+document.querySelectorAll('.city-btn').forEach(function(b){b.addEventListener('click',function(){var c=b.dataset.city;if(c===city)return;city=c;document.querySelectorAll('.city-btn').forEach(function(x){x.classList.toggle('active',x.dataset.city===c)});var appEl=document.getElementById('app');appEl.classList.add('fading');setTimeout(function(){render();appEl.classList.remove('fading')},300)})});
 
-        // Calculate streaks
-        const londonStreak = calculateStreak(londonData.dates, londonData.precip);
-        const manchesterStreak = calculateStreak(manchesterData.dates, manchesterData.precip);
-
-        const html = `
-            <!-- City Cards -->
-            <div class="cities-grid">
-                ${renderCityCard('london', CITIES.london, londonStreak, londonData)}
-                ${renderCityCard('manchester', CITIES.manchester, manchesterStreak, manchesterData)}
-            </div>
-
-            <!-- Date Lookup -->
-            <div class="lookup-section">
-                <div class="section-label">Look up a date</div>
-                <p class="section-desc">Pick any date to see whether it rained in London or Manchester.</p>
-                <div class="lookup-form">
-                    <div class="date-input-wrap">
-                        <input type="date" class="date-input" id="lookupDate" max="${formatDate(new Date())}">
-                    </div>
-                    <button class="lookup-btn" id="lookupBtn" onclick="doLookup()">Check</button>
-                </div>
-                <div class="lookup-result" id="lookupResult"></div>
-            </div>
-
-            <!-- 30-Day Timeline -->
-            <div class="timeline-section">
-                <div class="section-label">Last ${TIMELINE_DAYS} days</div>
-                <div class="city-toggle" id="timelineToggle">
-                    <button class="city-toggle-btn active" data-city="london" onclick="switchTimeline('london')">London</button>
-                    <button class="city-toggle-btn" data-city="manchester" onclick="switchTimeline('manchester')">Manchester</button>
-                </div>
-                <div id="timelineLondon">${renderTimeline(londonData)}</div>
-                <div id="timelineManchester" style="display:none">${renderTimeline(manchesterData)}</div>
-                <div class="timeline-legend">
-                    <div class="legend-item"><div class="legend-dot rain-dot"></div> Rain</div>
-                    <div class="legend-item"><div class="legend-dot dry-dot"></div> Dry</div>
-                </div>
-            </div>
-
-            <!-- Monthly Heatmap -->
-            <div class="heatmap-section">
-                <div class="section-label">Monthly view</div>
-                <div class="city-toggle" id="heatmapCityToggle">
-                    <button class="city-toggle-btn active" data-city="london" onclick="switchHeatmapCity('london')">London</button>
-                    <button class="city-toggle-btn" data-city="manchester" onclick="switchHeatmapCity('manchester')">Manchester</button>
-                </div>
-                <div class="heatmap-nav">
-                    <button class="heatmap-nav-btn" onclick="changeMonth(-1)">
-                        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-                    </button>
-                    <div class="heatmap-month-label" id="heatmapMonthLabel"></div>
-                    <button class="heatmap-nav-btn" onclick="changeMonth(1)">
-                        <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-                    </button>
-                </div>
-                <div id="heatmapContainer"></div>
-            </div>
-
-            <p class="source-note">Weather data from <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo.com</a>. Rain threshold: >${RAIN_THRESHOLD}mm/day. Updated near real-time.</p>
-        `;
-
-        content.innerHTML = html;
-
-        // Init heatmap
-        window._heatmapCity = 'london';
-        window._heatmapMonth = new Date().getMonth();
-        window._heatmapYear = new Date().getFullYear();
-        renderHeatmap();
-
-        // Trigger rain animations
-        document.querySelectorAll('.city-card.raining').forEach(addRainDrops);
-    }
-
-    function renderCityCard(key, city, streakData, weatherData) {
-        const { streak, isRaining } = streakData;
-        const stateClass = isRaining ? 'raining' : 'dry';
-        const todayPrecip = weatherData.precip[weatherData.precip.length - 1];
-        const todayRained = todayPrecip !== null && todayPrecip > RAIN_THRESHOLD;
-        const pillClass = todayRained ? 'rain-pill' : 'dry-pill';
-        const pillText = todayRained ? `Raining · ${todayPrecip.toFixed(1)}mm` : 'Dry today';
-        const quip = getQuip(isRaining, streak);
-        const streakType = isRaining ? 'consecutive rainy days' : 'consecutive dry days';
-
-        return `
-            <div class="city-card ${stateClass}">
-                ${isRaining ? '<div class="rain-drops" id="rain-' + key + '"></div>' : ''}
-                <div class="city-name">${city.name}</div>
-                <div class="city-country">${city.country}</div>
-                <div class="today-pill ${pillClass}">
-                    <span class="pill-dot"></span>
-                    ${pillText}
-                </div>
-                <div class="streak-number">${streak}</div>
-                <div class="streak-label">${streakType}</div>
-                <div class="streak-quip">${quip}</div>
-            </div>
-        `;
-    }
-
-    function renderTimeline(data) {
-        const days = [];
-        const len = data.dates.length;
-        const start = Math.max(0, len - TIMELINE_DAYS);
-        const today = formatDate(new Date());
-
-        for (let i = start; i < len; i++) {
-            const rained = data.precip[i] !== null && data.precip[i] > RAIN_THRESHOLD;
-            const isToday = data.dates[i] === today;
-            const d = new Date(data.dates[i]);
-            const dayName = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
-            const precText = data.precip[i] !== null ? data.precip[i].toFixed(1) + 'mm' : 'no data';
-
-            days.push(`
-                <div class="timeline-day ${rained ? 'rain-day' : 'dry-day'} ${isToday ? 'today-marker' : ''}">
-                    <div class="timeline-tooltip">${dayName} · ${rained ? '🌧 ' + precText : '☀ dry'}</div>
-                </div>
-            `);
-        }
-
-        return `<div class="timeline-grid">${days.join('')}</div>`;
-    }
-
-    function addRainDrops(card) {
-        const container = card.querySelector('.rain-drops');
-        if (!container) return;
-        for (let i = 0; i < 12; i++) {
-            const drop = document.createElement('div');
-            drop.className = 'rain-drop';
-            drop.style.left = (Math.random() * 100) + '%';
-            drop.style.animationDuration = (1.5 + Math.random() * 2) + 's';
-            drop.style.animationDelay = (Math.random() * 3) + 's';
-            drop.style.animation = `rainDrop ${1.5 + Math.random() * 2}s linear ${Math.random() * 3}s infinite`;
-            container.appendChild(drop);
-        }
-    }
-
-    /* ═══════════════════════════════════════
-       TIMELINE TOGGLE
-       ═══════════════════════════════════════ */
-    window.switchTimeline = function(city) {
-        document.getElementById('timelineLondon').style.display = city === 'london' ? 'block' : 'none';
-        document.getElementById('timelineManchester').style.display = city === 'manchester' ? 'block' : 'none';
-        document.querySelectorAll('#timelineToggle .city-toggle-btn').forEach(b => {
-            b.classList.toggle('active', b.dataset.city === city);
-        });
-    };
-
-    /* ═══════════════════════════════════════
-       HEATMAP
-       ═══════════════════════════════════════ */
-    window.switchHeatmapCity = function(city) {
-        window._heatmapCity = city;
-        document.querySelectorAll('#heatmapCityToggle .city-toggle-btn').forEach(b => {
-            b.classList.toggle('active', b.dataset.city === city);
-        });
-        renderHeatmap();
-    };
-
-    window.changeMonth = function(delta) {
-        window._heatmapMonth += delta;
-        if (window._heatmapMonth > 11) { window._heatmapMonth = 0; window._heatmapYear++; }
-        if (window._heatmapMonth < 0) { window._heatmapMonth = 11; window._heatmapYear--; }
-
-        // Don't go into future
-        const now = new Date();
-        if (window._heatmapYear > now.getFullYear() || (window._heatmapYear === now.getFullYear() && window._heatmapMonth > now.getMonth())) {
-            window._heatmapMonth = now.getMonth();
-            window._heatmapYear = now.getFullYear();
-            return;
-        }
-        // Don't go too far back
-        if (window._heatmapYear < 2020) { window._heatmapYear = 2020; window._heatmapMonth = 0; return; }
-
-        renderHeatmap();
-    };
-
-    async function renderHeatmap() {
-        const container = document.getElementById('heatmapContainer');
-        const label = document.getElementById('heatmapMonthLabel');
-        const city = CITIES[window._heatmapCity];
-        const year = window._heatmapYear;
-        const month = window._heatmapMonth;
-
-        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        label.textContent = `${months[month]} ${year}`;
-
-        container.innerHTML = '<div style="text-align:center;padding:1rem;font-size:.75rem;color:var(--ink-faint)">Loading…</div>';
-
-        const startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
-        const lastDay = new Date(year, month + 1, 0).getDate();
-        const endDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
-
-        // Clamp end date to today
-        const today = new Date();
-        const todayStr = formatDate(today);
-        const actualEnd = endDate > todayStr ? todayStr : endDate;
-
-        try {
-            const data = await fetchDailyRain(city, startDate, actualEnd);
-
-            // Build lookup
-            const precipMap = {};
-            data.time.forEach((d, i) => { precipMap[d] = data.precipitation_sum[i]; });
-
-            const firstDow = new Date(year, month, 1).getDay(); // 0=Sun
-            const adjustedDow = firstDow === 0 ? 6 : firstDow - 1; // Mon=0
-
-            let rainDays = 0, totalPrecip = 0;
-
-            let cells = '';
-            // Weekday headers
-            cells += '<div class="heatmap-weekdays">';
-            ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach(d => {
-                cells += `<div class="heatmap-weekday">${d}</div>`;
+// CUSTOM CITY SEARCH
+(function(){
+    var trigger=document.getElementById('csTrigger'),panel=document.getElementById('csPanel'),
+        input=document.getElementById('csInput'),goBtn=document.getElementById('csGo'),result=document.getElementById('csResult');
+    var isOpen=false;
+    trigger.addEventListener('click',function(){isOpen=!isOpen;panel.classList.toggle('open',isOpen);trigger.classList.toggle('open',isOpen);if(isOpen)setTimeout(function(){input.focus()},300)});
+    function search(){
+        var q=input.value.trim();if(!q)return;
+        goBtn.disabled=true;goBtn.textContent='Searching\u2026';
+        result.className='cs-result';result.style.display='none';
+        fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(q)+'&count=1&language=en&format=json')
+        .then(function(r){if(!r.ok)throw new Error('geo fail');return r.json()})
+        .then(function(geo){
+            if(!geo.results||!geo.results.length)throw new Error('not found');
+            var place=geo.results[0];
+            var today=new Date(),past=new Date(today);past.setDate(past.getDate()-(LK+2));
+            var tomorrow=new Date(today);tomorrow.setDate(tomorrow.getDate()+1);
+            // Use forecast API directly with past_days for reliability
+            return fetch('https://api.open-meteo.com/v1/forecast?latitude='+place.latitude+'&longitude='+place.longitude+'&daily=precipitation_sum&timezone=auto&past_days='+Math.min(LK+2,92)+'&forecast_days=1')
+            .then(function(r){if(!r.ok)throw new Error('api fail');return r.json()})
+            .then(function(d){
+                if(d.error)throw new Error(d.reason);
+                var data=d.daily;
+                var sk=stk(data.time,data.precipitation_sum);
+                result.className='cs-result vis '+(sk.raining?'is-rain':'is-dry');
+                result.innerHTML='<div class="cs-result-city">'+place.name+'</div>'+
+                    '<div class="cs-result-country">'+(place.admin1?place.admin1+', ':'')+(place.country||'')+'</div>'+
+                    '<div class="cs-result-streak"><div class="cs-result-num">'+sk.streak+'</div><div class="cs-result-label">'+(sk.raining?'consecutive<br>rainy days':'consecutive<br>dry days')+'</div></div>'+
+                    '<div class="cs-result-quip">\u201C'+quip(sk.raining,sk.streak)+'\u201D</div>';
+                goBtn.disabled=false;goBtn.textContent='Search';
             });
-            cells += '</div><div class="heatmap-grid">';
-
-            // Empty cells before first day
-            for (let i = 0; i < adjustedDow; i++) {
-                cells += '<div class="heatmap-cell empty"></div>';
-            }
-
-            for (let d = 1; d <= lastDay; d++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                const precip = precipMap[dateStr];
-                const isToday = dateStr === todayStr;
-                const isFuture = dateStr > todayStr;
-
-                let cellClass = 'heatmap-cell';
-                let tipText = '';
-
-                if (isFuture) {
-                    cellClass += ' future-cell';
-                    tipText = `${d} ${months[month].slice(0, 3)} · upcoming`;
-                } else if (precip !== undefined && precip !== null) {
-                    const rained = precip > RAIN_THRESHOLD;
-                    if (rained) {
-                        rainDays++;
-                        totalPrecip += precip;
-                        cellClass += precip > 5 ? ' rain-cell heavy' : ' rain-cell';
-                        tipText = `${d} ${months[month].slice(0, 3)} · 🌧 ${precip.toFixed(1)}mm`;
-                    } else {
-                        cellClass += ' dry-cell';
-                        tipText = `${d} ${months[month].slice(0, 3)} · ☀ dry`;
-                    }
-                } else {
-                    cellClass += ' dry-cell';
-                    tipText = `${d} ${months[month].slice(0, 3)} · no data`;
-                }
-
-                if (isToday) cellClass += ' today-cell';
-
-                cells += `<div class="${cellClass}"><div class="heatmap-tip">${tipText}</div></div>`;
-            }
-            cells += '</div>';
-
-            const daysWithData = Object.keys(precipMap).length;
-            const stats = `
-                <div class="heatmap-stats">
-                    <div class="heatmap-stat"><strong>${rainDays}</strong> rainy days</div>
-                    <div class="heatmap-stat"><strong>${totalPrecip.toFixed(1)}mm</strong> total</div>
-                    <div class="heatmap-stat"><strong>${daysWithData > 0 ? Math.round((rainDays / daysWithData) * 100) : 0}%</strong> of days</div>
-                </div>
-            `;
-
-            container.innerHTML = cells + stats;
-        } catch (err) {
-            container.innerHTML = `<div style="text-align:center;padding:1rem;font-size:.78rem;color:var(--ink-faint);font-style:italic">Could not load data for this month.</div>`;
-        }
+        })
+        .catch(function(err){
+            result.className='cs-result vis';
+            result.innerHTML='<div style="font-size:.72rem;color:var(--ink-f);font-style:italic">Couldn\u2019t find that city. Try another name?</div>';
+            goBtn.disabled=false;goBtn.textContent='Search';
+        });
     }
+    goBtn.addEventListener('click',search);
+    input.addEventListener('keydown',function(e){if(e.key==='Enter')search()});
+})();
 
-    /* ═══════════════════════════════════════
-       DATE LOOKUP
-       ═══════════════════════════════════════ */
-    window.doLookup = async function() {
-        const input = document.getElementById('lookupDate');
-        const result = document.getElementById('lookupResult');
-        const btn = document.getElementById('lookupBtn');
-        const dateStr = input.value;
-
-        if (!dateStr) { result.className = 'lookup-result'; result.style.display = 'none'; return; }
-
-        btn.disabled = true;
-        btn.textContent = 'Checking…';
-
-        try {
-            const [londonResp, manchesterResp] = await Promise.all([
-                fetchDailyRain(CITIES.london, dateStr, dateStr),
-                fetchDailyRain(CITIES.manchester, dateStr, dateStr)
-            ]);
-
-            const londonPrecip = londonResp.precipitation_sum[0];
-            const manchesterPrecip = manchesterResp.precipitation_sum[0];
-            const londonRained = londonPrecip !== null && londonPrecip > RAIN_THRESHOLD;
-            const manchesterRained = manchesterPrecip !== null && manchesterPrecip > RAIN_THRESHOLD;
-
-            const d = new Date(dateStr);
-            const niceDate = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-            const anyRain = londonRained || manchesterRained;
-
-            result.className = `lookup-result visible ${anyRain ? 'rain-result' : 'dry-result'}`;
-            result.innerHTML = `
-                <div class="result-title">${niceDate}</div>
-                <div class="result-detail">
-                    <strong>London:</strong> ${londonRained ? '🌧 Yes — ' + londonPrecip.toFixed(1) + 'mm' : '☀ No rain'}<br>
-                    <strong>Manchester:</strong> ${manchesterRained ? '🌧 Yes — ' + manchesterPrecip.toFixed(1) + 'mm' : '☀ No rain'}
-                </div>
-            `;
-        } catch (err) {
-            result.className = 'lookup-result visible';
-            result.innerHTML = `<div class="result-detail" style="color:var(--ink-faint);font-style:italic">Couldn't fetch data for that date. Try a more recent date.</div>`;
-        }
-
-        btn.disabled = false;
-        btn.textContent = 'Check';
-    };
-
-    /* ═══════════════════════════════════════
-       INIT
-       ═══════════════════════════════════════ */
-    async function init() {
-        const today = new Date();
-        const pastDate = new Date(today);
-        pastDate.setDate(pastDate.getDate() - LOOKBACK_DAYS);
-
-        const startStr = formatDate(pastDate);
-        const endStr = formatDate(today);
-
-        try {
-            const [londonRaw, manchesterRaw] = await Promise.all([
-                fetchDailyRain(CITIES.london, startStr, endStr),
-                fetchDailyRain(CITIES.manchester, startStr, endStr)
-            ]);
-
-            const londonData = { dates: londonRaw.time, precip: londonRaw.precipitation_sum };
-            const manchesterData = { dates: manchesterRaw.time, precip: manchesterRaw.precipitation_sum };
-
-            // Store globally for heatmap
-            window._londonData = londonData;
-            window._manchesterData = manchesterData;
-
-            renderApp(londonData, manchesterData);
-        } catch (err) {
-            document.getElementById('mainContent').innerHTML = `
-                <div class="error-state">
-                    <p>The skies are unclear — couldn't fetch weather data.</p>
-                    <button class="retry-btn" onclick="location.reload()">Try again</button>
-                </div>
-            `;
-        }
-    }
-
-    /* ═══════════════════════════════════════
-       THEME
-       ═══════════════════════════════════════ */
-    const htmlEl = document.documentElement;
-    function getTheme() {
-        const s = localStorage.getItem('rain-theme');
-        if (s === 'dark') return 'dark';
-        if (s === 'light') return 'light';
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    function setTheme(t) {
-        if (t === 'dark') htmlEl.setAttribute('data-theme', 'dark');
-        else htmlEl.removeAttribute('data-theme');
-    }
-    setTheme(getTheme());
-    document.getElementById('themeToggle').addEventListener('click', () => {
-        const isDark = htmlEl.getAttribute('data-theme') === 'dark';
-        const next = isDark ? 'light' : 'dark';
-        setTheme(next);
-        localStorage.setItem('rain-theme', next);
-    });
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (!localStorage.getItem('rain-theme')) setTheme(e.matches ? 'dark' : 'light');
-    });
-
-    /* ═══════════════════════════════════════
-       TOPBAR SCROLL
-       ═══════════════════════════════════════ */
-    const topbar = document.getElementById('topbar');
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            requestAnimationFrame(() => {
-                topbar.classList.toggle('scrolled', window.scrollY > 40);
-                ticking = false;
-            });
-            ticking = true;
-        }
-    });
-
-    /* GO */
-    init();
+function updateMeta(raining){
+    var emoji=raining?'\u{1F327}\uFE0F':'\u2600\uFE0F';
+    document.title=emoji+' did it rain? \u2014 '+city;
+    var c=document.createElement('canvas');c.width=64;c.height=64;
+    var ctx=c.getContext('2d');ctx.font='56px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(raining?'\u{1F327}\uFE0F':'\u2600\uFE0F',32,36);
+    var link=document.querySelector("link[rel*='icon']")||document.createElement('link');
+    link.rel='icon';link.href=c.toDataURL();document.head.appendChild(link);
+}
+function init(){var today=new Date(),past=new Date(today);past.setDate(past.getDate()-LK);var s=fmt(past),e=fmt(today);
+    Promise.all([api('london',s,e),api('manchester',s,e)]).then(function(r){wc.london={dates:r[0].time,precip:r[0].precipitation_sum};wc.manchester={dates:r[1].time,precip:r[1].precipitation_sum};render()}).catch(function(err){console.warn('API unavailable, using demo data:',err.message);isDemo=true;wc.london=mkDemo(LK,.45);wc.manchester=mkDemo(LK,.52);render()})}
+var htmlEl=document.documentElement;
+function gT(){var s=localStorage.getItem('rain-theme');if(s==='dark')return'dark';if(s==='light')return'light';return matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}
+function sT(t){t==='dark'?htmlEl.setAttribute('data-theme','dark'):htmlEl.removeAttribute('data-theme')}
+sT(gT());
+document.getElementById('themeToggle').addEventListener('click',function(){var d=htmlEl.getAttribute('data-theme')==='dark';var n=d?'light':'dark';sT(n);localStorage.setItem('rain-theme',n)});
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change',function(e){if(!localStorage.getItem('rain-theme'))sT(e.matches?'dark':'light')});
+var tick=false;addEventListener('scroll',function(){if(!tick){requestAnimationFrame(function(){document.getElementById('topbar').classList.toggle('scrolled',scrollY>40);tick=false});tick=true}});
+init();
 })();
 </script>
 </body>
