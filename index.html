@@ -324,7 +324,7 @@
             <h2>Curriculum Vitae</h2>
             <p class="scroll-animate" style="font-size:.92rem;color:var(--ink-muted);line-height:1.7">Download my complete CV for details on education, experience, and research.</p>
             <a href="https://www.dropbox.com/scl/fi/mv7cm0i6cbvu55bn7wtdv/CV__2_page____Lucas_Pollock_Muguruza.pdf?rlkey=1oeobusqyxo9k8mi0xf76txes&st=37mli9bn&dl=0" class="cv-link scroll-animate" target="_blank">Download CV (PDF)</a>
-            <p class="cv-update scroll-animate">Last updated: January 2026</p>
+            <p class="cv-update scroll-animate">Last updated: December 2025</p>
             <div class="cv-content-wrapper">
                 <div class="coursework-section scroll-animate">
                     <h3>MSc Coursework</h3>
@@ -377,7 +377,7 @@
 
     <footer class="footer">
         <span class="footer-email">lucas-pollock[at]outlook[dot]com</span>
-        <span class="footer-info" id="footerInfo">Last updated: January 2026</span>
+        <span class="footer-info" id="footerInfo">Last updated: February 2026</span>
     </footer>
 
     <script>
@@ -408,7 +408,7 @@
         document.addEventListener('DOMContentLoaded',observeElements);
 
         let showGreeting=false;const footerInfo=document.getElementById('footerInfo');
-        setInterval(()=>{footerInfo.classList.add('fade-out');setTimeout(()=>{footerInfo.textContent=showGreeting?'Last updated: January 2026':getTimeBasedGreeting();showGreeting=!showGreeting;footerInfo.classList.remove('fade-out');footerInfo.classList.add('fade-in');setTimeout(()=>footerInfo.classList.remove('fade-in'),600)},600)},7500);
+        setInterval(()=>{footerInfo.classList.add('fade-out');setTimeout(()=>{footerInfo.textContent=showGreeting?'Last updated: February 2026':getTimeBasedGreeting();showGreeting=!showGreeting;footerInfo.classList.remove('fade-out');footerInfo.classList.add('fade-in');setTimeout(()=>footerInfo.classList.remove('fade-in'),600)},600)},7500);
         const updateDate=()=>{const m=['January','February','March','April','May','June','July','August','September','October','November','December'],n=new Date(),my=`${m[n.getMonth()]} ${n.getFullYear()}`;if(footerInfo.textContent.includes('Last updated'))footerInfo.textContent=`Last updated: ${my}`};updateDate();
     </script>
 </body>
