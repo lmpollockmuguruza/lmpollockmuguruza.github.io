@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Feliz Cumpleaños, Sofi</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -197,27 +198,28 @@
     font-style: normal;
   }
 
-  .t-tags {
+  .thing-line {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    align-items: center;
     justify-content: center;
-    max-width: 500px;
-    margin-top: 8px;
+    gap: 14px;
+    line-height: 1;
+    margin-top: 10px;
   }
 
-  .tag {
+  .thing-emoji {
+    font-size: clamp(22px, 3.5vw, 32px);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .thing-text {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(16px, 2.4vw, 21px);
+    font-size: clamp(22px, 3.8vw, 38px);
+    font-weight: 300;
     font-style: italic;
     color: var(--text-mid);
-    padding: 6px 18px;
-    border: 1px solid var(--blush);
-    border-radius: 100px;
-    cursor: none;
-    transition: background 0.25s, color 0.25s, border-color 0.25s;
   }
-  .tag:hover { background: var(--terracotta); border-color: var(--terracotta); color: #fff; }
 
   .t-sig {
     font-family: 'Cormorant Garamond', serif;
@@ -276,6 +278,12 @@
     15%  { opacity: 0.7; }
     85%  { opacity: 0.4; }
     100% { opacity: 0;   transform: translateY(var(--rise)) scale(0.4); }
+  }
+
+  @keyframes confettiFly {
+    0%   { opacity: 0;   transform: translateY(0) translateX(0) rotate(0deg) scale(1); }
+    20%  { opacity: 0.9; }
+    100% { opacity: 0;   transform: translateY(var(--rise)) translateX(var(--drift)) rotate(var(--rotate)) scale(0.6); }
   }
 </style>
 </head>
@@ -342,7 +350,44 @@ function playClick() {
   } catch(e) {}
 }
 
-// ── PARTICLES ────────────────────────────────────────────────────────────────
+// ── CONFETTI BURST — small, minimal, one-time on feliz cumpleaños ─────────────
+function launchConfetti() {
+  const container = document.getElementById('particles');
+  // tiny squares and circles, muted palette — not party-store
+  const colors = ['#E8A898','#C4622D','#C9965A','#D4B896','#A07860'];
+  const count = 28;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    const size = 3 + Math.random() * 4;
+    const isSquare = Math.random() > 0.5;
+    const x = 20 + Math.random() * 60; // keep it central
+    const rise = -(80 + Math.random() * 180);
+    const drift = (Math.random() - 0.5) * 120;
+    const dur = 1.4 + Math.random() * 1.2;
+    const delay = Math.random() * 0.6;
+    const rotate = Math.random() * 360;
+    p.style.cssText = `
+      position:absolute;
+      width:${size}px; height:${size}px;
+      left:${x}%;
+      bottom:30%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      border-radius:${isSquare ? '1px' : '50%'};
+      opacity:0;
+      animation: confettiFly ${dur}s ease-out ${delay}s forwards;
+      --drift:${drift}px;
+      --rise:${rise}px;
+      --rotate:${rotate}deg;
+    `;
+    container.appendChild(p);
+  }
+  setTimeout(() => {
+    // only remove confetti elements, not ember particles
+    Array.from(container.children).forEach(c => {
+      if (c.style.animation && c.style.animation.includes('confettiFly')) c.remove();
+    });
+  }, 4000);
+}
 function launchParticles() {
   const container = document.getElementById('particles');
   const colors = ['#E8A898','#C4622D','#C9965A','#D4B896','#F2C9B8'];
@@ -380,8 +425,8 @@ const beats = [
   { mode:'replace', bg:'#FFF9F4', ghost:false,
     html:`<div class="el t-giant">Hola, <span class="accent">Sofi</span></div>` },
   // 2
-  { mode:'add', bg:'#FFF9F4', ghost:false,
-    html:`<div class="el gap" style="animation-delay:.12s; font-family:'Cormorant Garamond',serif; font-size:clamp(16px,2.2vw,22px); font-style:italic; font-weight:300; color:var(--text-light)">Feliz cumpleaños — aunque se me pasase por 30 minutos</div>` },
+  { mode:'add', bg:'#FFF9F4', ghost:false, confetti: true,
+    html:`<div class="el gap" style="animation-delay:.12s; font-family:'Cormorant Garamond',serif; font-size:clamp(16px,2.2vw,22px); font-style:italic; font-weight:300; color:var(--text-light)">Feliz cumpleaños 🎂 — aunque se me pasase por 30 minutos</div>` },
 
   // 3
   { mode:'replace', bg:'#FDF7F0', ghost:true,
@@ -409,7 +454,7 @@ const beats = [
   // 11
   { mode:'replace', bg:'#FFF9F4', ghost:false,
     html:`<div class="el t-label" style="margin-bottom:18px">01</div>
-          <div class="el t-mid" style="animation-delay:.1s">No hueles tan feo — de hecho, estoy <span class="accent">algo adicto</span> a tu olor</div>` },
+          <div class="el t-mid" style="animation-delay:.1s">No hueles tan feo 🌿 — de hecho, estoy <span class="accent">algo adicto</span> a tu olor</div>` },
 
   // 12
   { mode:'replace', bg:'#FFF9F4', ghost:false,
@@ -434,16 +479,23 @@ const beats = [
 
   // 17
   { mode:'replace', bg:'#FDF7F0', ghost:false,
-    html:`<div class="el" style="font-family:'Cormorant Garamond',serif; font-size:clamp(18px,2.8vw,28px); font-style:italic; font-weight:300; color:var(--text-light)">todo lo que te hace, tú</div>` },
+    html:`<div class="el" style="font-family:'Cormorant Garamond',serif; font-size:clamp(18px,2.8vw,28px); font-style:italic; font-weight:300; color:var(--text-light)">todo lo que te hace, tú ✨</div>` },
 
   // 18 — first tag
   { mode:'add', bg:'#FDF7F0', ghost:false,
-    html:`<div class="el t-tags gap2" id="tags"><span class="tag">Tus experimentos</span></div>` },
-  { mode:'tag', bg:'#FDF7F0', ghost:false, html:`<span class="tag el">Tus historias</span>` },
-  { mode:'tag', bg:'#FDF7F0', ghost:false, html:`<span class="tag el">Tus chismes</span>` },
-  { mode:'tag', bg:'#FDF7F0', ghost:false, html:`<span class="tag el">Tus dibujos</span>` },
-  { mode:'tag', bg:'#FDF7F0', ghost:false, html:`<span class="tag el">Tus corridas</span>` },
-  { mode:'tag', bg:'#FDF7F0', ghost:false, html:`<span class="tag el">Tus series</span>` },
+    html:`<div class="el thing-line gap2" style="animation-delay:.1s"><span class="thing-emoji">🧪</span><span class="thing-text">Tus experimentos</span></div>` },
+  { mode:'add', bg:'#FDF7F0', ghost:false,
+    html:`<div class="el thing-line" style="animation-delay:.05s"><span class="thing-emoji">📖</span><span class="thing-text">Tus historias</span></div>` },
+  { mode:'add', bg:'#FDF7F0', ghost:false,
+    html:`<div class="el thing-line" style="animation-delay:.05s"><span class="thing-emoji">🫢</span><span class="thing-text">Tus chismes</span></div>` },
+  { mode:'add', bg:'#FDF7F0', ghost:false,
+    html:`<div class="el thing-line" style="animation-delay:.05s"><span class="thing-emoji">🎨</span><span class="thing-text">Tus dibujos</span></div>` },
+  { mode:'add', bg:'#FDF7F0', ghost:false,
+    html:`<div class="el thing-line" style="animation-delay:.05s"><span class="thing-emoji">🏃‍♀️</span><span class="thing-text">Tus corridas</span></div>` },
+  { mode:'add', bg:'#FDF7F0', ghost:false,
+    html:`<div class="el thing-line" style="animation-delay:.05s"><span class="thing-emoji">📺</span><span class="thing-text">Tus series</span></div>` },
+  { mode:'add', bg:'#FDF7F0', ghost:false,
+    html:`<div class="el thing-line" style="animation-delay:.05s"><span class="thing-emoji">🌱</span><span class="thing-text" style="color:var(--text-light); font-style:italic">Y tus futuros hobbies!!</span></div>` },
 
   // 24
   { mode:'replace', bg:'#FDF7F0', ghost:false,
@@ -523,6 +575,7 @@ function apply(beat) {
     if (container) container.insertAdjacentHTML('beforeend', beat.html);
   }
   if (beat.particles) setTimeout(launchParticles, 400);
+  if (beat.confetti) setTimeout(launchConfetti, 200);
 }
 
 function updateBack() {
