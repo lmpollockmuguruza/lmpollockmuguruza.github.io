@@ -534,6 +534,13 @@ const beats = [
   // 36 — signature + particles
   { mode:'replace', bg:'#FDF7F0', ghost:false, particles: true,
     html:`<div class="el t-sig">con cariño, &nbsp;<em>Lucas</em></div>` },
+
+  // 37 — song dedication
+  { mode:'add', bg:'#FDF7F0', ghost:false,
+    html:`<div class="el" style="animation-delay:.5s; margin-top:40px; display:flex; flex-direction:column; align-items:center; gap:14px;">
+      <div style="font-family:'Cormorant Garamond',serif; font-size:clamp(13px,2vw,17px); font-style:italic; font-weight:300; color:var(--text-light); letter-spacing:0.04em">porque se puede dedicar dos veces</div>
+      <iframe style="border-radius:10px; opacity:0.92;" src="https://open.spotify.com/embed/track/1dyA1Re4QEQQWGDDT7h9TK?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>` },
 ];
 
 // ── ENGINE ────────────────────────────────────────────────────────────────────
