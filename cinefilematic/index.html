@@ -18,7 +18,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
 
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -44,6 +44,7 @@
             --border-subtle: rgba(26, 24, 22, 0.07);
             --border-hover: rgba(107, 39, 55, 0.22);
             --track: rgba(26, 24, 22, 0.10);
+            --mono: 'DM Mono', ui-monospace, 'SF Mono', monospace;
             --glass-blur: 20px;
             --glass-border: 1px solid rgba(255, 255, 255, 0.55);
             --glass-shadow: 0 4px 24px rgba(26, 24, 22, 0.05), 0 1px 3px rgba(26, 24, 22, 0.03);
@@ -93,7 +94,7 @@
             overflow-x: hidden;
         }
 
-        /* Film grain */
+        /* Film grain — tactile, anti-AI texture sitting over everything */
         body::before {
             content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999;
             opacity: 0.022;
@@ -102,7 +103,7 @@
         }
         [data-theme="dark"] body::before { opacity: 0.04; }
 
-        /* Cinema vignette — only really felt in the dark */
+        /* Cinema vignette — felt mostly in the dark */
         .vignette {
             position: fixed; inset: 0; pointer-events: none; z-index: 1;
             background: radial-gradient(120% 100% at 50% 40%, transparent 55%, rgba(26,24,22,0.05) 100%);
@@ -128,9 +129,9 @@
 
         /* ─── Top bar ─── */
         .topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.05rem 2rem; display: flex; align-items: center; justify-content: space-between; }
-        .back-link { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.76rem; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.02em; transition: color var(--t); }
+        .back-link { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.68rem; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.04em; transition: color var(--t); }
         .back-link:hover { color: var(--burgundy); }
-        .back-link svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.5; transition: transform var(--t); }
+        .back-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; transition: transform var(--t); }
         .back-link:hover svg { transform: translateX(-3px); }
 
         .theme-toggle { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: var(--glass-border); border-radius: 50%; background: var(--bg-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); cursor: pointer; transition: all var(--t); color: var(--ink-muted); }
@@ -146,31 +147,43 @@
         .screen.active { display: block; animation: stepIn 0.55s var(--ease-spring); }
         @keyframes stepIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ─── Cover ─── */
-        .cover { text-align: center; }
-        .cover-mark { display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; margin-bottom: 2rem; }
-        .cover-mark svg { width: 56px; height: 56px; }
+        /* ─── Cover · editorial masthead ─── */
+        .cover { text-align: left; }
+        .cover-mark { display: block; width: 46px; height: 46px; margin-bottom: 1.5rem; }
+        .cover-mark svg { width: 46px; height: 46px; }
         .cover-mark .ring { fill: none; stroke: var(--burgundy); stroke-width: 1.1; opacity: 0.9; }
         .cover-mark .blade { stroke: var(--burgundy); stroke-width: 1.1; opacity: 0.55; stroke-linecap: round; }
         .cover-mark .pupil { fill: var(--burgundy); opacity: 0.85; }
-        .cover h1 { font-family: 'EB Garamond', Georgia, serif; font-size: 3.5rem; font-weight: 400; letter-spacing: -0.035em; line-height: 1; color: var(--ink); margin-bottom: 1.4rem; }
-        .cover-tag { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 1.3rem; line-height: 1.4; color: var(--burgundy); margin-bottom: 1.5rem; }
-        .cover-body { font-size: 0.95rem; line-height: 1.8; color: var(--ink-muted); max-width: 440px; margin: 0 auto 2.25rem; }
-        .cover-meta { font-size: 0.62rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.18em; color: var(--ink-faint); margin-bottom: 2.5rem; display: flex; align-items: center; justify-content: center; gap: 0.7rem; flex-wrap: wrap; }
+        .masthead { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.6rem; }
+        .masthead .k { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-muted); white-space: nowrap; }
+        .masthead .rule { flex: 1; height: 1px; background: var(--border-subtle); }
+        .cover h1 { font-family: 'EB Garamond', Georgia, serif; font-size: 4rem; font-weight: 500; letter-spacing: -0.045em; line-height: 0.96; color: var(--ink); margin-bottom: 1.3rem; }
+        .cover-tag { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 1.32rem; line-height: 1.4; color: var(--burgundy); margin-bottom: 1.4rem; max-width: 30ch; }
+        .cover-body { font-size: 0.95rem; line-height: 1.8; color: var(--ink-muted); max-width: 50ch; }
+        .cover-body em { font-family: 'EB Garamond', serif; font-style: italic; font-size: 1.05rem; color: var(--ink-soft); }
+
+        /* The programme — a contents list, like a festival catalogue */
+        .contents-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); margin: 2.25rem 0 0.4rem; display: block; }
+        .contents { list-style: none; border-top: 1px solid var(--border-subtle); margin-bottom: 2.25rem; }
+        .contents li { display: flex; align-items: baseline; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border-subtle); }
+        .c-num { font-family: var(--mono); font-size: 0.66rem; color: var(--burgundy); letter-spacing: 0.06em; min-width: 1.7rem; }
+        .c-name { font-family: 'EB Garamond', Georgia, serif; font-size: 1.04rem; color: var(--ink-soft); }
+        .cover-meta { font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-faint); margin-bottom: 1.6rem; display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
         .cover-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-ghost); }
-        .cover-hint { font-size: 0.72rem; color: var(--ink-faint); margin-top: 1.1rem; font-style: italic; font-family: 'EB Garamond', serif; }
+        .cover-hint { font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.86rem; color: var(--ink-faint); margin-top: 1.1rem; }
 
         /* ─── Step heads ─── */
-        .step-label { display: inline-flex; align-items: center; gap: 0.55rem; font-size: 0.6rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.2em; color: var(--ink-faint); margin-bottom: 1.5rem; }
-        .step-label .num { font-variant-numeric: tabular-nums; color: var(--burgundy); }
-        .step-label::after { content: ''; width: 28px; height: 1px; background: var(--border-subtle); }
-        .step h2 { font-family: 'EB Garamond', Georgia, serif; font-size: 2.1rem; font-weight: 400; letter-spacing: -0.02em; line-height: 1.12; color: var(--ink); margin-bottom: 0.6rem; }
-        .step-sub { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 1.02rem; line-height: 1.5; color: var(--ink-muted); margin-bottom: 2rem; max-width: 460px; }
+        .step-label { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-muted); margin-bottom: 1.4rem; }
+        .step-label .num { color: var(--burgundy); }
+        .step-label::after { content: ''; width: 30px; height: 1px; background: var(--border-subtle); }
+        .step h2 { font-family: 'EB Garamond', Georgia, serif; font-size: 2.15rem; font-weight: 500; letter-spacing: -0.025em; line-height: 1.1; color: var(--ink); margin-bottom: 0.6rem; }
+        .step h2 em { font-style: italic; color: var(--burgundy); }
+        .step-sub { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 1.04rem; line-height: 1.5; color: var(--ink-muted); margin-bottom: 2rem; max-width: 52ch; }
 
         /* Field group label */
-        .glabel { display: block; font-size: 0.64rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.13em; color: var(--ink-muted); margin: 1.9rem 0 0.85rem; }
+        .glabel { display: block; font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.13em; color: var(--ink-muted); margin: 1.9rem 0 0.85rem; }
         .glabel:first-of-type { margin-top: 0; }
-        .glabel .opt { text-transform: none; letter-spacing: 0; font-weight: 300; font-style: italic; font-family: 'EB Garamond', serif; font-size: 0.85rem; color: var(--ink-faint); margin-left: 0.3rem; }
+        .glabel .opt { text-transform: none; letter-spacing: 0; font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.92rem; color: var(--ink-faint); margin-left: 0.35rem; }
 
         /* ─── Mood cards ─── */
         .mood-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
@@ -210,7 +223,7 @@
         .seen-item.active .seen-box svg { opacity: 1; transform: scale(1); }
         .seen-text { min-width: 0; }
         .seen-title { display: block; font-size: 0.82rem; font-weight: 500; color: var(--ink); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .seen-meta { display: block; font-size: 0.66rem; color: var(--ink-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .seen-meta { display: block; font-family: var(--mono); font-size: 0.62rem; color: var(--ink-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* ─── Sliders ─── */
         .dial { margin-bottom: 1.9rem; }
@@ -238,13 +251,14 @@
         .toggle input:checked + .toggle-track { background: var(--burgundy); }
         .toggle input:checked + .toggle-track::after { transform: translateX(18px); }
 
-        /* ─── Textarea ─── */
-        textarea { width: 100%; padding: 0.85rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--ink); background: var(--bg-card); border: var(--glass-border); border-radius: var(--radius-xs); outline: none; transition: all var(--t); line-height: 1.55; resize: vertical; min-height: 92px; }
-        textarea::placeholder { color: var(--ink-faint); font-weight: 300; }
-        textarea:focus { border-color: var(--border-hover); box-shadow: 0 0 0 3px var(--burgundy-wash); background: var(--bg-card-hover); }
+        /* ─── Inputs ─── */
+        textarea, input.text { width: 100%; padding: 0.85rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--ink); background: var(--bg-card); border: var(--glass-border); border-radius: var(--radius-xs); outline: none; transition: all var(--t); line-height: 1.55; }
+        textarea { resize: vertical; min-height: 92px; }
+        textarea::placeholder, input.text::placeholder { color: var(--ink-faint); font-weight: 300; }
+        textarea:focus, input.text:focus { border-color: var(--border-hover); box-shadow: 0 0 0 3px var(--burgundy-wash); background: var(--bg-card-hover); }
 
         /* ─── Buttons ─── */
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.8rem 1.6rem; border-radius: var(--radius-xs); border: 1px solid transparent; cursor: pointer; transition: all var(--t); text-decoration: none; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.85rem 1.6rem; border-radius: var(--radius-xs); border: 1px solid transparent; cursor: pointer; transition: all var(--t); text-decoration: none; }
         .btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
         .btn-primary { background: var(--ink); color: var(--bg); }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--glass-shadow-hover); }
@@ -255,27 +269,27 @@
         /* ─── Bottom nav ─── */
         .nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 90; display: none; align-items: center; justify-content: space-between; max-width: 600px; margin: 0 auto; padding: 1.1rem 1.5rem; background: linear-gradient(0deg, var(--bg) 55%, transparent); }
         .nav.show { display: flex; }
-        .nav-back { font-family: 'DM Sans', sans-serif; font-size: 0.78rem; color: var(--ink-muted); background: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem; transition: color var(--t); padding: 0.5rem 0; }
-        .nav-back svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.5; transition: transform var(--t); }
+        .nav-back { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); background: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem; transition: color var(--t); padding: 0.5rem 0; }
+        .nav-back svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; transition: transform var(--t); }
         .nav-back:hover { color: var(--burgundy); } .nav-back:hover svg { transform: translateX(-3px); }
         .nav-back.hidden { visibility: hidden; }
-        .nav-next { font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--bg); background: var(--ink); border: none; border-radius: var(--radius-xs); padding: 0.72rem 1.5rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all var(--t); }
-        .nav-next svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; transition: transform var(--t); }
+        .nav-next { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--bg); background: var(--ink); border: none; border-radius: var(--radius-xs); padding: 0.75rem 1.4rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all var(--t); }
+        .nav-next svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; transition: transform var(--t); }
         .nav-next:hover { transform: translateY(-2px); box-shadow: var(--glass-shadow-hover); } .nav-next:hover svg { transform: translateX(3px); }
 
         /* ─── Output ─── */
-        .output h2 { font-family: 'EB Garamond', Georgia, serif; font-size: 2.3rem; font-weight: 400; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 0.5rem; }
-        .output-sub { font-family: 'EB Garamond', serif; font-style: italic; font-size: 1.05rem; color: var(--ink-muted); margin-bottom: 1.75rem; }
+        .output h2 { font-family: 'EB Garamond', Georgia, serif; font-size: 2.4rem; font-weight: 500; letter-spacing: -0.025em; color: var(--ink); margin-bottom: 0.5rem; }
+        .output-sub { font-family: 'EB Garamond', serif; font-style: italic; font-size: 1.08rem; color: var(--ink-muted); margin-bottom: 1.75rem; }
         .out-actions { display: flex; gap: 0.7rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
         .code-block { position: relative; background: #15110f; border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-sm); padding: 1.25rem 1.35rem; overflow: auto; max-height: 360px; box-shadow: var(--glass-shadow); }
-        .code-block pre { font-family: 'SF Mono', ui-monospace, 'Fira Code', monospace; font-size: 0.72rem; line-height: 1.75; color: #cfc8bd; white-space: pre-wrap; word-break: break-word; margin: 0; }
-        .out-foot { margin-top: 1.5rem; display: flex; align-items: center; gap: 1.1rem; font-size: 0.78rem; }
-        .out-foot a { color: var(--ink-muted); text-decoration: none; border-bottom: 1px solid var(--border-subtle); cursor: pointer; transition: all var(--t); }
+        .code-block pre { font-family: var(--mono); font-size: 0.72rem; line-height: 1.75; color: #cfc8bd; white-space: pre-wrap; word-break: break-word; margin: 0; }
+        .out-foot { margin-top: 1.5rem; display: flex; align-items: center; gap: 1.1rem; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase; }
+        .out-foot a { color: var(--ink-muted); text-decoration: none; border-bottom: 1px solid var(--border-subtle); cursor: pointer; transition: all var(--t); padding-bottom: 1px; }
         .out-foot a:hover { color: var(--burgundy); border-color: var(--burgundy); }
-        .out-note { font-size: 0.72rem; color: var(--ink-faint); font-style: italic; font-family: 'EB Garamond', serif; margin-top: 1.5rem; line-height: 1.6; }
+        .colophon { font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.84rem; color: var(--ink-faint); margin-top: 1.5rem; line-height: 1.6; }
 
         /* ─── Toast ─── */
-        .toast { position: fixed; bottom: 5.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg); padding: 0.7rem 1.25rem; border-radius: var(--radius-xs); font-size: 0.78rem; box-shadow: var(--glass-shadow-hover); opacity: 0; pointer-events: none; transition: all 0.4s var(--ease-spring); z-index: 300; }
+        .toast { position: fixed; bottom: 5.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg); font-family: var(--mono); padding: 0.7rem 1.25rem; border-radius: var(--radius-xs); font-size: 0.72rem; letter-spacing: 0.03em; box-shadow: var(--glass-shadow-hover); opacity: 0; pointer-events: none; transition: all 0.4s var(--ease-spring); z-index: 300; }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         ::-webkit-scrollbar { width: 7px; height: 7px; }
@@ -287,9 +301,9 @@
             .stage { padding: 0 1.2rem 7rem; }
             .topbar { padding: 0.85rem 1.2rem; }
             .screen { padding-top: 5rem; }
-            .cover h1 { font-size: 2.7rem; }
-            .cover-tag { font-size: 1.12rem; }
-            .step h2 { font-size: 1.7rem; }
+            .cover h1 { font-size: 3rem; }
+            .cover-tag { font-size: 1.15rem; }
+            .step h2 { font-size: 1.75rem; }
             .mood-grid { grid-template-columns: 1fr; }
             .seen-grid { grid-template-columns: 1fr; }
             .nav { padding: 1rem 1.2rem; }
@@ -309,7 +323,7 @@
     <nav class="topbar">
         <a href="../ofinterest/" class="back-link">
             <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-            of interest
+            OF INTEREST
         </a>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
             <svg class="icon-moon" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
@@ -334,23 +348,38 @@
                     <circle class="pupil" cx="28" cy="28" r="3.4"/>
                 </svg>
             </div>
-            <h1>Cinefilematic</h1>
-            <p class="cover-tag">A questionnaire for people who've already<br>seen the obvious ones.</p>
-            <p class="cover-body">Answer honestly — the moods, the dials, the films you've worn out — and it composes a brief. Not a recommendation; a <em>brief</em>. Download it, hand it to the LLM of your choice, and ask for five films for tonight. The taste stays yours. The legwork doesn't.</p>
-            <div class="cover-meta">
-                <span>Seven questions</span><span class="dot"></span><span>About four minutes</span><span class="dot"></span><span>Nothing leaves your device</span>
+            <div class="masthead">
+                <span class="k">A film questionnaire</span>
+                <span class="rule"></span>
+                <span class="k">Est. MMXXVI</span>
             </div>
-            <button class="btn btn-primary" id="beginBtn">Begin
+            <h1>Cinefilematic</h1>
+            <p class="cover-tag">For people who've already seen the obvious ones — and still scrolled the library for forty minutes and watched nothing.</p>
+            <p class="cover-body">It won't recommend you a film. It does something better: it interviews you for a few minutes, then composes a <em>brief</em> — a precise, faintly opinionated dossier on what you actually want tonight. Download it, hand it to the LLM of your choice, and ask for five. The taste stays yours; only the legwork is outsourced.</p>
+
+            <span class="contents-label">The programme</span>
+            <ol class="contents" id="contents"></ol>
+
+            <div class="cover-meta" id="coverMeta"></div>
+            <button class="btn btn-primary" id="beginBtn">Begin the interview
                 <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
             </button>
-            <p class="cover-hint">Skip anything you like. More answers, sharper picks.</p>
+            <p class="cover-hint">Answer what you like; skip what you don't. The more you give it, the sharper the cut.</p>
         </section>
 
-        <!-- ═══ 1 · MOOD & POSTURE ═══ -->
+        <!-- ═══ 1 · THE OCCASION ═══ -->
         <section class="screen step" data-screen="1">
-            <div class="step-label"><span class="num">01</span> Mood</div>
-            <h2>What do you want tonight to feel like?</h2>
-            <p class="step-sub">Pick one or two. This is the loudest signal you can give.</p>
+            <div class="step-label"><span class="num">01</span> The occasion</div>
+            <h2>Why tonight?</h2>
+            <p class="step-sub">Be honest about the assignment. A nightcap, a date and a bout of insomnia all want very different films.</p>
+            <div class="chips" id="occasion" data-group data-key="occasion" data-select="single"></div>
+        </section>
+
+        <!-- ═══ 2 · MOOD & POSTURE ═══ -->
+        <section class="screen step" data-screen="2">
+            <div class="step-label"><span class="num">02</span> Mood &amp; posture</div>
+            <h2>What do you want to <em>feel</em>?</h2>
+            <p class="step-sub">Pick one or two. There's no wrong answer — wanting to wallow is as valid as wanting to be lifted.</p>
             <div class="mood-grid" id="moods" data-group data-key="moods" data-select="multi" data-max="2"></div>
 
             <label class="glabel">And the film should…</label>
@@ -364,11 +393,22 @@
             </div>
         </section>
 
-        <!-- ═══ 2 · THE EVENING ═══ -->
-        <section class="screen step" data-screen="2">
-            <div class="step-label"><span class="num">02</span> The evening</div>
-            <h2>Set the room.</h2>
-            <p class="step-sub">The practical constraints the curator has to respect.</p>
+        <!-- ═══ 3 · THE ANCHOR ═══ -->
+        <section class="screen step" data-screen="3">
+            <div class="step-label"><span class="num">03</span> The anchor</div>
+            <h2>The last one that really hit you?</h2>
+            <p class="step-sub">Name a film you saw recently — loved, hated, couldn't shake. It tells the curator where your head is, and which way to push.</p>
+            <label class="glabel">Recent film <span class="opt">a title, and a word on how it landed</span></label>
+            <input class="text" type="text" id="lastFilm" autocomplete="off" placeholder="e.g. The Zone of Interest — it hasn't left me">
+            <label class="glabel">And tonight…</label>
+            <div class="chips" id="lastDir" data-group data-key="lastDir" data-select="single"></div>
+        </section>
+
+        <!-- ═══ 4 · THE ROOM ═══ -->
+        <section class="screen step" data-screen="4">
+            <div class="step-label"><span class="num">04</span> The room</div>
+            <h2>Set the scene.</h2>
+            <p class="step-sub">The constraints the curator has to actually respect — no point recommending a three-hour fast for a restless table of four.</p>
 
             <label class="glabel">How long have you got?</label>
             <div class="chips" id="runtime" data-group data-key="runtime" data-select="single"></div>
@@ -386,33 +426,33 @@
             <div class="chips" id="services" data-group data-key="services" data-select="multi"></div>
         </section>
 
-        <!-- ═══ 3 · DEPTH ═══ -->
-        <section class="screen step" data-screen="3">
-            <div class="step-label"><span class="num">03</span> Calibration</div>
+        <!-- ═══ 5 · DEPTH ═══ -->
+        <section class="screen step" data-screen="5">
+            <div class="step-label"><span class="num">05</span> Depth</div>
             <h2>How deep do you swim?</h2>
-            <p class="step-sub">So the curator knows how far past the canon to reach — and never condescends.</p>
+            <p class="step-sub">So the curator knows how far past the canon to reach — and never, ever condescends.</p>
             <div class="options" id="depth" data-group data-key="depth" data-select="single"></div>
 
             <label class="glabel">Roughly how many films have you seen? <span class="opt">optional, cinephiles love this number</span></label>
             <div class="chips" id="volume" data-group data-key="volume" data-select="single"></div>
         </section>
 
-        <!-- ═══ 4 · SEEN GRID ═══ -->
-        <section class="screen step" data-screen="4">
-            <div class="step-label"><span class="num">04</span> Calibration</div>
+        <!-- ═══ 6 · CALIBRATION ═══ -->
+        <section class="screen step" data-screen="6">
+            <div class="step-label"><span class="num">06</span> Calibration</div>
             <h2>Tick the ones you've already seen.</h2>
-            <p class="step-sub">A spread from the well-trodden to the deep cuts. It tells the curator your range — and what to leave out.</p>
+            <p class="step-sub">A spread from the well-trodden to the deep cuts. It tells the curator your true range — and what to leave out.</p>
             <div class="seen-grid" id="seen" data-group data-key="seen" data-select="multi"></div>
         </section>
 
-        <!-- ═══ 5 · COORDINATES ═══ -->
-        <section class="screen step" data-screen="5">
-            <div class="step-label"><span class="num">05</span> Coordinates</div>
+        <!-- ═══ 7 · COORDINATES ═══ -->
+        <section class="screen step" data-screen="7">
+            <div class="step-label"><span class="num">07</span> Coordinates</div>
             <h2>Where's your taste pointed?</h2>
-            <p class="step-sub">A few fixed stars. Free text reads best — be specific, be unguarded.</p>
+            <p class="step-sub">A few fixed stars. Free text reads best — be specific, be unguarded, name names.</p>
 
             <label class="glabel">Films or directors you love</label>
-            <textarea id="loved" placeholder="e.g. In the Mood for Love. Anything by Kiarostami. Paris, Texas. The Zone of Interest floored me."></textarea>
+            <textarea id="loved" placeholder="e.g. In the Mood for Love. Anything by Kiarostami. Paris, Texas. I'd follow Lucrecia Martel anywhere."></textarea>
 
             <label class="glabel">National cinemas &amp; traditions you're drawn to</label>
             <div class="chips" id="cinemas" data-group data-key="cinemas" data-select="multi"></div>
@@ -421,17 +461,17 @@
             <div class="chips" id="forms" data-group data-key="forms" data-select="multi"></div>
         </section>
 
-        <!-- ═══ 6 · DIALS ═══ -->
-        <section class="screen step" data-screen="6">
-            <div class="step-label"><span class="num">06</span> Tonight's dials</div>
+        <!-- ═══ 8 · DIALS ═══ -->
+        <section class="screen step" data-screen="8">
+            <div class="step-label"><span class="num">08</span> Tonight's dials</div>
             <h2>Fine-tune for this evening.</h2>
-            <p class="step-sub">Not who you are in general — where you want to sit <em>tonight</em>.</p>
+            <p class="step-sub">Not who you are in general — where you want to sit <em>tonight</em>. The middle is a perfectly good answer.</p>
             <div id="dials"></div>
         </section>
 
-        <!-- ═══ 7 · AVOID & NOTE ═══ -->
-        <section class="screen step" data-screen="7">
-            <div class="step-label"><span class="num">07</span> Last thing</div>
+        <!-- ═══ 9 · HARD LIMITS & A NOTE ═══ -->
+        <section class="screen step" data-screen="9">
+            <div class="step-label"><span class="num">09</span> Last thing</div>
             <h2>Anything to keep off the table?</h2>
             <p class="step-sub">Hard limits, and a free hand to tell the curator whatever else matters.</p>
 
@@ -439,11 +479,11 @@
             <div class="chips" id="avoid" data-group data-key="avoid" data-select="multi"></div>
 
             <label class="glabel">A note for the curator <span class="opt">optional, and the most useful box on the page</span></label>
-            <textarea id="note" placeholder="A film you saw recently and how it landed. Something happening tonight. A director you've meant to start. A line you can't shake. Anything."></textarea>
+            <textarea id="note" placeholder="A curiosity you've been circling. Something happening tonight. A director you've meant to start. A line you can't shake. Anything you'd tell a friend behind the counter at the video shop."></textarea>
         </section>
 
         <!-- ═══ OUTPUT ═══ -->
-        <section class="screen output" data-screen="8">
+        <section class="screen output" data-screen="10">
             <h2>Your brief is ready.</h2>
             <p class="output-sub">Hand it to your LLM and ask for five. Or just say “go”.</p>
             <div class="out-actions">
@@ -461,7 +501,7 @@
                 <a id="editLink">← Edit answers</a>
                 <a id="restartLink">Start over</a>
             </div>
-            <p class="out-note">Works with any model — Claude, ChatGPT, Gemini. Nothing was sent anywhere; the whole brief was composed here, on your machine.</p>
+            <p class="colophon">Works with any model — Claude, ChatGPT, Gemini. Nothing was sent anywhere; the whole brief was set by hand, here, on your machine.</p>
         </section>
     </main>
 
@@ -475,6 +515,10 @@
 
 <script>
 /* ═══════════════════ DATA ═══════════════════ */
+const CONTENTS = ['The occasion', 'Mood & posture', 'The last one that hit you', 'The room', 'Depth', 'Calibration', 'Coordinates', "Tonight's dials", 'Hard limits & a note'];
+
+const OCCASION = ['Winding down', 'Switching my brain off', 'A date', 'Friends are over', "Can't sleep", 'I want to feel something', 'A Sunday-night ritual', 'Avoiding something else', 'Just me and the dark'];
+
 const MOODS = [
     { word: 'Comfort',    gloss: 'warm, like a hand on the shoulder' },
     { word: 'Catharsis',  gloss: 'let me feel it; let me cry' },
@@ -490,7 +534,9 @@ const MOODS = [
     { word: 'Elsewhere',  gloss: 'take me far from here' }
 ];
 
-const MOOD_DIR = ['Meet my mood', 'Shift my mood'];
+const MOOD_DIR = ['Meet me there', 'Pull me out of it'];
+
+const LAST_DIR = ['Give me its cousin', 'Give me a contrast', 'No strong feeling — surprise me'];
 
 const RUNTIME = ['Under 100 min', 'Around two hours', 'Up to three hours', 'Epic is welcome (3 hr+)', 'Runtime is no object'];
 const COMPANY = ['Alone', 'With a partner', 'With friends', 'With family'];
@@ -532,27 +578,29 @@ const CINEMAS = ['French New Wave', 'Italian neorealism', 'New Hollywood', 'Clas
 const FORMS = ['Cinematography & light', 'Writing & dialogue', 'Performances', 'Editing & rhythm', 'Sound & score', 'Production design', 'Long takes', 'Colour', 'Faces & close-ups', 'Structure & form'];
 
 const DIALS = [
-    { key: 'familiar', left: 'Familiar',        right: 'Uncharted',           lp: 'the familiar',   rp: 'the uncharted',         label: 'Familiar ↔ Uncharted' },
-    { key: 'era',      left: 'Of our moment',   right: 'From the vault',      lp: 'our moment',     rp: 'the vault',             label: 'Of our moment ↔ From the vault' },
-    { key: 'plot',     left: 'Plot-driven',     right: 'Mood & atmosphere',   lp: 'plot',           rp: 'mood & atmosphere',     label: 'Plot-driven ↔ Mood & atmosphere' },
-    { key: 'demand',   left: 'Gentle',          right: 'Demanding',           lp: 'the gentle',     rp: 'the demanding',         label: 'Gentle ↔ Demanding' },
-    { key: 'style',    left: 'Grounded & real', right: 'Stylised & formal',   lp: 'grounded & real',rp: 'stylised & formal',     label: 'Grounded ↔ Stylised' }
+    { key: 'familiar', left: 'Familiar',        right: 'Uncharted',          lp: 'the familiar',    rp: 'the uncharted',      label: 'Familiar ↔ Uncharted' },
+    { key: 'meaning',  left: 'Pure pleasure',   right: 'Meaning & weight',   lp: 'pure pleasure',   rp: 'meaning & weight',   label: 'Pure pleasure ↔ Meaning & weight' },
+    { key: 'plot',     left: 'Plot-driven',     right: 'Mood & atmosphere',  lp: 'plot',            rp: 'mood & atmosphere',  label: 'Plot-driven ↔ Mood & atmosphere' },
+    { key: 'era',      left: 'Of our moment',   right: 'From the vault',     lp: 'our moment',      rp: 'the vault',          label: 'Of our moment ↔ From the vault' },
+    { key: 'style',    left: 'Grounded & real', right: 'Stylised & formal',  lp: 'grounded & real', rp: 'stylised & formal',  label: 'Grounded ↔ Stylised' }
 ];
 
 const AVOID = ['Graphic violence', 'Sexual violence', 'Horror', 'Bleak / no hope', 'Sentimentality', 'Hollywood blockbusters', 'Over three hours', 'Musicals', 'Animation', 'Shaky cam', 'Heavy gore', 'Jump scares'];
 
 /* ═══════════════════ STATE ═══════════════════ */
 const DEFAULT_STATE = {
-    moods: [], moodDir: 'Meet my mood', energy: 50,
+    occasion: '',
+    moods: [], moodDir: 'Meet me there', energy: 50,
+    lastFilm: '', lastDir: '',
     runtime: '', company: '', subtitles: 'ok', services: [],
     depth: '', volume: '',
     seen: [],
     loved: '', cinemas: [], forms: [],
-    dials: { familiar: 50, era: 50, plot: 50, demand: 50, style: 50 },
+    dials: { familiar: 50, meaning: 50, plot: 50, era: 50, style: 50 },
     avoid: [], note: ''
 };
 let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-const SAVE_KEY = 'cinefilematic.v1';
+const SAVE_KEY = 'cinefilematic.v2';
 
 function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {} }
 function load() {
@@ -568,7 +616,13 @@ function load() {
 
 /* ═══════════════════ BUILD CONTROLS ═══════════════════ */
 const $ = id => document.getElementById(id);
+function esc(s) { return String(s).replace(/"/g, '&quot;'); }
 
+function buildContents() {
+    $('contents').innerHTML = CONTENTS.map((c, i) =>
+        `<li><span class="c-num">${String(i + 1).padStart(2, '0')}</span><span class="c-name">${c}</span></li>`).join('');
+    $('coverMeta').innerHTML = `<span>${CONTENTS.length} questions</span><span class="dot"></span><span>About four minutes</span><span class="dot"></span><span>Nothing leaves this device</span>`;
+}
 function buildMoods() {
     $('moods').innerHTML = MOODS.map(m =>
         `<button class="mood-card" data-val="${m.word}" aria-pressed="false">
@@ -601,7 +655,6 @@ function buildDials() {
             <div class="dial-phrase" id="phrase-${d.key}"></div>
         </div>`).join('');
 }
-function esc(s) { return String(s).replace(/"/g, '&quot;'); }
 
 /* ═══════════════════ SELECT LOGIC ═══════════════════ */
 function wireGroups() {
@@ -653,6 +706,7 @@ function renderFromState() {
     DIALS.forEach(d => { document.querySelector(`[data-dial="${d.key}"]`).value = state.dials[d.key]; });
     $('subtitles').checked = state.subtitles !== 'no';
     $('subText').textContent = state.subtitles === 'no' ? 'Prefer none tonight' : 'Happy to read tonight';
+    $('lastFilm').value = state.lastFilm;
     $('loved').value = state.loved;
     $('note').value = state.note;
     updateDialPhrases();
@@ -671,13 +725,15 @@ function wireInputs() {
         $('subText').textContent = e.target.checked ? 'Happy to read tonight' : 'Prefer none tonight';
         save();
     });
+    $('lastFilm').addEventListener('input', e => { state.lastFilm = e.target.value; save(); });
     $('loved').addEventListener('input', e => { state.loved = e.target.value; save(); });
     $('note').addEventListener('input', e => { state.note = e.target.value; save(); });
 }
 
 /* ═══════════════════ NAVIGATION ═══════════════════ */
-const TOTAL_STEPS = 7;          // question screens
-let screen = 0;                 // 0 = cover, 1..7 steps, 8 = output
+const TOTAL_STEPS = 9;          // question screens
+const OUTPUT = 10;
+let screen = 0;                 // 0 = cover, 1..9 steps, 10 = output
 
 function showScreen(n) {
     screen = n;
@@ -685,9 +741,7 @@ function showScreen(n) {
     const el = document.querySelector(`.screen[data-screen="${n}"]`);
     if (el) el.classList.add('active');
 
-    const nav = $('nav');
-    nav.classList.toggle('show', n >= 1 && n <= TOTAL_STEPS);
-    $('navBack').classList.toggle('hidden', false);
+    $('nav').classList.toggle('show', n >= 1 && n <= TOTAL_STEPS);
     $('navNext').innerHTML = n === TOTAL_STEPS
         ? 'Compose the brief <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>'
         : 'Continue <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>';
@@ -697,14 +751,11 @@ function showScreen(n) {
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
 function next() {
-    if (screen === TOTAL_STEPS) { compose(); showScreen(8); }
+    if (screen === TOTAL_STEPS) { compose(); showScreen(OUTPUT); }
     else showScreen(screen + 1);
 }
-function back() {
-    if (screen >= 1) showScreen(screen - 1);
-}
+function back() { if (screen >= 1) showScreen(screen - 1); }
 
 /* ═══════════════════ MARKDOWN ═══════════════════ */
 function bq(t) { return t.trim().split(/\n/).map(l => '> ' + l).join('\n'); }
@@ -719,11 +770,15 @@ function buildMarkdown() {
     p(`## For the curator`); p('');
     p(`You are a film curator with the instincts of a great repertory programmer — someone who seems to have seen everything and recommends like a trusted friend rather than an algorithm. Below is a brief from one viewer, for one evening. Read all of it, then choose **exactly five films** for *tonight*.`); p('');
     p(`Hold to these principles:`); p('');
-    p(`- **Tonight is the brief, not a lifetime.** Weigh their mood, posture and dials for this evening above any generic sense of their taste.`);
-    p(`- **Calibrate the obscurity.** Use their stated depth and the films they have already seen to judge how far off the map to wander. For a seasoned viewer, skip the canonical entry points and reach for the lesser-seen; for a lighter viewer, stay legible. Never condescend, never show off.`);
-    p(`- **Never recommend a film they have told you they have seen**, and go easy on its obvious neighbours unless there is a real reason.`);
+    p(`- **Read the occasion as the real assignment.** A date, a bout of insomnia and a Sunday-night ritual are different commissions; let it frame everything else.`);
+    p(`- **Tonight is the brief, not a lifetime.** Weigh their mood, posture and dials for this evening above any general sense of their taste.`);
+    p(`- **Take the mood literally.** If they've asked the film to *meet* a dark mood rather than lift it, honour that — the wish to sit inside a feeling is as legitimate as the wish to escape it. Never assume they need cheering up.`);
+    p(`- **Mind pleasure versus meaning.** Where they've set that dial is the deepest tell of the night — it separates the film they'll enjoy from the one they'll be grateful you named.`);
+    p(`- **Use the anchor.** If they've named a recent film, treat it as a compass and give its cousin or its deliberate contrast, exactly as asked.`);
+    p(`- **Calibrate the obscurity.** Use their stated depth and the films they've already seen to judge how far off the map to wander. For a seasoned viewer, skip the canonical entry points and reach for the lesser-seen; for a lighter one, stay legible. Never condescend, never show off.`);
+    p(`- **Never recommend a film they've told you they've seen**, and go easy on its obvious neighbours unless there is a real reason.`);
     p(`- **Honour every hard constraint** — runtime, company, subtitles, and everything on the avoid list — without exception.`);
-    p(`- **Spread the five.** Vary era, country and register across the set unless they have asked for a tight focus, and include at least one film they are unlikely to have heard of.`);
+    p(`- **Be decisive.** They have already scrolled the library for forty minutes; give five confident films, not forty hedged ones. Spread them across era, country and register, and include at least one they're unlikely to have heard of.`);
     p(`- **Argue for tonight specifically.** For each film, say why it answers *this* mood and *these* dials, not merely why it is good.`); p('');
     p(`For each of the five, give:`); p('');
     p(`> **Title** — Director, Year, Country · runtime  `);
@@ -734,12 +789,24 @@ function buildMarkdown() {
     p('---'); p('');
     p(`## The brief`); p('');
 
+    if (state.occasion) { p(`**The occasion:** ${state.occasion}`); p(''); }
+
     const moods = state.moods.length ? state.moods.join(' · ') : 'Open — surprise them';
-    const dir = state.moodDir.includes('Shift') ? ' *(let the film shift them out of it)*' : ' *(let the film meet them in it)*';
+    const dir = state.moodDir === 'Pull me out of it' ? ' *(let the film pull them out of it)*' : ' *(let the film meet them there)*';
     p(`**Tonight they want to feel:** ${moods}${state.moods.length ? dir : ''}`); p('');
     p(`**How much it should ask of them:** ${dialPhrase(state.energy, 'being held — easy to fall into', 'being challenged — they will lean in')}`); p('');
 
-    p(`**The evening**`);
+    if (state.lastFilm.trim()) {
+        const map = {
+            'Give me its cousin': 'something in its register',
+            'Give me a contrast': 'a deliberate contrast',
+            'No strong feeling — surprise me': 'no strong pull — free to surprise'
+        };
+        p(`**The last film that hit them:** ${state.lastFilm.trim()}`); p('');
+        if (state.lastDir) { p(`**…and tonight they want:** ${map[state.lastDir] || state.lastDir}`); p(''); }
+    }
+
+    p(`**The room**`);
     const ev = [];
     if (state.runtime) ev.push(`- Runtime — ${state.runtime}`);
     if (state.company) ev.push(`- Watching — ${state.company}`);
@@ -825,8 +892,11 @@ function toast(msg) {
 
 /* ═══════════════════ INIT ═══════════════════ */
 function init() {
+    buildContents();
+    buildChips('occasion', OCCASION);
     buildMoods();
     buildChips('moodDir', MOOD_DIR);
+    buildChips('lastDir', LAST_DIR);
     buildChips('runtime', RUNTIME);
     buildChips('company', COMPANY);
     buildChips('services', SERVICES);
@@ -848,7 +918,7 @@ function init() {
     $('navBack').addEventListener('click', back);
     $('downloadBtn').addEventListener('click', download);
     $('copyBtn').addEventListener('click', copy);
-    $('editLink').addEventListener('click', () => showScreen(7));
+    $('editLink').addEventListener('click', () => showScreen(TOTAL_STEPS));
     $('restartLink').addEventListener('click', () => {
         if (confirm('Start over? This clears your answers.')) {
             state = JSON.parse(JSON.stringify(DEFAULT_STATE));
