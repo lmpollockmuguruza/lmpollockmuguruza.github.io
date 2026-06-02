@@ -143,22 +143,28 @@
 
         /* ─── Stage ─── */
         .stage { position: relative; z-index: 2; max-width: 600px; margin: 0 auto; padding: 0 1.5rem 8rem; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; }
-        .screen { display: none; padding: 6rem 0 1rem; }
-        .screen.active { display: block; animation: stepIn 0.55s var(--ease-spring); }
-        @keyframes stepIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        .screen { display: none; padding: 6rem 0 1rem; position: relative; }
+        /* Filmic cross-dissolve: opacity-led, a breath of scale, a focus-pull blur clearing */
+        .screen.active { display: block; animation: dissolve 0.7s var(--ease) both; }
+        @keyframes dissolve { from { opacity: 0; transform: scale(0.992) translateY(7px); filter: blur(2px); } to { opacity: 1; transform: none; filter: none; } }
+
+        /* Big ghosted editorial numeral behind each step head */
+        .step-fig { position: absolute; top: 5rem; right: -0.25rem; font-family: 'EB Garamond', Georgia, serif; font-size: 7.5rem; line-height: 1; font-weight: 500; color: var(--ink); opacity: 0.05; pointer-events: none; user-select: none; z-index: -1; letter-spacing: -0.04em; }
+        [data-theme="dark"] .step-fig { opacity: 0.06; }
 
         /* ─── Cover · editorial masthead ─── */
         .cover { text-align: left; }
         .cover-mark { display: block; width: 46px; height: 46px; margin-bottom: 1.5rem; }
-        .cover-mark svg { width: 46px; height: 46px; }
+        .cover-mark svg { width: 46px; height: 46px; transform-origin: 50% 50%; animation: aperture 7s var(--ease) infinite; }
+        @keyframes aperture { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         .cover-mark .ring { fill: none; stroke: var(--burgundy); stroke-width: 1.1; opacity: 0.9; }
         .cover-mark .blade { stroke: var(--burgundy); stroke-width: 1.1; opacity: 0.55; stroke-linecap: round; }
         .cover-mark .pupil { fill: var(--burgundy); opacity: 0.85; }
         .masthead { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.6rem; }
         .masthead .k { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-muted); white-space: nowrap; }
         .masthead .rule { flex: 1; height: 1px; background: var(--border-subtle); }
-        .cover h1 { font-family: 'EB Garamond', Georgia, serif; font-size: 4rem; font-weight: 500; letter-spacing: -0.045em; line-height: 0.96; color: var(--ink); margin-bottom: 1.3rem; }
-        .cover-tag { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 1.32rem; line-height: 1.4; color: var(--burgundy); margin-bottom: 1.4rem; max-width: 30ch; }
+        .cover h1 { font-family: 'EB Garamond', Georgia, serif; font-size: 4.2rem; font-weight: 500; letter-spacing: -0.045em; line-height: 0.95; color: var(--ink); margin-bottom: 1.3rem; }
+        .cover-tag { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 1.35rem; line-height: 1.4; color: var(--burgundy); margin-bottom: 1.4rem; max-width: 30ch; }
         .cover-body { font-size: 0.95rem; line-height: 1.8; color: var(--ink-muted); max-width: 50ch; }
         .cover-body em { font-family: 'EB Garamond', serif; font-style: italic; font-size: 1.05rem; color: var(--ink-soft); }
 
@@ -173,17 +179,19 @@
         .cover-hint { font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.86rem; color: var(--ink-faint); margin-top: 1.1rem; }
 
         /* ─── Step heads ─── */
-        .step-label { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-muted); margin-bottom: 1.4rem; }
+        .step-label { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-muted); margin-bottom: 1.4rem; position: relative; }
         .step-label .num { color: var(--burgundy); }
         .step-label::after { content: ''; width: 30px; height: 1px; background: var(--border-subtle); }
-        .step h2 { font-family: 'EB Garamond', Georgia, serif; font-size: 2.15rem; font-weight: 500; letter-spacing: -0.025em; line-height: 1.1; color: var(--ink); margin-bottom: 0.6rem; }
+        .step h2 { font-family: 'EB Garamond', Georgia, serif; font-size: 2.15rem; font-weight: 500; letter-spacing: -0.025em; line-height: 1.1; color: var(--ink); margin-bottom: 0.6rem; position: relative; }
         .step h2 em { font-style: italic; color: var(--burgundy); }
-        .step-sub { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 1.04rem; line-height: 1.5; color: var(--ink-muted); margin-bottom: 2rem; max-width: 52ch; }
+        .step-sub { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 1.04rem; line-height: 1.5; color: var(--ink-muted); margin-bottom: 2rem; max-width: 52ch; position: relative; }
 
-        /* Field group label */
+        /* Field group label + helper text */
         .glabel { display: block; font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.13em; color: var(--ink-muted); margin: 1.9rem 0 0.85rem; }
         .glabel:first-of-type { margin-top: 0; }
         .glabel .opt { text-transform: none; letter-spacing: 0; font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.92rem; color: var(--ink-faint); margin-left: 0.35rem; }
+        .field-help { font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.9rem; line-height: 1.5; color: var(--ink-faint); margin-top: 0.7rem; max-width: 52ch; }
+        .field-help strong { font-style: normal; font-weight: 500; color: var(--ink-muted); }
 
         /* ─── Mood cards ─── */
         .mood-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
@@ -238,7 +246,7 @@
         input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--burgundy); border: 3px solid var(--bg); box-shadow: var(--glass-shadow); }
         input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.12); }
         input[type="range"]:active::-webkit-slider-thumb { transform: scale(0.95); }
-        .dial-phrase { text-align: center; font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.86rem; color: var(--burgundy); margin-top: 0.3rem; min-height: 1.2em; transition: opacity var(--t); }
+        .dial-phrase { text-align: center; font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.88rem; color: var(--burgundy); margin-top: 0.3rem; min-height: 1.2em; transition: opacity var(--t); }
 
         /* ─── Toggle row ─── */
         .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 1rem; background: var(--bg-card); border: var(--glass-border); border-radius: var(--radius-xs); transition: all var(--t); }
@@ -301,9 +309,10 @@
             .stage { padding: 0 1.2rem 7rem; }
             .topbar { padding: 0.85rem 1.2rem; }
             .screen { padding-top: 5rem; }
-            .cover h1 { font-size: 3rem; }
+            .cover h1 { font-size: 3.1rem; }
             .cover-tag { font-size: 1.15rem; }
             .step h2 { font-size: 1.75rem; }
+            .step-fig { display: none; }
             .mood-grid { grid-template-columns: 1fr; }
             .seen-grid { grid-template-columns: 1fr; }
             .nav { padding: 1rem 1.2rem; }
@@ -311,7 +320,7 @@
 
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-            .ambient-orb { animation: none !important; }
+            .ambient-orb, .cover-mark svg { animation: none !important; }
         }
     </style>
 </head>
@@ -321,9 +330,9 @@
     <div class="progress"><div class="progress-bar" id="bar"></div></div>
 
     <nav class="topbar">
-        <a href="../ofinterest/" class="back-link">
+        <a href="../" class="back-link">
             <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-            OF INTEREST
+            LUCAS POLLOCK MUGURUZA
         </a>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
             <svg class="icon-moon" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
@@ -351,7 +360,6 @@
             <div class="masthead">
                 <span class="k">A film questionnaire</span>
                 <span class="rule"></span>
-                <span class="k">Est. MMXXVI</span>
             </div>
             <h1>Cinefilematic</h1>
             <p class="cover-tag">For people who've already seen the obvious ones — and still scrolled the library for forty minutes and watched nothing.</p>
@@ -381,6 +389,7 @@
             <h2>What do you want to <em>feel</em>?</h2>
             <p class="step-sub">Pick one or two. There's no wrong answer — wanting to wallow is as valid as wanting to be lifted.</p>
             <div class="mood-grid" id="moods" data-group data-key="moods" data-select="multi" data-max="2"></div>
+            <p class="field-help">Two clashing moods is fine — it tells the curator your range, not a contradiction.</p>
 
             <label class="glabel">And the film should…</label>
             <div class="chips" id="moodDir" data-group data-key="moodDir" data-select="single"></div>
@@ -465,18 +474,24 @@
         <section class="screen step" data-screen="8">
             <div class="step-label"><span class="num">08</span> Tonight's dials</div>
             <h2>Fine-tune for this evening.</h2>
-            <p class="step-sub">Not who you are in general — where you want to sit <em>tonight</em>. The middle is a perfectly good answer.</p>
+            <p class="step-sub">Not who you are in general — where you want to sit <em>tonight</em>.</p>
+            <p class="field-help">Treat these as leanings, not targets. The centre keeps the field wide open; the extremes are where you box the curator in — so only push them when you mean it.</p>
             <div id="dials"></div>
         </section>
 
-        <!-- ═══ 9 · HARD LIMITS & A NOTE ═══ -->
+        <!-- ═══ 9 · INTERPRETATION ═══ -->
         <section class="screen step" data-screen="9">
             <div class="step-label"><span class="num">09</span> Last thing</div>
-            <h2>Anything to keep off the table?</h2>
-            <p class="step-sub">Hard limits, and a free hand to tell the curator whatever else matters.</p>
+            <h2>How much rope?</h2>
+            <p class="step-sub">You've drawn the picture. Now decide how literally the curator should take it — this is the biggest lever on what comes back.</p>
+
+            <label class="glabel">How closely should it follow your answers?</label>
+            <div class="chips" id="leash" data-group data-key="leash" data-select="single"></div>
+            <p class="field-help"><strong>Loose</strong> reads your overall mood and will surprise you — it's where the best picks tend to come from. <strong>Strict</strong> follows each answer closely, which is precise but can feel boxed-in. When in doubt, stay loose.</p>
 
             <label class="glabel">Please avoid</label>
             <div class="chips" id="avoid" data-group data-key="avoid" data-select="multi"></div>
+            <p class="field-help">Only your genuine hard-nos. Over-avoiding strands the curator — if you'd merely prefer less of something, leave it unchecked and let the mood handle it.</p>
 
             <label class="glabel">A note for the curator <span class="opt">optional, and the most useful box on the page</span></label>
             <textarea id="note" placeholder="A curiosity you've been circling. Something happening tonight. A director you've meant to start. A line you can't shake. Anything you'd tell a friend behind the counter at the video shop."></textarea>
@@ -515,7 +530,7 @@
 
 <script>
 /* ═══════════════════ DATA ═══════════════════ */
-const CONTENTS = ['The occasion', 'Mood & posture', 'The last one that hit you', 'The room', 'Depth', 'Calibration', 'Coordinates', "Tonight's dials", 'Hard limits & a note'];
+const CONTENTS = ['The occasion', 'Mood & posture', 'The last one that hit you', 'The room', 'Depth', 'Calibration', 'Coordinates', "Tonight's dials", 'How literal — and a note'];
 
 const OCCASION = ['Winding down', 'Switching my brain off', 'A date', 'Friends are over', "Can't sleep", 'I want to feel something', 'A Sunday-night ritual', 'Avoiding something else', 'Just me and the dark'];
 
@@ -587,6 +602,8 @@ const DIALS = [
 
 const AVOID = ['Graphic violence', 'Sexual violence', 'Horror', 'Bleak / no hope', 'Sentimentality', 'Hollywood blockbusters', 'Over three hours', 'Musicals', 'Animation', 'Shaky cam', 'Heavy gore', 'Jump scares'];
 
+const LEASH = ['Read between the lines', 'A balance', 'Stick to my answers'];
+
 /* ═══════════════════ STATE ═══════════════════ */
 const DEFAULT_STATE = {
     occasion: '',
@@ -597,10 +614,11 @@ const DEFAULT_STATE = {
     seen: [],
     loved: '', cinemas: [], forms: [],
     dials: { familiar: 50, meaning: 50, plot: 50, era: 50, style: 50 },
-    avoid: [], note: ''
+    avoid: [], note: '',
+    leash: 'Read between the lines'
 };
 let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-const SAVE_KEY = 'cinefilematic.v2';
+const SAVE_KEY = 'cinefilematic.v3';
 
 function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {} }
 function load() {
@@ -621,7 +639,7 @@ function esc(s) { return String(s).replace(/"/g, '&quot;'); }
 function buildContents() {
     $('contents').innerHTML = CONTENTS.map((c, i) =>
         `<li><span class="c-num">${String(i + 1).padStart(2, '0')}</span><span class="c-name">${c}</span></li>`).join('');
-    $('coverMeta').innerHTML = `<span>${CONTENTS.length} questions</span><span class="dot"></span><span>About four minutes</span><span class="dot"></span><span>Nothing leaves this device</span>`;
+    $('coverMeta').innerHTML = `<span>Nine questions</span><span class="dot"></span><span>About four minutes</span><span class="dot"></span><span>Nothing leaves this device</span>`;
 }
 function buildMoods() {
     $('moods').innerHTML = MOODS.map(m =>
@@ -655,6 +673,14 @@ function buildDials() {
             <div class="dial-phrase" id="phrase-${d.key}"></div>
         </div>`).join('');
 }
+function buildFigures() {
+    document.querySelectorAll('.screen.step').forEach(s => {
+        const n = String(s.getAttribute('data-screen')).padStart(2, '0');
+        const fig = document.createElement('span');
+        fig.className = 'step-fig'; fig.setAttribute('aria-hidden', 'true'); fig.textContent = n;
+        s.insertBefore(fig, s.firstChild);
+    });
+}
 
 /* ═══════════════════ SELECT LOGIC ═══════════════════ */
 function wireGroups() {
@@ -687,12 +713,13 @@ function renderGroup(group) {
     });
 }
 
-/* ═══════════════════ DIAL PHRASING ═══════════════════ */
+/* ═══════════════════ DIAL PHRASING (words, not numbers — keeps the LLM from over-fitting) ═══════════════════ */
 function dialPhrase(v, left, right) {
-    if (v >= 45 && v <= 55) return `held in balance`;
+    const d = Math.abs(v - 50);
+    if (d <= 6) return 'balanced';
     const toward = v > 55 ? right : left;
-    const strength = Math.round(Math.abs(v - 50) / 5);
-    return `${strength} / 10 toward ${toward}`;
+    const intensity = d <= 18 ? 'leans toward' : d <= 34 ? 'toward' : 'strongly toward';
+    return `${intensity} ${toward}`;
 }
 function updateDialPhrases() {
     $('phrase-energy').textContent = dialPhrase(state.energy, 'being held', 'being challenged');
@@ -764,49 +791,52 @@ function buildMarkdown() {
     const L = [];
     const p = s => L.push(s);
 
+    const leashMap = {
+        'Read between the lines': "**Read between the lines.** Treat everything below as atmosphere and direction, not instructions. Lean on your own taste, weigh the overall mood above any single answer, and feel free to surprise them — a great unexpected pick beats a literal one.",
+        'A balance': "**Strike a balance.** Honour the spirit of their answers, but let your own judgement break ties and fill the gaps. Overall mood first, the particulars second.",
+        'Stick to my answers': "**Stay close to the brief.** Follow their stated leanings fairly closely — while still recommending only films you'd genuinely stand behind."
+    };
+
     p(`# Cinefilematic — a brief for tonight`); p('');
     p(`*Paste this whole file into the LLM of your choice — Claude, ChatGPT, Gemini, whichever. It already carries its own instructions; you needn't add anything. Send it, and ask for five.*`); p('');
     p('---'); p('');
     p(`## For the curator`); p('');
-    p(`You are a film curator with the instincts of a great repertory programmer — someone who seems to have seen everything and recommends like a trusted friend rather than an algorithm. Below is a brief from one viewer, for one evening. Read all of it, then choose **exactly five films** for *tonight*.`); p('');
-    p(`Hold to these principles:`); p('');
-    p(`- **Read the occasion as the real assignment.** A date, a bout of insomnia and a Sunday-night ritual are different commissions; let it frame everything else.`);
-    p(`- **Tonight is the brief, not a lifetime.** Weigh their mood, posture and dials for this evening above any general sense of their taste.`);
-    p(`- **Take the mood literally.** If they've asked the film to *meet* a dark mood rather than lift it, honour that — the wish to sit inside a feeling is as legitimate as the wish to escape it. Never assume they need cheering up.`);
-    p(`- **Mind pleasure versus meaning.** Where they've set that dial is the deepest tell of the night — it separates the film they'll enjoy from the one they'll be grateful you named.`);
-    p(`- **Use the anchor.** If they've named a recent film, treat it as a compass and give its cousin or its deliberate contrast, exactly as asked.`);
-    p(`- **Calibrate the obscurity.** Use their stated depth and the films they've already seen to judge how far off the map to wander. For a seasoned viewer, skip the canonical entry points and reach for the lesser-seen; for a lighter one, stay legible. Never condescend, never show off.`);
-    p(`- **Never recommend a film they've told you they've seen**, and go easy on its obvious neighbours unless there is a real reason.`);
-    p(`- **Honour every hard constraint** — runtime, company, subtitles, and everything on the avoid list — without exception.`);
-    p(`- **Be decisive.** They have already scrolled the library for forty minutes; give five confident films, not forty hedged ones. Spread them across era, country and register, and include at least one they're unlikely to have heard of.`);
-    p(`- **Argue for tonight specifically.** For each film, say why it answers *this* mood and *these* dials, not merely why it is good.`); p('');
-    p(`For each of the five, give:`); p('');
+    p(`You are a film curator with the instincts of a great repertory programmer — someone who seems to have seen everything and recommends like a trusted friend, not an algorithm.`); p('');
+    p(`Read the whole brief first and form a single impression of the person and the evening, the way a friend would across a table — not a checklist. Then choose **exactly five films** for tonight, plus one wildcard.`); p('');
+    p(`A few things to hold in mind:`); p('');
+    p(`- **Most of this is mood-setting, not instruction.** The feelings, leanings and dials describe a *direction and a key to play in* — catch the overall mood rather than satisfying each field. If your taste says a film is right even though it bends a soft preference, trust your taste.`);
+    p(`- **Only a few things are hard:** runtime, who's watching, subtitles, and the avoid list. Never recommend a film listed as already seen. Everything else is soft.`);
+    p(`- **Calibrate the obscurity** to their depth and the films they've seen — for a seasoned viewer skip the obvious entry points and reach for the lesser-seen; for a lighter one stay legible. Never condescend.`);
+    p(`- **Be decisive.** They've already scrolled the library for forty minutes. Give five confident films, not forty hedged ones — and spread them across era, country and register, with at least one they're unlikely to know.`); p('');
+    p(`For each of the five:`); p('');
     p(`> **Title** — Director, Year, Country · runtime  `);
-    p(`> Two or three sentences: what it is, and why it fits tonight, with one concrete, sensory reason to trust it.  `);
+    p(`> Two or three sentences: what it is, and why it suits *this* evening, with one concrete, sensory reason to trust it.  `);
     p(`> *Where to find it*, if you can.`); p('');
-    p(`Then add a single **wildcard** — one stranger, riskier choice, clearly marked, for if none of the five quite bite.`); p('');
+    p(`Close with one **wildcard** — a stranger, riskier choice, clearly marked.`); p('');
     p(`Write with precision and restraint. Assume an intelligent viewer. No hype, no spoilers, no emojis, no exclamation marks.`); p('');
     p('---'); p('');
     p(`## The brief`); p('');
 
+    p(`**How to read this brief —** ${leashMap[state.leash] || leashMap['A balance']}`); p('');
+
     if (state.occasion) { p(`**The occasion:** ${state.occasion}`); p(''); }
 
-    const moods = state.moods.length ? state.moods.join(' · ') : 'Open — surprise them';
-    const dir = state.moodDir === 'Pull me out of it' ? ' *(let the film pull them out of it)*' : ' *(let the film meet them there)*';
-    p(`**Tonight they want to feel:** ${moods}${state.moods.length ? dir : ''}`); p('');
-    p(`**How much it should ask of them:** ${dialPhrase(state.energy, 'being held — easy to fall into', 'being challenged — they will lean in')}`); p('');
-
+    p(`**The feeling they're after** *(the key to play in — lean into it, don't over-fit)*`);
+    const feel = [];
+    const moods = state.moods.length ? state.moods.join(' · ') : 'open — surprise them';
+    const dir = state.moods.length ? (state.moodDir === 'Pull me out of it' ? ' — and would like the film to pull them out of it' : ' — and would like the film to meet them there') : '';
+    feel.push(`- Wants to feel: ${moods}${dir}`);
+    feel.push(`- Posture: ${dialPhrase(state.energy, 'being held (easy to fall into)', 'being challenged (they will lean in)')}`);
     if (state.lastFilm.trim()) {
-        const map = {
-            'Give me its cousin': 'something in its register',
-            'Give me a contrast': 'a deliberate contrast',
-            'No strong feeling — surprise me': 'no strong pull — free to surprise'
-        };
-        p(`**The last film that hit them:** ${state.lastFilm.trim()}`); p('');
-        if (state.lastDir) { p(`**…and tonight they want:** ${map[state.lastDir] || state.lastDir}`); p(''); }
+        const am = { 'Give me its cousin': ' — leaning toward something in its register', 'Give me a contrast': ' — leaning toward a deliberate contrast', 'No strong feeling — surprise me': ' — no strong pull, open to surprise' };
+        feel.push(`- Recently struck by: ${state.lastFilm.trim()}${state.lastDir ? (am[state.lastDir] || '') : ''}`);
     }
+    p(feel.join('\n')); p('');
 
-    p(`**The room**`);
+    p(`**Tonight's leanings** *(soft dials, not targets)*`);
+    p(DIALS.map(d => `- ${d.label}: ${dialPhrase(state.dials[d.key], d.lp, d.rp)}`).join('\n')); p('');
+
+    p(`**Who's watching & where**`);
     const ev = [];
     if (state.runtime) ev.push(`- Runtime — ${state.runtime}`);
     if (state.company) ev.push(`- Watching — ${state.company}`);
@@ -814,22 +844,25 @@ function buildMarkdown() {
     if (state.services.length) ev.push(`- Can watch on — ${state.services.join(', ')}`);
     p(ev.join('\n')); p('');
 
+    p(`**Range & taste**`);
+    const rt = [];
     let depthLine = state.depth || 'unspecified';
     if (state.volume) depthLine += ` · roughly ${state.volume} films seen`;
-    p(`**Depth** — ${depthLine}`); p('');
+    rt.push(`- Depth — ${depthLine}`);
+    if (state.seen.length) rt.push(`- Already seen *(do not recommend these)* — ${state.seen.join('; ')}`);
+    if (state.cinemas.length) rt.push(`- Drawn to — ${state.cinemas.join(', ')}`);
+    if (state.forms.length) rt.push(`- Pays attention to — ${state.forms.join(', ')}`);
+    p(rt.join('\n')); p('');
+    if (state.loved.trim()) { p(`Films & directors they love:`); p(''); p(bq(state.loved)); p(''); }
 
-    if (state.seen.length) {
-        p(`**Already seen** *(a short calibration set — gauge their range from these, and do not recommend them)*`); p('');
-        p(state.seen.join('; ') + '.'); p('');
+    if (state.avoid.length || state.seen.length) {
+        p(`**Hard limits** *(honour these exactly)*`);
+        const hl = [];
+        if (state.avoid.length) hl.push(`- Avoid — ${state.avoid.join('; ')}`);
+        if (state.seen.length) hl.push(`- Recommend nothing from the “already seen” list above.`);
+        p(hl.join('\n')); p('');
     }
-    if (state.loved.trim()) { p(`**They love**`); p(''); p(bq(state.loved)); p(''); }
-    if (state.cinemas.length) { p(`**Drawn to** — ${state.cinemas.join(', ')}`); p(''); }
-    if (state.forms.length) { p(`**Pays attention to** — ${state.forms.join(', ')}`); p(''); }
 
-    p(`**Tonight's dials**`);
-    p(DIALS.map(d => `- ${d.label}: ${dialPhrase(state.dials[d.key], d.lp, d.rp)}`).join('\n')); p('');
-
-    if (state.avoid.length) { p(`**Please avoid** — ${state.avoid.join('; ')}`); p(''); }
     if (state.note.trim()) { p(`**A note from the viewer**`); p(''); p(bq(state.note)); p(''); }
 
     p('---'); p('');
@@ -907,6 +940,8 @@ function init() {
     buildChips('forms', FORMS);
     buildDials();
     buildChips('avoid', AVOID);
+    buildChips('leash', LEASH);
+    buildFigures();
 
     load();
     wireGroups();
