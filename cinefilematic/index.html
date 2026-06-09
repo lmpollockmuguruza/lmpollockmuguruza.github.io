@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
-    <title>Cinefilematic — a film questionnaire for tonight</title>
-    <meta name="description" content="A questionnaire for people who've already seen the obvious ones. Answer honestly, download a brief, hand it to the LLM of your choice, and ask for five films for tonight.">
+    <title>Cinefilematic — a film questionnaire for tonight, or for a season</title>
+    <meta name="description" content="A psychologically literate film questionnaire. It interviews you — or your film club — and composes a one-of-a-kind brief: hand it to any LLM and ask for five films for tonight, or a whole season.">
     <meta property="og:title" content="Cinefilematic">
-    <meta property="og:description" content="A questionnaire for cinephiles. It composes a brief — you hand it to an LLM and ask for five films for tonight.">
+    <meta property="og:description" content="A questionnaire for cinephiles and film clubs. It composes a unique, numbered brief — you hand it to an LLM and ask for five films, or a season.">
     <meta property="og:type" content="website">
 
     <!-- Favicon (shared with main site) -->
@@ -19,310 +19,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
-
-    <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-        /* ─── Palette (shared with the rest of the site) ─── */
-        :root {
-            --bg: #f2efe9;
-            --bg-warm: #e9e5dd;
-            --bg-card: rgba(255, 255, 255, 0.55);
-            --bg-card-hover: rgba(255, 255, 255, 0.78);
-            --bg-glass: rgba(255, 255, 255, 0.38);
-            --bg-glass-strong: rgba(255, 255, 255, 0.55);
-            --ink: #1a1816;
-            --ink-soft: #3d3833;
-            --ink-muted: #7a7368;
-            --ink-faint: #b0a99e;
-            --ink-ghost: #d4cfc8;
-            --burgundy: #6b2737;
-            --burgundy-soft: #8b3747;
-            --burgundy-wash: rgba(107, 39, 55, 0.05);
-            --burgundy-glow: rgba(107, 39, 55, 0.10);
-            --border: rgba(255, 255, 255, 0.6);
-            --border-subtle: rgba(26, 24, 22, 0.07);
-            --border-hover: rgba(107, 39, 55, 0.22);
-            --track: rgba(26, 24, 22, 0.10);
-            --mono: 'DM Mono', ui-monospace, 'SF Mono', monospace;
-            --glass-blur: 20px;
-            --glass-border: 1px solid rgba(255, 255, 255, 0.55);
-            --glass-shadow: 0 4px 24px rgba(26, 24, 22, 0.05), 0 1px 3px rgba(26, 24, 22, 0.03);
-            --glass-shadow-hover: 0 8px 32px rgba(107, 39, 55, 0.08), 0 2px 8px rgba(107, 39, 55, 0.04);
-            --radius: 20px;
-            --radius-sm: 12px;
-            --radius-xs: 9px;
-            --ease: cubic-bezier(0.4, 0, 0.2, 1);
-            --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
-            --t: 0.35s var(--ease);
-        }
-
-        [data-theme="dark"] {
-            --bg: #100f0e;
-            --bg-warm: #1a1917;
-            --bg-card: rgba(255, 255, 255, 0.045);
-            --bg-card-hover: rgba(255, 255, 255, 0.08);
-            --bg-glass: rgba(255, 255, 255, 0.035);
-            --bg-glass-strong: rgba(255, 255, 255, 0.07);
-            --ink: #ece8e1;
-            --ink-soft: #cbc5bb;
-            --ink-muted: #8d857b;
-            --ink-faint: #5e584f;
-            --ink-ghost: #3a3632;
-            --burgundy: #c97f8d;
-            --burgundy-soft: #d99ba7;
-            --burgundy-wash: rgba(201, 127, 141, 0.07);
-            --burgundy-glow: rgba(201, 127, 141, 0.14);
-            --border: rgba(255, 255, 255, 0.09);
-            --border-subtle: rgba(255, 255, 255, 0.05);
-            --border-hover: rgba(201, 127, 141, 0.26);
-            --track: rgba(255, 255, 255, 0.10);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.09);
-            --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.22), 0 1px 3px rgba(0, 0, 0, 0.14);
-            --glass-shadow-hover: 0 8px 32px rgba(201, 127, 141, 0.12), 0 2px 8px rgba(0, 0, 0, 0.18);
-        }
-
-        html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-
-        body {
-            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg);
-            color: var(--ink-soft);
-            min-height: 100vh; min-height: 100dvh;
-            line-height: 1.6;
-            transition: background-color 0.6s var(--ease), color 0.6s var(--ease);
-            overflow-x: hidden;
-        }
-
-        /* Film grain — tactile, anti-AI texture sitting over everything */
-        body::before {
-            content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999;
-            opacity: 0.022;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            background-repeat: repeat; background-size: 256px;
-        }
-        [data-theme="dark"] body::before { opacity: 0.04; }
-
-        /* Cinema vignette — felt mostly in the dark */
-        .vignette {
-            position: fixed; inset: 0; pointer-events: none; z-index: 1;
-            background: radial-gradient(120% 100% at 50% 40%, transparent 55%, rgba(26,24,22,0.05) 100%);
-            opacity: 0; transition: opacity 0.6s var(--ease);
-        }
-        [data-theme="dark"] .vignette { opacity: 1; background: radial-gradient(120% 100% at 50% 38%, transparent 48%, rgba(0,0,0,0.55) 100%); }
-
-        /* Ambient orbs */
-        .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-        .ambient-orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.12; animation: drift 26s var(--ease) infinite alternate; }
-        .ambient-orb:nth-child(1){ width:520px;height:520px;background:radial-gradient(circle,rgba(107,39,55,0.30),transparent 70%);top:-12%;right:-6%;animation-duration:30s; }
-        .ambient-orb:nth-child(2){ width:420px;height:420px;background:radial-gradient(circle,rgba(139,96,66,0.20),transparent 70%);bottom:8%;left:-9%;animation-delay:-8s;animation-duration:24s; }
-        .ambient-orb:nth-child(3){ width:360px;height:360px;background:radial-gradient(circle,rgba(107,39,55,0.14),transparent 70%);top:44%;right:-13%;animation-delay:-15s;animation-duration:32s; }
-        [data-theme="dark"] .ambient-orb { opacity: 0.07; }
-        @keyframes drift { 0%{transform:translate(0,0) scale(1)} 50%{transform:translate(-28px,18px) scale(1.07)} 100%{transform:translate(14px,-14px) scale(0.95)} }
-
-        ::selection { background: rgba(107,39,55,0.18); color: var(--ink); }
-        [data-theme="dark"] ::selection { background: rgba(201,127,141,0.22); }
-
-        /* ─── Progress bar ─── */
-        .progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 200; background: transparent; }
-        .progress-bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--burgundy-soft), var(--burgundy)); transition: width 0.6s var(--ease-spring); }
-
-        /* ─── Top bar ─── */
-        .topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.05rem 2rem; display: flex; align-items: center; justify-content: space-between; }
-        .back-link { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.68rem; color: var(--ink-muted); text-decoration: none; letter-spacing: 0.04em; transition: color var(--t); }
-        .back-link:hover { color: var(--burgundy); }
-        .back-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; transition: transform var(--t); }
-        .back-link:hover svg { transform: translateX(-3px); }
-
-        .theme-toggle { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: var(--glass-border); border-radius: 50%; background: var(--bg-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); cursor: pointer; transition: all var(--t); color: var(--ink-muted); }
-        .theme-toggle:hover { border-color: var(--border-hover); color: var(--burgundy); background: var(--bg-glass-strong); }
-        .theme-toggle svg { width: 15px; height: 15px; fill: currentColor; transition: transform 0.5s var(--ease-spring); }
-        .theme-toggle:hover svg { transform: rotate(28deg); }
-        .theme-toggle .icon-sun { display: none; } .theme-toggle .icon-moon { display: block; }
-        [data-theme="dark"] .theme-toggle .icon-sun { display: block; } [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
-
-        /* ─── Stage ─── */
-        .stage { position: relative; z-index: 2; max-width: 600px; margin: 0 auto; padding: 0 1.5rem 8rem; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; }
-        .screen { display: none; padding: 6rem 0 1rem; position: relative; }
-        /* Filmic cross-dissolve: opacity-led, a breath of scale, a focus-pull blur clearing */
-        .screen.active { display: block; animation: dissolve 0.7s var(--ease) both; }
-        @keyframes dissolve { from { opacity: 0; transform: scale(0.992) translateY(7px); filter: blur(2px); } to { opacity: 1; transform: none; filter: none; } }
-
-        /* Big ghosted editorial numeral behind each step head */
-        .step-fig { position: absolute; top: 5rem; right: -0.25rem; font-family: 'EB Garamond', Georgia, serif; font-size: 7.5rem; line-height: 1; font-weight: 500; color: var(--ink); opacity: 0.05; pointer-events: none; user-select: none; z-index: -1; letter-spacing: -0.04em; }
-        [data-theme="dark"] .step-fig { opacity: 0.06; }
-
-        /* ─── Cover · editorial masthead ─── */
-        .cover { text-align: left; }
-        .cover-mark { display: block; width: 46px; height: 46px; margin-bottom: 1.5rem; }
-        .cover-mark svg { width: 46px; height: 46px; transform-origin: 50% 50%; animation: aperture 7s var(--ease) infinite; }
-        @keyframes aperture { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        .cover-mark .ring { fill: none; stroke: var(--burgundy); stroke-width: 1.1; opacity: 0.9; }
-        .cover-mark .blade { stroke: var(--burgundy); stroke-width: 1.1; opacity: 0.55; stroke-linecap: round; }
-        .cover-mark .pupil { fill: var(--burgundy); opacity: 0.85; }
-        .masthead { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.6rem; }
-        .masthead .k { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-muted); white-space: nowrap; }
-        .masthead .rule { flex: 1; height: 1px; background: var(--border-subtle); }
-        .cover h1 { font-family: 'EB Garamond', Georgia, serif; font-size: 4.2rem; font-weight: 500; letter-spacing: -0.045em; line-height: 0.95; color: var(--ink); margin-bottom: 1.3rem; }
-        .cover-tag { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 1.35rem; line-height: 1.4; color: var(--burgundy); margin-bottom: 1.4rem; max-width: 30ch; }
-        .cover-body { font-size: 0.95rem; line-height: 1.8; color: var(--ink-muted); max-width: 50ch; }
-        .cover-body em { font-family: 'EB Garamond', serif; font-style: italic; font-size: 1.05rem; color: var(--ink-soft); }
-
-        /* The programme — a contents list, like a festival catalogue */
-        .contents-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faint); margin: 2.25rem 0 0.4rem; display: block; }
-        .contents { list-style: none; border-top: 1px solid var(--border-subtle); margin-bottom: 2.25rem; }
-        .contents li { display: flex; align-items: baseline; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border-subtle); }
-        .c-num { font-family: var(--mono); font-size: 0.66rem; color: var(--burgundy); letter-spacing: 0.06em; min-width: 1.7rem; }
-        .c-name { font-family: 'EB Garamond', Georgia, serif; font-size: 1.04rem; color: var(--ink-soft); }
-        .cover-meta { font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-faint); margin-bottom: 1.6rem; display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; }
-        .cover-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-ghost); }
-        .cover-hint { font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.86rem; color: var(--ink-faint); margin-top: 1.1rem; }
-
-        /* ─── Step heads ─── */
-        .step-label { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--mono); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-muted); margin-bottom: 1.4rem; position: relative; }
-        .step-label .num { color: var(--burgundy); }
-        .step-label::after { content: ''; width: 30px; height: 1px; background: var(--border-subtle); }
-        .step h2 { font-family: 'EB Garamond', Georgia, serif; font-size: 2.15rem; font-weight: 500; letter-spacing: -0.025em; line-height: 1.1; color: var(--ink); margin-bottom: 0.6rem; position: relative; }
-        .step h2 em { font-style: italic; color: var(--burgundy); }
-        .step-sub { font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 1.04rem; line-height: 1.5; color: var(--ink-muted); margin-bottom: 2rem; max-width: 52ch; position: relative; }
-
-        /* Field group label + helper text */
-        .glabel { display: block; font-family: var(--mono); font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.13em; color: var(--ink-muted); margin: 1.9rem 0 0.85rem; }
-        .glabel:first-of-type { margin-top: 0; }
-        .glabel .opt { text-transform: none; letter-spacing: 0; font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.92rem; color: var(--ink-faint); margin-left: 0.35rem; }
-        .field-help { font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.9rem; line-height: 1.5; color: var(--ink-faint); margin-top: 0.7rem; max-width: 52ch; }
-        .field-help strong { font-style: normal; font-weight: 500; color: var(--ink-muted); }
-
-        /* ─── Mood cards ─── */
-        .mood-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
-        .mood-card { text-align: left; padding: 0.9rem 1rem; background: var(--bg-card); border: var(--glass-border); border-radius: var(--radius-sm); cursor: pointer; transition: all var(--t); position: relative; overflow: hidden; }
-        .mood-card:hover { border-color: var(--border-hover); background: var(--bg-card-hover); transform: translateY(-1px); }
-        .mood-card.active { background: var(--burgundy-wash); border-color: var(--border-hover); box-shadow: inset 0 0 0 1px var(--burgundy-glow); }
-        .mood-word { display: block; font-family: 'EB Garamond', Georgia, serif; font-size: 1.18rem; font-weight: 500; color: var(--ink); line-height: 1.1; margin-bottom: 0.12rem; transition: color var(--t); }
-        .mood-card.active .mood-word { color: var(--burgundy); }
-        .mood-gloss { display: block; font-size: 0.72rem; line-height: 1.35; color: var(--ink-faint); }
-        .mood-card.active .mood-gloss { color: var(--ink-muted); }
-
-        /* ─── Chips ─── */
-        .chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-        .chip { font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 400; color: var(--ink-soft); background: var(--bg-card); border: var(--glass-border); border-radius: 100px; padding: 0.42rem 0.85rem; cursor: pointer; transition: all var(--t); user-select: none; white-space: nowrap; }
-        .chip:hover { border-color: var(--border-hover); color: var(--burgundy); transform: translateY(-1px); }
-        .chip.active { background: var(--burgundy); border-color: var(--burgundy); color: #fff; }
-        [data-theme="dark"] .chip.active { color: #15110f; }
-
-        /* ─── Depth options ─── */
-        .options { display: flex; flex-direction: column; gap: 0.5rem; }
-        .option { display: flex; align-items: baseline; gap: 0.8rem; text-align: left; padding: 0.85rem 1.1rem; background: var(--bg-card); border: var(--glass-border); border-radius: var(--radius-sm); cursor: pointer; transition: all var(--t); }
-        .option:hover { border-color: var(--border-hover); background: var(--bg-card-hover); }
-        .option.active { background: var(--burgundy-wash); border-color: var(--border-hover); box-shadow: inset 0 0 0 1px var(--burgundy-glow); }
-        .option-title { font-family: 'EB Garamond', Georgia, serif; font-size: 1.1rem; font-weight: 500; color: var(--ink); flex-shrink: 0; transition: color var(--t); }
-        .option.active .option-title { color: var(--burgundy); }
-        .option-gloss { font-size: 0.8rem; color: var(--ink-muted); line-height: 1.4; }
-
-        /* ─── Seen grid ─── */
-        .seen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; }
-        .seen-item { display: flex; align-items: center; gap: 0.65rem; text-align: left; padding: 0.6rem 0.75rem; background: var(--bg-card); border: var(--glass-border); border-radius: var(--radius-xs); cursor: pointer; transition: all var(--t); }
-        .seen-item:hover { border-color: var(--border-hover); }
-        .seen-box { flex-shrink: 0; width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--ink-ghost); display: flex; align-items: center; justify-content: center; transition: all var(--t); }
-        .seen-box svg { width: 10px; height: 10px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transform: scale(0.5); transition: all var(--t); }
-        [data-theme="dark"] .seen-box svg { stroke: #15110f; }
-        .seen-item.active { background: var(--burgundy-wash); border-color: var(--border-hover); }
-        .seen-item.active .seen-box { background: var(--burgundy); border-color: var(--burgundy); }
-        .seen-item.active .seen-box svg { opacity: 1; transform: scale(1); }
-        .seen-text { min-width: 0; }
-        .seen-title { display: block; font-size: 0.82rem; font-weight: 500; color: var(--ink); line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .seen-meta { display: block; font-family: var(--mono); font-size: 0.62rem; color: var(--ink-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        /* ─── Sliders ─── */
-        .dial { margin-bottom: 1.9rem; }
-        .dial:last-child { margin-bottom: 0; }
-        .dial-ends { display: flex; justify-content: space-between; font-size: 0.74rem; color: var(--ink-muted); margin-bottom: 0.35rem; }
-        .dial-ends .l, .dial-ends .r { max-width: 45%; }
-        .dial-ends .r { text-align: right; }
-        input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 28px; background: transparent; cursor: pointer; }
-        input[type="range"]::-webkit-slider-runnable-track { height: 3px; border-radius: 2px; background: var(--track); }
-        input[type="range"]::-moz-range-track { height: 3px; border-radius: 2px; background: var(--track); }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; margin-top: -8.5px; border-radius: 50%; background: var(--burgundy); border: 3px solid var(--bg); box-shadow: var(--glass-shadow); transition: transform 0.15s var(--ease); }
-        input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--burgundy); border: 3px solid var(--bg); box-shadow: var(--glass-shadow); }
-        input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.12); }
-        input[type="range"]:active::-webkit-slider-thumb { transform: scale(0.95); }
-        .dial-phrase { text-align: center; font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.88rem; color: var(--burgundy); margin-top: 0.3rem; min-height: 1.2em; transition: opacity var(--t); }
-
-        /* ─── Toggle row ─── */
-        .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 1rem; background: var(--bg-card); border: var(--glass-border); border-radius: var(--radius-xs); transition: all var(--t); }
-        .toggle-row:hover { border-color: var(--border-hover); }
-        .toggle-text { font-size: 0.85rem; color: var(--ink-soft); }
-        .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
-        .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
-        .toggle-track { position: absolute; inset: 0; background: var(--track); border-radius: 11px; cursor: pointer; transition: background var(--t); }
-        .toggle-track::after { content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; box-shadow: var(--glass-shadow); transition: transform var(--t); }
-        .toggle input:checked + .toggle-track { background: var(--burgundy); }
-        .toggle input:checked + .toggle-track::after { transform: translateX(18px); }
-
-        /* ─── Inputs ─── */
-        textarea, input.text { width: 100%; padding: 0.85rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--ink); background: var(--bg-card); border: var(--glass-border); border-radius: var(--radius-xs); outline: none; transition: all var(--t); line-height: 1.55; }
-        textarea { resize: vertical; min-height: 92px; }
-        textarea::placeholder, input.text::placeholder { color: var(--ink-faint); font-weight: 300; }
-        textarea:focus, input.text:focus { border-color: var(--border-hover); box-shadow: 0 0 0 3px var(--burgundy-wash); background: var(--bg-card-hover); }
-
-        /* ─── Buttons ─── */
-        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.85rem 1.6rem; border-radius: var(--radius-xs); border: 1px solid transparent; cursor: pointer; transition: all var(--t); text-decoration: none; }
-        .btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-        .btn-primary { background: var(--ink); color: var(--bg); }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--glass-shadow-hover); }
-        .btn-primary:active { transform: translateY(0); }
-        .btn-ghost { background: var(--bg-card); border-color: var(--border); color: var(--ink-soft); }
-        .btn-ghost:hover { border-color: var(--border-hover); color: var(--burgundy); transform: translateY(-2px); }
-
-        /* ─── Bottom nav ─── */
-        .nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 90; display: none; align-items: center; justify-content: space-between; max-width: 600px; margin: 0 auto; padding: 1.1rem 1.5rem; background: linear-gradient(0deg, var(--bg) 55%, transparent); }
-        .nav.show { display: flex; }
-        .nav-back { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); background: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.45rem; transition: color var(--t); padding: 0.5rem 0; }
-        .nav-back svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; transition: transform var(--t); }
-        .nav-back:hover { color: var(--burgundy); } .nav-back:hover svg { transform: translateX(-3px); }
-        .nav-back.hidden { visibility: hidden; }
-        .nav-next { font-family: var(--mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--bg); background: var(--ink); border: none; border-radius: var(--radius-xs); padding: 0.75rem 1.4rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all var(--t); }
-        .nav-next svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; transition: transform var(--t); }
-        .nav-next:hover { transform: translateY(-2px); box-shadow: var(--glass-shadow-hover); } .nav-next:hover svg { transform: translateX(3px); }
-
-        /* ─── Output ─── */
-        .output h2 { font-family: 'EB Garamond', Georgia, serif; font-size: 2.4rem; font-weight: 500; letter-spacing: -0.025em; color: var(--ink); margin-bottom: 0.5rem; }
-        .output-sub { font-family: 'EB Garamond', serif; font-style: italic; font-size: 1.08rem; color: var(--ink-muted); margin-bottom: 1.75rem; }
-        .out-actions { display: flex; gap: 0.7rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
-        .code-block { position: relative; background: #15110f; border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-sm); padding: 1.25rem 1.35rem; overflow: auto; max-height: 360px; box-shadow: var(--glass-shadow); }
-        .code-block pre { font-family: var(--mono); font-size: 0.72rem; line-height: 1.75; color: #cfc8bd; white-space: pre-wrap; word-break: break-word; margin: 0; }
-        .out-foot { margin-top: 1.5rem; display: flex; align-items: center; gap: 1.1rem; font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase; }
-        .out-foot a { color: var(--ink-muted); text-decoration: none; border-bottom: 1px solid var(--border-subtle); cursor: pointer; transition: all var(--t); padding-bottom: 1px; }
-        .out-foot a:hover { color: var(--burgundy); border-color: var(--burgundy); }
-        .colophon { font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.84rem; color: var(--ink-faint); margin-top: 1.5rem; line-height: 1.6; }
-
-        /* ─── Toast ─── */
-        .toast { position: fixed; bottom: 5.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg); font-family: var(--mono); padding: 0.7rem 1.25rem; border-radius: var(--radius-xs); font-size: 0.72rem; letter-spacing: 0.03em; box-shadow: var(--glass-shadow-hover); opacity: 0; pointer-events: none; transition: all 0.4s var(--ease-spring); z-index: 300; }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-        ::-webkit-scrollbar { width: 7px; height: 7px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--ink-ghost); border-radius: 4px; }
-        .code-block::-webkit-scrollbar-thumb { background: rgba(207,200,189,0.25); }
-
-        @media (max-width: 560px) {
-            .stage { padding: 0 1.2rem 7rem; }
-            .topbar { padding: 0.85rem 1.2rem; }
-            .screen { padding-top: 5rem; }
-            .cover h1 { font-size: 3.1rem; }
-            .cover-tag { font-size: 1.15rem; }
-            .step h2 { font-size: 1.75rem; }
-            .step-fig { display: none; }
-            .mood-grid { grid-template-columns: 1fr; }
-            .seen-grid { grid-template-columns: 1fr; }
-            .nav { padding: 1rem 1.2rem; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-            .ambient-orb, .cover-mark svg { animation: none !important; }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
     <div class="ambient"><div class="ambient-orb"></div><div class="ambient-orb"></div><div class="ambient-orb"></div></div>
@@ -342,7 +39,7 @@
 
     <main class="stage">
         <!-- ═══ COVER ═══ -->
-        <section class="screen cover active" data-screen="0">
+        <section class="screen cover" id="scr-cover">
             <div class="cover-mark">
                 <svg viewBox="0 0 56 56" aria-hidden="true">
                     <circle class="ring" cx="28" cy="28" r="20"/>
@@ -358,72 +55,144 @@
                 </svg>
             </div>
             <div class="masthead">
-                <span class="k">A film questionnaire</span>
+                <span class="k">A film questionnaire · second edition</span>
                 <span class="rule"></span>
             </div>
             <h1>Cinefilematic</h1>
             <p class="cover-tag">For people who've already seen the obvious ones — and still scrolled the library for forty minutes and watched nothing.</p>
-            <p class="cover-body">It won't recommend you a film. It does something better: it interviews you for a few minutes, then composes a <em>brief</em> — a precise, faintly opinionated dossier on what you actually want tonight. Download it, hand it to the LLM of your choice, and ask for five. The taste stays yours; only the legwork is outsourced.</p>
+            <p class="cover-body">It won't recommend you a film. It does something better: it interviews you properly — where you're arriving from, what tonight should do to you, how close to the bone it's allowed to cut — then composes a <em>brief</em>: a precise, faintly opinionated dossier. Hand it to the LLM of your choice and ask for five. What comes back is discovery, not dispensation: each film arrives with its provenance — where it came from, what shaped it — and the curator is even allowed to say that tonight, no film fits. Every brief is a numbered <em>print</em> — a different curator, a different house rule — so no two evenings come back the same. The taste stays yours; only the legwork is outsourced.</p>
 
-            <span class="contents-label">The programme</span>
-            <ol class="contents" id="contents"></ol>
+            <div class="cover-meta"><span>Two editions</span><span class="dot"></span><span>Nothing leaves this device</span><span class="dot"></span><span>Works with any model</span></div>
 
-            <div class="cover-meta" id="coverMeta"></div>
-            <button class="btn btn-primary" id="beginBtn">Begin the interview
-                <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-            </button>
+            <div class="mode-grid">
+                <button class="mode-card" id="modeEvening">
+                    <span class="mode-kicker">For one screen</span>
+                    <span class="mode-title">An evening</span>
+                    <span class="mode-gloss">Five films for tonight, chosen for the exact state you're in — not the person you are in general.</span>
+                    <span class="mode-meta">Ten questions · about five minutes</span>
+                </button>
+                <button class="mode-card" id="modeClub">
+                    <span class="mode-kicker">For a room of people</span>
+                    <span class="mode-title">A film club season</span>
+                    <span class="mode-gloss">A programmed season for your club — sequenced, annotated, with discussion questions that start arguments.</span>
+                    <span class="mode-meta">Seven questions · about four minutes</span>
+                </button>
+            </div>
             <p class="cover-hint">Answer what you like; skip what you don't. The more you give it, the sharper the cut.</p>
         </section>
 
-        <!-- ═══ 1 · THE OCCASION ═══ -->
-        <section class="screen step" data-screen="1">
+        <!-- ════════════════════════════════════════════
+             TRACK ONE · AN EVENING
+             ════════════════════════════════════════════ -->
+
+        <!-- E1 · THE OCCASION -->
+        <section class="screen step" id="scr-e1" data-fig="01">
             <div class="step-label"><span class="num">01</span> The occasion</div>
             <h2>Why tonight?</h2>
             <p class="step-sub">Be honest about the assignment. A nightcap, a date and a bout of insomnia all want very different films.</p>
-            <div class="chips" id="occasion" data-group data-key="occasion" data-select="single"></div>
+            <div class="chips" id="occasion" data-group data-key="evening.occasion" data-select="single"></div>
         </section>
 
-        <!-- ═══ 2 · MOOD & POSTURE ═══ -->
-        <section class="screen step" data-screen="2">
-            <div class="step-label"><span class="num">02</span> Mood &amp; posture</div>
-            <h2>What do you want to <em>feel</em>?</h2>
-            <p class="step-sub">Pick one or two. There's no wrong answer — wanting to wallow is as valid as wanting to be lifted.</p>
-            <div class="mood-grid" id="moods" data-group data-key="moods" data-select="multi" data-max="2"></div>
-            <p class="field-help">Two clashing moods is fine — it tells the curator your range, not a contradiction.</p>
+        <!-- E2 · ARRIVAL -->
+        <section class="screen step" id="scr-e2" data-fig="02">
+            <div class="step-label"><span class="num">02</span> Arrival</div>
+            <h2>Where are you <em>arriving</em> from?</h2>
+            <p class="step-sub">Not what you want yet — what you're carrying in. Tap the map where tonight finds you: how much charge you have left, and how heavy or light the day sits.</p>
+            <div class="pad-wrap">
+                <div class="pad" id="pad" tabindex="0" role="slider" aria-label="Where you are arriving from: vertical is energy, horizontal is how heavy or light you feel">
+                    <span class="pad-axis h"></span><span class="pad-axis v"></span>
+                    <span class="pad-corner n">Charged · wired</span>
+                    <span class="pad-corner s">Running on empty</span>
+                    <span class="pad-corner w">Heavy · clouded</span>
+                    <span class="pad-corner e">Light · clear</span>
+                    <span class="pad-dot" id="padDot"></span>
+                </div>
+                <div class="pad-phrase" id="padPhrase"></div>
+                <button class="pad-clear" id="padClear">Skip — leave me unplaced</button>
+            </div>
 
             <label class="glabel">And the film should…</label>
-            <div class="chips" id="moodDir" data-group data-key="moodDir" data-select="single"></div>
+            <div class="chips" id="trajectory" data-group data-key="evening.trajectory" data-select="single"></div>
+            <p class="field-help">This is the most useful answer on the page. Wanting a film to <strong>sit with you</strong> in a heavy mood is as legitimate as wanting one to lift you out — they lead to opposite shelves.</p>
+        </section>
+
+        <!-- E3 · THE FEELING -->
+        <section class="screen step" id="scr-e3" data-fig="03">
+            <div class="step-label"><span class="num">03</span> The feeling</div>
+            <h2>What should it leave <em>behind</em>?</h2>
+            <p class="step-sub">Pick one or two. There's no wrong answer — wanting to wallow is as valid as wanting to be lifted.</p>
+            <div class="mood-grid" id="moods" data-group data-key="evening.moods" data-select="multi" data-max="2"></div>
+            <p class="field-help">Two clashing moods is fine — it tells the curator your range, not a contradiction.</p>
 
             <label class="glabel">How much should it ask of you?</label>
             <div class="dial">
                 <div class="dial-ends"><span class="l">Hold me — easy to fall into</span><span class="r">Challenge me — I'll lean in</span></div>
-                <input type="range" id="energy" min="0" max="100" value="50" aria-label="How much the film should ask of you">
+                <input type="range" id="energy" data-path="evening.energy" min="0" max="100" value="50" aria-label="How much the film should ask of you">
                 <div class="dial-phrase" id="phrase-energy"></div>
             </div>
         </section>
 
-        <!-- ═══ 3 · THE ANCHOR ═══ -->
-        <section class="screen step" data-screen="3">
-            <div class="step-label"><span class="num">03</span> The anchor</div>
+        <!-- E4 · THE NERVE -->
+        <section class="screen step" id="scr-e4" data-fig="04">
+            <div class="step-label"><span class="num">04</span> The nerve</div>
+            <h2>How close to the bone?</h2>
+            <p class="step-sub">Tolerance isn't taste — it's a setting, and it changes nightly. Tonight's reading, not your biography.</p>
+
+            <label class="glabel">Emotional distance</label>
+            <div class="dial">
+                <div class="dial-ends"><span class="l">Keep it at arm's length</span><span class="r">Let it cut close</span></div>
+                <input type="range" id="proximity" data-path="evening.proximity" min="0" max="100" value="50" aria-label="How emotionally close the film may cut">
+                <div class="dial-phrase" id="phrase-proximity"></div>
+            </div>
+
+            <label class="glabel">How dark may it go?</label>
+            <div class="dial">
+                <div class="dial-ends"><span class="l">Keep a floor under me</span><span class="r">No floor needed tonight</span></div>
+                <input type="range" id="darkness" data-path="evening.darkness" min="0" max="100" value="50" aria-label="How dark the film may go">
+                <div class="dial-phrase" id="phrase-darkness"></div>
+            </div>
+
+            <label class="glabel">Endings</label>
+            <div class="chips" id="endings" data-group data-key="evening.endings" data-select="single"></div>
+        </section>
+
+        <!-- E5 · ANCHORS -->
+        <section class="screen step" id="scr-e5" data-fig="05">
+            <div class="step-label"><span class="num">05</span> Anchors</div>
             <h2>The last one that really hit you?</h2>
             <p class="step-sub">Name a film you saw recently — loved, hated, couldn't shake. It tells the curator where your head is, and which way to push.</p>
             <label class="glabel">Recent film <span class="opt">a title, and a word on how it landed</span></label>
             <input class="text" type="text" id="lastFilm" autocomplete="off" placeholder="e.g. The Zone of Interest — it hasn't left me">
             <label class="glabel">And tonight…</label>
-            <div class="chips" id="lastDir" data-group data-key="lastDir" data-select="single"></div>
+            <div class="chips" id="lastDir" data-group data-key="evening.lastDir" data-select="single"></div>
+
+            <label class="glabel">One that bounced off you <span class="opt">optional — and worth more than another favourite</span></label>
+            <input class="text" type="text" id="bounced" autocomplete="off" placeholder="e.g. Everyone loves Dune; I admired it from a great distance">
+            <p class="field-help">A precise miss teaches the curator more than a tenth love. Say <strong>why</strong> it missed if you can — too cold, too long, too pleased with itself.</p>
         </section>
 
-        <!-- ═══ 4 · THE ROOM ═══ -->
-        <section class="screen step" data-screen="4">
-            <div class="step-label"><span class="num">04</span> The room</div>
+        <!-- E6 · THE REEL -->
+        <section class="screen step" id="scr-e6" data-fig="06">
+            <div class="step-label"><span class="num">06</span> The reel</div>
+            <h2>Which image pulls at you?</h2>
+            <p class="step-sub">Don't reason about it. These were dealt from a larger deck for this print — pick the one you'd walk into right now.</p>
+            <div class="stills" id="stills" data-group data-key="evening.still" data-select="single"></div>
+
+            <label class="glabel">And a texture <span class="opt">pick up to two</span></label>
+            <div class="chips" id="textures" data-group data-key="evening.textures" data-select="multi" data-max="2"></div>
+        </section>
+
+        <!-- E7 · THE ROOM -->
+        <section class="screen step" id="scr-e7" data-fig="07">
+            <div class="step-label"><span class="num">07</span> The room</div>
             <h2>Set the scene.</h2>
             <p class="step-sub">The constraints the curator has to actually respect — no point recommending a three-hour fast for a restless table of four.</p>
 
             <label class="glabel">How long have you got?</label>
-            <div class="chips" id="runtime" data-group data-key="runtime" data-select="single"></div>
+            <div class="chips" id="runtime" data-group data-key="evening.runtime" data-select="single"></div>
 
             <label class="glabel">Who's watching?</label>
-            <div class="chips" id="company" data-group data-key="company" data-select="single"></div>
+            <div class="chips" id="company" data-group data-key="evening.company" data-select="single"></div>
 
             <label class="glabel">Subtitles</label>
             <div class="toggle-row">
@@ -432,31 +201,23 @@
             </div>
 
             <label class="glabel">Where can you watch? <span class="opt">optional</span></label>
-            <div class="chips" id="services" data-group data-key="services" data-select="multi"></div>
+            <div class="chips" id="services" data-group data-key="evening.services" data-select="multi"></div>
         </section>
 
-        <!-- ═══ 5 · DEPTH ═══ -->
-        <section class="screen step" data-screen="5">
-            <div class="step-label"><span class="num">05</span> Depth</div>
+        <!-- E8 · RANGE -->
+        <section class="screen step" id="scr-e8" data-fig="08">
+            <div class="step-label"><span class="num">08</span> Range</div>
             <h2>How deep do you swim?</h2>
             <p class="step-sub">So the curator knows how far past the canon to reach — and never, ever condescends.</p>
-            <div class="options" id="depth" data-group data-key="depth" data-select="single"></div>
+            <div class="options" id="depth" data-group data-key="evening.depth" data-select="single"></div>
 
-            <label class="glabel">Roughly how many films have you seen? <span class="opt">optional, cinephiles love this number</span></label>
-            <div class="chips" id="volume" data-group data-key="volume" data-select="single"></div>
+            <label class="glabel">Tick the ones you've seen <span class="opt">a hand dealt for this print, from easy to deep</span></label>
+            <div class="seen-grid" id="seen" data-group data-key="evening.seen" data-select="multi"></div>
         </section>
 
-        <!-- ═══ 6 · CALIBRATION ═══ -->
-        <section class="screen step" data-screen="6">
-            <div class="step-label"><span class="num">06</span> Calibration</div>
-            <h2>Tick the ones you've already seen.</h2>
-            <p class="step-sub">A spread from the well-trodden to the deep cuts. It tells the curator your true range — and what to leave out.</p>
-            <div class="seen-grid" id="seen" data-group data-key="seen" data-select="multi"></div>
-        </section>
-
-        <!-- ═══ 7 · COORDINATES ═══ -->
-        <section class="screen step" data-screen="7">
-            <div class="step-label"><span class="num">07</span> Coordinates</div>
+        <!-- E9 · COORDINATES -->
+        <section class="screen step" id="scr-e9" data-fig="09">
+            <div class="step-label"><span class="num">09</span> Coordinates</div>
             <h2>Where's your taste pointed?</h2>
             <p class="step-sub">A few fixed stars. Free text reads best — be specific, be unguarded, name names.</p>
 
@@ -464,43 +225,153 @@
             <textarea id="loved" placeholder="e.g. In the Mood for Love. Anything by Kiarostami. Paris, Texas. I'd follow Lucrecia Martel anywhere."></textarea>
 
             <label class="glabel">National cinemas &amp; traditions you're drawn to</label>
-            <div class="chips" id="cinemas" data-group data-key="cinemas" data-select="multi"></div>
+            <div class="chips" id="cinemas" data-group data-key="evening.cinemas" data-select="multi"></div>
 
-            <label class="glabel">What you tend to notice in a film</label>
-            <div class="chips" id="forms" data-group data-key="forms" data-select="multi"></div>
-        </section>
-
-        <!-- ═══ 8 · DIALS ═══ -->
-        <section class="screen step" data-screen="8">
-            <div class="step-label"><span class="num">08</span> Tonight's dials</div>
-            <h2>Fine-tune for this evening.</h2>
-            <p class="step-sub">Not who you are in general — where you want to sit <em>tonight</em>.</p>
-            <p class="field-help">Treat these as leanings, not targets. The centre keeps the field wide open; the extremes are where you box the curator in — so only push them when you mean it.</p>
+            <label class="glabel">Tonight's leanings <span class="opt">soft dials, not targets — the centre keeps the field open</span></label>
             <div id="dials"></div>
         </section>
 
-        <!-- ═══ 9 · INTERPRETATION ═══ -->
-        <section class="screen step" data-screen="9">
-            <div class="step-label"><span class="num">09</span> Last thing</div>
+        <!-- E10 · THE CONTRACT -->
+        <section class="screen step" id="scr-e10" data-fig="10">
+            <div class="step-label"><span class="num">10</span> The contract</div>
             <h2>How much rope?</h2>
             <p class="step-sub">You've drawn the picture. Now decide how literally the curator should take it — this is the biggest lever on what comes back.</p>
 
             <label class="glabel">How closely should it follow your answers?</label>
-            <div class="chips" id="leash" data-group data-key="leash" data-select="single"></div>
+            <div class="chips" id="leash" data-group data-key="evening.leash" data-select="single"></div>
             <p class="field-help"><strong>Loose</strong> reads your overall mood and will surprise you — it's where the best picks tend to come from. <strong>Strict</strong> follows each answer closely, which is precise but can feel boxed-in. When in doubt, stay loose.</p>
 
             <label class="glabel">Please avoid</label>
-            <div class="chips" id="avoid" data-group data-key="avoid" data-select="multi"></div>
+            <div class="chips" id="avoid" data-group data-key="evening.avoid" data-select="multi"></div>
             <p class="field-help">Only your genuine hard-nos. Over-avoiding strands the curator — if you'd merely prefer less of something, leave it unchecked and let the mood handle it.</p>
 
             <label class="glabel">A note for the curator <span class="opt">optional, and the most useful box on the page</span></label>
             <textarea id="note" placeholder="A curiosity you've been circling. Something happening tonight. A director you've meant to start. A line you can't shake. Anything you'd tell a friend behind the counter at the video shop."></textarea>
         </section>
 
+        <!-- ════════════════════════════════════════════
+             TRACK TWO · A FILM CLUB SEASON
+             ════════════════════════════════════════════ -->
+
+        <!-- C1 · THE CLUB -->
+        <section class="screen step" id="scr-c1" data-fig="01">
+            <div class="step-label"><span class="num">01</span> The club</div>
+            <h2>Who's in the room?</h2>
+            <p class="step-sub">A season is programmed for a room, not a person. Describe yours honestly — including the ones who only come for the wine.</p>
+
+            <label class="glabel">The club's name <span class="opt">optional, but it makes the brief feel like yours</span></label>
+            <input class="text" type="text" id="clubName" autocomplete="off" placeholder="e.g. The Wednesday Cinematheque">
+
+            <label class="glabel">How many usually come?</label>
+            <div class="chips" id="clubSize" data-group data-key="club.size" data-select="single"></div>
+
+            <label class="glabel">The range in the room</label>
+            <div class="chips" id="clubRange" data-group data-key="club.range" data-select="single"></div>
+
+            <label class="glabel">How long has it been running?</label>
+            <div class="chips" id="clubAge" data-group data-key="club.age" data-select="single"></div>
+        </section>
+
+        <!-- C2 · THE SEASON -->
+        <section class="screen step" id="scr-c2" data-fig="02">
+            <div class="step-label"><span class="num">02</span> The season</div>
+            <h2>Shape of the season.</h2>
+            <p class="step-sub">The practical skeleton — how many nights, how often, on what screen.</p>
+
+            <label class="glabel">How many films?</label>
+            <div class="chips" id="clubCount" data-group data-key="club.count" data-select="single"></div>
+
+            <label class="glabel">How often?</label>
+            <div class="chips" id="clubCadence" data-group data-key="club.cadence" data-select="single"></div>
+
+            <label class="glabel">On what?</label>
+            <div class="chips" id="clubFormat" data-group data-key="club.format" data-select="single"></div>
+
+            <label class="glabel">After the credits…</label>
+            <div class="chips" id="clubTalk" data-group data-key="club.talk" data-select="single"></div>
+        </section>
+
+        <!-- C3 · THE MISSION -->
+        <section class="screen step" id="scr-c3" data-fig="03">
+            <div class="step-label"><span class="num">03</span> The mission</div>
+            <h2>What should this season <em>do</em>?</h2>
+            <p class="step-sub">A season is an argument made over several weeks. Pick up to three things it should accomplish.</p>
+            <div class="chips" id="clubMission" data-group data-key="club.mission" data-select="multi" data-max="3"></div>
+
+            <label class="glabel">Where should it sit?</label>
+            <div class="dial">
+                <div class="dial-ends"><span class="l">Crowd-pleasing — keep the room full</span><span class="r">Demanding — trust the room</span></div>
+                <input type="range" id="clubPitch" data-path="club.pitch" min="0" max="100" value="50" aria-label="Crowd-pleasing versus demanding">
+                <div class="dial-phrase" id="phrase-clubPitch"></div>
+            </div>
+        </section>
+
+        <!-- C4 · THE HISTORY -->
+        <section class="screen step" id="scr-c4" data-fig="04">
+            <div class="step-label"><span class="num">04</span> The history</div>
+            <h2>What has the room already had?</h2>
+            <p class="step-sub">The programmer needs your hits and your misses — the misses most of all.</p>
+
+            <label class="glabel">Recent screenings that landed</label>
+            <textarea class="short" id="clubShown" placeholder="e.g. Aftersun emptied the tissue box. Seven Samurai ran long but nobody moved. The Lobster split the room beautifully."></textarea>
+
+            <label class="glabel">And what flopped <span class="opt">be honest — this is the most useful box on the page</span></label>
+            <textarea class="short" id="clubFlopped" placeholder="e.g. We lost half the room to a three-hour slow-cinema night in week two. Never again in week two."></textarea>
+        </section>
+
+        <!-- C5 · THE APPETITE -->
+        <section class="screen step" id="scr-c5" data-fig="05">
+            <div class="step-label"><span class="num">05</span> The appetite</div>
+            <h2>How far can a club night go?</h2>
+            <p class="step-sub">What the room can take, and the limits the programmer has to actually respect.</p>
+
+            <label class="glabel">Distance from the canon</label>
+            <div class="dial">
+                <div class="dial-ends"><span class="l">The loved &amp; the legible</span><span class="r">The far shelves</span></div>
+                <input type="range" id="clubCanon" data-path="club.canon" min="0" max="100" value="50" aria-label="How far from the canon the season may reach">
+                <div class="dial-phrase" id="phrase-clubCanon"></div>
+            </div>
+
+            <label class="glabel">How dark may a night go?</label>
+            <div class="dial">
+                <div class="dial-ends"><span class="l">Send them home warm</span><span class="r">Send them home shaken</span></div>
+                <input type="range" id="clubDark" data-path="club.dark" min="0" max="100" value="50" aria-label="How dark a club night may go">
+                <div class="dial-phrase" id="phrase-clubDark"></div>
+            </div>
+
+            <label class="glabel">Hard limits <span class="opt">only the real ones</span></label>
+            <div class="chips" id="clubLimits" data-group data-key="club.limits" data-select="multi"></div>
+        </section>
+
+        <!-- C6 · THE THREAD -->
+        <section class="screen step" id="scr-c6" data-fig="06">
+            <div class="step-label"><span class="num">06</span> The thread</div>
+            <h2>Should it hang on a thread?</h2>
+            <p class="step-sub">The best seasons are about something — even if the audience only works it out by week four.</p>
+            <div class="chips" id="clubThread" data-group data-key="club.thread" data-select="multi" data-max="2"></div>
+
+            <label class="glabel">A thread you've been circling <span class="opt">optional free text — it outranks the chips</span></label>
+            <textarea class="short" id="clubThreadNote" placeholder="e.g. Films about work. The sea. Mothers and daughters. Cities at night. One great film from every decade since 1950."></textarea>
+        </section>
+
+        <!-- C7 · THE CONTRACT -->
+        <section class="screen step" id="scr-c7" data-fig="07">
+            <div class="step-label"><span class="num">07</span> The contract</div>
+            <h2>How much rope?</h2>
+            <p class="step-sub">Decide how literally the programmer should take all this — then add anything you'd say across a table.</p>
+
+            <label class="glabel">How closely should it follow your answers?</label>
+            <div class="chips" id="clubLeash" data-group data-key="club.leash" data-select="single"></div>
+
+            <label class="glabel">A note for the programmer <span class="opt">optional</span></label>
+            <textarea id="clubNote" placeholder="The committee's politics. A retrospective you've been promising. The projector's quirks. The night the cinema double-booked you. Anything a programmer should know."></textarea>
+        </section>
+
         <!-- ═══ OUTPUT ═══ -->
-        <section class="screen output" data-screen="10">
-            <h2>Your brief is ready.</h2>
-            <p class="output-sub">Hand it to your LLM and ask for five. Or just say “go”.</p>
+        <section class="screen output" id="scr-out">
+            <h2 id="outTitle">Your brief is ready.</h2>
+            <p class="print-line">Print <span class="no" id="printNo">№ 0000</span> · <span id="printDate"></span></p>
+            <p class="portrait" id="portrait"></p>
             <div class="out-actions">
                 <button class="btn btn-primary" id="downloadBtn">
                     <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
@@ -510,13 +381,22 @@
                     <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
                     Copy
                 </button>
+                <button class="btn btn-ghost" id="rerollBtn" title="Same answers — a different curator and a different house rule">
+                    <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10"/><path d="M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                    Strike another print
+                </button>
             </div>
-            <div class="code-block"><pre id="mdPreview"></pre></div>
+            <div class="tabs" role="tablist">
+                <button class="tab active" id="tabReading" role="tab">Reading copy</button>
+                <button class="tab" id="tabSource" role="tab">Plain markdown</button>
+            </div>
+            <div class="reading" id="mdReading"></div>
+            <div class="code-block" id="mdSource" style="display:none"><pre id="mdPreview"></pre></div>
             <div class="out-foot">
                 <a id="editLink">← Edit answers</a>
                 <a id="restartLink">Start over</a>
             </div>
-            <p class="colophon">Works with any model — Claude, ChatGPT, Gemini. Nothing was sent anywhere; the whole brief was set by hand, here, on your machine.</p>
+            <p class="colophon">Works with any model — Claude, ChatGPT, Gemini. Nothing was sent anywhere; the whole brief was set by hand, here, on your machine. Each print draws its own curator and house rule, so the same answers never quite repeat.</p>
         </section>
     </main>
 
@@ -528,448 +408,6 @@
 
     <div class="toast" id="toast">Copied to clipboard</div>
 
-<script>
-/* ═══════════════════ DATA ═══════════════════ */
-const CONTENTS = ['The occasion', 'Mood & posture', 'The last one that hit you', 'The room', 'Depth', 'Calibration', 'Coordinates', "Tonight's dials", 'How literal — and a note'];
-
-const OCCASION = ['Winding down', 'Switching my brain off', 'A date', 'Friends are over', "Can't sleep", 'I want to feel something', 'A Sunday-night ritual', 'Avoiding something else', 'Just me and the dark'];
-
-const MOODS = [
-    { word: 'Comfort',    gloss: 'warm, like a hand on the shoulder' },
-    { word: 'Catharsis',  gloss: 'let me feel it; let me cry' },
-    { word: 'Awe',        gloss: 'show me something beautiful' },
-    { word: 'Dread',      gloss: 'unsettle me; get under the skin' },
-    { word: 'Adrenaline', gloss: 'propulsive, no brakes' },
-    { word: 'Melancholy', gloss: 'bittersweet, a small ache' },
-    { word: 'Wit',        gloss: 'sharp, funny, awake' },
-    { word: 'Longing',    gloss: 'romance, desire, distance' },
-    { word: 'Wonder',     gloss: 'playful, strange, dreamlike' },
-    { word: 'Rigour',     gloss: 'make me work for it' },
-    { word: 'Teeth',      gloss: 'anger, edge, provocation' },
-    { word: 'Elsewhere',  gloss: 'take me far from here' }
-];
-
-const MOOD_DIR = ['Meet me there', 'Pull me out of it'];
-
-const LAST_DIR = ['Give me its cousin', 'Give me a contrast', 'No strong feeling — surprise me'];
-
-const RUNTIME = ['Under 100 min', 'Around two hours', 'Up to three hours', 'Epic is welcome (3 hr+)', 'Runtime is no object'];
-const COMPANY = ['Alone', 'With a partner', 'With friends', 'With family'];
-const SERVICES = ['Criterion Channel', 'MUBI', 'Netflix', 'Max', 'Prime Video', 'Disney+', 'Apple TV+', 'Kanopy', 'Hulu', 'A cinema near me', "I'll find it somehow"];
-
-const DEPTH = [
-    { title: 'Casual',        gloss: 'a few good films a year',                          val: 'Casual — a few good films a year' },
-    { title: 'Enthusiast',    gloss: 'I seek things out',                                val: 'Enthusiast — seeks things out' },
-    { title: 'Cinephile',     gloss: 'canons, repertory, festivals',                     val: 'Cinephile — canons, repertory, festivals' },
-    { title: 'Obsessive',     gloss: "I've seen the obvious ones, and most of the rest", val: "Obsessive — has seen the obvious ones and most of the rest" },
-    { title: 'In the trade',  gloss: 'I make, programme, or write about film',           val: 'In the trade — makes, programmes, or writes about film' }
-];
-
-const VOLUME = ['under 300', '300–800', '800–2,000', '2,000–5,000', '5,000+'];
-
-const SEEN = [
-    { title: 'Pulp Fiction',             meta: 'Tarantino · 1994' },
-    { title: 'Parasite',                 meta: 'Bong Joon-ho · 2019' },
-    { title: '2001: A Space Odyssey',    meta: 'Kubrick · 1968' },
-    { title: 'In the Mood for Love',     meta: 'Wong Kar-wai · 2000' },
-    { title: 'Spirited Away',            meta: 'Miyazaki · 2001' },
-    { title: 'Persona',                  meta: 'Bergman · 1966' },
-    { title: 'Mulholland Drive',         meta: 'Lynch · 2001' },
-    { title: 'Come and See',             meta: 'Klimov · 1985' },
-    { title: 'Yi Yi',                    meta: 'Edward Yang · 2000' },
-    { title: 'Beau Travail',             meta: 'Claire Denis · 1999' },
-    { title: 'Stalker',                  meta: 'Tarkovsky · 1979' },
-    { title: 'Close-Up',                 meta: 'Kiarostami · 1990' },
-    { title: 'The Battle of Algiers',    meta: 'Pontecorvo · 1966' },
-    { title: 'Tokyo Story',              meta: 'Ozu · 1953' },
-    { title: 'Jeanne Dielman',           meta: 'Akerman · 1975' },
-    { title: 'Sátántangó',               meta: 'Béla Tarr · 1994' },
-    { title: 'The Color of Pomegranates',meta: 'Parajanov · 1969' },
-    { title: 'Tropical Malady',          meta: 'Apichatpong · 2004' }
-];
-
-const CINEMAS = ['French New Wave', 'Italian neorealism', 'New Hollywood', 'Classic Hollywood', 'Japanese golden age', 'Hong Kong', 'South Korean', 'Iranian', 'Taiwanese New Wave', 'Romanian New Wave', 'New German', 'Soviet & Russian', 'Scandinavian', 'Latin American', 'British', 'Indian / Parallel', 'African', 'Silent era', 'Contemporary arthouse', 'Animation'];
-
-const FORMS = ['Cinematography & light', 'Writing & dialogue', 'Performances', 'Editing & rhythm', 'Sound & score', 'Production design', 'Long takes', 'Colour', 'Faces & close-ups', 'Structure & form'];
-
-const DIALS = [
-    { key: 'familiar', left: 'Familiar',        right: 'Uncharted',          lp: 'the familiar',    rp: 'the uncharted',      label: 'Familiar ↔ Uncharted' },
-    { key: 'meaning',  left: 'Pure pleasure',   right: 'Meaning & weight',   lp: 'pure pleasure',   rp: 'meaning & weight',   label: 'Pure pleasure ↔ Meaning & weight' },
-    { key: 'plot',     left: 'Plot-driven',     right: 'Mood & atmosphere',  lp: 'plot',            rp: 'mood & atmosphere',  label: 'Plot-driven ↔ Mood & atmosphere' },
-    { key: 'era',      left: 'Of our moment',   right: 'From the vault',     lp: 'our moment',      rp: 'the vault',          label: 'Of our moment ↔ From the vault' },
-    { key: 'style',    left: 'Grounded & real', right: 'Stylised & formal',  lp: 'grounded & real', rp: 'stylised & formal',  label: 'Grounded ↔ Stylised' }
-];
-
-const AVOID = ['Graphic violence', 'Sexual violence', 'Horror', 'Bleak / no hope', 'Sentimentality', 'Hollywood blockbusters', 'Over three hours', 'Musicals', 'Animation', 'Shaky cam', 'Heavy gore', 'Jump scares'];
-
-const LEASH = ['Read between the lines', 'A balance', 'Stick to my answers'];
-
-/* ═══════════════════ STATE ═══════════════════ */
-const DEFAULT_STATE = {
-    occasion: '',
-    moods: [], moodDir: 'Meet me there', energy: 50,
-    lastFilm: '', lastDir: '',
-    runtime: '', company: '', subtitles: 'ok', services: [],
-    depth: '', volume: '',
-    seen: [],
-    loved: '', cinemas: [], forms: [],
-    dials: { familiar: 50, meaning: 50, plot: 50, era: 50, style: 50 },
-    avoid: [], note: '',
-    leash: 'Read between the lines'
-};
-let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-const SAVE_KEY = 'cinefilematic.v3';
-
-function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch (e) {} }
-function load() {
-    try {
-        const raw = localStorage.getItem(SAVE_KEY);
-        if (raw) {
-            const saved = JSON.parse(raw);
-            state = Object.assign(JSON.parse(JSON.stringify(DEFAULT_STATE)), saved);
-            state.dials = Object.assign({}, DEFAULT_STATE.dials, saved.dials || {});
-        }
-    } catch (e) {}
-}
-
-/* ═══════════════════ BUILD CONTROLS ═══════════════════ */
-const $ = id => document.getElementById(id);
-function esc(s) { return String(s).replace(/"/g, '&quot;'); }
-
-function buildContents() {
-    $('contents').innerHTML = CONTENTS.map((c, i) =>
-        `<li><span class="c-num">${String(i + 1).padStart(2, '0')}</span><span class="c-name">${c}</span></li>`).join('');
-    $('coverMeta').innerHTML = `<span>Nine questions</span><span class="dot"></span><span>About four minutes</span><span class="dot"></span><span>Nothing leaves this device</span>`;
-}
-function buildMoods() {
-    $('moods').innerHTML = MOODS.map(m =>
-        `<button class="mood-card" data-val="${m.word}" aria-pressed="false">
-            <span class="mood-word">${m.word}</span><span class="mood-gloss">${m.gloss}</span>
-        </button>`).join('');
-}
-function buildChips(id, arr) {
-    $(id).innerHTML = arr.map(v => `<button class="chip" data-val="${esc(v)}" aria-pressed="false">${v}</button>`).join('');
-}
-function buildDepth() {
-    $('depth').innerHTML = DEPTH.map(d =>
-        `<button class="option" data-val="${esc(d.val)}" aria-pressed="false">
-            <span class="option-title">${d.title}</span><span class="option-gloss">${d.gloss}</span>
-        </button>`).join('');
-}
-function buildSeen() {
-    $('seen').innerHTML = SEEN.map(f => {
-        const val = `${f.title} (${f.meta.replace(' · ', ', ')})`;
-        return `<button class="seen-item" data-val="${esc(val)}" aria-pressed="false">
-            <span class="seen-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
-            <span class="seen-text"><span class="seen-title">${f.title}</span><span class="seen-meta">${f.meta}</span></span>
-        </button>`;
-    }).join('');
-}
-function buildDials() {
-    $('dials').innerHTML = DIALS.map(d =>
-        `<div class="dial">
-            <div class="dial-ends"><span class="l">${d.left}</span><span class="r">${d.right}</span></div>
-            <input type="range" data-dial="${d.key}" min="0" max="100" value="50" aria-label="${d.label}">
-            <div class="dial-phrase" id="phrase-${d.key}"></div>
-        </div>`).join('');
-}
-function buildFigures() {
-    document.querySelectorAll('.screen.step').forEach(s => {
-        const n = String(s.getAttribute('data-screen')).padStart(2, '0');
-        const fig = document.createElement('span');
-        fig.className = 'step-fig'; fig.setAttribute('aria-hidden', 'true'); fig.textContent = n;
-        s.insertBefore(fig, s.firstChild);
-    });
-}
-
-/* ═══════════════════ SELECT LOGIC ═══════════════════ */
-function wireGroups() {
-    document.querySelectorAll('[data-group]').forEach(group => {
-        group.addEventListener('click', e => {
-            const btn = e.target.closest('[data-val]');
-            if (!btn) return;
-            toggleVal(group, btn.dataset.val);
-        });
-    });
-}
-function toggleVal(group, val) {
-    const key = group.dataset.key, mode = group.dataset.select, max = +(group.dataset.max || 0);
-    if (mode === 'single') {
-        state[key] = (state[key] === val) ? '' : val;
-    } else {
-        let arr = Array.isArray(state[key]) ? state[key].slice() : [];
-        if (arr.includes(val)) arr = arr.filter(x => x !== val);
-        else { if (max && arr.length >= max) arr.shift(); arr.push(val); }
-        state[key] = arr;
-    }
-    renderGroup(group); save();
-}
-function renderGroup(group) {
-    const key = group.dataset.key, mode = group.dataset.select;
-    group.querySelectorAll('[data-val]').forEach(btn => {
-        const on = mode === 'single' ? state[key] === btn.dataset.val : (state[key] || []).includes(btn.dataset.val);
-        btn.classList.toggle('active', on);
-        btn.setAttribute('aria-pressed', on);
-    });
-}
-
-/* ═══════════════════ DIAL PHRASING (words, not numbers — keeps the LLM from over-fitting) ═══════════════════ */
-function dialPhrase(v, left, right) {
-    const d = Math.abs(v - 50);
-    if (d <= 6) return 'balanced';
-    const toward = v > 55 ? right : left;
-    const intensity = d <= 18 ? 'leans toward' : d <= 34 ? 'toward' : 'strongly toward';
-    return `${intensity} ${toward}`;
-}
-function updateDialPhrases() {
-    $('phrase-energy').textContent = dialPhrase(state.energy, 'being held', 'being challenged');
-    DIALS.forEach(d => { $('phrase-' + d.key).textContent = dialPhrase(state.dials[d.key], d.lp, d.rp); });
-}
-
-/* ═══════════════════ RENDER FROM STATE ═══════════════════ */
-function renderFromState() {
-    document.querySelectorAll('[data-group]').forEach(renderGroup);
-    $('energy').value = state.energy;
-    DIALS.forEach(d => { document.querySelector(`[data-dial="${d.key}"]`).value = state.dials[d.key]; });
-    $('subtitles').checked = state.subtitles !== 'no';
-    $('subText').textContent = state.subtitles === 'no' ? 'Prefer none tonight' : 'Happy to read tonight';
-    $('lastFilm').value = state.lastFilm;
-    $('loved').value = state.loved;
-    $('note').value = state.note;
-    updateDialPhrases();
-}
-
-/* ═══════════════════ INPUT WIRING ═══════════════════ */
-function wireInputs() {
-    $('energy').addEventListener('input', e => { state.energy = +e.target.value; updateDialPhrases(); save(); });
-    DIALS.forEach(d => {
-        document.querySelector(`[data-dial="${d.key}"]`).addEventListener('input', e => {
-            state.dials[d.key] = +e.target.value; updateDialPhrases(); save();
-        });
-    });
-    $('subtitles').addEventListener('change', e => {
-        state.subtitles = e.target.checked ? 'ok' : 'no';
-        $('subText').textContent = e.target.checked ? 'Happy to read tonight' : 'Prefer none tonight';
-        save();
-    });
-    $('lastFilm').addEventListener('input', e => { state.lastFilm = e.target.value; save(); });
-    $('loved').addEventListener('input', e => { state.loved = e.target.value; save(); });
-    $('note').addEventListener('input', e => { state.note = e.target.value; save(); });
-}
-
-/* ═══════════════════ NAVIGATION ═══════════════════ */
-const TOTAL_STEPS = 9;          // question screens
-const OUTPUT = 10;
-let screen = 0;                 // 0 = cover, 1..9 steps, 10 = output
-
-function showScreen(n) {
-    screen = n;
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    const el = document.querySelector(`.screen[data-screen="${n}"]`);
-    if (el) el.classList.add('active');
-
-    $('nav').classList.toggle('show', n >= 1 && n <= TOTAL_STEPS);
-    $('navNext').innerHTML = n === TOTAL_STEPS
-        ? 'Compose the brief <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>'
-        : 'Continue <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>';
-
-    const pct = n === 0 ? 0 : n > TOTAL_STEPS ? 100 : (n / TOTAL_STEPS) * 100;
-    $('bar').style.width = pct + '%';
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-function next() {
-    if (screen === TOTAL_STEPS) { compose(); showScreen(OUTPUT); }
-    else showScreen(screen + 1);
-}
-function back() { if (screen >= 1) showScreen(screen - 1); }
-
-/* ═══════════════════ MARKDOWN ═══════════════════ */
-function bq(t) { return t.trim().split(/\n/).map(l => '> ' + l).join('\n'); }
-
-function buildMarkdown() {
-    const L = [];
-    const p = s => L.push(s);
-
-    const leashMap = {
-        'Read between the lines': "**Read between the lines.** Treat everything below as atmosphere and direction, not instructions. Lean on your own taste, weigh the overall mood above any single answer, and feel free to surprise them — a great unexpected pick beats a literal one.",
-        'A balance': "**Strike a balance.** Honour the spirit of their answers, but let your own judgement break ties and fill the gaps. Overall mood first, the particulars second.",
-        'Stick to my answers': "**Stay close to the brief.** Follow their stated leanings fairly closely — while still recommending only films you'd genuinely stand behind."
-    };
-
-    p(`# Cinefilematic — a brief for tonight`); p('');
-    p(`*Paste this whole file into the LLM of your choice — Claude, ChatGPT, Gemini, whichever. It already carries its own instructions; you needn't add anything. Send it, and ask for five.*`); p('');
-    p('---'); p('');
-    p(`## For the curator`); p('');
-    p(`You are a film curator with the instincts of a great repertory programmer — someone who seems to have seen everything and recommends like a trusted friend, not an algorithm.`); p('');
-    p(`Read the whole brief first and form a single impression of the person and the evening, the way a friend would across a table — not a checklist. Then choose **exactly five films** for tonight, plus one wildcard.`); p('');
-    p(`A few things to hold in mind:`); p('');
-    p(`- **Most of this is mood-setting, not instruction.** The feelings, leanings and dials describe a *direction and a key to play in* — catch the overall mood rather than satisfying each field. If your taste says a film is right even though it bends a soft preference, trust your taste.`);
-    p(`- **Only a few things are hard:** runtime, who's watching, subtitles, and the avoid list. Never recommend a film listed as already seen. Everything else is soft.`);
-    p(`- **Calibrate the obscurity** to their depth and the films they've seen — for a seasoned viewer skip the obvious entry points and reach for the lesser-seen; for a lighter one stay legible. Never condescend.`);
-    p(`- **Be decisive.** They've already scrolled the library for forty minutes. Give five confident films, not forty hedged ones — and spread them across era, country and register, with at least one they're unlikely to know.`); p('');
-    p(`For each of the five:`); p('');
-    p(`> **Title** — Director, Year, Country · runtime  `);
-    p(`> Two or three sentences: what it is, and why it suits *this* evening, with one concrete, sensory reason to trust it.  `);
-    p(`> *Where to find it*, if you can.`); p('');
-    p(`Close with one **wildcard** — a stranger, riskier choice, clearly marked.`); p('');
-    p(`Write with precision and restraint. Assume an intelligent viewer. No hype, no spoilers, no emojis, no exclamation marks.`); p('');
-    p('---'); p('');
-    p(`## The brief`); p('');
-
-    p(`**How to read this brief —** ${leashMap[state.leash] || leashMap['A balance']}`); p('');
-
-    if (state.occasion) { p(`**The occasion:** ${state.occasion}`); p(''); }
-
-    p(`**The feeling they're after** *(the key to play in — lean into it, don't over-fit)*`);
-    const feel = [];
-    const moods = state.moods.length ? state.moods.join(' · ') : 'open — surprise them';
-    const dir = state.moods.length ? (state.moodDir === 'Pull me out of it' ? ' — and would like the film to pull them out of it' : ' — and would like the film to meet them there') : '';
-    feel.push(`- Wants to feel: ${moods}${dir}`);
-    feel.push(`- Posture: ${dialPhrase(state.energy, 'being held (easy to fall into)', 'being challenged (they will lean in)')}`);
-    if (state.lastFilm.trim()) {
-        const am = { 'Give me its cousin': ' — leaning toward something in its register', 'Give me a contrast': ' — leaning toward a deliberate contrast', 'No strong feeling — surprise me': ' — no strong pull, open to surprise' };
-        feel.push(`- Recently struck by: ${state.lastFilm.trim()}${state.lastDir ? (am[state.lastDir] || '') : ''}`);
-    }
-    p(feel.join('\n')); p('');
-
-    p(`**Tonight's leanings** *(soft dials, not targets)*`);
-    p(DIALS.map(d => `- ${d.label}: ${dialPhrase(state.dials[d.key], d.lp, d.rp)}`).join('\n')); p('');
-
-    p(`**Who's watching & where**`);
-    const ev = [];
-    if (state.runtime) ev.push(`- Runtime — ${state.runtime}`);
-    if (state.company) ev.push(`- Watching — ${state.company}`);
-    ev.push(`- Subtitles — ${state.subtitles === 'no' ? 'prefers none tonight' : 'happy to read'}`);
-    if (state.services.length) ev.push(`- Can watch on — ${state.services.join(', ')}`);
-    p(ev.join('\n')); p('');
-
-    p(`**Range & taste**`);
-    const rt = [];
-    let depthLine = state.depth || 'unspecified';
-    if (state.volume) depthLine += ` · roughly ${state.volume} films seen`;
-    rt.push(`- Depth — ${depthLine}`);
-    if (state.seen.length) rt.push(`- Already seen *(do not recommend these)* — ${state.seen.join('; ')}`);
-    if (state.cinemas.length) rt.push(`- Drawn to — ${state.cinemas.join(', ')}`);
-    if (state.forms.length) rt.push(`- Pays attention to — ${state.forms.join(', ')}`);
-    p(rt.join('\n')); p('');
-    if (state.loved.trim()) { p(`Films & directors they love:`); p(''); p(bq(state.loved)); p(''); }
-
-    if (state.avoid.length || state.seen.length) {
-        p(`**Hard limits** *(honour these exactly)*`);
-        const hl = [];
-        if (state.avoid.length) hl.push(`- Avoid — ${state.avoid.join('; ')}`);
-        if (state.seen.length) hl.push(`- Recommend nothing from the “already seen” list above.`);
-        p(hl.join('\n')); p('');
-    }
-
-    if (state.note.trim()) { p(`**A note from the viewer**`); p(''); p(bq(state.note)); p(''); }
-
-    p('---'); p('');
-    const now = new Date();
-    p(`*Composed with Cinefilematic · ${now.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}*`);
-    return L.join('\n');
-}
-
-let composed = '';
-function compose() { composed = buildMarkdown(); $('mdPreview').textContent = composed; }
-
-/* ═══════════════════ DOWNLOAD / COPY ═══════════════════ */
-function download() {
-    const blob = new Blob([composed], { type: 'text/markdown;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'cinefilematic-brief.md';
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    toast('Brief downloaded');
-}
-async function copy() {
-    try { await navigator.clipboard.writeText(composed); }
-    catch (e) {
-        const ta = document.createElement('textarea');
-        ta.value = composed; ta.style.position = 'fixed'; ta.style.left = '-9999px';
-        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
-    }
-    toast('Copied to clipboard');
-}
-let toastTimer;
-function toast(msg) {
-    const t = $('toast'); t.textContent = msg; t.classList.add('show');
-    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
-}
-
-/* ═══════════════════ THEME ═══════════════════ */
-(function () {
-    const html = document.documentElement;
-    function initial() {
-        const s = localStorage.getItem('theme');
-        if (s === 'dark') return 'dark';
-        if (s === 'light') return 'light';
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    function apply(t) { t === 'dark' ? html.setAttribute('data-theme', 'dark') : html.removeAttribute('data-theme'); }
-    apply(initial());
-    document.addEventListener('DOMContentLoaded', () => {
-        $('themeToggle').addEventListener('click', () => {
-            const dark = html.getAttribute('data-theme') === 'dark';
-            const t = dark ? 'light' : 'dark';
-            apply(t); localStorage.setItem('theme', t);
-        });
-    });
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (!localStorage.getItem('theme')) apply(e.matches ? 'dark' : 'light');
-    });
-})();
-
-/* ═══════════════════ INIT ═══════════════════ */
-function init() {
-    buildContents();
-    buildChips('occasion', OCCASION);
-    buildMoods();
-    buildChips('moodDir', MOOD_DIR);
-    buildChips('lastDir', LAST_DIR);
-    buildChips('runtime', RUNTIME);
-    buildChips('company', COMPANY);
-    buildChips('services', SERVICES);
-    buildDepth();
-    buildChips('volume', VOLUME);
-    buildSeen();
-    buildChips('cinemas', CINEMAS);
-    buildChips('forms', FORMS);
-    buildDials();
-    buildChips('avoid', AVOID);
-    buildChips('leash', LEASH);
-    buildFigures();
-
-    load();
-    wireGroups();
-    wireInputs();
-    renderFromState();
-
-    $('beginBtn').addEventListener('click', () => showScreen(1));
-    $('navNext').addEventListener('click', next);
-    $('navBack').addEventListener('click', back);
-    $('downloadBtn').addEventListener('click', download);
-    $('copyBtn').addEventListener('click', copy);
-    $('editLink').addEventListener('click', () => showScreen(TOTAL_STEPS));
-    $('restartLink').addEventListener('click', () => {
-        if (confirm('Start over? This clears your answers.')) {
-            state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-            save(); renderFromState(); showScreen(0);
-        }
-    });
-
-    document.addEventListener('keydown', e => {
-        const typing = /^(TEXTAREA|INPUT)$/.test(document.activeElement.tagName);
-        if (e.key === 'Enter' && !typing && screen >= 1 && screen <= TOTAL_STEPS) { e.preventDefault(); next(); }
-        if (e.key === 'Enter' && screen === 0 && document.activeElement === document.body) { showScreen(1); }
-    });
-
-    showScreen(0);
-}
-document.addEventListener('DOMContentLoaded', init);
-</script>
+    <script src="app.js?v=4"></script>
 </body>
 </html>
