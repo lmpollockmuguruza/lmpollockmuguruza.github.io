@@ -60,9 +60,9 @@
 <body>
   <a href="https://lmpollockmuguruza.github.io" class="back-link">← lucas</a>
   <div id="root"></div>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.7/babel.min.js"></script>
   <script type="text/babel">
     const { useState, useCallback, useRef, useEffect } = React;
 
@@ -261,6 +261,24 @@
       'Exits': 'Realized investments where you\'ve sold your stake and received cash back.',
       'Reputation': 'Your standing in the market. Higher reputation improves deal flow (+10–35%), gives you an edge in competitive deals, and makes founders more willing to negotiate. Grows with successful investments and network upgrades. Drops when deals are lost or founders walk.',
       'Multiple': 'Valuation multiple (e.g., 15x revenue). Higher multiples mean you pay more for each dollar of revenue. In bull markets, multiples expand; in bear markets, they contract.',
+      // Fund & finance fundamentals
+      'Lp': 'Limited Partner. The investors (pensions, endowments, wealthy families) who put money into a fund. They commit capital but don\'t make the investment decisions.',
+      'Gp': 'General Partner. The investment team that runs the fund, picks deals, and manages the portfolio. In this game, you are the GP.',
+      'Carried interest': 'The share of profits the fund managers (GPs) keep — typically ~20%, usually only after investors earn back their money plus a minimum return.',
+      'Management fee': 'An annual fee (often ~2% of the fund) that pays the team\'s salaries and running costs, charged whether or not deals do well.',
+      'Hurdle rate': 'The minimum return LPs must earn before GPs start collecting carried interest. Often around 8% per year.',
+      'Dpi': 'Distributions to Paid-In. The cash actually returned to investors versus what they put in — realized money, not paper gains.',
+      'Irr': 'Internal Rate of Return. The annualized percentage return, which accounts for how long money was invested. A fast 3x beats a slow 3x.',
+      'Pre-money': 'A company\'s value before new investment goes in.',
+      'Post-money': 'A company\'s value right after new investment: pre-money valuation plus the new money. Your ownership = investment ÷ post-money.',
+      'Ebitda': 'Earnings Before Interest, Taxes, Depreciation and Amortization — a rough measure of a company\'s operating profit. PE deals are often priced as a multiple of EBITDA.',
+      'Leverage': 'Using borrowed money to fund part of a deal. It amplifies returns when things go well — and losses when they don\'t. Common in PE buyouts (LBOs).',
+      'Runway': 'How many months of cash a company has left before it runs out of money at its current burn rate.',
+      'Burn rate': 'How fast a company spends cash each month beyond what it earns.',
+      'Power law': 'The pattern where a few huge winners drive most of a venture fund\'s returns, while many investments return little or fail.',
+      'J-curve': 'The shape of fund returns over time: an early dip (from fees and failures) before the winners mature and pull returns upward.',
+      'Vintage': 'The year a fund started investing. It shapes returns because market conditions differ year to year.',
+      'Follow-on': 'Investing more money into a company you already back, usually in a later round, often to protect your ownership via pro-rata rights.',
       // Market conditions
       'Bull Market': 'Strong economy, high valuations, easy exits. Companies command premium prices and IPO windows are open.',
       'Bear Market': 'Weak economy, low valuations, difficult exits. Buyers are scarce and companies trade at discounts.',
@@ -299,6 +317,108 @@
     ];
 
     // =========================================================================
+    // DIFFICULTY TIERS
+    // Easy mirrors the original, well-balanced game. Normal and Hard scale up
+    // the realism: scarcer deals, choppier markets, tougher exits and founders.
+    // =========================================================================
+
+    const DIFFICULTY = {
+      easy: {
+        label: 'Easy', icon: '🌱', tag: 'Recommended for your first fund',
+        desc: 'Generous deal flow, gentler markets, and forgiving failure rates. Learn the ropes without getting wiped out.',
+        targetMult: 1.0, failMult: 1.0, exitMult: 1.0, dealFlowMult: 1.0,
+        growthMult: 1.0, ddCostMult: 1.0, hotMult: 1.0, eventFreq: 0.10,
+        startRep: 50, founderWalkMult: 1.0,
+      },
+      normal: {
+        label: 'Normal', icon: '⚖️', tag: 'A realistic challenge',
+        desc: 'Tighter deal flow, choppier markets, and tougher founders — roughly how a real emerging fund feels.',
+        targetMult: 1.1, failMult: 1.2, exitMult: 0.92, dealFlowMult: 0.9,
+        growthMult: 0.95, ddCostMult: 1.1, hotMult: 1.15, eventFreq: 0.13,
+        startRep: 48, founderWalkMult: 1.1,
+      },
+      hard: {
+        label: 'Hard', icon: '🔥', tag: 'For seasoned players',
+        desc: 'Scarce capital, brutal markets, frequent failures, and hard exits. Every dollar of dry powder counts.',
+        targetMult: 1.25, failMult: 1.5, exitMult: 0.82, dealFlowMult: 0.78,
+        growthMult: 0.88, ddCostMult: 1.25, hotMult: 1.4, eventFreq: 0.18,
+        startRep: 42, founderWalkMult: 1.25,
+      },
+    };
+
+    // =========================================================================
+    // ACADEMY — built-in "training" for students new to VC & PE.
+    // Plain-language lessons, each tied back to how the concept shows up in play.
+    // =========================================================================
+
+    const ACADEMY = [
+      {
+        module: 'Private Markets 101', icon: '🌍',
+        lessons: [
+          { title: 'Public vs private markets', body: 'Public markets are shares anyone can buy on a stock exchange (Apple, Tesla). Private markets are investments in companies that aren\'t listed — startups and privately-owned businesses. VC and PE funds are the main professional investors here.' },
+          { title: 'VC vs PE in one line', body: 'Venture Capital backs young, fast-growing startups, usually taking a minority stake and betting on huge growth. Private Equity buys mature, profitable companies — often a controlling stake — and improves them before reselling. VC = growth & risk; PE = control & operations.' },
+          { title: 'The power law', body: 'In VC, returns follow a "power law": most startups return little or fail, while a tiny handful of breakout winners (10x–100x) make the whole fund. That\'s why VCs spread their bets and chase outsized winners instead of safe singles.' },
+          { title: 'Why this matters', body: 'Private markets fund the companies that become tomorrow\'s household names — and they\'re where a lot of long-term wealth is created. Understanding them helps you read business news and think like an investor.' },
+        ],
+      },
+      {
+        module: 'How a Fund Works', icon: '🏦',
+        lessons: [
+          { title: 'LPs and GPs', body: 'A fund has two sides. Limited Partners (LPs) — pensions, endowments, wealthy families — provide the money. General Partners (GPs) — the investment team — make the decisions and run the fund. In this game, you are the GP.' },
+          { title: 'Committed capital & dry powder', body: 'LPs commit money up front, but the GP "calls" it gradually as deals appear. Money committed but not yet invested is "dry powder." Run out of it and you\'ll miss great deals — watch that number in your metrics bar.' },
+          { title: '"2 and 20"', body: 'GPs are paid two ways: a management fee (often ~2% per year to cover salaries and costs) and carried interest (often ~20% of the profits). Carry usually only kicks in after LPs earn back their money plus a minimum return — the "hurdle."' },
+          { title: 'Fund life & the J-curve', body: 'A typical fund lasts ~10 years: invest early, harvest later. Returns often dip before they rise — the "J-curve" — because fees and early failures hit before the winners pay off. This game runs 40 quarters (10 years).' },
+        ],
+      },
+      {
+        module: 'Measuring Returns', icon: '📐',
+        lessons: [
+          { title: 'MOIC / TVPI', body: 'Multiple on Invested Capital. Invest $10M, get back $30M → 3x. Simple and intuitive, but it ignores how long the money was tied up. Your headline score in this game is a MOIC.' },
+          { title: 'DPI', body: 'Distributions to Paid-In: how much cash has actually been returned to LPs versus paid in. It\'s real money in hand, not paper gains.' },
+          { title: 'IRR', body: 'Internal Rate of Return — the annualized % return, which does account for time. A 3x in 4 years is far better than a 3x in 12 years.' },
+          { title: 'Realized vs unrealized', body: 'Paper gains can vanish. A return only counts for sure once you\'ve exited and the cash is in. Your MOIC here blends cash from exits with the current value of what you still hold — so an unexited portfolio is not money in the bank yet.' },
+        ],
+      },
+      {
+        module: 'Sourcing & Valuing Deals', icon: '🔎',
+        lessons: [
+          { title: 'Deal flow & reputation', body: 'You can only invest in deals you actually see. A strong network and reputation bring better deals to your door — and give you an edge when several funds chase the same company. Upgrades and good outcomes raise your reputation.' },
+          { title: 'Pre-money vs post-money', body: 'Pre-money is what a company is worth before new investment. Add the investment and you get post-money. Your ownership = your investment ÷ post-money valuation.' },
+          { title: 'Multiples', body: 'Companies are often priced as a multiple of revenue (startups) or EBITDA (mature firms). A "15x revenue" company is expensive; multiples expand in bull markets and shrink in bear markets — exactly what you see when conditions change.' },
+          { title: 'Due diligence', body: 'Before investing you investigate — financials, customers, team, tech. Good DD narrows your uncertainty (tighter ranges). It costs money, but overpaying for a lemon costs far more. Better DD upgrades reveal red flags and upside others miss.' },
+        ],
+      },
+      {
+        module: 'Terms & Negotiation', icon: '🤝',
+        lessons: [
+          { title: 'The term sheet', body: 'A short summary of a deal\'s key terms before lawyers draft the contracts. Price is only part of it — control and protection terms matter just as much.' },
+          { title: 'Board seat', body: 'A seat on the board lets you vote on big decisions: fundraising, M&A, hiring or firing the CEO. It\'s influence without owning the whole company.' },
+          { title: 'Pro-rata rights', body: 'The right to invest again in later rounds to keep your ownership % from shrinking. Crucial for doubling down on your winners — and a checkbox you negotiate for in this game.' },
+          { title: 'Liquidation preference', body: 'Decides who gets paid first in an exit. A "1x preference" means that investor gets their money back before others share the rest. Founder-friendly vs investor-friendly terms are a constant tug-of-war.' },
+          { title: 'Reading founders', body: 'Desperate founders accept low offers but their companies are often riskier. Arrogant founders rarely budge and walk fast. Push too hard and a founder can walk away permanently — and they remember a bad negotiation next time.' },
+        ],
+      },
+      {
+        module: 'Managing the Portfolio', icon: '💼',
+        lessons: [
+          { title: 'Diversification', body: 'Spreading bets across sectors and stages so one bad year or sector doesn\'t sink the fund — especially vital under the power law.' },
+          { title: 'Reserves & follow-ons', body: 'Smart funds hold back dry powder to follow their winners in future rounds. Backing your best companies again (pro-rata) is often more valuable than finding brand-new ones.' },
+          { title: 'Dilution & down rounds', body: 'Issuing new shares shrinks existing owners\' stake (dilution). A "down round" raises money at a lower price than before — painful, often with harsh terms. Pro-rata rights help you defend your position.' },
+          { title: 'Value creation', body: 'Top funds don\'t just write checks — they help with hiring, customers, and strategy. In PE especially, operational improvements are the main engine of returns. That\'s what your Portfolio Support upgrade represents.' },
+        ],
+      },
+      {
+        module: 'Exits & Cycles', icon: '🚪',
+        lessons: [
+          { title: 'How you make money', body: 'Returns are realized at "exit" — usually a sale to another company (M&A), an IPO (going public), or selling your stake to another investor (a secondary). No exit, no realized return.' },
+          { title: 'Hold periods', body: 'Investments need years to mature. Selling too early leaves money on the table; the game enforces a minimum hold before you can attempt an exit (longer for PE than VC).' },
+          { title: 'Market cycles', body: 'Bull markets bring high valuations and easy exits; bear markets bring cheap deals but few buyers. Great investors buy carefully in booms and hunt bargains in busts — and time their exits to open windows.' },
+          { title: 'PE & leverage', body: 'PE buyouts often use borrowed money (leverage) to amplify returns, then pay it down with the company\'s cash flow. More leverage means more upside — and more risk if things go wrong.' },
+        ],
+      },
+    ];
+
+    // =========================================================================
     // HELPER FUNCTIONS
     // =========================================================================
 
@@ -328,7 +448,7 @@
       return suffix ? `${baseName} ${suffix}${variation}`.trim() : `${baseName}${variation}`.trim();
     };
 
-    const generateCompany = (quarter, fundType, qualityBonus = 0, marketCondition = 'normal', sectorBoost = null) => {
+    const generateCompany = (quarter, fundType, qualityBonus = 0, marketCondition = 'normal', sectorBoost = null, hotMult = 1) => {
       const sector = pickSector(fundType);
       const isVC = fundType === 'VC';
       const stages = isVC ? STAGES_VC : STAGES_PE;
@@ -360,7 +480,7 @@
         founderType = FOUNDER_TYPES[Math.floor(Math.random() * FOUNDER_TYPES.length)];
       }
       
-      const isHot = trueQuality > 0.65 && Math.random() < 0.25 * market.competitionIntensity;
+      const isHot = trueQuality > 0.65 && Math.random() < 0.25 * market.competitionIntensity * hotMult;
       
       return {
         id: `${quarter}-${Math.random().toString(36).substr(2, 9)}`,
@@ -416,23 +536,23 @@
     };
 
     // Calculate DD cost based on fund type and stage
-    const getDDCost = (fundType, stage, ddLevel) => {
+    const getDDCost = (fundType, stage, ddLevel, ddCostMult = 1) => {
       const baseCost = fundType === 'VC' ? 0.4 : 1.5; // Expensive!
       const stageMod = stage.includes('Seed') || stage.includes('Pre') ? 0.7 : stage.includes('Buyout') ? 1.5 : 1.0;
       const levelMod = UPGRADES.ddProgram.levels[ddLevel].ddCostMod;
-      return Math.round(baseCost * stageMod * levelMod * 10) / 10;
+      return Math.round(baseCost * stageMod * levelMod * ddCostMult * 10) / 10;
     };
 
     // Determine how many deals appear this quarter (can be 0!)
-    const getNewDealCount = (quarter, marketCondition, networkLevel) => {
+    const getNewDealCount = (quarter, marketCondition, networkLevel, dealFlowMult = 1) => {
       const market = MARKET_CONDITIONS[marketCondition];
       const networkBonus = UPGRADES.network.levels[networkLevel].dealFlowBonus;
-      
+
       // Base: 1-2 deals, but can be 0
       // First few quarters have guaranteed deals
       if (quarter <= 2) return Math.floor(Math.random() * 2) + 2; // 2-3 deals early
-      
-      const baseChance = 0.7 * market.dealFlow; // 70% base chance per "slot"
+
+      const baseChance = 0.7 * market.dealFlow * dealFlowMult; // 70% base chance per "slot"
       const adjustedChance = baseChance + networkBonus * 0.3;
       
       let count = 0;
@@ -627,6 +747,52 @@
       );
     }
 
+    // Academy — a browsable "training" library of VC/PE concepts.
+    function AcademyModal({ onClose }) {
+      const [mod, setMod] = useState(0);
+      const current = ACADEMY[mod];
+      return (
+        <div style={s.modal} onClick={onClose}>
+          <div style={{ ...s.modalContent, maxWidth: '620px', maxHeight: '88vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+            <div style={s.modalHeader}>
+              <div>
+                <div style={{ fontSize: '9px', fontWeight: '600', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#999' }}>📚 Academy</div>
+                <span style={{ fontSize: '16px', fontWeight: '600' }}>Learn VC &amp; PE</span>
+              </div>
+              <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '20px', color: '#999', cursor: 'pointer' }}>×</button>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', padding: '12px 16px 4px', overflowX: 'auto', flexWrap: 'nowrap', borderBottom: '1px solid #f0f0f0' }}>
+              {ACADEMY.map((m, i) => (
+                <button key={i} onClick={() => setMod(i)} style={{
+                  whiteSpace: 'nowrap', padding: '6px 12px', borderRadius: '100px', fontSize: '11px', fontWeight: '500',
+                  border: `1px solid ${i === mod ? '#0a0a0a' : '#e5e5e5'}`,
+                  background: i === mod ? '#0a0a0a' : '#fff', color: i === mod ? '#fff' : '#666', cursor: 'pointer',
+                }}>{m.icon} {m.module}</button>
+              ))}
+            </div>
+            <div style={{ ...s.modalBody, overflowY: 'auto' }}>
+              {current.lessons.map((l, i) => (
+                <div key={i} style={{ padding: '12px 14px', background: '#f8f8f6', borderRadius: '10px', marginBottom: '10px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '600', marginBottom: '5px' }}>{l.title}</div>
+                  <div style={{ fontSize: '12px', color: '#555', lineHeight: 1.55 }}>{l.body}</div>
+                </div>
+              ))}
+              <div style={{ fontSize: '10px', color: '#999', textAlign: 'center', padding: '6px 0 2px', lineHeight: 1.5 }}>
+                Tip: hover any <span style={{ borderBottom: '1px dotted #999' }}>dotted term</span> in the game for a quick definition.
+              </div>
+            </div>
+            <div style={s.modalFooter}>
+              <span style={{ fontSize: '10px', color: '#999', marginRight: 'auto' }}>Module {mod + 1} of {ACADEMY.length}</span>
+              <Btn variant="secondary" small onClick={() => setMod(m => Math.max(0, m - 1))} disabled={mod === 0}>← Prev</Btn>
+              {mod < ACADEMY.length - 1
+                ? <Btn small onClick={() => setMod(m => Math.min(ACADEMY.length - 1, m + 1))}>Next →</Btn>
+                : <Btn small onClick={onClose}>Done</Btn>}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     // =========================================================================
     // MAIN GAME COMPONENT
     // =========================================================================
@@ -662,9 +828,13 @@
       const [saveToast, setSaveToast] = useState(null); // { msg, type }
       const [showRetireConfirm, setShowRetireConfirm] = useState(false);
       const [hasSave, setHasSave] = useState(() => hasSavedGame());
+      const [difficulty, setDifficulty] = useState('easy');
+      const [pendingDifficulty, setPendingDifficulty] = useState('easy');
+      const [showAcademy, setShowAcademy] = useState(false);
       const logIdRef = useRef(0);
 
-      const targetMOIC = fundType === 'VC' ? 3 : 2.5;
+      const diff = DIFFICULTY[difficulty] || DIFFICULTY.easy;
+      const targetMOIC = Math.round((fundType === 'VC' ? 3 : 2.5) * diff.targetMult * 10) / 10;
       const getUpgrade = (type, level) => UPGRADES[type].levels[level];
       const market = MARKET_CONDITIONS[marketCondition];
       
@@ -681,7 +851,7 @@
           fundType, fundName, quarter, capital, deployed,
           portfolio, failedCompanies, exits, dealFlow, log,
           upgrades, marketCondition, marketEvent, eventTurns,
-          sectorBoost, reputation, dealsLost,
+          sectorBoost, reputation, dealsLost, difficulty,
         });
         setHasSave(true);
       }, [quarter]);
@@ -692,21 +862,23 @@
         setLog(prev => [{ msg, type, id: logIdRef.current, q: currentQuarter }, ...prev].slice(0, 50));
       }, []);
 
-      const startGame = (type, name) => {
+      const startGame = (type, name, diffKey = 'easy') => {
+        const d = DIFFICULTY[diffKey] || DIFFICULTY.easy;
+        setDifficulty(diffKey);
         setFundType(type);
         setFundName(name || (type === 'VC' ? 'Venture Fund I' : 'Growth Fund I'));
         setCapital(type === 'VC' ? 100 : 500);
         setGameState('playing');
         // Generate initial deals (guaranteed 2-3 for first quarter)
         const initialDeals = [
-          generateCompany(1, type),
-          generateCompany(1, type),
-          Math.random() > 0.5 ? generateCompany(1, type) : null
+          generateCompany(1, type, 0, 'normal', null, d.hotMult),
+          generateCompany(1, type, 0, 'normal', null, d.hotMult),
+          Math.random() > 0.5 ? generateCompany(1, type, 0, 'normal', null, d.hotMult) : null
         ].filter(Boolean);
         setDealFlow(initialDeals);
         setLog([]);
         setMarketCondition('normal');
-        setReputation(50);
+        setReputation(d.startRep);
         setQuarter(1);
         setPortfolio([]);
         setExits([]);
@@ -729,7 +901,7 @@
 
       const conductDD = (deal) => {
         const ddLevel = upgrades.ddProgram;
-        const cost = getDDCost(fundType, deal.stage, ddLevel);
+        const cost = getDDCost(fundType, deal.stage, ddLevel, diff.ddCostMult);
         if (capital - deployed < cost) { 
           addLog('Insufficient funds for DD', 'error'); 
           return; 
@@ -758,7 +930,7 @@
         const networkBonus = getUpgrade('network', upgrades.network).founderBonus || 0;
         
         return {
-          walkThreshold: Math.max(0.05, base.baseWalk - frustration + randomFactor + networkBonus),
+          walkThreshold: Math.max(0.05, base.baseWalk * diff.founderWalkMult - frustration + randomFactor + networkBonus),
           counterAggression: Math.min(0.98, base.counterAggr + frustration * 0.5),
           patience: Math.max(1, base.patience - negotiationHistory.length),
           volatility: base.volatility,
@@ -972,9 +1144,9 @@
         const hold = quarter - inv.quarterInvested;
         const minHold = fundType === 'VC' ? 8 : 12;
         if (hold < minHold) return;
-        const exitProb = Math.min(0.85, (inv.trueQuality * 0.5 + hold / 40 * 0.3 + 0.1) * market.exitModifier);
+        const exitProb = Math.min(0.85, (inv.trueQuality * 0.5 + hold / 40 * 0.3 + 0.1) * market.exitModifier * diff.exitMult);
         if (Math.random() < exitProb) {
-          const proceeds = inv.currentValue * (0.8 + Math.random() * 0.5 + inv.trueQuality * 0.3) * market.exitModifier;
+          const proceeds = inv.currentValue * (0.8 + Math.random() * 0.5 + inv.trueQuality * 0.3) * market.exitModifier * diff.exitMult;
           setCapital(prev => prev + proceeds);
           setDeployed(prev => prev - inv.investedAmount);
           setExits(prev => [...prev, { ...inv, exitValue: proceeds, exitMOIC: proceeds / inv.investedAmount }]);
@@ -1001,7 +1173,7 @@
           setSectorBoost(null); 
           newMarket = 'normal'; 
         }
-        if (!marketEvent && Math.random() < 0.1) {
+        if (!marketEvent && Math.random() < diff.eventFreq) {
           const ev = MACRO_EVENTS[Math.floor(Math.random() * MACRO_EVENTS.length)];
           setMarketEvent(ev);
           setEventTurns(ev.duration);
@@ -1049,7 +1221,7 @@
           const q = inv.trueQuality;
           const mMod = MARKET_CONDITIONS[newMarket].multipleModifier;
           const sMod = sectorBoost === inv.sector ? 1.2 : 1;
-          const base = 1 + (inv.metrics.growth / 400) * q + port.valueBoost;
+          const base = 1 + (inv.metrics.growth / 400) * q * diff.growthMult + port.valueBoost;
           let newVal = inv.currentValue * Math.max(0.25, base + (Math.random() - 0.4) * 0.35) * mMod * sMod;
           
           // Random events
@@ -1063,7 +1235,7 @@
               }
               addLog(`${inv.name}: ${ev.text}`, ev.isPositive ? 'success' : 'warning');
               newVal *= ev.valueMod;
-              if (ev.failRisk && Math.random() < ev.failRisk * (1 - port.failReduction)) { 
+              if (ev.failRisk && Math.random() < ev.failRisk * (1 - port.failReduction) * diff.failMult) {
                 failures.push({ ...inv, failReason: ev.text }); 
                 return { ...inv, status: 'failed', currentValue: 0 }; 
               }
@@ -1079,7 +1251,7 @@
           }
           
           // Random failures
-          const fail = (1 - q) * 0.025 * (fundType === 'VC' ? 1.5 : 0.5) * (1 - port.failReduction);
+          const fail = (1 - q) * 0.025 * (fundType === 'VC' ? 1.5 : 0.5) * (1 - port.failReduction) * diff.failMult;
           if (Math.random() < fail) { 
             failures.push({ ...inv, failReason: 'Out of runway' }); 
             return { ...inv, status: 'failed', currentValue: 0 }; 
@@ -1096,13 +1268,13 @@
         
         // New deals - can be 0!
         const networkLevel = upgrades.network;
-        const count = getNewDealCount(quarter + 1, newMarket, networkLevel);
+        const count = getNewDealCount(quarter + 1, newMarket, networkLevel, diff.dealFlowMult);
         
         if (count === 0) {
           addLog('No new deals this quarter', 'info');
         } else {
-          const newDeals = Array(count).fill(0).map(() => 
-            generateCompany(quarter + 1, fundType, analyst.dealQualityBonus || 0, newMarket, sectorBoost)
+          const newDeals = Array(count).fill(0).map(() =>
+            generateCompany(quarter + 1, fundType, analyst.dealQualityBonus || 0, newMarket, sectorBoost, diff.hotMult)
           );
           setDealFlow(prev => [...prev, ...newDeals]);
           addLog(`${count} new deal${count > 1 ? 's' : ''} arrived`, 'info');
@@ -1147,6 +1319,7 @@
         setShowSpotlight(false); 
         setSpotlightStep(0);
         setPendingFundType(null);
+        setPendingDifficulty('easy');
         setInputFundName('');
         setHasSave(hasSavedGame());
       };
@@ -1162,7 +1335,7 @@
           fundType, fundName, quarter, capital, deployed,
           portfolio, failedCompanies, exits, dealFlow, log,
           upgrades, marketCondition, marketEvent, eventTurns,
-          sectorBoost, reputation, dealsLost,
+          sectorBoost, reputation, dealsLost, difficulty,
         });
         if (ok) {
           showToast('Game saved');
@@ -1192,6 +1365,7 @@
         setSectorBoost(data.sectorBoost || null);
         setReputation(data.reputation ?? 50);
         setDealsLost(data.dealsLost || 0);
+        setDifficulty(data.difficulty || 'easy');
         setGameState('playing');
         setShowTutorialDeals(false);
         setShowSpotlight(false);
@@ -1259,17 +1433,22 @@
               <div style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#999', marginBottom: '16px' }}>Private Markets Simulator</div>
               <h1 style={s.introTitle}>Fund Strategy</h1>
               <p style={s.introSub}>Step into the role of a fund manager. Source deals, negotiate terms, navigate market cycles, and build a portfolio that delivers returns.</p>
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <button style={{ ...s.btn, padding: '14px 32px', fontSize: '14px' }} onClick={() => setGameState('setup')}>New Fund</button>
                 {hasSave && (
                   <button style={{ ...s.btnSec, padding: '14px 32px', fontSize: '14px' }} onClick={loadGame}>Continue ↗</button>
                 )}
+                <button style={{ ...s.btnSec, padding: '14px 32px', fontSize: '14px' }} onClick={() => setShowAcademy(true)}>📚 Learn</button>
               </div>
+              <p style={{ fontSize: '12px', color: '#aaa', marginTop: '16px', maxWidth: '420px', lineHeight: 1.5 }}>
+                New to venture capital and private equity? Open <strong style={{ color: '#888' }}>📚 Learn</strong> for a quick, plain-language crash course before you start.
+              </p>
+              {showAcademy && <AcademyModal onClose={() => setShowAcademy(false)} />}
               {hasSave && (() => {
                 const data = loadGameState();
                 return data ? (
                   <div style={{ marginTop: '16px', fontSize: '11px', color: '#999', lineHeight: 1.5 }}>
-                    Saved: <strong style={{ color: '#666' }}>{data.fundName}</strong> · Q{data.quarter}/40 · {new Date(data.savedAt).toLocaleDateString()}
+                    Saved: <strong style={{ color: '#666' }}>{data.fundName}</strong> · {(DIFFICULTY[data.difficulty] || DIFFICULTY.easy).label} · Q{data.quarter}/40 · {new Date(data.savedAt).toLocaleDateString()}
                   </div>
                 ) : null;
               })()}
@@ -1341,9 +1520,31 @@
                 onBlur={e => e.target.style.borderColor = '#e5e5e5'}
                 autoFocus
               />
+              <div style={{ width: '100%', maxWidth: '420px', marginBottom: '24px' }}>
+                <div style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.06em', textTransform: 'uppercase', color: '#999', marginBottom: '10px' }}>Difficulty</div>
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
+                  {Object.entries(DIFFICULTY).map(([key, d]) => {
+                    const active = pendingDifficulty === key;
+                    return (
+                      <button key={key} onClick={() => setPendingDifficulty(key)} style={{
+                        flex: 1, padding: '12px 8px', borderRadius: '12px', cursor: 'pointer',
+                        border: `1px solid ${active ? '#0a0a0a' : '#e5e5e5'}`,
+                        background: active ? '#0a0a0a' : '#fff', color: active ? '#fff' : '#0a0a0a',
+                        transition: 'all 0.2s ease',
+                      }}>
+                        <div style={{ fontSize: '18px', marginBottom: '4px' }}>{d.icon}</div>
+                        <div style={{ fontSize: '12px', fontWeight: '600' }}>{d.label}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+                <div style={{ fontSize: '11px', color: '#888', lineHeight: 1.5, textAlign: 'center', minHeight: '46px' }}>
+                  <strong style={{ color: '#666' }}>{DIFFICULTY[pendingDifficulty].tag}.</strong> {DIFFICULTY[pendingDifficulty].desc}
+                </div>
+              </div>
               <div style={{ display: 'flex', gap: '12px' }}>
-                <button onClick={() => { setPendingFundType(null); setInputFundName(''); }} style={s.btnSec}>← Back</button>
-                <button onClick={() => startGame(pendingFundType, inputFundName)} style={s.btn}>Launch Fund →</button>
+                <button onClick={() => { setPendingFundType(null); setInputFundName(''); setPendingDifficulty('easy'); }} style={s.btnSec}>← Back</button>
+                <button onClick={() => startGame(pendingFundType, inputFundName, pendingDifficulty)} style={s.btn}>Launch Fund →</button>
               </div>
             </div>
           </div>
@@ -1362,6 +1563,7 @@
               <div style={{ fontSize: '15px', color: '#666', marginBottom: '8px' }}>
                 {gameOver.won ? `Beat ${gameOver.target}x target!` : `Target was ${gameOver.target}x`}
               </div>
+              <div style={{ fontSize: '11px', color: '#999', marginBottom: '8px' }}>{diff.icon} {diff.label} difficulty · {fundType}</div>
               {gameOver.earlyRetirement && (
                 <div style={{ fontSize: '12px', color: '#999', marginBottom: '24px' }}>
                   Retired at Q{gameOver.quarterRetired}/40 · Portfolio liquidated at 30% discount
@@ -1402,6 +1604,8 @@
         <div style={s.app}>
           <div style={s.container}>
             {showSpotlight && <SpotlightTutorial step={spotlightStep} onNext={() => spotlightStep < SPOTLIGHT_STEPS.length - 1 ? setSpotlightStep(s => s + 1) : setShowSpotlight(false)} onSkip={() => setShowSpotlight(false)} />}
+
+            {showAcademy && <AcademyModal onClose={() => setShowAcademy(false)} />}
 
             {pendingDecision && (
               <div style={s.modal}>
@@ -1539,6 +1743,7 @@
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: '16px', fontWeight: '600' }}>{fundName}</span>
                 <span style={{ ...s.badge, background: '#f5f5f3', color: '#666' }}>{fundType}</span>
+                <span style={{ ...s.badge, background: '#f5f5f3', color: '#666' }}>{diff.icon} {diff.label}</span>
                 <Jargon term={market.name} noBorder>
                   <span style={{ ...s.badge, background: market.color + '12', color: market.color, border: `1px solid ${market.color}30` }}>{market.icon} {market.name}</span>
                 </Jargon>
@@ -1548,6 +1753,7 @@
                 <div style={{ width: '50px', height: '3px', background: '#e5e5e5', borderRadius: '2px', overflow: 'hidden' }}><div style={{ height: '100%', width: `${(quarter / 40) * 100}%`, background: '#0a0a0a' }} /></div>
                 <span style={{ fontSize: '13px', fontWeight: '600', color: moic >= targetMOIC ? '#15803d' : moic >= targetMOIC * 0.7 ? '#f59e0b' : '#b91c1c' }}>{moic.toFixed(2)}x / {targetMOIC}x</span>
                 <Btn variant="secondary" small onClick={saveGame}>💾 Save</Btn>
+                <Btn variant="secondary" small onClick={() => setShowAcademy(true)}>📚 Learn</Btn>
                 <Btn variant="secondary" small onClick={() => { setSpotlightStep(0); setShowSpotlight(true); }}>?</Btn>
               </div>
             </header>
