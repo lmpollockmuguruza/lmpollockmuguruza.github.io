@@ -55,8 +55,8 @@
         .ambient-orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,rgba(107,39,55,.15),transparent 70%);top:40%;right:-12%;animation-delay:-15s;animation-duration:30s}
         [data-theme="dark"] .ambient-orb{opacity:.06}
         @keyframes orbDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,20px) scale(1.08)}100%{transform:translate(15px,-15px) scale(.95)}}
-        ::selection{background:var(--burgundy);color:var(--bg)}
-        ::-moz-selection{background:rgba(107,39,55,.18);color:var(--ink)}
+        ::selection{background:var(--selection,var(--burgundy));color:var(--bg)}
+        ::-moz-selection{background:var(--selection,var(--burgundy));color:var(--bg)}
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--ink-ghost);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--burgundy)}
 
         /* LOADING */
@@ -199,7 +199,6 @@
         .palette-overlay.open .palette-modal{transform:translateY(0) scale(1)}
         .palette-close{position:absolute;top:1rem;right:1.1rem;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:none;color:var(--ink-faint);font-size:1.2rem;cursor:pointer;border-radius:50%;transition:all var(--transition)}
         .palette-close:hover{color:var(--burgundy);background:var(--burgundy-wash)}
-        .palette-kicker{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--burgundy);margin-bottom:.35rem}
         .palette-title{font-family:'EB Garamond',serif;font-size:1.7rem;font-weight:500;color:var(--ink);margin-bottom:.5rem}
         .palette-sub{font-size:.85rem;color:var(--ink-muted);margin-bottom:1.6rem}
         .palette-swatches{display:flex;gap:1.8rem;margin-bottom:1.5rem}
@@ -226,6 +225,8 @@
         .palette-btn{padding:.6rem 1.2rem;font-family:inherit;font-size:.78rem;letter-spacing:.03em;color:var(--ink-muted);background:none;border:1px solid var(--border-subtle);border-radius:var(--radius-xs);cursor:pointer;transition:all var(--transition)}
         .palette-btn:hover{border-color:var(--border-hover);color:var(--burgundy)}
         .palette-btn-save{color:var(--burgundy);background:var(--burgundy-wash);border-color:var(--burgundy-glow)}
+        .palette-reset-link{background:none;border:none;padding:.6rem .2rem;font-family:inherit;font-size:.78rem;letter-spacing:.03em;color:var(--ink-muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px;transition:color var(--transition)}
+        .palette-reset-link:hover{color:var(--burgundy)}
         /* MOBILE */
         @media(max-width:768px){
             .palette-modal{padding:1.6rem 1.4rem 1.4rem}
@@ -421,13 +422,13 @@
     <div class="palette-overlay" id="paletteOverlay" aria-hidden="true">
         <div class="palette-modal" role="dialog" aria-modal="true" aria-label="Your mode">
             <button class="palette-close" id="paletteClose" aria-label="Close">&times;</button>
-            <p class="palette-kicker">a third mode</p>
-            <h3 class="palette-title">your mode</h3>
-            <p class="palette-sub">Three colours make this site — paper, ink, and an accent. Pick your own; everything else follows. The whole page changes as you play.</p>
+            <h3 class="palette-title">Your mode</h3>
+            <p class="palette-sub">Four colours make this site — paper, ink, an accent, and the selection highlight. Pick your own; everything else follows. The whole page changes as you play.</p>
             <div class="palette-swatches">
                 <label class="palette-swatch"><input type="color" id="pcPaper" value="#f2efe9"><span>paper</span></label>
                 <label class="palette-swatch"><input type="color" id="pcInk" value="#1a1816"><span>ink</span></label>
                 <label class="palette-swatch"><input type="color" id="pcAccent" value="#6b2737"><span>accent</span></label>
+                <label class="palette-swatch"><input type="color" id="pcSel" value="#6b2737"><span>selection</span></label>
             </div>
             <div class="palette-presets" id="palettePresets"></div>
             <div class="palette-preview">
@@ -439,7 +440,7 @@
             </div>
             <div class="palette-actions">
                 <button class="palette-btn palette-btn-save" id="paletteSave">keep it</button>
-                <button class="palette-btn" id="paletteReset">back to lucas' colours</button>
+                <button class="palette-reset-link" id="paletteReset">back to lucas' colours</button>
             </div>
         </div>
     </div>
@@ -461,13 +462,15 @@
         toggle.addEventListener('click',()=>{let c=localStorage.getItem('theme')||'light';if(c==='custom'){clearPalette();applyTheme('light');return}const i=themeOrder.indexOf(c),n=themeOrder[(i+1)%themeOrder.length];applyTheme(n)});
 
         /* YOUR MODE — custom palette */
-        const PALETTE_VARS=['bg','bg-warm','bg-card','bg-card-hover','bg-glass','bg-glass-strong','ink','ink-soft','ink-muted','ink-faint','ink-ghost','burgundy','burgundy-soft','burgundy-dark','burgundy-wash','burgundy-glow','border','border-subtle','border-hover','glass-border','glass-shadow','glass-shadow-hover'];
-        const PALETTE_DEFAULT={paper:'#f2efe9',ink:'#1a1816',accent:'#6b2737'};
+        const PALETTE_VARS=['bg','bg-warm','bg-card','bg-card-hover','bg-glass','bg-glass-strong','ink','ink-soft','ink-muted','ink-faint','ink-ghost','burgundy','burgundy-soft','burgundy-dark','burgundy-wash','burgundy-glow','border','border-subtle','border-hover','glass-border','glass-shadow','glass-shadow-hover','selection'];
+        const PALETTE_DEFAULT={paper:'#f2efe9',ink:'#1a1816',accent:'#6b2737',sel:'#6b2737'};
         const PALETTE_PRESETS=[
-            {name:'olive grove',paper:'#edefe6',ink:'#1d201b',accent:'#3f5e46'},
-            {name:'prussian',paper:'#f3f1ea',ink:'#191c24',accent:'#23456e'},
-            {name:'violet hour',paper:'#141220',ink:'#e8e4f2',accent:'#a48fe0'},
-            {name:'ember',paper:'#161210',ink:'#ece2d8',accent:'#cd8b62'}
+            {name:'olive grove',paper:'#edefe6',ink:'#1d201b',accent:'#3f5e46',sel:'#3f5e46'},
+            {name:'prussian',paper:'#f3f1ea',ink:'#191c24',accent:'#23456e',sel:'#23456e'},
+            {name:'violet hour',paper:'#141220',ink:'#e8e4f2',accent:'#a48fe0',sel:'#a48fe0'},
+            {name:'ember',paper:'#161210',ink:'#ece2d8',accent:'#cd8b62',sel:'#cd8b62'},
+            {name:'vercel',paper:'#0a0a0a',ink:'#ededed',accent:'#fafafa',sel:'#eaff00'},
+            {name:'lse',paper:'#ffffff',ink:'#14171c',accent:'#e0112b',sel:'#e0112b'}
         ];
         const hx=h=>{h=h.replace('#','');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]};
         const mix=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t));
@@ -475,7 +478,7 @@
         const rgba=(c,a)=>`rgba(${c[0]},${c[1]},${c[2]},${a})`;
         const lum=c=>(0.299*c[0]+0.587*c[1]+0.114*c[2])/255;
         function applyPalette(p){
-            const bg=hx(p.paper),ink=hx(p.ink),ac=hx(p.accent),light=lum(bg)>0.5,s=html.style;
+            const bg=hx(p.paper),ink=hx(p.ink),ac=hx(p.accent),se=hx(p.sel||p.accent),light=lum(bg)>0.5,s=html.style;
             const set=(k,v)=>s.setProperty('--'+k,v);
             set('bg',rgb(bg));set('bg-warm',rgb(mix(bg,ink,0.045)));
             set('ink',rgb(ink));set('ink-soft',rgb(mix(ink,bg,0.14)));set('ink-muted',rgb(mix(ink,bg,0.45)));set('ink-faint',rgb(mix(ink,bg,0.66)));set('ink-ghost',rgb(mix(ink,bg,0.8)));
@@ -483,16 +486,16 @@
             set('burgundy-wash',rgba(ac,light?0.05:0.07));set('burgundy-glow',rgba(ac,light?0.10:0.13));
             if(light){set('bg-card','rgba(255,255,255,0.55)');set('bg-card-hover','rgba(255,255,255,0.75)');set('bg-glass','rgba(255,255,255,0.35)');set('bg-glass-strong','rgba(255,255,255,0.55)');set('border','rgba(255,255,255,0.6)');set('border-subtle',rgba(ink,0.06));set('glass-border','1px solid rgba(255,255,255,0.55)');set('glass-shadow',`0 4px 24px ${rgba(ink,0.04)},0 1px 3px ${rgba(ink,0.03)}`);set('glass-shadow-hover',`0 8px 32px ${rgba(ac,0.07)},0 2px 8px ${rgba(ac,0.04)}`)}
             else{set('bg-card','rgba(255,255,255,0.04)');set('bg-card-hover','rgba(255,255,255,0.07)');set('bg-glass','rgba(255,255,255,0.03)');set('bg-glass-strong','rgba(255,255,255,0.06)');set('border','rgba(255,255,255,0.08)');set('border-subtle','rgba(255,255,255,0.04)');set('glass-border','1px solid rgba(255,255,255,0.08)');set('glass-shadow','0 4px 24px rgba(0,0,0,0.15),0 1px 3px rgba(0,0,0,0.1)');set('glass-shadow-hover',`0 8px 32px ${rgba(ac,0.12)},0 2px 8px ${rgba(ac,0.06)}`)}
-            set('border-hover',rgba(ac,light?0.2:0.22));
+            set('border-hover',rgba(ac,light?0.2:0.22));set('selection',rgb(se));
             html.removeAttribute('data-theme');
         }
         function clearPalette(){PALETTE_VARS.forEach(k=>html.style.removeProperty('--'+k));localStorage.removeItem('customPalette')}
-        const pOverlay=document.getElementById('paletteOverlay'),pInputs={paper:document.getElementById('pcPaper'),ink:document.getElementById('pcInk'),accent:document.getElementById('pcAccent')};
-        const readInputs=()=>({paper:pInputs.paper.value,ink:pInputs.ink.value,accent:pInputs.accent.value});
-        const writeInputs=p=>{pInputs.paper.value=p.paper;pInputs.ink.value=p.ink;pInputs.accent.value=p.accent};
+        const pOverlay=document.getElementById('paletteOverlay'),pInputs={paper:document.getElementById('pcPaper'),ink:document.getElementById('pcInk'),accent:document.getElementById('pcAccent'),sel:document.getElementById('pcSel')};
+        const readInputs=()=>({paper:pInputs.paper.value,ink:pInputs.ink.value,accent:pInputs.accent.value,sel:pInputs.sel.value});
+        const writeInputs=p=>{pInputs.paper.value=p.paper;pInputs.ink.value=p.ink;pInputs.accent.value=p.accent;pInputs.sel.value=p.sel||p.accent};
         Object.values(pInputs).forEach(el=>el.addEventListener('input',()=>applyPalette(readInputs())));
         const presetWrap=document.getElementById('palettePresets');
-        PALETTE_PRESETS.forEach(p=>{const b=document.createElement('button');b.className='palette-preset';b.innerHTML=`<span class="palette-preset-dots"><i style="background:${p.paper}"></i><i style="background:${p.accent}"></i><i style="background:${p.ink}"></i></span>${p.name}`;b.addEventListener('click',()=>{writeInputs(p);applyPalette(p)});presetWrap.appendChild(b)});
+        PALETTE_PRESETS.forEach(p=>{const b=document.createElement('button');b.className='palette-preset';b.innerHTML=`<span class="palette-preset-dots"><i style="background:${p.paper}"></i><i style="background:${p.accent}"></i><i style="background:${p.sel}"></i><i style="background:${p.ink}"></i></span>${p.name}`;b.addEventListener('click',()=>{writeInputs(p);applyPalette(p)});presetWrap.appendChild(b)});
         function openPalette(){const saved=localStorage.getItem('customPalette');writeInputs(saved?JSON.parse(saved):PALETTE_DEFAULT);pOverlay.classList.add('open');pOverlay.setAttribute('aria-hidden','false')}
         function closePalette(){pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');const saved=localStorage.getItem('customPalette');if(saved)applyPalette(JSON.parse(saved));else{PALETTE_VARS.forEach(k=>html.style.removeProperty('--'+k));applyTheme(localStorage.getItem('theme')==='custom'?'light':(localStorage.getItem('theme')||'light'))}}
         document.getElementById('paletteOpen').addEventListener('click',e=>{e.preventDefault();openPalette()});
