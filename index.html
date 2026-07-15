@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="google-site-verification" content="cNOduVhakzfNK42nKa1f5m5Ld_dKm_b6npFO9QMzEGw" />
     <title>lucas' portfolio</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -55,8 +55,8 @@
         .ambient-orb:nth-child(3){width:350px;height:350px;background:radial-gradient(circle,rgba(107,39,55,.15),transparent 70%);top:40%;right:-12%;animation-delay:-15s;animation-duration:30s}
         [data-theme="dark"] .ambient-orb{opacity:.06}
         @keyframes orbDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,20px) scale(1.08)}100%{transform:translate(15px,-15px) scale(.95)}}
-        ::selection{background:rgba(107,39,55,.18);color:var(--ink)}
-        ::-moz-selection{background:rgba(107,39,55,.18);color:var(--ink)}
+        ::selection{background:var(--selection,var(--burgundy));color:var(--bg)}
+        ::-moz-selection{background:var(--selection,var(--burgundy));color:var(--bg)}
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--ink-ghost);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--burgundy)}
 
         /* LOADING */
@@ -182,7 +182,7 @@
         @media(max-width:639px){.coursework-section:first-child{padding-bottom:2rem;border-bottom:1px solid var(--border-subtle)}}
 
         /* FOOTER */
-        .footer{position:fixed;bottom:0;left:0;right:0;padding:1.1rem 2.5rem;z-index:100;background:var(--bg-glass);backdrop-filter:blur(var(--glass-blur)) saturate(1.4);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.4);border-top:var(--glass-border);box-shadow:0 -1px 8px rgba(0,0,0,.02);display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:var(--ink-muted);transition:all .3s ease}
+        .footer{position:fixed;bottom:0;left:0;right:0;padding:1.1rem 2.5rem calc(1.1rem + env(safe-area-inset-bottom));z-index:100;background:var(--bg-glass);backdrop-filter:blur(var(--glass-blur)) saturate(1.4);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.4);border-top:var(--glass-border);box-shadow:0 -1px 8px rgba(0,0,0,.02);display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:var(--ink-muted);transition:all .3s ease}
         .footer-email{font-family:'DM Sans',monospace;letter-spacing:.03em;font-weight:400;color:var(--ink-faint)}
         .footer-info{color:var(--ink-faint);transition:opacity .6s ease}
         .footer-info.fade-out{opacity:0}
@@ -192,10 +192,48 @@
         @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
+        /* YOUR MODE */
+        .palette-overlay{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:rgba(26,24,22,.25);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .35s var(--ease)}
+        .palette-overlay.open{opacity:1;pointer-events:auto}
+        .palette-modal{position:relative;width:min(560px,100%);max-height:85dvh;overflow-y:auto;background:var(--bg);border:var(--glass-border);border-radius:var(--radius);box-shadow:var(--glass-shadow-hover);padding:2.2rem 2.4rem 2rem;transform:translateY(12px) scale(.98);transition:transform .4s var(--ease-spring)}
+        .palette-overlay.open .palette-modal{transform:translateY(0) scale(1)}
+        .palette-close{position:absolute;top:1rem;right:1.1rem;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:none;color:var(--ink-faint);font-size:1.2rem;cursor:pointer;border-radius:50%;transition:all var(--transition)}
+        .palette-close:hover{color:var(--burgundy);background:var(--burgundy-wash)}
+        .palette-title{font-family:'EB Garamond',serif;font-size:1.7rem;font-weight:500;color:var(--ink);margin-bottom:.5rem}
+        .palette-sub{font-size:.85rem;color:var(--ink-muted);margin-bottom:1.6rem}
+        .palette-swatches{display:flex;gap:1.8rem;margin-bottom:1.5rem}
+        .palette-swatch{display:flex;flex-direction:column;align-items:center;gap:.5rem;cursor:pointer}
+        .palette-swatch span{font-size:.72rem;letter-spacing:.06em;color:var(--ink-muted)}
+        .palette-swatch input[type=color]{-webkit-appearance:none;appearance:none;width:46px;height:46px;border:1px solid var(--border-subtle);border-radius:50%;cursor:pointer;background:none;padding:0;transition:transform .3s var(--ease-spring),box-shadow var(--transition)}
+        .palette-swatch input[type=color]:hover{transform:scale(1.08);box-shadow:0 4px 16px rgba(0,0,0,.12)}
+        .palette-swatch input[type=color]::-webkit-color-swatch-wrapper{padding:0;border-radius:50%}
+        .palette-swatch input[type=color]::-webkit-color-swatch{border:none;border-radius:50%}
+        .palette-swatch input[type=color]::-moz-color-swatch{border:none;border-radius:50%}
+        .palette-presets{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.6rem}
+        .palette-preset{display:inline-flex;align-items:center;gap:.55rem;padding:.45rem .85rem;border:1px solid var(--border-subtle);border-radius:var(--radius-xs);background:var(--bg-card);cursor:pointer;font-family:inherit;font-size:.72rem;letter-spacing:.04em;color:var(--ink-muted);transition:all var(--transition)}
+        .palette-preset:hover{border-color:var(--border-hover);color:var(--ink);transform:translateY(-1px)}
+        .palette-preset-dots{display:flex}
+        .palette-preset-dots i{width:13px;height:13px;border-radius:50%;border:1px solid rgba(0,0,0,.08)}
+        .palette-preset-dots i+i{margin-left:-4px}
+        .palette-preview{border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:1.3rem 1.5rem;margin-bottom:1.6rem;max-height:220px;overflow-y:auto;background:var(--bg-card)}
+        .palette-preview .pp-title{font-family:'EB Garamond',serif;font-size:1.05rem;font-weight:500;color:var(--ink);margin-bottom:.15rem}
+        .palette-preview .pp-attr{font-size:.7rem;color:var(--ink-muted);margin-bottom:.8rem}
+        .palette-preview .pp-body{font-family:'EB Garamond',serif;font-size:.92rem;line-height:1.7;color:var(--ink-soft);margin-bottom:.7rem}
+        .palette-preview .pp-src{font-size:.7rem;font-style:italic;color:var(--ink-faint);margin-bottom:.7rem}
+        .palette-preview .pp-hint{font-size:.68rem;letter-spacing:.08em;color:var(--burgundy);text-transform:uppercase}
+        .palette-actions{display:flex;gap:.7rem;flex-wrap:wrap}
+        .palette-btn{padding:.6rem 1.2rem;font-family:inherit;font-size:.78rem;letter-spacing:.03em;color:var(--ink-muted);background:none;border:1px solid var(--border-subtle);border-radius:var(--radius-xs);cursor:pointer;transition:all var(--transition)}
+        .palette-btn:hover{border-color:var(--border-hover);color:var(--burgundy)}
+        .palette-btn-save{color:var(--burgundy);background:var(--burgundy-wash);border-color:var(--burgundy-glow)}
+        .palette-reset-link{background:none;border:none;padding:.6rem .2rem;font-family:inherit;font-size:.78rem;letter-spacing:.03em;color:var(--ink-muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px;transition:color var(--transition)}
+        .palette-reset-link:hover{color:var(--burgundy)}
         /* MOBILE */
         @media(max-width:768px){
+            .palette-modal{padding:1.6rem 1.4rem 1.4rem}
+            .palette-swatches{gap:1.2rem}
             .topbar{padding:.8rem 1.25rem}
             .topbar-nav{display:none}
+            .topbar-name{display:none}
             .page{padding:0 1.5rem}
             .profile-hero{flex-direction:column;gap:1.25rem;padding-top:5rem}
             .profile-img{width:90px;height:90px}
@@ -204,7 +242,7 @@
             .section-tab{font-size:.68rem;padding:.6rem .8rem;white-space:nowrap}
             .section-tab-link{font-size:.68rem;padding:.6rem .8rem;white-space:nowrap}
             .content-section{padding-bottom:5rem}
-            .footer{padding:.8rem 1.5rem;flex-direction:column;gap:.3rem;text-align:center}
+            .footer{padding:.8rem 1.5rem calc(.8rem + env(safe-area-inset-bottom));flex-direction:column;gap:.3rem;text-align:center}
             .project-item{padding:1rem 1.2rem}
         }
         @media(max-width:480px){.greeting{font-size:2.2rem}.profile-text h1{font-size:1.4rem}}
@@ -270,7 +308,8 @@
                 <p class="scroll-animate">From September to December 2025 I worked as a Public Finance and Policy Evaluation Intern at <a href="https://www.afi.es/" target="_blank">Afi</a>, a leading economic consulting firm in Spain. Previously, I worked as a Policy Analyst at <a href="https://broadpeak.ch/blog/" target="_blank">Broadpeak</a>, a Swiss-based international advisory firm specialised in impact finance. I also hold a <a href="https://www.manchester.ac.uk/study/undergraduate/courses/2025/00675/bsocsc-politics-and-international-relations/course-details/" target="_blank">BSocSc (Hons) in Politics and International Relations</a> from the University of Manchester.</p>
                 <p class="scroll-animate">My work focuses on causal inference, corruption, and inequality, with extensive training in quantitative political economy. I work primarily in R for data analysis and visualisation. This site was built from scratch by me, with help from Claude. Here you'll find examples of my projects, things I find interesting, and my curriculum vitae.</p>
                 <p class="scroll-animate">I am currently open to part-time (5-10h/week) Research Assistant positions in Political Economy. Please feel free to <a href="#" class="ra-email-link">contact me via email</a> if you have any opportunities or would like to discuss potential collaboration.</p>
-                <p class="scroll-animate">I'm also an avid film watcher and am currently writing a short film — check out my <a href="https://letterboxd.com/LucasPollock/" target="_blank">Letterboxd</a> for my film diary. You may also want to try this <a href="https://letterboxd.samlearner.com/" target="_blank">movie recommendation tool</a> I found.</p>
+                <p class="scroll-animate">I'm also an avid film watcher and am currently writing a short film — check out my <a href="https://letterboxd.com/LucasPollock/" target="_blank">Letterboxd</a> for my film diary.</p>
+                <p class="scroll-animate">Oh, and if you want to try something I find cool, and maybe you do as well, <a href="#" id="paletteOpen">click here</a>.</p>
             </div>
         </section>
 
@@ -380,9 +419,35 @@
         </section>
     </div>
 
+    <div class="palette-overlay" id="paletteOverlay" aria-hidden="true">
+        <div class="palette-modal" role="dialog" aria-modal="true" aria-label="Your mode">
+            <button class="palette-close" id="paletteClose" aria-label="Close">&times;</button>
+            <h3 class="palette-title">Your mode</h3>
+            <p class="palette-sub">Four colours make this site — paper, ink, an accent, and the selection highlight. Pick your own; everything else follows. The whole page changes as you play.</p>
+            <div class="palette-swatches">
+                <label class="palette-swatch"><input type="color" id="pcPaper" value="#f2efe9"><span>paper</span></label>
+                <label class="palette-swatch"><input type="color" id="pcInk" value="#1a1816"><span>ink</span></label>
+                <label class="palette-swatch"><input type="color" id="pcAccent" value="#6b2737"><span>accent</span></label>
+                <label class="palette-swatch"><input type="color" id="pcSel" value="#6b2737"><span>selection</span></label>
+            </div>
+            <div class="palette-presets" id="palettePresets"></div>
+            <div class="palette-preview">
+                <p class="pp-title">On Exactitude in Science</p>
+                <p class="pp-attr">Jorge Luis Borges, <em>Collected Fictions</em>, translated by Andrew Hurley</p>
+                <p class="pp-body">…In that Empire, the Art of Cartography attained such Perfection that the map of a single Province occupied the entirety of a City, and the map of the Empire, the entirety of a Province. In time, those Unconscionable Maps no longer satisfied, and the Cartographers Guilds struck a Map of the Empire whose size was that of the Empire, and which coincided point for point with it. The following Generations, who were not so fond of the Study of Cartography as their Forebears had been, saw that that vast Map was Useless, and not without some Pitilessness was it, that they delivered it up to the Inclemencies of Sun and Winters. In the Deserts of the West, still today, there are Tattered Ruins of that Map, inhabited by Animals and Beggars; in all the Land there is no other Relic of the Disciplines of Geography.</p>
+                <p class="pp-src">—Suárez Miranda, <em>Viajes de varones prudentes</em>, Libro IV, Cap. XLV, Lérida, 1658</p>
+                <p class="pp-hint">try selecting the text</p>
+            </div>
+            <div class="palette-actions">
+                <button class="palette-btn palette-btn-save" id="paletteSave">keep it</button>
+                <button class="palette-reset-link" id="paletteReset">back to lucas' colours</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer">
         <span class="footer-email">lucas-pollock[at]outlook[dot]com</span>
-        <span class="footer-info" id="footerInfo">Last updated: February 2026</span>
+        <span class="footer-info" id="footerInfo">Last updated: July 2026</span>
     </footer>
 
     <script>
@@ -393,8 +458,53 @@
         const toggle=document.getElementById('themeToggle'),html=document.documentElement,themeOrder=['light','dark','auto'];
         function getEffectiveTheme(t){return t==='auto'?window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light':t}
         function applyTheme(t){const e=getEffectiveTheme(t);e==='dark'?html.setAttribute('data-theme','dark'):html.removeAttribute('data-theme');localStorage.setItem('theme',t)}
-        const savedTheme=localStorage.getItem('theme')||'light';applyTheme(savedTheme);
-        toggle.addEventListener('click',()=>{const c=localStorage.getItem('theme')||'light',i=themeOrder.indexOf(c),n=themeOrder[(i+1)%themeOrder.length];applyTheme(n)});
+        const savedTheme=localStorage.getItem('theme')||'light';if(savedTheme!=='custom')applyTheme(savedTheme);
+        toggle.addEventListener('click',()=>{let c=localStorage.getItem('theme')||'light';if(c==='custom'){clearPalette();applyTheme('light');return}const i=themeOrder.indexOf(c),n=themeOrder[(i+1)%themeOrder.length];applyTheme(n)});
+
+        /* YOUR MODE — custom palette */
+        const PALETTE_VARS=['bg','bg-warm','bg-card','bg-card-hover','bg-glass','bg-glass-strong','ink','ink-soft','ink-muted','ink-faint','ink-ghost','burgundy','burgundy-soft','burgundy-dark','burgundy-wash','burgundy-glow','border','border-subtle','border-hover','glass-border','glass-shadow','glass-shadow-hover','selection'];
+        const PALETTE_DEFAULT={paper:'#f2efe9',ink:'#1a1816',accent:'#6b2737',sel:'#6b2737'};
+        const PALETTE_PRESETS=[
+            {name:'olive grove',paper:'#edefe6',ink:'#1d201b',accent:'#3f5e46',sel:'#3f5e46'},
+            {name:'prussian',paper:'#f3f1ea',ink:'#191c24',accent:'#23456e',sel:'#23456e'},
+            {name:'violet hour',paper:'#141220',ink:'#e8e4f2',accent:'#a48fe0',sel:'#a48fe0'},
+            {name:'ember',paper:'#161210',ink:'#ece2d8',accent:'#cd8b62',sel:'#cd8b62'},
+            {name:'vercel',paper:'#0a0a0a',ink:'#ededed',accent:'#fafafa',sel:'#eaff00'},
+            {name:'lse',paper:'#ffffff',ink:'#14171c',accent:'#e0112b',sel:'#e0112b'}
+        ];
+        const hx=h=>{h=h.replace('#','');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]};
+        const mix=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t));
+        const rgb=c=>`rgb(${c[0]},${c[1]},${c[2]})`;
+        const rgba=(c,a)=>`rgba(${c[0]},${c[1]},${c[2]},${a})`;
+        const lum=c=>(0.299*c[0]+0.587*c[1]+0.114*c[2])/255;
+        function applyPalette(p){
+            const bg=hx(p.paper),ink=hx(p.ink),ac=hx(p.accent),se=hx(p.sel||p.accent),light=lum(bg)>0.5,s=html.style;
+            const set=(k,v)=>s.setProperty('--'+k,v);
+            set('bg',rgb(bg));set('bg-warm',rgb(mix(bg,ink,0.045)));
+            set('ink',rgb(ink));set('ink-soft',rgb(mix(ink,bg,0.14)));set('ink-muted',rgb(mix(ink,bg,0.45)));set('ink-faint',rgb(mix(ink,bg,0.66)));set('ink-ghost',rgb(mix(ink,bg,0.8)));
+            set('burgundy',rgb(ac));set('burgundy-soft',rgb(mix(ac,bg,0.18)));set('burgundy-dark',rgb(mix(ac,ink,0.3)));
+            set('burgundy-wash',rgba(ac,light?0.05:0.07));set('burgundy-glow',rgba(ac,light?0.10:0.13));
+            if(light){set('bg-card','rgba(255,255,255,0.55)');set('bg-card-hover','rgba(255,255,255,0.75)');set('bg-glass','rgba(255,255,255,0.35)');set('bg-glass-strong','rgba(255,255,255,0.55)');set('border','rgba(255,255,255,0.6)');set('border-subtle',rgba(ink,0.06));set('glass-border','1px solid rgba(255,255,255,0.55)');set('glass-shadow',`0 4px 24px ${rgba(ink,0.04)},0 1px 3px ${rgba(ink,0.03)}`);set('glass-shadow-hover',`0 8px 32px ${rgba(ac,0.07)},0 2px 8px ${rgba(ac,0.04)}`)}
+            else{set('bg-card','rgba(255,255,255,0.04)');set('bg-card-hover','rgba(255,255,255,0.07)');set('bg-glass','rgba(255,255,255,0.03)');set('bg-glass-strong','rgba(255,255,255,0.06)');set('border','rgba(255,255,255,0.08)');set('border-subtle','rgba(255,255,255,0.04)');set('glass-border','1px solid rgba(255,255,255,0.08)');set('glass-shadow','0 4px 24px rgba(0,0,0,0.15),0 1px 3px rgba(0,0,0,0.1)');set('glass-shadow-hover',`0 8px 32px ${rgba(ac,0.12)},0 2px 8px ${rgba(ac,0.06)}`)}
+            set('border-hover',rgba(ac,light?0.2:0.22));set('selection',rgb(se));
+            html.removeAttribute('data-theme');
+        }
+        function clearPalette(){PALETTE_VARS.forEach(k=>html.style.removeProperty('--'+k));localStorage.removeItem('customPalette')}
+        const pOverlay=document.getElementById('paletteOverlay'),pInputs={paper:document.getElementById('pcPaper'),ink:document.getElementById('pcInk'),accent:document.getElementById('pcAccent'),sel:document.getElementById('pcSel')};
+        const readInputs=()=>({paper:pInputs.paper.value,ink:pInputs.ink.value,accent:pInputs.accent.value,sel:pInputs.sel.value});
+        const writeInputs=p=>{pInputs.paper.value=p.paper;pInputs.ink.value=p.ink;pInputs.accent.value=p.accent;pInputs.sel.value=p.sel||p.accent};
+        Object.values(pInputs).forEach(el=>el.addEventListener('input',()=>applyPalette(readInputs())));
+        const presetWrap=document.getElementById('palettePresets');
+        PALETTE_PRESETS.forEach(p=>{const b=document.createElement('button');b.className='palette-preset';b.innerHTML=`<span class="palette-preset-dots"><i style="background:${p.paper}"></i><i style="background:${p.accent}"></i><i style="background:${p.sel}"></i><i style="background:${p.ink}"></i></span>${p.name}`;b.addEventListener('click',()=>{writeInputs(p);applyPalette(p)});presetWrap.appendChild(b)});
+        function openPalette(){const saved=localStorage.getItem('customPalette');writeInputs(saved?JSON.parse(saved):PALETTE_DEFAULT);pOverlay.classList.add('open');pOverlay.setAttribute('aria-hidden','false')}
+        function closePalette(){pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');const saved=localStorage.getItem('customPalette');if(saved)applyPalette(JSON.parse(saved));else{PALETTE_VARS.forEach(k=>html.style.removeProperty('--'+k));applyTheme(localStorage.getItem('theme')==='custom'?'light':(localStorage.getItem('theme')||'light'))}}
+        document.getElementById('paletteOpen').addEventListener('click',e=>{e.preventDefault();openPalette()});
+        document.getElementById('paletteClose').addEventListener('click',closePalette);
+        pOverlay.addEventListener('click',e=>{if(e.target===pOverlay)closePalette()});
+        document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pOverlay.classList.contains('open'))closePalette()});
+        document.getElementById('paletteSave').addEventListener('click',()=>{const p=readInputs();applyPalette(p);localStorage.setItem('customPalette',JSON.stringify(p));localStorage.setItem('theme','custom');pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true')});
+        document.getElementById('paletteReset').addEventListener('click',()=>{clearPalette();writeInputs(PALETTE_DEFAULT);applyTheme('light')});
+        if(savedTheme==='custom'){const sp=localStorage.getItem('customPalette');if(sp)applyPalette(JSON.parse(sp));else applyTheme('light')}
         window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{if(localStorage.getItem('theme')==='auto')applyTheme('auto')});
 
         const topbar=document.getElementById('topbar');let ticking=false;
@@ -412,9 +522,8 @@
         function observeElements(){const o=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){en.target.classList.add('visible');o.unobserve(en.target)}})},{threshold:.08,rootMargin:'0px 0px -40px 0px'});const a=document.querySelector('.content-section.active');if(a)a.querySelectorAll('.scroll-animate').forEach(el=>{if(!el.classList.contains('visible'))o.observe(el)})}
         document.addEventListener('DOMContentLoaded',observeElements);
 
-        let showGreeting=false;const footerInfo=document.getElementById('footerInfo');
-        setInterval(()=>{footerInfo.classList.add('fade-out');setTimeout(()=>{footerInfo.textContent=showGreeting?'Last updated: February 2026':getTimeBasedGreeting();showGreeting=!showGreeting;footerInfo.classList.remove('fade-out');footerInfo.classList.add('fade-in');setTimeout(()=>footerInfo.classList.remove('fade-in'),600)},600)},7500);
-        const updateDate=()=>{const m=['January','February','March','April','May','June','July','August','September','October','November','December'],n=new Date(),my=`${m[n.getMonth()]} ${n.getFullYear()}`;if(footerInfo.textContent.includes('Last updated'))footerInfo.textContent=`Last updated: ${my}`};updateDate();
+        let showGreeting=false;const footerInfo=document.getElementById('footerInfo');const LAST_UPDATED='Last updated: July 2026';
+        setInterval(()=>{footerInfo.classList.add('fade-out');setTimeout(()=>{footerInfo.textContent=showGreeting?LAST_UPDATED:getTimeBasedGreeting();showGreeting=!showGreeting;footerInfo.classList.remove('fade-out');footerInfo.classList.add('fade-in');setTimeout(()=>footerInfo.classList.remove('fade-in'),600)},600)},7500);
 
         document.querySelector('.ra-email-link').addEventListener('click', function(e) {
     e.preventDefault();
