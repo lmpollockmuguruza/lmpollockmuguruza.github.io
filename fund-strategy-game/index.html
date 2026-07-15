@@ -17,6 +17,7 @@
     button:disabled { transform: none; }
     input[type="number"] { font-family: inherit; }
     ::selection { background: #6b2737; color: #faf8f5; }
+    ::highlight(selmirror){background-color:#6b2737;color:#faf8f5}
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #d0d0d0; border-radius: 3px; }
@@ -2026,5 +2027,6 @@
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<FundGame />);
   </script>
+<script>(function(){if(!('highlights' in CSS)||typeof Highlight!=='function')return;var iOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);if(!iOS)return;document.addEventListener('selectionchange',function(){var s=document.getSelection();if(!s||s.isCollapsed||!s.rangeCount){CSS.highlights.delete('selmirror');return}var h=new Highlight();for(var i=0;i<s.rangeCount;i++)h.add(s.getRangeAt(i));CSS.highlights.set('selmirror',h)})})();</script>
 </body>
 </html>

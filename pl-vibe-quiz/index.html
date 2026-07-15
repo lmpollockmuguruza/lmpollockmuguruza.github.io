@@ -104,6 +104,7 @@
       background: #6b2737;
       color: #FAFAF8;
     }
+    ::highlight(selmirror){background-color:#6b2737;color:#FAFAF8}
 
     /* Persistent back link */
     .persistent-back {
@@ -1620,5 +1621,6 @@
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
+<script>(function(){if(!('highlights' in CSS)||typeof Highlight!=='function')return;var iOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);if(!iOS)return;document.addEventListener('selectionchange',function(){var s=document.getSelection();if(!s||s.isCollapsed||!s.rangeCount){CSS.highlights.delete('selmirror');return}var h=new Highlight();for(var i=0;i<s.rangeCount;i++)h.add(s.getRangeAt(i));CSS.highlights.set('selmirror',h)})})();</script>
 </body>
 </html>

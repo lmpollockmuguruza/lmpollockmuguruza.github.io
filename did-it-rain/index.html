@@ -32,6 +32,7 @@
 html{font-size:16px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
 body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:var(--ink-s);min-height:100vh;line-height:1.6;transition:background .5s var(--e),color .5s var(--e);overflow-x:hidden}
 ::selection{background:var(--blue);color:var(--bg)}
+::highlight(selmirror){background-color:var(--blue);color:var(--bg)}
 
 /* TOPBAR */
 .topbar{position:fixed;top:0;left:0;right:0;z-index:500;padding:1.1rem 2.2rem;display:flex;align-items:center;justify-content:space-between;transition:all .4s var(--e)}
@@ -860,5 +861,6 @@ init();
 })();
 </script>
 <script>document.getElementById("themeToggleEnd").addEventListener("click",function(){document.getElementById("themeToggle").click()});</script>
+<script>(function(){if(!('highlights' in CSS)||typeof Highlight!=='function')return;var iOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);if(!iOS)return;document.addEventListener('selectionchange',function(){var s=document.getSelection();if(!s||s.isCollapsed||!s.rangeCount){CSS.highlights.delete('selmirror');return}var h=new Highlight();for(var i=0;i<s.rangeCount;i++)h.add(s.getRangeAt(i));CSS.highlights.set('selmirror',h)})})();</script>
 </body>
 </html>

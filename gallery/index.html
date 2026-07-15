@@ -103,6 +103,7 @@
         [data-theme="dark"] body::before { opacity: 0.03; }
 
         ::selection { background: var(--burgundy); color: var(--bg); }
+        ::highlight(selmirror){background-color:var(--burgundy);color:var(--bg)}
 
         /* ═══════════════════════════════════════════
            LOADING SCREEN
@@ -1485,5 +1486,6 @@
         init();
     })();
     </script>
+<script>(function(){if(!('highlights' in CSS)||typeof Highlight!=='function')return;var iOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);if(!iOS)return;document.addEventListener('selectionchange',function(){var s=document.getSelection();if(!s||s.isCollapsed||!s.rangeCount){CSS.highlights.delete('selmirror');return}var h=new Highlight();for(var i=0;i<s.rangeCount;i++)h.add(s.getRangeAt(i));CSS.highlights.set('selmirror',h)})})();</script>
 </body>
 </html>
