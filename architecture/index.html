@@ -159,7 +159,8 @@
             .search-wrap{flex:1 1 100%;order:1}
         }
         @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
-    </style>
+    @media(max-width:768px){#themeToggle{position:fixed;top:auto;left:auto;right:1.1rem;bottom:calc(1.2rem + env(safe-area-inset-bottom));z-index:500}}
+</style>
 </head>
 <body>
     <nav class="topbar" id="topbar">
