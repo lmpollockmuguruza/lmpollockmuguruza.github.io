@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="google-site-verification" content="cNOduVhakzfNK42nKa1f5m5Ld_dKm_b6npFO9QMzEGw" />
     <title>lucas' portfolio</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -182,7 +182,7 @@
         @media(max-width:639px){.coursework-section:first-child{padding-bottom:2rem;border-bottom:1px solid var(--border-subtle)}}
 
         /* FOOTER */
-        .footer{position:fixed;bottom:0;left:0;right:0;padding:1.1rem 2.5rem;z-index:100;background:var(--bg-glass);backdrop-filter:blur(var(--glass-blur)) saturate(1.4);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.4);border-top:var(--glass-border);box-shadow:0 -1px 8px rgba(0,0,0,.02);display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:var(--ink-muted);transition:all .3s ease}
+        .footer{position:fixed;bottom:0;left:0;right:0;padding:1.1rem 2.5rem calc(1.1rem + env(safe-area-inset-bottom));z-index:100;background:var(--bg-glass);backdrop-filter:blur(var(--glass-blur)) saturate(1.4);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.4);border-top:var(--glass-border);box-shadow:0 -1px 8px rgba(0,0,0,.02);display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:var(--ink-muted);transition:all .3s ease}
         .footer-email{font-family:'DM Sans',monospace;letter-spacing:.03em;font-weight:400;color:var(--ink-faint)}
         .footer-info{color:var(--ink-faint);transition:opacity .6s ease}
         .footer-info.fade-out{opacity:0}
@@ -196,6 +196,7 @@
         @media(max-width:768px){
             .topbar{padding:.8rem 1.25rem}
             .topbar-nav{display:none}
+            .topbar-name{display:none}
             .page{padding:0 1.5rem}
             .profile-hero{flex-direction:column;gap:1.25rem;padding-top:5rem}
             .profile-img{width:90px;height:90px}
@@ -204,7 +205,7 @@
             .section-tab{font-size:.68rem;padding:.6rem .8rem;white-space:nowrap}
             .section-tab-link{font-size:.68rem;padding:.6rem .8rem;white-space:nowrap}
             .content-section{padding-bottom:5rem}
-            .footer{padding:.8rem 1.5rem;flex-direction:column;gap:.3rem;text-align:center}
+            .footer{padding:.8rem 1.5rem calc(.8rem + env(safe-area-inset-bottom));flex-direction:column;gap:.3rem;text-align:center}
             .project-item{padding:1rem 1.2rem}
         }
         @media(max-width:480px){.greeting{font-size:2.2rem}.profile-text h1{font-size:1.4rem}}
@@ -382,7 +383,7 @@
 
     <footer class="footer">
         <span class="footer-email">lucas-pollock[at]outlook[dot]com</span>
-        <span class="footer-info" id="footerInfo">Last updated: February 2026</span>
+        <span class="footer-info" id="footerInfo">Last updated: July 2026</span>
     </footer>
 
     <script>
@@ -412,9 +413,8 @@
         function observeElements(){const o=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){en.target.classList.add('visible');o.unobserve(en.target)}})},{threshold:.08,rootMargin:'0px 0px -40px 0px'});const a=document.querySelector('.content-section.active');if(a)a.querySelectorAll('.scroll-animate').forEach(el=>{if(!el.classList.contains('visible'))o.observe(el)})}
         document.addEventListener('DOMContentLoaded',observeElements);
 
-        let showGreeting=false;const footerInfo=document.getElementById('footerInfo');
-        setInterval(()=>{footerInfo.classList.add('fade-out');setTimeout(()=>{footerInfo.textContent=showGreeting?'Last updated: February 2026':getTimeBasedGreeting();showGreeting=!showGreeting;footerInfo.classList.remove('fade-out');footerInfo.classList.add('fade-in');setTimeout(()=>footerInfo.classList.remove('fade-in'),600)},600)},7500);
-        const updateDate=()=>{const m=['January','February','March','April','May','June','July','August','September','October','November','December'],n=new Date(),my=`${m[n.getMonth()]} ${n.getFullYear()}`;if(footerInfo.textContent.includes('Last updated'))footerInfo.textContent=`Last updated: ${my}`};updateDate();
+        let showGreeting=false;const footerInfo=document.getElementById('footerInfo');const LAST_UPDATED='Last updated: July 2026';
+        setInterval(()=>{footerInfo.classList.add('fade-out');setTimeout(()=>{footerInfo.textContent=showGreeting?LAST_UPDATED:getTimeBasedGreeting();showGreeting=!showGreeting;footerInfo.classList.remove('fade-out');footerInfo.classList.add('fade-in');setTimeout(()=>footerInfo.classList.remove('fade-in'),600)},600)},7500);
 
         document.querySelector('.ra-email-link').addEventListener('click', function(e) {
     e.preventDefault();

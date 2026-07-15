@@ -28,7 +28,9 @@
     }
     @keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes toastOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-10px); } }
-    .back-link { position: fixed; bottom: 20px; left: 20px; font-size: 11px; color: #ccc; text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s ease; z-index: 100; }
+    .back-link { position: fixed; bottom: calc(20px + env(safe-area-inset-bottom)); left: 20px; display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: #ccc; text-decoration: none; letter-spacing: 0.02em; transition: color 0.2s ease; z-index: 100; }
+    .back-link svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 1.5; transition: transform 0.2s ease; }
+    .back-link:hover svg { transform: translateX(-3px); }
     .back-link:hover { color: #888; }
     .spotlight-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; }
     .spotlight-tooltip { position: fixed; z-index: 1002; background: #fff; padding: 20px; border-radius: 16px; max-width: 340px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: fadeInUp 0.3s ease; }
@@ -58,7 +60,7 @@
   </style>
 </head>
 <body>
-  <a href="https://lmpollockmuguruza.github.io" class="back-link">← lucas</a>
+  <a href="https://lmpollockmuguruza.github.io" class="back-link"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>lucas</a>
   <div id="root"></div>
   <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
