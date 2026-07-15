@@ -57,6 +57,7 @@
         @keyframes orbDrift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,20px) scale(1.08)}100%{transform:translate(15px,-15px) scale(.95)}}
         ::selection{background:var(--selection,var(--burgundy));color:var(--bg)}
         ::-moz-selection{background:var(--selection,var(--burgundy));color:var(--bg)}
+        ::highlight(selmirror){background-color:var(--selection,var(--burgundy));color:var(--bg)}
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--ink-ghost);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--burgundy)}
 
         /* LOADING */
@@ -536,5 +537,6 @@
 });
     </script>
 <script>document.getElementById("themeToggleEnd").addEventListener("click",function(){document.getElementById("themeToggle").click()});</script>
+<script>(function(){if(!('highlights' in CSS)||typeof Highlight!=='function')return;var iOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);if(!iOS)return;document.addEventListener('selectionchange',function(){var s=document.getSelection();if(!s||s.isCollapsed||!s.rangeCount){CSS.highlights.delete('selmirror');return}var h=new Highlight();for(var i=0;i<s.rangeCount;i++)h.add(s.getRangeAt(i));CSS.highlights.set('selmirror',h)})})();</script>
 </body>
 </html>
