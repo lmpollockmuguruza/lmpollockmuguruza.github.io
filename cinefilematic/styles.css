@@ -102,8 +102,7 @@ body::before {
 [data-theme="dark"] .ambient-orb { opacity: 0.07; }
 @keyframes drift { 0%{transform:translate(0,0) scale(1)} 50%{transform:translate(-28px,18px) scale(1.07)} 100%{transform:translate(14px,-14px) scale(0.95)} }
 
-::selection { background: rgba(107,39,55,0.18); color: var(--ink); }
-[data-theme="dark"] ::selection { background: rgba(201,127,141,0.22); }
+::selection { background: var(--burgundy); color: var(--bg); }
 
 /* ─── Progress bar ─── */
 .progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 200; background: transparent; }
