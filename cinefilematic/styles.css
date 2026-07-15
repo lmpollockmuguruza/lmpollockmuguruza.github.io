@@ -357,4 +357,5 @@ textarea:focus, input.text:focus { border-color: var(--border-hover); box-shadow
     .ambient-orb, .cover-mark svg, .pad-dot::after { animation: none !important; }
 }
 
-@media(max-width:768px){#themeToggle{position:fixed;top:auto;left:auto;right:1.1rem;bottom:calc(4.6rem + env(safe-area-inset-bottom));z-index:500}}
+.theme-toggle-end{display:none;justify-content:center}
+@media(max-width:768px){#themeToggle{display:none}.theme-toggle-end{display:flex}}
