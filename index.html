@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+    <script src="palette.js"></script>
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         :root{
@@ -163,10 +164,17 @@
         .project-link::after{content:'→';transition:transform .3s var(--ease-spring)}
         .project-link:hover{color:var(--burgundy-soft)}
         .project-link:hover::after{transform:translateX(4px)}
+        .substack-list{list-style:none;margin:.9rem 0 1rem;display:flex;flex-direction:column;gap:.1rem}
+        .substack-list a{display:block;padding:.5rem .7rem;margin-left:-.7rem;border-radius:var(--radius-xs);text-decoration:none;transition:background var(--transition)}
+        .substack-list a:hover{background:var(--burgundy-wash)}
+        .substack-title{display:block;font-size:.86rem;font-weight:500;color:var(--ink);transition:color var(--transition)}
+        .substack-list a:hover .substack-title{color:var(--burgundy)}
+        .substack-sub{display:block;font-family:'EB Garamond',Georgia,serif;font-size:.92rem;line-height:1.5;color:var(--ink-muted);margin-top:.1rem}
+        .substack-date{display:block;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-top:.3rem}
 
         /* CV */
-        .cv-link{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.3rem;font-size:.82rem;font-weight:500;color:var(--burgundy);background:var(--burgundy-wash);border:1px solid var(--burgundy-glow);border-radius:var(--radius-xs);text-decoration:none;transition:all var(--transition);margin-top:.5rem}
-        .cv-link:hover{background:var(--burgundy-glow);border-color:var(--border-hover);transform:translateY(-1px);box-shadow:0 4px 16px rgba(107,39,55,.1)}
+        .cv-link{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;font-weight:500;color:var(--burgundy);letter-spacing:.02em;text-decoration:none;border-bottom:1px solid var(--burgundy-glow);padding-bottom:2px;transition:color var(--transition),border-color var(--transition);margin-top:.5rem}
+        .cv-link:hover{color:var(--burgundy-soft);border-bottom-color:var(--burgundy-soft)}
         .cv-link::after{content:'→';transition:transform .3s var(--ease-spring)}
         .cv-link:hover::after{transform:translateX(3px)}
         .cv-update{font-size:.82rem;color:var(--ink-faint);margin-top:.75rem;font-style:italic}
@@ -304,7 +312,7 @@
                 <p class="scroll-animate">Hey!</p>
                 <p class="scroll-animate">I'm Lucas.</p>
                 <p class="scroll-animate">Since January 2026, I am an Associate within the Commercial, Spend, and Impact team at <a href="https://www.public.io/" target="_blank">PUBLIC, a Solita company</a>.</p>
-                <p class="scroll-animate">I am also an <a href="https://www.lse.ac.uk/study-at-lse/graduate/msc-political-science-political-science-and-political-economy" target="_blank">MSc in Political Science and Political Economy</a> graduate from the London School of Economics, where I obtained a Distinction (75.2% & 2nd in cohort) overall, and a 77 in my dissertation, titled "Corruption, Social Networks, and School Cheating". Feel free to give it a look <a href="https://www.dropbox.com/scl/fi/4eol9b9huxlitxm99gbx5/Lucas-Pollock-Muguruza-MSc-Dissertation.pdf?rlkey=tdnczpyxtavmud1kwfq4bdvts&st=u348g61d&dl=0" target="_blank">here</a> :)</p>
+                <p class="scroll-animate">I am also an <a href="https://www.lse.ac.uk/study-at-lse/graduate/msc-political-science-political-science-and-political-economy" target="_blank">MSc in Political Science and Political Economy</a> graduate from the London School of Economics, where I received a Distinction and finished with the second best overall and dissertation, losing to two of my best friends, Don <a href="https://kevinli03.github.io" target="_blank">Kevin Li</a> and Don Juan David Montoya. Feel free to give my dissertation a look <a href="https://www.dropbox.com/scl/fi/4eol9b9huxlitxm99gbx5/Lucas-Pollock-Muguruza-MSc-Dissertation.pdf?rlkey=tdnczpyxtavmud1kwfq4bdvts&st=u348g61d&dl=0" target="_blank">here</a> :)</p>
                 <p class="scroll-animate">From September to December 2025 I worked as a Public Finance and Policy Evaluation Intern at <a href="https://www.afi.es/" target="_blank">Afi</a>, a leading economic consulting firm in Spain. Previously, I worked as a Policy Analyst at <a href="https://broadpeak.ch/blog/" target="_blank">Broadpeak</a>, a Swiss-based international advisory firm specialised in impact finance. I also hold a <a href="https://www.manchester.ac.uk/study/undergraduate/courses/2025/00675/bsocsc-politics-and-international-relations/course-details/" target="_blank">BSocSc (Hons) in Politics and International Relations</a> from the University of Manchester.</p>
                 <p class="scroll-animate">My work focuses on causal inference, corruption, and inequality, with extensive training in quantitative political economy. I work primarily in R for data analysis and visualisation. This site was built from scratch by me, with help from Claude. Here you'll find examples of my projects, things I find interesting, and my curriculum vitae.</p>
                 <p class="scroll-animate">I am currently open to part-time (5-10h/week) Research Assistant positions in Political Economy. Please feel free to <a href="#" class="ra-email-link">contact me via email</a> if you have any opportunities or would like to discuss potential collaboration.</p>
@@ -315,7 +323,7 @@
 
         <section id="projects" class="content-section">
             <h2>Research & Publications</h2>
-            <div class="section-divider scroll-animate"><span class="section-divider-line"></span><span class="section-divider-text">Working Papers</span><span class="section-divider-line"></span></div>
+            <div class="section-divider scroll-animate"><span class="section-divider-line"></span><span class="section-divider-text">MSc coursework</span><span class="section-divider-line"></span></div>
             <div class="project-item scroll-animate">
                 <h3>"Corruption, Social Networks, and School Cheating" — MSc PSPE Dissertation (Department of Government, LSE, 2024-25)</h3>
                 <p><i>Abstract:</i> Do social networks moderate the effects of corruption on exam cheating? How do rural localities differ from urban localities in their response to corruption revelations? Using a novel dataset with locality-level family network measures for rural Mexico, I provide a compelling answer to these two questions, with additional data from Mexico's municipal audits and secondary school exam cheating rates. Using a staggered difference-in-differences identification strategy with modern estimators, I find that family networks moderate the effect of corruption revelations on exam cheating rates, with a positive, non-monotonic relationship between network strength and effect size. The analysis reveals that average degree (local connectivity) drives stronger effects than largest eigenvalue (global centrality), providing suggestive evidence that peer coordination rather than information cascades explains network moderation.</p>
@@ -362,6 +370,19 @@
                 <p>Exploring socioeconomic impacts and political considerations of the Atlantic Meridional Overturning Circulation's (AMOC) weakening, making use of the most recent evidence on its potential collapse. Completed as part of Policy Analyst role at Broadpeak.</p>
                 <a href="https://broadpeak.ch/amoc/" class="project-link" target="_blank">Read on Broadpeak</a>
             </div>
+            <div class="section-divider scroll-animate"><span class="section-divider-line"></span><span class="section-divider-text">Substack</span><span class="section-divider-line"></span></div>
+            <div class="project-item scroll-animate">
+                <p>I sometimes write on <a href="https://lucaspollockmuguruza.substack.com/" target="_blank">Substack</a>, where <i>Lucas' Notes</i> collects the more exploratory ideas — the ones that are not research yet, and may never be.</p>
+                <ul class="substack-list">
+                    <li><a href="https://lucaspollockmuguruza.substack.com/p/6-what-skill-are-we-actually-losing" target="_blank"><span class="substack-title">#6 What skill are we actually losing?</span><span class="substack-sub">On cognitive debt, and where exactly it accrues</span><span class="substack-date">June 2026</span></a></li>
+                    <li><a href="https://lucaspollockmuguruza.substack.com/p/5-collectively-personal" target="_blank"><span class="substack-title">#5 Collectively Personal</span><span class="substack-sub">Not AI, not Political Economy. Film, and writing, and what has stopped me from doing one but cherishing the other in the meantime</span><span class="substack-date">June 2026</span></a></li>
+                    <li><a href="https://lucaspollockmuguruza.substack.com/p/4-the-information-capture-barrier" target="_blank"><span class="substack-title">#4 The Information Capture Barrier in AI-Generated Value</span><span class="substack-sub">A commentary on why AI's prowess will take a while to materialize into welfare outcomes</span><span class="substack-date">February 2026</span></a></li>
+                    <li><a href="https://lucaspollockmuguruza.substack.com/p/3-measuring-bias" target="_blank"><span class="substack-title">#3 Measuring Bias</span><span class="substack-sub">A Framework for Information Updating Elasticity</span><span class="substack-date">July 2025</span></a></li>
+                    <li><a href="https://lucaspollockmuguruza.substack.com/p/2-a-capital-deepening-technology" target="_blank"><span class="substack-title">#2 A Capital-Deepening Technology</span><span class="substack-sub">Why I Fear AI, But Not for the Reasons You Think</span><span class="substack-date">March 2025</span></a></li>
+                    <li><a href="https://lucaspollockmuguruza.substack.com/p/1-can-ai-help-battle-corruption" target="_blank"><span class="substack-title">#1 Can AI help battle Corruption?</span><span class="substack-sub">A brief overview of non-academic thoughts on how AI could help battle corruption</span><span class="substack-date">January 2025</span></a></li>
+                </ul>
+                <a href="https://lucaspollockmuguruza.substack.com/" class="project-link" target="_blank">Read on Substack</a>
+            </div>
         </section>
 
         <section id="cv" class="content-section">
@@ -374,14 +395,14 @@
                     <h3>MSc Coursework</h3>
                     <p>During my MSc studies I have undertaken the following coursework:</p>
                     <ul class="coursework-list">
-                        <li>MY452 Applied Regression Analysis (R) - 82</li>
-                        <li>MY457 Causal Inference for Observational and Experimental Studies (R) - 74</li>
+                        <li>MY452 Applied Regression Analysis (R)</li>
+                        <li>MY457 Causal Inference for Observational and Experimental Studies (R)</li>
                         <li>ST442 Longitudinal Data Analysis* (R)</li>
-                        <li>GV481 Quantitative Analysis for Political Science (R) - 77</li>
-                        <li>GV4C8 Game Theory for Political Science - 76</li>
-                        <li>GV4L6 Political Economy of Inequality - 69</li>
-                        <li>GV482 Political Science and Political Economy: Current Issues (R) - 70</li>
-                        <li>GV499 Dissertation (Department of Government) - "Corruption, Social Networks, and School Cheating" - supervised by Prof Sarah Brierley - 77 (2nd in cohort)</li>
+                        <li>GV481 Quantitative Analysis for Political Science (R)</li>
+                        <li>GV4C8 Game Theory for Political Science</li>
+                        <li>GV4L6 Political Economy of Inequality</li>
+                        <li>GV482 Political Science and Political Economy: Current Issues (R)</li>
+                        <li>GV499 Dissertation (Department of Government) - "Corruption, Social Networks, and School Cheating" - supervised by Prof Sarah Brierley</li>
                         <li>PP440 Micro and Macro Economics (for Public Policy)*</li>
                         <li>GV4L8/9 Intro to Maths/R for Political Science*</li>
                     </ul>
@@ -404,7 +425,6 @@
                         <li>R / RStudio (dplyr, ggplot2, fixest, fect, did, etc.) – Advanced</li>
                         <li>LaTeX – Proficient</li>
                         <li>Microsoft Excel / Power BI – Proficient</li>
-                        <li>Vibe Coding – Proficient</li>
                         <li>Version Control / GitHub – Foundational</li>
                         <li>IBM SPSS – Foundational</li>
                         <li>Adobe Photoshop – Foundational</li>
@@ -424,7 +444,7 @@
         <div class="palette-modal" role="dialog" aria-modal="true" aria-label="Your mode">
             <button class="palette-close" id="paletteClose" aria-label="Close">&times;</button>
             <h3 class="palette-title">Your mode</h3>
-            <p class="palette-sub">Four colours make this site — paper, ink, an accent, and the selection highlight. Pick your own; everything else follows. The whole page changes as you play.</p>
+            <p class="palette-sub">Four colours make this site — paper, ink, an accent, and the selection highlight. Pick your own; everything else follows. The whole page changes as you play, and if you keep it, the rest of the site comes along.</p>
             <div class="palette-swatches">
                 <label class="palette-swatch"><input type="color" id="pcPaper" value="#f2efe9"><span>paper</span></label>
                 <label class="palette-swatch"><input type="color" id="pcInk" value="#1a1816"><span>ink</span></label>
@@ -462,9 +482,10 @@
         const savedTheme=localStorage.getItem('theme')||'light';if(savedTheme!=='custom')applyTheme(savedTheme);
         toggle.addEventListener('click',()=>{let c=localStorage.getItem('theme')||'light';if(c==='custom'){clearPalette();applyTheme('light');return}const i=themeOrder.indexOf(c),n=themeOrder[(i+1)%themeOrder.length];applyTheme(n)});
 
-        /* YOUR MODE — custom palette */
-        const PALETTE_VARS=['bg','bg-warm','bg-card','bg-card-hover','bg-glass','bg-glass-strong','ink','ink-soft','ink-muted','ink-faint','ink-ghost','burgundy','burgundy-soft','burgundy-dark','burgundy-wash','burgundy-glow','border','border-subtle','border-hover','glass-border','glass-shadow','glass-shadow-hover','selection'];
-        const PALETTE_DEFAULT={paper:'#f2efe9',ink:'#1a1816',accent:'#6b2737',sel:'#6b2737'};
+        /* YOUR MODE — custom palette. The colours themselves live in palette.js,
+           which every page sharing this scheme loads, so a choice made here
+           follows the reader into Of Interest, the gallery, and the rest. */
+        const PALETTE_DEFAULT=SitePalette.DEFAULT;
         const PALETTE_PRESETS=[
             {name:'olive grove',paper:'#edefe6',ink:'#1d201b',accent:'#3f5e46',sel:'#3f5e46'},
             {name:'prussian',paper:'#f3f1ea',ink:'#191c24',accent:'#23456e',sel:'#23456e'},
@@ -473,24 +494,8 @@
             {name:'vercel',paper:'#0a0a0a',ink:'#ededed',accent:'#fafafa',sel:'#eaff00'},
             {name:'lse',paper:'#ffffff',ink:'#14171c',accent:'#e0112b',sel:'#e0112b'}
         ];
-        const hx=h=>{h=h.replace('#','');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]};
-        const mix=(a,b,t)=>a.map((v,i)=>Math.round(v+(b[i]-v)*t));
-        const rgb=c=>`rgb(${c[0]},${c[1]},${c[2]})`;
-        const rgba=(c,a)=>`rgba(${c[0]},${c[1]},${c[2]},${a})`;
-        const lum=c=>(0.299*c[0]+0.587*c[1]+0.114*c[2])/255;
-        function applyPalette(p){
-            const bg=hx(p.paper),ink=hx(p.ink),ac=hx(p.accent),se=hx(p.sel||p.accent),light=lum(bg)>0.5,s=html.style;
-            const set=(k,v)=>s.setProperty('--'+k,v);
-            set('bg',rgb(bg));set('bg-warm',rgb(mix(bg,ink,0.045)));
-            set('ink',rgb(ink));set('ink-soft',rgb(mix(ink,bg,0.14)));set('ink-muted',rgb(mix(ink,bg,0.45)));set('ink-faint',rgb(mix(ink,bg,0.66)));set('ink-ghost',rgb(mix(ink,bg,0.8)));
-            set('burgundy',rgb(ac));set('burgundy-soft',rgb(mix(ac,bg,0.18)));set('burgundy-dark',rgb(mix(ac,ink,0.3)));
-            set('burgundy-wash',rgba(ac,light?0.05:0.07));set('burgundy-glow',rgba(ac,light?0.10:0.13));
-            if(light){set('bg-card','rgba(255,255,255,0.55)');set('bg-card-hover','rgba(255,255,255,0.75)');set('bg-glass','rgba(255,255,255,0.35)');set('bg-glass-strong','rgba(255,255,255,0.55)');set('border','rgba(255,255,255,0.6)');set('border-subtle',rgba(ink,0.06));set('glass-border','1px solid rgba(255,255,255,0.55)');set('glass-shadow',`0 4px 24px ${rgba(ink,0.04)},0 1px 3px ${rgba(ink,0.03)}`);set('glass-shadow-hover',`0 8px 32px ${rgba(ac,0.07)},0 2px 8px ${rgba(ac,0.04)}`)}
-            else{set('bg-card','rgba(255,255,255,0.04)');set('bg-card-hover','rgba(255,255,255,0.07)');set('bg-glass','rgba(255,255,255,0.03)');set('bg-glass-strong','rgba(255,255,255,0.06)');set('border','rgba(255,255,255,0.08)');set('border-subtle','rgba(255,255,255,0.04)');set('glass-border','1px solid rgba(255,255,255,0.08)');set('glass-shadow','0 4px 24px rgba(0,0,0,0.15),0 1px 3px rgba(0,0,0,0.1)');set('glass-shadow-hover',`0 8px 32px ${rgba(ac,0.12)},0 2px 8px ${rgba(ac,0.06)}`)}
-            set('border-hover',rgba(ac,light?0.2:0.22));set('selection',rgb(se));
-            html.removeAttribute('data-theme');
-        }
-        function clearPalette(){PALETTE_VARS.forEach(k=>html.style.removeProperty('--'+k));localStorage.removeItem('customPalette')}
+        const applyPalette=p=>SitePalette.apply(p);
+        const clearPalette=()=>SitePalette.clear();
         const pOverlay=document.getElementById('paletteOverlay'),pInputs={paper:document.getElementById('pcPaper'),ink:document.getElementById('pcInk'),accent:document.getElementById('pcAccent'),sel:document.getElementById('pcSel')};
         const readInputs=()=>({paper:pInputs.paper.value,ink:pInputs.ink.value,accent:pInputs.accent.value,sel:pInputs.sel.value});
         const writeInputs=p=>{pInputs.paper.value=p.paper;pInputs.ink.value=p.ink;pInputs.accent.value=p.accent;pInputs.sel.value=p.sel||p.accent};
@@ -498,7 +503,7 @@
         const presetWrap=document.getElementById('palettePresets');
         PALETTE_PRESETS.forEach(p=>{const b=document.createElement('button');b.className='palette-preset';b.innerHTML=`<span class="palette-preset-dots"><i style="background:${p.paper}"></i><i style="background:${p.accent}"></i><i style="background:${p.sel}"></i><i style="background:${p.ink}"></i></span>${p.name}`;b.addEventListener('click',()=>{writeInputs(p);applyPalette(p)});presetWrap.appendChild(b)});
         function openPalette(){const saved=localStorage.getItem('customPalette');writeInputs(saved?JSON.parse(saved):PALETTE_DEFAULT);pOverlay.classList.add('open');pOverlay.setAttribute('aria-hidden','false')}
-        function closePalette(){pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');const saved=localStorage.getItem('customPalette');if(saved)applyPalette(JSON.parse(saved));else{PALETTE_VARS.forEach(k=>html.style.removeProperty('--'+k));applyTheme(localStorage.getItem('theme')==='custom'?'light':(localStorage.getItem('theme')||'light'))}}
+        function closePalette(){pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');const saved=localStorage.getItem('customPalette');if(saved)applyPalette(JSON.parse(saved));else{clearPalette();applyTheme(localStorage.getItem('theme')==='custom'?'light':(localStorage.getItem('theme')||'light'))}}
         document.getElementById('paletteOpen').addEventListener('click',e=>{e.preventDefault();openPalette()});
         document.getElementById('paletteClose').addEventListener('click',closePalette);
         pOverlay.addEventListener('click',e=>{if(e.target===pOverlay)closePalette()});
