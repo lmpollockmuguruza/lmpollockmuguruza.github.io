@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+    <script src="../palette.js" data-profile="solid"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <style>
@@ -42,8 +43,9 @@
         body{font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink-soft);min-height:100vh;min-height:100dvh;line-height:1.65;transition:background-color .5s var(--ease),color .5s var(--ease)}
         body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.018;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px}
         [data-theme="dark"] body::before{opacity:.03}
-        ::selection{background:var(--burgundy);color:var(--bg)}
-        ::highlight(selmirror){background-color:var(--burgundy);color:var(--bg)}
+        ::selection{background:var(--selection,var(--burgundy));color:var(--bg)}
+        ::-moz-selection{background:var(--selection,var(--burgundy));color:var(--bg)}
+        ::highlight(selmirror){background-color:var(--selection,var(--burgundy));color:var(--bg)}
         .page{max-width:1120px;margin:0 auto;padding:0 2.5rem}
         .topbar{position:fixed;top:0;left:0;right:0;z-index:500;padding:1rem 2.5rem;display:flex;align-items:center;justify-content:space-between;background:transparent;transition:all .4s var(--ease)}
         .topbar.scrolled{background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
@@ -132,7 +134,7 @@
         .leaflet-popup-content{margin:10px 14px!important;font-size:.82rem!important;line-height:1.5!important}
         .popup-title{font-family:'EB Garamond',Georgia,serif;font-size:1rem;font-weight:500;color:#1a1816;margin-bottom:2px}
         .popup-meta{font-size:.7rem;color:#7a7368}
-        .popup-link{display:inline-block;margin-top:4px;font-size:.7rem;color:#6b2737;text-decoration:none;font-weight:500}
+        .popup-link{display:inline-block;margin-top:4px;font-size:.7rem;color:var(--burgundy);text-decoration:none;font-weight:500}
         .popup-link:hover{text-decoration:underline}
         .map-legend{font-size:.72rem;color:var(--ink-faint);margin-top:.5rem;text-align:center;font-style:italic;font-family:'EB Garamond',Georgia,serif}
         .empty-state{text-align:center;padding:3rem 1rem;font-family:'EB Garamond',Georgia,serif;font-size:1.1rem;font-style:italic;color:var(--ink-ghost)}
@@ -501,9 +503,9 @@ function buildMap(list){
   if(map){map.remove();map=null}
   if(!list.length){container.innerHTML='<div class="empty-state" style="height:100%;display:flex;align-items:center;justify-content:center">No works to show</div>';return}
   map=L.map(container,{scrollWheelZoom:true,zoomControl:true}).setView([25,0],2);
-  var isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  var isDark=window.SitePalette?SitePalette.isDark():document.documentElement.getAttribute('data-theme')==='dark';
   L.tileLayer(isDark?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',subdomains:'abcd',maxZoom:19}).addTo(map);
-  var burg=isDark?'#c4707f':'#6b2737';
+  var burg=getComputedStyle(document.documentElement).getPropertyValue('--burgundy').trim()||(isDark?'#c4707f':'#6b2737');
   markers=[];
   list.forEach(function(w){
     if(!w.lat||!w.lng)return;
@@ -585,9 +587,11 @@ buildAZ(architects);buildRegion(architects);buildWorks(works);
 var toggle=document.getElementById('themeToggle');var html=document.documentElement;
 function getTheme(){var s=localStorage.getItem('theme');if(s==='dark')return'dark';if(s==='light')return'light';return window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}
 function setTheme(t){if(t==='dark')html.setAttribute('data-theme','dark');else html.removeAttribute('data-theme')}
-setTheme(getTheme());
+function customPalette(){return !!(window.SitePalette&&SitePalette.active())}
+if(!customPalette())setTheme(getTheme());
 toggle.addEventListener('click',function(){var d=html.getAttribute('data-theme')==='dark';var n=d?'light':'dark';setTheme(n);localStorage.setItem('theme',n);if(curTab==='map')buildMap(works)});
-window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',function(e){var s=localStorage.getItem('theme');if(!s||s==='auto')setTheme(e.matches?'dark':'light')});
+window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',function(e){var s=localStorage.getItem('theme');if(!customPalette()&&(!s||s==='auto'))setTheme(e.matches?'dark':'light')});
+document.addEventListener('palettechange',function(){if(curTab==='map')buildMap(works)});
 
 /* Topbar */
 var topbar=document.getElementById('topbar');var ticking=false;

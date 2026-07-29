@@ -15,6 +15,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+    <script src="../palette.js"></script>
 
     <style>
         *, *::before, *::after {
@@ -168,10 +169,14 @@
         }
 
         ::selection {
-            background: var(--burgundy);
+            background: var(--selection, var(--burgundy));
             color: var(--bg);
         }
-        ::highlight(selmirror){background-color:var(--burgundy);color:var(--bg)}
+        ::-moz-selection {
+            background: var(--selection, var(--burgundy));
+            color: var(--bg);
+        }
+        ::highlight(selmirror){background-color:var(--selection,var(--burgundy));color:var(--bg)}
 
         /* ─── Layout ─── */
         .page {
@@ -313,9 +318,22 @@
             font-size: 0.92rem;
             line-height: 1.8;
             color: var(--ink-muted);
-            max-width: 520px;
+            max-width: 620px;
             opacity: 0;
             animation: fadeUp 0.8s var(--ease-spring) 0.35s forwards;
+        }
+
+        .header-intro a {
+            color: var(--burgundy);
+            font-weight: 500;
+            text-decoration: none;
+            border-bottom: 1px solid var(--burgundy-glow);
+            transition: color 0.35s var(--ease), border-color 0.35s var(--ease);
+        }
+
+        .header-intro a:hover {
+            color: var(--burgundy-soft);
+            border-bottom-color: var(--burgundy-soft);
         }
 
         .header-intro em {
@@ -934,7 +952,7 @@
                 <span>curated collection</span>
             </div>
             <h1>Of <em>interest</em></h1>
-            <p class="header-intro">Things I stumbled on and didn't want to gatekeep. Side projects, articles, tools, and the occasional piece that made me stop scrolling. As <em>a very important person of great intellect and character</em> probably once said: keep&nbsp;exploring.</p>
+            <p class="header-intro">I sometimes build things, or rather tell Claude to build them, and I revise, play with them, change my mind, burn tokens, and exploit any creativity or taste I have left to ensure they are something I want to share to curious minds. I also try to stay somewhat connected to the world, and find some really cool things in the way. I've included a few below, so I hope you like them, but will almost surely share more through <a href="https://www.linkedin.com/in/lucaspollockmuguruza/" target="_blank" rel="noopener">LinkedIn</a>.</p>
         </header>
 
         <!-- ═══ THINGS I BUILT ═══ -->
@@ -1035,7 +1053,7 @@
         <!-- ═══ THINGS I FOUND ═══ -->
         <div class="section-marker" data-anim="marker">
             <span class="section-marker-line"></span>
-            <span class="section-marker-text">Things I found <span class="section-count">· 9</span></span>
+            <span class="section-marker-text">Things I found <span class="section-count">· 8</span></span>
             <span class="section-marker-line"></span>
         </div>
 
@@ -1111,22 +1129,8 @@
                 </div>
             </a>
 
-            <a href="https://skills.sh/" target="_blank" rel="noopener" class="found-item" data-anim="card">
-                <span class="found-item-number">6</span>
-                <div class="found-item-content">
-                    <div class="found-item-title">Skills: The Open Agent Skills Ecosystem</div>
-                    <div class="found-item-meta">by Vercel · added 19 Feb 2026</div>
-                    <p class="found-item-note">One of the coolest live collaboration projects for AI agents and skills.md projects.</p>
-                    <span class="found-item-tag-mobile">tool</span>
-                </div>
-                <div class="found-item-right">
-                    <span class="found-item-tag">tool</span>
-                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </div>
-            </a>
-
             <a href="https://cicl.stanford.edu/papers/gerstenberg2021csm.pdf" target="_blank" rel="noopener" class="found-item" data-anim="card">
-                <span class="found-item-number">7</span>
+                <span class="found-item-number">6</span>
                 <div class="found-item-content">
                     <div class="found-item-title">A Counterfactual Simulation Model of Causal Judgments for Physical Events</div>
                     <div class="found-item-meta">by Gerstenberg et al. · 2021 · added 2 Apr 2026</div>
@@ -1140,7 +1144,7 @@
             </a>
 
             <a href="https://www.aeaweb.org/articles?id=10.1257/jel.20241665" target="_blank" rel="noopener" class="found-item" data-anim="card">
-                <span class="found-item-number">8</span>
+                <span class="found-item-number">7</span>
                 <div class="found-item-content">
                     <div class="found-item-title">The Economics of Attention</div>
                     <div class="found-item-meta">by Loewenstein & Wojtowicz · 2025 · added 11 Apr 2026</div>
@@ -1154,7 +1158,7 @@
             </a>
 
             <a href="https://cruxevals.com/open-world-evaluations.pdf" target="_blank" rel="noopener" class="found-item" data-anim="card">
-                <span class="found-item-number">9</span>
+                <span class="found-item-number">8</span>
                 <div class="found-item-content">
                     <div class="found-item-title">Open-world evaluations for measuring frontier AI capabilities</div>
                     <div class="found-item-meta">by Kapoor et al. · 2026 · added 17 Apr 2026</div>
