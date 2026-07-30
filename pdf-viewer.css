@@ -125,11 +125,9 @@ a{color:var(--burgundy)}
 .spinner{width:22px;height:22px;border:2px solid var(--ink-ghost);border-top-color:var(--burgundy);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* FOOTER */
-.doc-footer{margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--border-subtle);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;font-size:.76rem;color:var(--ink-faint)}
-.doc-footer a{color:var(--burgundy);text-decoration:none}
-.doc-footer a:hover{color:var(--burgundy-soft)}
-.theme-toggle-end{display:none;justify-content:center;padding-top:1.5rem}
+/* The theme toggle moves below the document on phones, where the topbar
+   has no room for it. */
+.theme-toggle-end{display:none;justify-content:center;padding-top:1.6rem}
 
 /* ENTRANCE */
 [data-anim]{opacity:0;transform:translateY(14px);transition:opacity .7s var(--ease-spring),transform .7s var(--ease-spring)}
