@@ -644,99 +644,99 @@
         detail: 'A bigger team gets through more of the funnel. In practice a fund sees hundreds of companies for every one it backs, and the screening layer is what makes that possible.',
         levels: [
           { name: 'Solo GP', c: 0, o: 0.02, quality: 0, screen: 0 },
-          { name: 'First analyst', c: 1.6, o: 0.04, quality: 0.035, screen: 0.1 },
-          { name: 'Associate bench', c: 2.6, o: 0.07, quality: 0.065, screen: 0.2 },
-          { name: 'Principals', c: 3.8, o: 0.11, quality: 0.09, screen: 0.32 },
-          { name: 'Sector partners', c: 5.2, o: 0.16, quality: 0.11, screen: 0.44 },
-          { name: 'Full investment team', c: 7.0, o: 0.22, quality: 0.125, screen: 0.55 },
+          { name: 'First analyst', c: 0.8, o: 0.04, quality: 0.035, screen: 0.1 },
+          { name: 'Associate bench', c: 1.3, o: 0.07, quality: 0.065, screen: 0.2 },
+          { name: 'Principals', c: 1.9, o: 0.11, quality: 0.09, screen: 0.32 },
+          { name: 'Sector partners', c: 2.6, o: 0.16, quality: 0.11, screen: 0.44 },
+          { name: 'Full investment team', c: 3.5, o: 0.22, quality: 0.125, screen: 0.55 },
         ] },
       ddProgram: { name: 'Diligence', icon: '🔍', short: 'DD',
         tip: 'Deeper diligence narrows your estimate ranges and surfaces red flags before you wire the money.',
         detail: 'Diligence does not remove uncertainty, it narrows it. Commercial, financial and technical workstreams each cost money; a quality-of-earnings review is standard in any serious buyout.',
         levels: [
-          { name: 'Founder calls', c: 0, o: 0.01, acc: 0.40, ddCostMod: 1.0 },
-          { name: 'Standard checklist', c: 1.8, o: 0.04, acc: 0.55, ddCostMod: 0.95 },
-          { name: 'External advisers', c: 2.8, o: 0.07, acc: 0.68, ddCostMod: 0.9 },
-          { name: 'Quality of earnings', c: 4.0, o: 0.12, acc: 0.78, ddCostMod: 0.84 },
-          { name: 'Full workstreams', c: 5.4, o: 0.17, acc: 0.86, ddCostMod: 0.78 },
-          { name: 'Institutional diligence', c: 7.2, o: 0.23, acc: 0.92, ddCostMod: 0.72 },
+          { name: 'Founder calls', c: 0, o: 0.01, acc: 0.2, ddCostMod: 1.0 },
+          { name: 'Standard checklist', c: 0.9, o: 0.04, acc: 0.28, ddCostMod: 0.95 },
+          { name: 'External advisers', c: 1.4, o: 0.07, acc: 0.34, ddCostMod: 0.9 },
+          { name: 'Quality of earnings', c: 2, o: 0.12, acc: 0.39, ddCostMod: 0.84 },
+          { name: 'Full workstreams', c: 2.7, o: 0.17, acc: 0.43, ddCostMod: 0.78 },
+          { name: 'Institutional diligence', c: 3.6, o: 0.23, acc: 0.46, ddCostMod: 0.72 },
         ] },
       platform: { name: 'Value Creation', icon: '🛠️', short: 'Platform',
         tip: 'Hands-on support raises portfolio growth and cuts failure rates.',
         detail: 'The best funds do not just write cheques. Recruiting, go-to-market introductions and pricing work are where much of the return is actually manufactured.',
         levels: [
           { name: 'Passive capital', c: 0, o: 0, boost: 0, failCut: 0 },
-          { name: 'Quarterly check-ins', c: 1.5, o: 0.04, boost: 0.006, failCut: 0.08 },
-          { name: 'Hands-on support', c: 2.5, o: 0.08, boost: 0.011, failCut: 0.15 },
-          { name: 'Talent & GTM desk', c: 3.6, o: 0.12, boost: 0.015, failCut: 0.21 },
-          { name: 'Platform team', c: 5.0, o: 0.17, boost: 0.018, failCut: 0.26 },
-          { name: 'Institutional platform', c: 6.8, o: 0.23, boost: 0.021, failCut: 0.30 },
+          { name: 'Quarterly check-ins', c: 0.75, o: 0.04, boost: 0.006, failCut: 0.08 },
+          { name: 'Hands-on support', c: 1.25, o: 0.08, boost: 0.011, failCut: 0.15 },
+          { name: 'Talent & GTM desk', c: 1.8, o: 0.12, boost: 0.015, failCut: 0.21 },
+          { name: 'Platform team', c: 2.5, o: 0.17, boost: 0.018, failCut: 0.26 },
+          { name: 'Institutional platform', c: 3.4, o: 0.23, boost: 0.021, failCut: 0.30 },
         ] },
       network: { name: 'Network & Brand', icon: '🌐', short: 'Brand',
         tip: 'Reputation brings better deals to your door and wins competitive processes.',
         detail: 'In a competitive round, founders choose their investor. Brand is what gets you into the room, and what makes a founder pick you over a cheque that is the same size.',
         levels: [
           { name: 'Unknown', c: 0, o: 0, flow: 0, founder: 0, edge: 0 },
-          { name: 'Emerging', c: 1.6, o: 0.04, flow: 0.08, founder: 0.04, edge: 0.08 },
-          { name: 'Regionally known', c: 2.7, o: 0.07, flow: 0.15, founder: 0.07, edge: 0.15 },
-          { name: 'Recognised brand', c: 3.9, o: 0.12, flow: 0.20, founder: 0.095, edge: 0.20 },
-          { name: 'Top quartile', c: 5.3, o: 0.17, flow: 0.245, founder: 0.115, edge: 0.25 },
-          { name: 'Franchise brand', c: 7.1, o: 0.23, flow: 0.28, founder: 0.13, edge: 0.29 },
+          { name: 'Emerging', c: 0.8, o: 0.04, flow: 0.08, founder: 0.04, edge: 0.08 },
+          { name: 'Regionally known', c: 1.35, o: 0.07, flow: 0.15, founder: 0.07, edge: 0.15 },
+          { name: 'Recognised brand', c: 1.95, o: 0.12, flow: 0.20, founder: 0.095, edge: 0.20 },
+          { name: 'Top quartile', c: 2.65, o: 0.17, flow: 0.245, founder: 0.115, edge: 0.25 },
+          { name: 'Franchise brand', c: 3.55, o: 0.23, flow: 0.28, founder: 0.13, edge: 0.29 },
         ] },
       opsPartners: { name: 'Operating Partners', icon: '🏭', short: 'Ops',
         tip: 'Ex-operators drive margin improvement, add-on acquisitions and exit readiness.',
         detail: 'The dominant value-creation lever in modern private equity is operational, not financial. Operating partners run the hundred-day plan, integrate add-ons and get an asset ready to sell.',
         levels: [
           { name: 'None', c: 0, o: 0, margin: 0, addOn: 0, exitLift: 0 },
-          { name: 'Adviser bench', c: 1.7, o: 0.04, margin: 0.005, addOn: 0.15, exitLift: 0.03 },
-          { name: 'One operating partner', c: 2.9, o: 0.08, margin: 0.009, addOn: 0.28, exitLift: 0.055 },
-          { name: 'Value-creation team', c: 4.2, o: 0.13, margin: 0.013, addOn: 0.4, exitLift: 0.075 },
-          { name: 'Sector operating groups', c: 5.7, o: 0.18, margin: 0.016, addOn: 0.5, exitLift: 0.09 },
-          { name: 'In-house consultancy', c: 7.6, o: 0.25, margin: 0.018, addOn: 0.58, exitLift: 0.10 },
+          { name: 'Adviser bench', c: 0.85, o: 0.04, margin: 0.005, addOn: 0.15, exitLift: 0.03 },
+          { name: 'One operating partner', c: 1.45, o: 0.08, margin: 0.009, addOn: 0.28, exitLift: 0.055 },
+          { name: 'Value-creation team', c: 2.1, o: 0.13, margin: 0.013, addOn: 0.4, exitLift: 0.075 },
+          { name: 'Sector operating groups', c: 2.85, o: 0.18, margin: 0.016, addOn: 0.5, exitLift: 0.09 },
+          { name: 'In-house consultancy', c: 3.8, o: 0.25, margin: 0.018, addOn: 0.58, exitLift: 0.10 },
         ] },
       irDesk: { name: 'Investor Relations', icon: '🤝', short: 'IR',
         tip: 'Keeps LPs patient, and makes the next fund bigger and easier to raise.',
         detail: 'LPs fund the next vehicle, not the last one. Honest, timely reporting buys patience through a bad vintage — and re-ups are the difference between a fund and a firm.',
         levels: [
           { name: 'GP does IR', c: 0, o: 0.01, patience: 0, raise: 0, recycle: 0 },
-          { name: 'Part-time IR', c: 1.4, o: 0.03, patience: 0.12, raise: 0.06, recycle: 0.02 },
-          { name: 'IR manager', c: 2.4, o: 0.06, patience: 0.22, raise: 0.13, recycle: 0.04 },
-          { name: 'IR & reporting team', c: 3.5, o: 0.10, patience: 0.30, raise: 0.20, recycle: 0.06 },
-          { name: 'Institutional IR', c: 4.8, o: 0.15, patience: 0.37, raise: 0.27, recycle: 0.08 },
-          { name: 'Global LP franchise', c: 6.4, o: 0.21, patience: 0.42, raise: 0.34, recycle: 0.10 },
+          { name: 'Part-time IR', c: 0.7, o: 0.03, patience: 0.12, raise: 0.06, recycle: 0.02 },
+          { name: 'IR manager', c: 1.2, o: 0.06, patience: 0.22, raise: 0.13, recycle: 0.04 },
+          { name: 'IR & reporting team', c: 1.75, o: 0.10, patience: 0.30, raise: 0.20, recycle: 0.06 },
+          { name: 'Institutional IR', c: 2.4, o: 0.15, patience: 0.37, raise: 0.27, recycle: 0.08 },
+          { name: 'Global LP franchise', c: 3.2, o: 0.21, patience: 0.42, raise: 0.34, recycle: 0.10 },
         ] },
       sourcing: { name: 'Sourcing & Data', icon: '🛰️', short: 'Sourcing',
         tip: 'Proprietary origination: more deals, seen earlier, with fewer people bidding against you.',
         detail: 'The cheapest deal is the one nobody else has seen. Systematic outbound sourcing and sector mapping turn an inbound pipeline into a proprietary one.',
         levels: [
           { name: 'Inbound only', c: 0, o: 0.01, extra: 0, proprietary: 0, early: 0 },
-          { name: 'Founder network CRM', c: 1.4, o: 0.03, extra: 0.15, proprietary: 0.06, early: 0.01 },
-          { name: 'Outbound sourcing', c: 2.5, o: 0.07, extra: 0.3, proprietary: 0.13, early: 0.02 },
-          { name: 'Data-driven screening', c: 3.7, o: 0.11, extra: 0.45, proprietary: 0.19, early: 0.032 },
-          { name: 'Sector mapping engine', c: 5.1, o: 0.16, extra: 0.58, proprietary: 0.24, early: 0.042 },
-          { name: 'Proprietary origination', c: 6.9, o: 0.22, extra: 0.7, proprietary: 0.28, early: 0.05 },
+          { name: 'Founder network CRM', c: 0.7, o: 0.03, extra: 0.15, proprietary: 0.06, early: 0.01 },
+          { name: 'Outbound sourcing', c: 1.25, o: 0.07, extra: 0.3, proprietary: 0.13, early: 0.02 },
+          { name: 'Data-driven screening', c: 1.85, o: 0.11, extra: 0.45, proprietary: 0.19, early: 0.032 },
+          { name: 'Sector mapping engine', c: 2.55, o: 0.16, extra: 0.58, proprietary: 0.24, early: 0.042 },
+          { name: 'Proprietary origination', c: 3.45, o: 0.22, extra: 0.7, proprietary: 0.28, early: 0.05 },
         ] },
       legal: { name: 'Legal & Structuring', icon: '⚖️', short: 'Legal',
         tip: 'Better terms: downside protection when things go wrong, and fewer blown negotiations.',
         detail: 'Price is only half a term sheet. Liquidation preferences, anti-dilution and governance decide what you actually recover when an investment disappoints.',
         levels: [
           { name: 'Ad hoc counsel', c: 0, o: 0.01, recovery: 0, termEdge: 0 },
-          { name: 'Standard documents', c: 1.2, o: 0.03, recovery: 0.06, termEdge: 0.02 },
-          { name: 'Preferred terms', c: 2.1, o: 0.06, recovery: 0.12, termEdge: 0.04 },
-          { name: 'In-house counsel', c: 3.1, o: 0.09, recovery: 0.17, termEdge: 0.06 },
-          { name: 'Structuring desk', c: 4.3, o: 0.14, recovery: 0.21, termEdge: 0.075 },
-          { name: 'Full legal function', c: 5.8, o: 0.19, recovery: 0.24, termEdge: 0.09 },
+          { name: 'Standard documents', c: 0.6, o: 0.03, recovery: 0.06, termEdge: 0.02 },
+          { name: 'Preferred terms', c: 1.05, o: 0.06, recovery: 0.12, termEdge: 0.04 },
+          { name: 'In-house counsel', c: 1.55, o: 0.09, recovery: 0.17, termEdge: 0.06 },
+          { name: 'Structuring desk', c: 2.15, o: 0.14, recovery: 0.21, termEdge: 0.075 },
+          { name: 'Full legal function', c: 2.9, o: 0.19, recovery: 0.24, termEdge: 0.09 },
         ] },
       capMarkets: { name: 'Capital Markets', icon: '🏦', short: 'Debt',
         tip: 'Lender and banker relationships: cheaper leverage, and more buyers when you want to sell.',
         detail: 'Financing is a skill. Access to debt sets how much equity a buyout needs, and standing banker relationships are what get an exit process cleared in a difficult market.',
         levels: [
           { name: 'No relationships', c: 0, o: 0.01, lev: 0.30, exitProb: 0, debtCost: 1.0 },
-          { name: 'Local lender', c: 1.4, o: 0.03, lev: 0.38, exitProb: 0.03, debtCost: 0.97 },
-          { name: 'Debt adviser', c: 2.4, o: 0.06, lev: 0.45, exitProb: 0.055, debtCost: 0.93 },
-          { name: 'Capital markets desk', c: 3.6, o: 0.10, lev: 0.52, exitProb: 0.075, debtCost: 0.89 },
-          { name: 'Syndicated relationships', c: 4.9, o: 0.15, lev: 0.58, exitProb: 0.09, debtCost: 0.85 },
-          { name: 'Financing franchise', c: 6.6, o: 0.21, lev: 0.63, exitProb: 0.1, debtCost: 0.81 },
+          { name: 'Local lender', c: 0.7, o: 0.03, lev: 0.38, exitProb: 0.03, debtCost: 0.97 },
+          { name: 'Debt adviser', c: 1.2, o: 0.06, lev: 0.45, exitProb: 0.055, debtCost: 0.93 },
+          { name: 'Capital markets desk', c: 1.8, o: 0.10, lev: 0.52, exitProb: 0.075, debtCost: 0.89 },
+          { name: 'Syndicated relationships', c: 2.45, o: 0.15, lev: 0.58, exitProb: 0.09, debtCost: 0.85 },
+          { name: 'Financing franchise', c: 3.3, o: 0.21, lev: 0.63, exitProb: 0.1, debtCost: 0.81 },
         ] },
     };
 
@@ -769,7 +769,7 @@
       hard: {
         label: 'Hard', icon: '🔥', tag: 'For players who have closed a fund before',
         desc: 'Scarce capital, brutal markets, frequent failures and impatient LPs. Every quarter of opex and every basis point of price matters.',
-        targetMult: 1.42, failMult: 1.85, exitMult: 0.71, dealFlowMult: 0.66,
+        targetMult: 1.36, failMult: 1.8, exitMult: 0.74, dealFlowMult: 0.7,
         growthMult: 0.82, ddCostMult: 1.42, hotMult: 1.62, eventFreq: 0.23,
         startRep: 35, founderWalkMult: 1.42, opexMult: 1.25, lpDecay: 1.5,
         icThreshold: 0.09, startLP: 46, firmEventFreq: 0.19,
@@ -777,7 +777,7 @@
       brutal: {
         label: 'Brutal', icon: '💀', tag: 'A bad vintage, from start to finish',
         desc: 'You raised into the top of the cycle. Valuations fall, the exit window stays shut, LPs threaten to pull the plug and the good deals go to better-known firms.',
-        targetMult: 1.6, failMult: 2.2, exitMult: 0.6, dealFlowMult: 0.55,
+        targetMult: 1.5, failMult: 2.1, exitMult: 0.65, dealFlowMult: 0.61,
         growthMult: 0.75, ddCostMult: 1.6, hotMult: 1.85, eventFreq: 0.28,
         startRep: 28, founderWalkMult: 1.6, opexMult: 1.5, lpDecay: 2.1,
         icThreshold: 0.07, startLP: 38, firmEventFreq: 0.24,
@@ -987,7 +987,7 @@
     const baseFundSize = (fundType) => (fundType === 'VC' ? 100 : 500);
 
     const minHoldFor = (fundType, sector) => {
-      const base = fundType === 'VC' ? 8 : 11;
+      const base = fundType === 'VC' ? 8 : 9;
       return Math.round(base * SECTORS[sector].hold);
     };
 
@@ -1040,9 +1040,9 @@
       // something fund-defining appear. The company is then scaled to fit that
       // cheque at the multiple already agreed, which keeps pricing coherent.
       const chequeBand = (isVC
-        ? { 'Pre-seed': [0.004, 0.025], 'Seed': [0.008, 0.05], 'Series A': [0.025, 0.11], 'Series B': [0.05, 0.24] }
-        : { 'Growth': [0.025, 0.12], 'Late Growth': [0.05, 0.2], 'Buyout': [0.07, 0.28], 'Carve-out': [0.05, 0.24] }
-      )[stage] || [0.02, 0.15];
+        ? { 'Pre-seed': [0.007, 0.035], 'Seed': [0.014, 0.07], 'Series A': [0.04, 0.15], 'Series B': [0.08, 0.28] }
+        : { 'Growth': [0.04, 0.17], 'Late Growth': [0.07, 0.25], 'Buyout': [0.10, 0.32], 'Carve-out': [0.07, 0.28] }
+      )[stage] || [0.03, 0.18];
       const loC = size * chequeBand[0], hiC = size * chequeBand[1];
       const askAmount = Math.exp(Math.log(loC) + Math.random() * (Math.log(hiC) - Math.log(loC)));
 
@@ -1655,7 +1655,7 @@
       const lvl = (track) => UPGRADES[track].levels[upgrades[track] || 0];
       const costScale = fundSize / 100;
       const market = MARKET_CONDITIONS[marketCondition];
-      const targetMOIC = Math.round((isVC ? 2.4 : 2.0) * diff.targetMult * 10) / 10;
+      const targetMOIC = Math.round((isVC ? 2.4 : 1.7) * diff.targetMult * 10) / 10;
 
       // ---- derived fund metrics ----
       const nav = portfolio.reduce((a, p) => a + p.currentValue, 0);
@@ -2295,8 +2295,11 @@
           // Value tracks revenue growth, but growth rates fade as a company
           // matures and only good companies come close to their plan. Weak
           // companies grind sideways or shrink no matter what they projected.
-          const fade = Math.pow(0.93, holdSoFar);
-          const execution = clamp((q - 0.25) * 1.5, -0.35, 1.1);
+          const fade = Math.pow(0.96, holdSoFar);
+          // Startups either execute or they do not. Mature businesses grind
+          // along either way, which is why buyout returns lean on leverage and
+          // operational work rather than on growth alone.
+          const execution = isVC ? clamp((q - 0.18) * 1.9, -0.3, 1.4) : clamp((q - 0.10) * 1.7, -0.1, 1.3);
           const effAnnual = Math.max(-45, inv.metrics.growth) * fade * execution * diff.growthMult;
           const growthFactor = Math.pow(1 + Math.max(-0.6, effAnnual / 100), 0.25);
           const base = growthFactor + port.boost * thesisLift + opsMargin;
@@ -2309,7 +2312,7 @@
           let newDebt = inv.debt || 0;
           if (newDebt > 0) {
             const rate = 0.021 * nextMarket.debtCost * lvl('capMarkets').debtCost;
-            const sweep = Math.max(0, newAsset * 0.013);
+            const sweep = Math.max(0, newAsset * 0.022);   // cash flow sweep pays debt down
             newDebt = Math.max(0, newDebt + newDebt * rate - sweep);
           }
 
@@ -2338,13 +2341,20 @@
           }
           if (eventFired) { updated.push({ ...inv, assetValue: newAsset, debt: newDebt, currentValue: Math.max(0, newAsset - newDebt) }); return; }
 
-          // Covenant test
-          if (newDebt > 0 && newDebt > newAsset * 0.88) {
+          // Covenant test. A breach usually ends in a lender-led restructuring
+          // that leaves the sponsor's equity heavily diluted rather than wiped
+          // out — but sometimes the lender simply takes the keys.
+          if (newDebt > 0 && newDebt > newAsset * 0.92) {
             lg(`${inv.name} is close to breaching its leverage covenant`, 'warning');
-            if (Math.random() < 0.22 * diff.failMult) {
-              failures.push({ ...inv, failReason: 'Lender took control after a covenant breach' });
-              recoveries += inv.investedAmount * legalRec * 0.5;
-              return;
+            if (Math.random() < 0.16 * diff.failMult) {
+              if (Math.random() < 0.4) {
+                failures.push({ ...inv, failReason: 'Lender took control after a covenant breach' });
+                recoveries += inv.investedAmount * legalRec * 0.5;
+                return;
+              }
+              lg(`${inv.name} restructured — debt written down, your equity heavily diluted`, 'error');
+              newAsset *= 0.82;
+              newDebt = newAsset * 0.72;
             }
           }
 
@@ -2701,7 +2711,7 @@
                   <strong style={{ color: '#555' }}>{d.tag}.</strong> {d.desc}
                 </div>
                 <div style={{ display: 'flex', gap: '10px', fontSize: '10px', color: '#999', margin: '14px 0 24px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                  <span>Target {(Math.round((pendingFundType === 'VC' ? 2.4 : 2.0) * d.targetMult * 10) / 10)}x</span>
+                  <span>Target {(Math.round((pendingFundType === 'VC' ? 2.4 : 1.7) * d.targetMult * 10) / 10)}x</span>
                   <span>· Failure ×{d.failMult}</span>
                   <span>· Exit ×{d.exitMult}</span>
                   <span>· Deal flow ×{d.dealFlowMult}</span>
