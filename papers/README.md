@@ -1,7 +1,8 @@
 # papers/
 
 Each folder here is one document: a page that shows the PDF inline, with an
-"open in a new window" and a "download" option beside it.
+"open in a new window" and a "download" option beside it. There is no index
+page — the home page links straight to each one.
 
 ## Uploading a PDF
 
@@ -19,21 +20,21 @@ its page is `/cv/`.
 
 Until a PDF is uploaded, its page says so in plain words and points readers at
 the Dropbox copy instead of showing a broken frame, so nothing 404s while you
-work through the uploads.
+work through the uploads. Once the file is there the page switches to the
+viewer on its own; you can then drop the `data-fallback` attribute.
 
-Renaming a PDF is fine as long as you change the three places that mention it
-in that folder's `index.html`: the two `href`s in the action buttons, the
+Renaming a PDF is fine as long as you change the places that mention it in
+that folder's `index.html`: the two `href`s in the action buttons, the
 `data-pdf` attribute on `<section class="viewer">`, and the filename shown in
 `.viewer-file`.
 
 ## Adding a new document
 
 1. Copy an existing folder, e.g. `cp -r cultural-backlash new-paper`.
-2. In `new-paper/index.html` edit the title, eyebrow, meta line, summary, and
+2. In `new-paper/index.html` edit the `<title>`, the meta description, and
    every mention of the old filename (see above). Drop `data-fallback` if there
    is no external copy to point at.
-3. Add a card for it in `papers/index.html`.
-4. Link to `papers/new-paper/` from the home page if it belongs there.
+3. Link to `papers/new-paper/` from the home page.
 
 ## Shared bits
 

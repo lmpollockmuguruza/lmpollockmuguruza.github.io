@@ -100,7 +100,6 @@
 
     var ICONS = {
         open: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>',
-        download: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>',
         page: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>',
         phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>'
     };
@@ -108,15 +107,6 @@
     function esc(value) {
         return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;')
             .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
-
-    function actions(extra) {
-        var html = '<div class="doc-actions">' +
-            '<a class="btn btn-primary" href="' + esc(url) + '" target="_blank" rel="noopener">' +
-            ICONS.open + 'Open in a new window</a>' +
-            '<a class="btn" href="' + esc(url) + '" download>' + ICONS.download + 'Download PDF</a>';
-        if (extra) html += extra;
-        return html + '</div>';
     }
 
     function state(icon, heading, body, extra) {
@@ -161,13 +151,13 @@
 
     function handOff() {
         showFullscreenButton(false);
+        /* The buttons directly above this card already offer both routes, so
+           the card only has to say why there is no frame here. */
         state(
             ICONS.phone,
             'Best read in your PDF viewer',
-            'Inline PDFs are unreliable on small screens, so this one opens in ' +
-            'your device&rsquo;s own reader &mdash; where text selection, zoom and ' +
-            'screen readers all behave properly.',
-            actions()
+            'Inline PDFs are unreliable on small screens &mdash; open or ' +
+            'download it above and your device&rsquo;s own reader takes over.'
         );
     }
 
