@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Research Idea Workbench — Lucas Pollock Muguruza</title>
-<meta name="description" content="A local-first instrument for carrying a research idea from the moment it occurs to you until it earns a real literature review, a real data request, or a real model.">
+<title>Prior — a workbench for research ideas</title>
+<meta name="description" content="Prior — a workbench for research ideas. A local-first instrument for carrying an idea from the moment it occurs to you until it earns a real literature review, a real data request, or a real model. It keeps what you believed before you read anything.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" type="image/x-icon" href="../favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -77,8 +77,11 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
 .back-link svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease)}
 .back-link:hover svg{transform:translateX(-3px)}
 .tb-sep{width:1px;height:16px;background:var(--border-subtle)}
-.brand{font-family:var(--serif);font-size:1.02rem;font-weight:500;color:var(--ink);letter-spacing:-.01em;white-space:nowrap;cursor:pointer;background:none;border:none;padding:0}
+.brand{font-family:var(--serif);font-size:1.18rem;font-weight:500;color:var(--ink);letter-spacing:-.005em;white-space:nowrap;cursor:pointer;background:none;border:none;padding:0}
 .brand:hover{color:var(--burgundy)}
+.brand-tag{display:none;margin-left:.65rem;font-family:var(--mono);font-size:.63rem;font-weight:400;letter-spacing:.02em;color:var(--ink-faint);vertical-align:middle}
+.brand:hover .brand-tag{color:var(--ink-muted)}
+@media(min-width:1100px){.brand-tag{display:inline}}
 .tabs{display:flex;align-items:center;gap:0;margin-left:auto;list-style:none}
 .tab{position:relative;padding:.42rem .8rem;font-family:var(--sans);font-size:.72rem;font-weight:400;letter-spacing:.03em;color:var(--ink-muted);background:none;border:none;cursor:pointer;transition:color var(--transition);white-space:nowrap}
 .tab::after{content:'';position:absolute;bottom:-1px;left:.8rem;right:.8rem;height:1.5px;background:var(--burgundy);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease-spring)}
@@ -523,7 +526,7 @@ table.mx .empty-cell{color:var(--ink-ghost)}
   <div class="tb-left">
     <a href="../" class="back-link"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>lucas</a>
     <span class="tb-sep"></span>
-    <button class="brand" data-go="dash">Research Idea Workbench</button>
+    <button class="brand" data-go="dash">Prior<span class="brand-tag">a workbench for research ideas</span></button>
   </div>
   <ul class="tabs" id="tabs">
     <li><button class="tab" data-go="dash">Dashboard</button></li>
@@ -576,7 +579,7 @@ table.mx .empty-cell{color:var(--ink-ghost)}
 'use strict';
 
 /* ═══════════════════════════════════════════════════════════
-   Research Idea Workbench
+   Prior — a workbench for research ideas
    One JSON document. Everything else is a projection of it.
    No network calls, no accounts, no server. Ever.
    ═══════════════════════════════════════════════════════════ */
@@ -705,6 +708,8 @@ function renderDiff(from, to){
 
 /* ─── storage adapter: file handle > window.storage > localStorage ─ */
 var Store = (function(){
+  /* these two names predate the rename to Prior; they stay as they are so
+     nobody's ideas — or their connected file — go missing over a wordmark */
   var LS_KEY = 'riw.doc.v1';
   var mode = 'local';          /* 'file' | 'ext' | 'local' */
   var fileHandle = null;
@@ -1374,7 +1379,7 @@ function ideaMarkdown(idea){
   if (hs.length) L.push('handoffs: [' + hs.join(', ') + ']');
   if (idea.shelf) { L.push('shelved_at: ' + idea.shelf.shelvedAt); L.push('unlock_condition: ' + yamlStr(idea.shelf.unlockCondition)); }
   if (idea.closure) { L.push('closed_at: ' + idea.closure.closedAt); L.push('closure_cause: ' + yamlStr(idea.closure.cause)); if (has(idea.closure.note)) L.push('closure_note: ' + yamlStr(idea.closure.note)); }
-  L.push('generator: Research Idea Workbench');
+  L.push('generator: Prior');
   L.push('---');
   L.push('');
   L.push('# ' + titleOf(idea));
@@ -1440,7 +1445,7 @@ function handoffMarkdown(idea, kind){
   var L = [];
   L.push('# ' + HANDOFF_LABEL[kind] + ' — ' + titleOf(idea));
   L.push('');
-  L.push('_Handed off from the Research Idea Workbench on ' + fmtDate(nowISO()) + '. Everything below was written before any of this work was done._');
+  L.push('_Handed off from Prior on ' + fmtDate(nowISO()) + '. Everything below was written before any of this work was done._');
   L.push('');
   function put(label, val){ if (has(val)) { L.push('**' + label + '**'); L.push(''); L.push(trim(val)); L.push(''); } }
   put('The idea in one sentence', fv(idea,'plainSentence'));
@@ -2281,14 +2286,14 @@ function renderMatrix(){
 /* ─── about ─────────────────────────────────────────────── */
 function renderAbout(){
   var h = '<div class="wrap"><div class="view-head"><h2>What this is, and what it deliberately is not</h2>'
-    + '<p>The instrument is the public artefact here, not the ideas inside it. This page is the argument it makes.</p></div>';
+    + '<p><b>Prior</b> is a workbench for research ideas. The instrument is the public artefact here, not the ideas inside it — this page is the argument it makes.</p></div>';
   function sec(title, paras){
     return '<div class="sec"><div class="sec-h"><h3>'+esc(title)+'</h3></div>'
       + paras.map(function(p){ return '<p class="about-p">'+p+'</p>'; }).join('')
       + '</div>';
   }
   h += sec('The scope', [
-    'This tool covers the life of a research idea from the moment it occurs to you until the moment it earns a real literature review, a real data request, or a real model. That is the whole of it.',
+    'Prior covers the life of a research idea from the moment it occurs to you until the moment it earns a real literature review, a real data request, or a real model. That is the whole of it.',
     'It is not a reference manager, a note vault, a project tracker, or a writing environment. Zotero, Obsidian, Notion and Overleaf all exist and are all better at their own jobs than anything built in an afternoon could be.',
     'The governing rule for every feature: <b>if answering a field requires you to read a paper or open a dataset, that field does not belong here.</b> The job is to take an idea as far as the armchair allows, and then hand it off cleanly.'
   ]);
@@ -2301,7 +2306,7 @@ function renderAbout(){
     'So completeness is shown and never enforced: segmented rings, never a percentage, and no sort order anywhere in this tool defaults to fullness. A great idea at a tenth written has to be able to beat a mediocre one that is finished.'
   ]);
   h += sec('The prior is locked', [
-    'Once you write what you <i>think</i> the literature says, that text locks. Anything you learn afterwards goes in a separate box, below a visible line, and revising the prior keeps the original in the change history.',
+    'Once you write what you <i>think</i> the literature says, that text locks. Anything you learn afterwards goes in a separate box, below a visible line, and revising the prior keeps the original in the change history. The tool is named after this field, because it is the one thing here that nothing else will keep for you.',
     'This is the tool\'s single most valuable epistemic asset, and it is worth being blunt about why: after a literature sweep you cannot reconstruct what you actually believed beforehand. Nobody can. Score the prior against what the sweep turned up, and after eight or so ideas you have a calibration statistic about your own sense of a literature that nothing else in the ecosystem will give you.'
   ]);
   h += sec('Identifying assumptions are writable before data', [
