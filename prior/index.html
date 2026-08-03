@@ -242,6 +242,8 @@ h1,h2,h3,h4{font-family:var(--serif);font-weight:400;color:var(--ink);letter-spa
 .f-label{display:block;font-size:.75rem;font-weight:500;color:var(--ink-soft);margin-bottom:.3rem;line-height:1.45;transition:color var(--transition)}
 .field:focus-within .f-label{color:var(--burgundy)}
 .f-help{font-size:.7rem;line-height:1.6;color:var(--ink-faint);margin-bottom:.5rem;font-family:var(--serif);font-size:.85rem;font-style:italic}
+.f-help a{color:var(--burgundy);text-decoration:none;border-bottom:1px solid var(--burgundy-glow)}
+.f-help a:hover{border-bottom-color:currentColor}
 .f-in{width:100%;padding:.6rem .8rem;font-family:var(--sans);font-size:.86rem;line-height:1.6;color:var(--ink);background:var(--bg-glass-strong);border:1px solid var(--border-subtle);border-radius:var(--radius-xs);outline:none;transition:all var(--transition);resize:none;overflow:hidden}
 .f-in::placeholder{color:var(--ink-faint);font-weight:300}
 .f-in:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px var(--burgundy-wash);background:var(--bg-card-hover)}
@@ -433,11 +435,17 @@ table.mx .empty-cell{color:var(--ink-ghost)}
 .empty h3{font-size:1.25rem;margin-bottom:.5rem}
 .empty p{font-size:.84rem;color:var(--ink-muted);max-width:46ch;margin:0 auto 1.15rem;line-height:1.68}
 .sec{margin-bottom:2.1rem}
-.about-p{font-size:.88rem;line-height:1.8;color:var(--ink-muted);margin-bottom:.85rem;max-width:66ch}
+.about-p{font-size:.88rem;line-height:1.8;color:var(--ink-muted);margin-bottom:.85rem;max-width:34rem}
 .about-p b{color:var(--ink-soft);font-weight:500}
 .about-p i{font-family:var(--serif);font-size:1.02em}
 .about-p a{color:var(--burgundy);text-decoration:none;border-bottom:1px solid var(--burgundy-glow)}
 .about-p a:hover{border-bottom-color:currentColor}
+.varian{list-style:none;margin:.2rem 0 .3rem;padding:0}
+.varian li{position:relative;padding-left:1.5rem;margin-bottom:.85rem;max-width:35.5rem}
+.varian li::before{content:'—';position:absolute;left:0;top:0;color:var(--burgundy);opacity:.55}
+.varian q{display:block;font-family:var(--serif);font-size:1.04rem;font-style:italic;line-height:1.5;color:var(--ink-soft);quotes:none}
+.varian span{display:block;font-size:.79rem;line-height:1.65;color:var(--ink-faint);margin-top:.2rem}
+.v1-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.22rem .6rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--burgundy);background:var(--burgundy-wash);border:1px solid var(--burgundy-glow);border-radius:100px;margin-bottom:.7rem}
 .sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:.85rem}
 .sec-h h3{font-size:1.16rem}
 .sec-h .linkbtn{font-size:.72rem}
@@ -1072,6 +1080,7 @@ var WHY_PEOPLE = [
 var T1 = [
   {k:'plainSentence', label:'The idea in one sentence, no jargon', ctl:'textarea', big:true,
    help:"If you can't phrase it so a non-economist understands, it's probably not a good idea yet. (Varian's test.)",
+   helpHtml: 'If you can&rsquo;t phrase it so a non-economist understands, it&rsquo;s probably not a good idea yet. (<a href="https://people.ischool.berkeley.edu/~hal/Papers/how.pdf" target="_blank" rel="noopener">Varian&rsquo;s test</a>.)',
    ph:'One sentence. No jargon, no hedging, no method.'},
   {k:'puzzle', label:'What would the naive view predict, and why is it wrong?', ctl:'textarea',
    help:'The gap between the obvious answer and the real one is where the paper lives.'},
@@ -1619,7 +1628,8 @@ function fieldHTML(idea, f, o){
   var id = 'f_' + (o.anchor ? 'a_' : '') + f.k;
   var out = '<div class="field'+(f.crux?' crux':'')+'" data-field-wrap="'+f.k+'">';
   if (f.label) out += '<label class="f-label" for="'+id+'">'+esc(f.label)+'</label>';
-  if (f.help) out += '<p class="f-help">'+esc(f.help)+'</p>';
+  if (f.helpHtml) out += '<p class="f-help">'+f.helpHtml+'</p>';
+  else if (f.help) out += '<p class="f-help">'+esc(f.help)+'</p>';
   if (f.ctl === 'select'){
     out += '<select class="f-in" id="'+id+'" '+attr+'>';
     (f.opts||[]).forEach(function(op){
@@ -2297,6 +2307,10 @@ function renderAbout(){
     'It is not a reference manager, a note vault, a project tracker, or a writing environment. Zotero, Obsidian, Notion and Overleaf all exist and are all better at their own jobs than anything built in an afternoon could be.',
     'The governing rule for every feature: <b>if answering a field requires you to read a paper or open a dataset, that field does not belong here.</b> The job is to take an idea as far as the armchair allows, and then hand it off cleanly.'
   ]);
+  h += sec('Why now', [
+    "Here is the thing that turned this from a thought into a build. If AI genuinely does let us do more research in less time, the count of ideas goes up before anything else does — and the bottleneck moves. It stops being <i>can I actually run this?</i> and becomes <i>which of these thirty things is worth a month of my life, and what had I already worked out about the other twenty-nine?</i>",
+    "That bottleneck is personal. It sits upstream of every tool a department gives you, it is invisible to everyone but you, and as far as I can tell nobody is building for it. That is the case for me, at any rate — and this is what I built for it."
+  ]);
   h += sec('Why build it rather than adopt something', [
     'Three things already exist separately and nothing joins them. Structured question sets — the Heilmeier Catechism, research canvases, preregistration templates — hold the right questions, but they are one-shot, funder-facing artefacts, filled in once and abandoned. Pipeline trackers hold <i>stage</i> but not content. Note vaults hold content but impose no structure and no maturity gradient.',
     'What does not exist is a tool that carries the same questions with an idea <i>across</i> stages, versions the answers, and shows how the thinking changed. <b>The version diff is the reason this got built.</b> Everything else here is negotiable.'
@@ -2316,7 +2330,7 @@ function renderAbout(){
   ]);
   h += sec('Shelving and closing are different things', [
     'Conflating them is what makes idea graveyards useless. <b>Shelved</b> means the idea is fine and the world is not ready, so entering the shelf requires naming the unlock condition — the specific thing that would bring it back. <i>If HMRC releases the business register at LSOA level. If the scheme is rolled out to a second cohort, giving staggered timing. If someone builds the crosswalk.</i> That is a standing order against the future, and the shelf is sorted by how long each has been waiting.',
-    '<b>Closed</b> means dead, and requires a cause from a fixed list. Throwing ideas away is the work, not a failure of it — this is Varian\'s filter, and the tool should make it feel good. The payoff is the distribution: a corpus dominated by <i>not interesting on reflection</i> means the problem is at articulation; one dominated by <i>no variation</i> means you should be starting from designs rather than questions.',
+    '<b>Closed</b> means dead, and requires a cause from a fixed list. Throwing ideas away is the work, not a failure of it — this is <a href="https://people.ischool.berkeley.edu/~hal/Papers/how.pdf" target="_blank" rel="noopener">Varian\'s</a> filter, and the tool should make it feel good. The payoff is the distribution: a corpus dominated by <i>not interesting on reflection</i> means the problem is at articulation; one dominated by <i>no variation</i> means you should be starting from designs rather than questions.',
     'Both keep the full field history. That is what makes recovery meaningful: you get back not just the idea but what you had already worked out about it.'
   ]);
   h += sec('Local, portable, and offline by construction', [
@@ -2324,8 +2338,33 @@ function renderAbout(){
     'The JSON export is the real substrate; browser storage is a cache over it. On Chromium you can point the app at a file on disk and it writes through on every change, which is the honest answer to "browser storage gets cleared".',
     'Sharing is file exchange and nothing more. Export an idea as Markdown with YAML frontmatter; another user imports the same file. Two researchers can pass an idea back and forth without either of them touching a server.'
   ]);
+  h += '<div class="sec"><div class="sec-h"><h3>What this is built on</h3></div>'
+    + '<p class="about-p">The clearest thing anyone has written on the front half of this is still Hal Varian&rsquo;s <a href="https://people.ischool.berkeley.edu/~hal/Papers/how.pdf" target="_blank" rel="noopener"><i>How to Build an Economic Model in Your Spare Time</i></a>: where ideas actually come from, why the literature should wait, and why throwing most of them away is the job rather than a failure of it. &ldquo;The way you do this,&rdquo; he says of getting a good idea, &ldquo;is to come up with lots and lots of ideas and throw out all the ones that aren&rsquo;t good.&rdquo; If you read one thing behind this tool, read that. His five closing points, and where each of them ended up here:</p>'
+    + '<ul class="varian">'
+    + '<li><q>Look for ideas in the world, not in the journals.</q><span>Tier 0 asks where an idea came from in seven chips and two seconds. Aggregated over a couple of years, that field answers the question he is really posing: are your ideas coming from the world, or from other people&rsquo;s papers?</span></li>'
+    + '<li><q>First make your model as simple as possible, then generalize it.</q><span>Tier 1 wants one sentence with no jargon before anything else is asked of you. Tier 3 wants the experiment you would run with unlimited money before it will discuss an estimator.</span></li>'
+    + '<li><q>Look at the literature later, not sooner.</q><span>The whole of the prior tier. You write what you think is known, it locks, and the sweep goes in a separate box below the line — so that reading later cannot quietly overwrite what you believed first.</span></li>'
+    + '<li><q>Model your paper after your seminar.</q><span>Tier 1 asks who cares and what changes if it works. Tier 3 asks for the best objection a referee makes. Those are seminar questions, written down months before the seminar.</span></li>'
+    + '<li><q>Stop when you&rsquo;ve made your point.</q><span>Closing an idea is one dropdown and three seconds, and the distribution of causes is the thing worth reading afterwards.</span></li>'
+    + '</ul>'
+    + '<p class="about-p">The back half — the identification tier — is held to the <a href="https://github.com/LSE-MY457/course_materials" target="_blank" rel="noopener">MY457/MY557 slides</a> instead, because assumptions are where handwaving is most expensive.</p>'
+    + '<p class="about-p">What I have <i>not</i> read enough of is meta-research and the economics of science. The list of reasons an idea can die in here is ours: invented, not grounded in anything. I would rather it were grounded — if there is a real taxonomy of why research ideas fail, this list should come from it, and the same goes for what actually unblocks a shelved one. That is the next reading, and it will change the tool.</p>'
+    + '</div>';
+
+  h += '<div class="sec"><div class="sec-h"><h3>Where this is</h3></div>'
+    + '<span class="v1-badge">v1 &middot; in testing</span>'
+    + '<p class="about-p">This is a first version. I am testing it with former classmates and with current PhD students, but nothing about it is closed — please use it, put real ideas into it, and tell me where it gets in your way. I would much rather hear that a field is useless than not hear it.</p>'
+    + '<p class="about-p">What to change, what to add, and above all what to remove: <a href="https://www.linkedin.com/in/lucaspollockmuguruza/" target="_blank" rel="noopener">LinkedIn</a> or <a href="#" data-email="1">email</a>, whichever is easier. Honest is more useful than kind.</p>'
+    + '</div>';
+
+  h += '<div class="sec"><div class="sec-h"><h3>What is coming, and what is not</h3></div>'
+    + '<p class="about-p">More prompts. The first-sweep prompt is the only one so far, and the same trick works elsewhere: sharpening an identifying assumption into something a sceptic would recognise, stress-testing it, scoping who plausibly holds the data. All of them assembled locally from what you have already written, and all of them copied out by you — the app will go on making no network requests of its own.</p>'
+    + '<p class="about-p">Then some way of handing an idea to Claude Code and the other coding agents, so that a chat can begin already knowing the estimand, the mechanism, the assumption and the falsifier, instead of being told all four again from scratch.</p>'
+    + '<p class="about-p">I am wary of both, and the wariness is the point. The state I want is one where a researcher completes this themselves and uses a model as a thinking partner — not the reverse, where the tool fills itself in and the researcher approves the result. <b>A prior that a model wrote is not a prior.</b> Every integration has to survive that test or it does not go in.</p>'
+    + '</div>';
+
   h += '<div class="rule"></div>';
-  h += '<p class="faint" style="font-size:.78rem;line-height:1.7;max-width:66ch">Built by <a href="../" style="color:var(--burgundy);text-decoration:none">Lucas Pollock Muguruza</a>, for himself first and for other empirical social scientists second. No warranty, no roadmap, no accounts — if it is useful to you, export the file and keep it somewhere you trust.</p>';
+  h += '<p class="faint" style="font-size:.78rem;line-height:1.7;max-width:34rem">Built by <a href="../" style="color:var(--burgundy);text-decoration:none">Lucas Pollock Muguruza</a>, for himself first and for other empirical social scientists second. No warranty, no accounts, and no promises about the section above — if it is useful to you, export the file and keep it somewhere you trust.</p>';
   h += '<div class="btn-row" style="margin-top:1.2rem"><button class="btn btn-primary" data-cap="1">Capture an idea</button>'
      + '<button class="btn" data-shortcuts="1">Keyboard shortcuts</button></div>';
   $('#v-about').innerHTML = h + '</div>';
@@ -2957,6 +2996,15 @@ document.addEventListener('click', function(e){
   if (el('[data-sheetx]') || t.id === 'scrim') return closeSheet();
   if (el('#btnData')) return dataSheet();
   if (el('[data-shortcuts]')) return shortcutsSheet();
+  if (el('[data-email]')){
+    e.preventDefault();
+    var mu = 'lucas-pollock', md = ['outlook','com'].join('.');
+    var msub = 'Prior — feedback';
+    var mbod = 'Hey Lucas! I have been using Prior. Here is what I would change, add, or remove:\n\n';
+    window.location.href = 'mailto:' + mu + '@' + md
+      + '?subject=' + encodeURIComponent(msub) + '&body=' + encodeURIComponent(mbod);
+    return;
+  }
 
   /* capture */
   if (el('[data-capsave]')){
