@@ -14,6 +14,7 @@ looks for that name):
 | `msc-dissertation/` | `Lucas-Pollock-Muguruza-MSc-Dissertation.pdf` | `/papers/msc-dissertation/` |
 | `causal-inference-reappraisal/` | `Causal-Inference-Summative-Reappraisal-Lucas-Pollock-Muguruza.pdf` | `/papers/causal-inference-reappraisal/` |
 | `cultural-backlash/` | `PSPE-Current-Issues-Summative-Essay-Lucas-Pollock-Muguruza.pdf` | `/papers/cultural-backlash/` |
+| `matching-platforms/` | `Why-Matching-Platforms-Go-Unregulated-Lucas-Pollock-Muguruza.pdf` | `/papers/matching-platforms/` |
 
 The CV lives outside this folder, in `/cv/Lucas-Pollock-Muguruza-CV.pdf`, and
 its page is `/cv/`.
