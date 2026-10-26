@@ -78,9 +78,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
 .back-link:hover{color:var(--burgundy)}
 .back-link svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease)}
 .back-link:hover svg{transform:translateX(-3px)}
-.brandmark{--lpm-size:20px;--lpm-ink:var(--ink);--lpm-dot:var(--burgundy);display:inline-block;flex:none;width:var(--lpm-size);height:var(--lpm-size)}
+.brandmark{--lpm-size:30px;--lpm-ink:var(--ink);--lpm-dot:var(--burgundy);display:inline-block;flex:none;width:var(--lpm-size);height:var(--lpm-size)}
 .tb-sep{width:1px;height:16px;background:var(--border-subtle)}
-.brand{font-family:var(--serif);font-size:1.18rem;font-weight:500;color:var(--ink);letter-spacing:-.005em;white-space:nowrap;cursor:pointer;background:none;border:none;padding:0}
+.brand{display:inline-flex;align-items:center;gap:.55rem;font-family:var(--serif);font-size:1.18rem;font-weight:500;color:var(--ink);letter-spacing:-.005em;white-space:nowrap;cursor:pointer;background:none;border:none;padding:0}
 .brand:hover{color:var(--burgundy)}
 .brand-tag{display:none;margin-left:.65rem;font-family:var(--mono);font-size:.63rem;font-weight:400;letter-spacing:.02em;color:var(--ink-faint);vertical-align:middle}
 .brand:hover .brand-tag{color:var(--ink-muted)}
@@ -535,9 +535,9 @@ table.mx .empty-cell{color:var(--ink-ghost)}
 
 <nav class="topbar" id="topbar">
   <div class="tb-left">
-    <a href="../" class="back-link"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg><lpm-mark class="brandmark" trigger="a" aria-hidden="true" weight="9"></lpm-mark>lucas</a>
+    <a href="../" class="back-link"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>lucas</a>
     <span class="tb-sep"></span>
-    <button class="brand" data-go="dash">Prior<span class="brand-tag">a workbench for research ideas</span></button>
+    <button class="brand" data-go="dash"><lpm-mark class="brandmark" id="priorMark" trigger="button" aria-hidden="true" weight="8"></lpm-mark>Prior<span class="brand-tag">a workbench for research ideas</span></button>
   </div>
   <ul class="tabs" id="tabs">
     <li><button class="tab" data-go="dash">Dashboard</button></li>
@@ -2741,6 +2741,7 @@ function createIdea(text){
   i.history.push({field:'body', from:'', to:text, at:i.created});
   S.doc.ideas.unshift(i);
   saveNow();
+  ack();
   return i;
 }
 function doShelve(idea, cond){
@@ -2754,7 +2755,10 @@ function doClose(idea, cause, note){
   idea.closure = {cause: cause, note: trim(note||''), closedAt: nowISO()};
   idea.updated = nowISO();
   saveNow();
+  ack();
 }
+/* a small nod from the mark when an idea is kept or let go */
+function ack(){ var m = $('#priorMark'); if (m && m.pulse) m.pulse(); }
 function doReopen(idea){
   idea.state = hasStructure(idea) ? 'active' : 'scratch';
   idea.shelf = null; idea.closure = null;

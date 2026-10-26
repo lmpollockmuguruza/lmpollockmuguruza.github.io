@@ -64,12 +64,16 @@
         ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--ink-ghost);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--burgundy)}
 
         /* LOADING */
-        .loading-screen{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity .8s var(--ease),visibility .8s var(--ease)}
+        .loading-screen{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:opacity .8s var(--ease),visibility .8s var(--ease),background-color .6s var(--ease)}
         .loading-screen.hidden{opacity:0;visibility:hidden;pointer-events:none}
+        .loading-screen.flying{background-color:transparent;pointer-events:none}
+        .loading-screen.skipped{transition-duration:.3s}
+        .loading-text{transition:opacity .4s var(--ease)}
+        .loading-screen.flying .loading-text{opacity:0}
+        .intro-mark{--lpm-size:120px;--lpm-ink:var(--ink);--lpm-dot:var(--burgundy);display:block;width:var(--lpm-size);height:var(--lpm-size);margin:0 auto 1.6rem;opacity:0;animation:fadeUp .6s var(--ease-spring) forwards}
         .loading-content{text-align:center}
         .greeting{font-family:'EB Garamond',Georgia,serif;font-size:2.8rem;font-weight:400;color:var(--ink);letter-spacing:-.03em;opacity:0;animation:fadeUp .8s var(--ease-spring) .1s forwards}
         .loading-name{font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:400;color:var(--burgundy);letter-spacing:.04em;opacity:0;animation:fadeUp .6s var(--ease-spring) .35s forwards;margin-top:.75rem}
-        .loading-rule{width:32px;height:1px;background:var(--ink-ghost);margin:1.2rem auto 0;opacity:0;animation:fadeUp .6s var(--ease-spring) .5s forwards}
 
         /* SCROLL INDICATOR */
         .scroll-indicator{position:fixed;top:0;left:0;right:0;height:2px;z-index:200;background:linear-gradient(90deg,var(--burgundy),var(--burgundy-soft));transform-origin:left;transform:scaleX(0);transition:transform .2s var(--ease)}
@@ -260,16 +264,18 @@
             .footer{padding:.8rem 1.5rem calc(.8rem + env(safe-area-inset-bottom));flex-direction:column;gap:.3rem;text-align:center}
             .project-item{padding:1rem 1.2rem}
         }
-        @media(max-width:480px){.greeting{font-size:2.2rem}.profile-text h1{font-size:1.4rem}}
+        @media(max-width:480px){.greeting{font-size:2.2rem}.intro-mark{--lpm-size:100px}.profile-text h1{font-size:1.4rem}}
         @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.ambient-orb{animation:none!important}}
     </style>
 </head>
 <body>
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-content">
-            <h1 class="greeting" id="greeting">Good evening</h1>
-            <p class="loading-name">Welcome to Lucas' portfolio</p>
-            <div class="loading-rule"></div>
+            <lpm-mark class="intro-mark" id="introMark" trigger="none" weight="5" aria-hidden="true"></lpm-mark>
+            <div class="loading-text">
+                <h1 class="greeting" id="greeting">Good evening</h1>
+                <p class="loading-name">Welcome to Lucas' portfolio</p>
+            </div>
         </div>
     </div>
 
@@ -277,7 +283,7 @@
     <div class="scroll-indicator" id="scrollIndicator"></div>
 
     <nav class="topbar" id="topbar">
-        <div class="topbar-left"><a href="#" class="topbar-name"><lpm-mark class="brandmark" trigger="a" aria-hidden="true" weight="8"></lpm-mark>Lucas Pollock Muguruza</a></div>
+        <div class="topbar-left"><a href="#" class="topbar-name"><lpm-mark class="brandmark" id="headerMark" trigger="a" aria-hidden="true" weight="8"></lpm-mark>Lucas Pollock Muguruza</a></div>
         <ul class="topbar-nav">
             <li><a href="#about" class="nav-link active">About</a></li>
             <li><a href="#projects" class="nav-link">Research</a></li>
@@ -499,7 +505,54 @@
     <script>
         function getTimeBasedGreeting(){const h=new Date().getHours();if(h>=5&&h<12)return"Good morning";if(h>=12&&h<18)return"Good afternoon";return"Good evening"}
         document.getElementById('greeting').textContent=getTimeBasedGreeting();
-        window.addEventListener('load',()=>{setTimeout(()=>{document.getElementById('loadingScreen').classList.add('hidden')},1500)});
+
+        /* WELCOME — on the first visit of a session the mark plays L → P → M → circle,
+           then flies up into the header slot as the screen clears. Later visits get the
+           short greeting. Click or any key skips; if a step stalls (6s for the show,
+           2s for the flight) the screen goes regardless. */
+        const loadingScreen=document.getElementById('loadingScreen'),introMark=document.getElementById('introMark'),headerMark=document.getElementById('headerMark');
+        const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let introDone=false,introSafety=setTimeout(endIntro,6000);
+        function endIntro(skipped){
+            if(introDone)return;introDone=true;clearTimeout(introSafety);
+            introMark.getAnimations().forEach(a=>a.cancel());
+            headerMark.style.opacity='';introMark.style.visibility='hidden';
+            if(skipped===true)loadingScreen.classList.add('skipped');
+            loadingScreen.classList.add('hidden');
+            loadingScreen.removeEventListener('click',skipIntro);window.removeEventListener('keydown',skipIntro);
+        }
+        function skipIntro(){endIntro(true)}
+        loadingScreen.addEventListener('click',skipIntro);window.addEventListener('keydown',skipIntro);
+        /* FLIP the big mark into the header mark's place, thickening the stroke as it
+           shrinks so it lands at the header's weight. No flight when the top bar is
+           hidden (phones) or motion is reduced: the screen just fades. */
+        async function flyToHeader(){
+            const b=headerMark.getBoundingClientRect();
+            if(reduceMotion||!b.width)return;
+            const a=introMark.getBoundingClientRect();
+            const dx=(b.left+b.width/2)-(a.left+a.width/2),dy=(b.top+b.height/2)-(a.top+a.height/2),s=b.width/a.width;
+            const w0=+introMark.getAttribute('weight')||5,w1=+headerMark.getAttribute('weight')||8,t0=performance.now(),D=700;
+            headerMark.style.opacity='0';
+            loadingScreen.classList.add('flying');
+            (function grow(now){const u=Math.min(1,(now-t0)/D);introMark.setAttribute('weight',(w0+(w1-w0)*u).toFixed(2));if(u<1&&!introDone)requestAnimationFrame(grow)})(t0);
+            const anim=introMark.animate([{transform:'translate(0,0) scale(1)'},{transform:`translate(${dx}px,${dy}px) scale(${s})`}],{duration:D,easing:'cubic-bezier(0.16,1,0.3,1)',fill:'forwards'});
+            await anim.finished;
+        }
+        const pageLoaded=document.readyState==='complete'?Promise.resolve():new Promise(r=>window.addEventListener('load',r,{once:true}));
+        let introSeen=false;try{introSeen=sessionStorage.getItem('introSeen')==='1'}catch(e){}
+        if(introSeen){pageLoaded.then(()=>setTimeout(endIntro,1500))}
+        else Promise.all([customElements.whenDefined('lpm-mark'),pageLoaded]).then(async()=>{
+            if(introDone)return;
+            clearTimeout(introSafety);introSafety=setTimeout(endIntro,6000);
+            try{sessionStorage.setItem('introSeen','1')}catch(e){}
+            await new Promise(r=>setTimeout(r,250));
+            if(introDone)return;
+            await introMark.play({speed:1.55});
+            if(introDone)return;
+            /* the show itself runs ~5s; give the flight its own allowance */
+            clearTimeout(introSafety);introSafety=setTimeout(endIntro,2000);
+            await flyToHeader();
+        }).catch(()=>{}).finally(()=>endIntro());
 
         const toggle=document.getElementById('themeToggle'),html=document.documentElement,themeOrder=['light','dark','auto'];
         function getEffectiveTheme(t){return t==='auto'?window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light':t}
@@ -542,7 +595,7 @@
         window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(()=>{topbar.classList.toggle('scrolled',window.scrollY>40);ticking=false});ticking=true}});
 
         const sectionTabs=document.querySelectorAll('.section-tab'),topbarLinks=document.querySelectorAll('.topbar-nav .nav-link:not(.nav-link-external)'),sections=document.querySelectorAll('.content-section');
-        function switchSection(id){sectionTabs.forEach(t=>t.classList.toggle('active',t.dataset.section===id));topbarLinks.forEach(l=>{const h=l.getAttribute('href');if(h&&h.startsWith('#'))l.classList.toggle('active',h.substring(1)===id)});sections.forEach(s=>s.classList.toggle('active',s.id===id));window.scrollTo({top:0,behavior:'smooth'});setTimeout(observeElements,100)}
+        function switchSection(id){const current=document.querySelector('.content-section.active');if(current&&current.id!==id&&headerMark.pulse)headerMark.pulse();sectionTabs.forEach(t=>t.classList.toggle('active',t.dataset.section===id));topbarLinks.forEach(l=>{const h=l.getAttribute('href');if(h&&h.startsWith('#'))l.classList.toggle('active',h.substring(1)===id)});sections.forEach(s=>s.classList.toggle('active',s.id===id));window.scrollTo({top:0,behavior:'smooth'});setTimeout(observeElements,100)}
         sectionTabs.forEach(t=>t.addEventListener('click',()=>switchSection(t.dataset.section)));
         topbarLinks.forEach(l=>l.addEventListener('click',e=>{e.preventDefault();switchSection(l.getAttribute('href').substring(1))}));
 
