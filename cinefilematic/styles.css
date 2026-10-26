@@ -116,6 +116,7 @@ body::before {
 .back-link:hover { color: var(--burgundy); }
 .back-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; transition: transform var(--t); }
 .back-link:hover svg { transform: translateX(-3px); }
+.brandmark{--lpm-size:20px;--lpm-ink:var(--ink);--lpm-dot:var(--burgundy);display:inline-block;flex:none;width:var(--lpm-size);height:var(--lpm-size)}
 
 .theme-toggle { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: var(--glass-border); border-radius: 50%; background: var(--bg-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); cursor: pointer; transition: all var(--t); color: var(--ink-muted); }
 .theme-toggle:hover { border-color: var(--border-hover); color: var(--burgundy); background: var(--bg-glass-strong); }

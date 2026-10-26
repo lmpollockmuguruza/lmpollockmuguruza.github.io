@@ -77,6 +77,7 @@ a{color:var(--burgundy)}
 .back-link:hover{color:var(--burgundy)}
 .back-link svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:transform var(--transition)}
 .back-link:hover svg{transform:translateX(-3px)}
+.brandmark{--lpm-size:26px;--lpm-ink:var(--ink);--lpm-dot:var(--burgundy);display:inline-block;flex:none;width:var(--lpm-size);height:var(--lpm-size)}
 .topbar-right{display:flex;align-items:center;gap:.5rem}
 .theme-toggle{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border:var(--glass-border);border-radius:50%;background:var(--bg-glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);cursor:pointer;transition:all var(--transition);color:var(--ink-muted)}
 .theme-toggle:hover{border-color:var(--border-hover);color:var(--burgundy);background:var(--bg-glass-strong);box-shadow:0 2px 12px var(--burgundy-glow)}

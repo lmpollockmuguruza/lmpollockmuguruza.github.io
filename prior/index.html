@@ -9,11 +9,13 @@
 <link rel="icon" type="image/x-icon" href="../favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/svg+xml" sizes="any" href="../lpm-favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="../palette.js"></script>
+<script src="../lpm-mark.js" defer></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -76,6 +78,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
 .back-link:hover{color:var(--burgundy)}
 .back-link svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease)}
 .back-link:hover svg{transform:translateX(-3px)}
+.brandmark{--lpm-size:20px;--lpm-ink:var(--ink);--lpm-dot:var(--burgundy);display:inline-block;flex:none;width:var(--lpm-size);height:var(--lpm-size)}
 .tb-sep{width:1px;height:16px;background:var(--border-subtle)}
 .brand{font-family:var(--serif);font-size:1.18rem;font-weight:500;color:var(--ink);letter-spacing:-.005em;white-space:nowrap;cursor:pointer;background:none;border:none;padding:0}
 .brand:hover{color:var(--burgundy)}
@@ -532,7 +535,7 @@ table.mx .empty-cell{color:var(--ink-ghost)}
 
 <nav class="topbar" id="topbar">
   <div class="tb-left">
-    <a href="../" class="back-link"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>lucas</a>
+    <a href="../" class="back-link"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg><lpm-mark class="brandmark" trigger="a" aria-hidden="true" weight="9"></lpm-mark>lucas</a>
     <span class="tb-sep"></span>
     <button class="brand" data-go="dash">Prior<span class="brand-tag">a workbench for research ideas</span></button>
   </div>

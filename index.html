@@ -9,11 +9,13 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="icon" type="image/svg+xml" sizes="any" href="lpm-favicon.svg">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
     <script src="palette.js"></script>
+    <script src="lpm-mark.js" defer></script>
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         :root{
@@ -76,8 +78,9 @@
         .topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:.9rem 2.5rem;display:flex;align-items:center;justify-content:space-between;background:transparent;transition:all .5s var(--ease)}
         .topbar.scrolled{background:var(--bg-glass);backdrop-filter:blur(var(--glass-blur)) saturate(1.4);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.4);border-bottom:var(--glass-border);box-shadow:0 1px 8px rgba(0,0,0,.02)}
         .topbar-left{display:flex;align-items:center}
-        .topbar-name{font-family:'EB Garamond',Georgia,serif;font-size:1.05rem;font-weight:500;color:var(--ink);text-decoration:none;letter-spacing:-.01em;transition:color var(--transition)}
+        .topbar-name{display:inline-flex;align-items:center;gap:10px;font-family:'EB Garamond',Georgia,serif;font-size:1.05rem;font-weight:500;color:var(--ink);text-decoration:none;letter-spacing:-.01em;transition:color var(--transition)}
         .topbar-name:hover{color:var(--burgundy)}
+        .brandmark{--lpm-size:28px;--lpm-ink:var(--ink);--lpm-dot:var(--burgundy);display:inline-block;flex:none;width:var(--lpm-size);height:var(--lpm-size)}
         .topbar-nav{display:flex;align-items:center;gap:0;list-style:none}
         .topbar-nav a{display:inline-flex;align-items:center;padding:.45rem .9rem;font-size:.76rem;font-weight:400;letter-spacing:.02em;color:var(--ink-muted);text-decoration:none;position:relative;transition:color var(--transition)}
         .topbar-nav a::after{content:'';position:absolute;bottom:0;left:.9rem;right:.9rem;height:1.5px;background:var(--burgundy);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--ease-spring)}
@@ -274,7 +277,7 @@
     <div class="scroll-indicator" id="scrollIndicator"></div>
 
     <nav class="topbar" id="topbar">
-        <div class="topbar-left"><a href="#" class="topbar-name">Lucas Pollock Muguruza</a></div>
+        <div class="topbar-left"><a href="#" class="topbar-name"><lpm-mark class="brandmark" trigger="a" aria-hidden="true" weight="8"></lpm-mark>Lucas Pollock Muguruza</a></div>
         <ul class="topbar-nav">
             <li><a href="#about" class="nav-link active">About</a></li>
             <li><a href="#projects" class="nav-link">Research</a></li>
