@@ -146,20 +146,15 @@
             opacity: 0;
             animation: fadeUp 0.6s var(--ease) 0.3s forwards;
         }
-        .loading-bar {
-            width: 120px;
-            height: 1px;
-            background: var(--ink-ghost);
-            border-radius: 1px;
-            overflow: hidden;
+        .loader-mark {
+            --lpm-size: 64px;
+            --lpm-ink: var(--ink);
+            --lpm-dot: var(--burgundy);
+            display: block;
+            width: var(--lpm-size);
+            height: var(--lpm-size);
             opacity: 0;
-            animation: fadeUp 0.6s var(--ease) 0.5s forwards;
-        }
-        .loading-bar-fill {
-            height: 100%;
-            width: 0%;
-            background: var(--burgundy);
-            transition: width 0.3s var(--ease);
+            animation: fadeUp 0.6s var(--ease) forwards;
         }
 
         @keyframes fadeUp {
@@ -200,7 +195,7 @@
             transition: transform 0.35s var(--ease);
         }
         .back-link:hover svg { transform: translateX(-3px); }
-        .brandmark{--lpm-size:22px;--lpm-ink:var(--ink);--lpm-dot:var(--burgundy);display:inline-block;flex:none;width:var(--lpm-size);height:var(--lpm-size)}
+        .brandmark{--lpm-size:24px;--lpm-ink:var(--ink);--lpm-dot:var(--burgundy);display:inline-block;flex:none;width:var(--lpm-size);height:var(--lpm-size)}
 
         .topbar-right {
             display: flex;
@@ -810,9 +805,9 @@
 
     <!-- Loading -->
     <div class="loading-screen" id="loadingScreen">
+        <lpm-mark class="loader-mark" id="loaderMark" trigger="none" start="circle" autospin weight="6" aria-hidden="true"></lpm-mark>
         <div class="loading-title">gallery</div>
         <div class="loading-sub">loading moments</div>
-        <div class="loading-bar"><div class="loading-bar-fill" id="loadingBar"></div></div>
     </div>
 
     <!-- Top bar -->
@@ -941,7 +936,6 @@
         const scrollFill = document.getElementById('scrollFill');
         const minimapViewport = document.getElementById('minimapViewport');
         const minimap = document.getElementById('minimap');
-        const loadingBar = document.getElementById('loadingBar');
 
         /* ═══════════════════════════════════════
            THEME
@@ -960,8 +954,6 @@
            LOAD DATA
            ═══════════════════════════════════════ */
         async function init() {
-            loadingBar.style.width = '30%';
-
             // Try loading external JSON; fall back to embedded demo
             try {
                 const resp = await fetch('gallery.json');
@@ -972,8 +964,6 @@
                 console.warn('gallery.json not found — using embedded demo data');
                 galleryData = getDemoData();
             }
-
-            loadingBar.style.width = '60%';
 
             if (galleryData.settings) {
                 document.getElementById('galleryTitle').textContent = galleryData.settings.title || 'gallery';
@@ -986,10 +976,13 @@
             buildMinimap();
             startScrollLoop();
 
-            loadingBar.style.width = '100%';
-            setTimeout(() => {
-                document.getElementById('loadingScreen').classList.add('hidden');
-            }, 600);
+            // the spinning ring settles into the L, then the screen fades (never more than 2s)
+            const loaderMark = document.getElementById('loaderMark');
+            await Promise.race([
+                customElements.whenDefined('lpm-mark').then(() => loaderMark.stop()),
+                new Promise(r => setTimeout(r, 2000))
+            ]);
+            document.getElementById('loadingScreen').classList.add('hidden');
         }
 
         /* ═══════════════════════════════════════

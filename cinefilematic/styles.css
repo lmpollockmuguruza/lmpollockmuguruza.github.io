@@ -137,12 +137,7 @@ body::before {
 
 /* ─── Cover ─── */
 .cover { text-align: left; }
-.cover-mark { display: block; width: 46px; height: 46px; margin-bottom: 1.5rem; }
-.cover-mark svg { width: 46px; height: 46px; transform-origin: 50% 50%; animation: aperture 7s var(--ease) infinite; }
-@keyframes aperture { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-.cover-mark .ring { fill: none; stroke: var(--burgundy); stroke-width: 1.1; opacity: 0.9; }
-.cover-mark .blade { stroke: var(--burgundy); stroke-width: 1.1; opacity: 0.55; stroke-linecap: round; }
-.cover-mark .pupil { fill: var(--burgundy); opacity: 0.85; }
+.cover-mark { --lpm-size: 72px; --lpm-ink: var(--ink); --lpm-dot: var(--burgundy); display: block; width: var(--lpm-size); height: var(--lpm-size); margin: -0.8rem 0 calc(1.5rem - 0.9rem) -20px; }
 .masthead { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.6rem; }
 .masthead .k { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-muted); white-space: nowrap; }
 .masthead .rule { flex: 1; height: 1px; background: var(--border-subtle); }
@@ -357,7 +352,7 @@ textarea:focus, input.text:focus { border-color: var(--border-hover); box-shadow
 
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-    .ambient-orb, .cover-mark svg, .pad-dot::after { animation: none !important; }
+    .ambient-orb, .pad-dot::after { animation: none !important; }
 }
 
 .theme-toggle-end{display:none;justify-content:center}

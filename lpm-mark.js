@@ -12,6 +12,23 @@
  *   weight="5"                    stroke weight in a 100-unit box (use 7–9 at small sizes)
  *   tile                          draws a cream tile that flips to black on the circle
  *   static="circle"               render a non-interactive circle (default static is none)
+ *   trigger="none"                no hover/tap at all; drive it from code (v2)
+ *   start="circle"                begin in the circle state instead of the L (v2)
+ *   autospin                      start spinning immediately; pair with start="circle" for a loader (v2)
+ *
+ * Methods (v2) — all return Promises
+ *   el.play({turns=1, speed=1.8, back='direct'})
+ *                                 the show: L→P→M→○, spin `turns` times, settle, fold back to L
+ *                                 (back='direct' goes ○→L straight; 'same' unwinds through M, P).
+ *                                 ~3.5s with defaults. Resolves at rest. Use for the welcome intro.
+ *   el.pulse()                    quick version for section transitions: L→○ fast, part-turn,
+ *                                 back to L (~1.6s). Calls while one is running return the same Promise.
+ *   el.spin()                     go (directly) to the circle and keep spinning (loader).
+ *                                 Resolves once at the circle.
+ *   el.stop()                     settle the spin and fold straight back to L (~1s). Resolves at rest.
+ *
+ * Events (v2)
+ *   lpm:open    reached the circle        lpm:rest    back at the L, fully still
  *
  * CSS custom properties
  *   --lpm-size   width/height of the mark (default 48px)
@@ -109,15 +126,19 @@
       this._tap = (e) => { if (e.pointerType !== 'mouse') this.want ? this.close() : this.open(); };
     }
 
-    get seq() { return SEQ[this.getAttribute('sequence') === 'direct' ? 'direct' : 'spell']; }
-    get chain() { return CHAINS[this.getAttribute('sequence') === 'direct' ? 'direct' : 'spell']; }
+    get mode() { return this._mode || (this.getAttribute('sequence') === 'direct' ? 'direct' : 'spell'); }
+    get seq() { return SEQ[this.mode]; }
+    get chain() { return CHAINS[this.mode]; }
 
     connectedCallback() {
       if (!this.hasAttribute('role')) this.setAttribute('role', 'img');
       if (!this.hasAttribute('aria-label')) this.setAttribute('aria-label', 'Lucas Pollock Muguruza');
       this.$m.style.strokeWidth = this.getAttribute('weight') || 5;
       if (this.getAttribute('static') === 'circle') { this.p = 1; this.render(); return; }
+      if (this.getAttribute('start') === 'circle') this.p = 1;
+      if (this.hasAttribute('autospin')) { this.p = 1; this.want = true; this.kick(); }
       const sel = this.getAttribute('trigger');
+      if (sel === 'none') { this.render(); return; }
       this.target = (sel && this.closest(sel)) || this;
       this.target.addEventListener('mouseenter', this._enter);
       this.target.addEventListener('mouseleave', this._leave);
@@ -140,15 +161,45 @@
 
     attributeChangedCallback() { if (this.$m) { this.$m.style.strokeWidth = this.getAttribute('weight') || 5; this.render(); } }
 
-    open() { this.want = true; if (this.phase === 'settling') { this.phase = 'spinning'; this.v = 120; } this.kick(); }
-    close() { this.want = false; this.kick(); }
+    open() { if (this._busy) return; this.want = true; if (this.phase === 'settling') { this.phase = 'spinning'; this.v = 120; } this.kick(); }
+    close() { if (this._busy) return; this.want = false; this.kick(); }
+
+    // ---- v2 programmatic API ----
+    _until(cond) { return new Promise((res) => { (this._waiters ||= []).push({ cond, res }); this.kick(); }); }
+    _drive(fn) {
+      if (this._busy) return this._busy;
+      this._busy = (async () => { try { await fn(); } finally { this._busy = null; this._mode = null; this._speed = 1; } })();
+      return this._busy;
+    }
+    async _show(turns, { speed = 1, back = 'same' } = {}) {
+      this._speed = speed;
+      this.want = true; this.kick();
+      await this._until(() => this.p === 1);
+      if (!this.reduce) { const start = this.theta; await this._until(() => this.theta - start >= turns * 360 - 1); }
+      else await new Promise((r) => setTimeout(r, 400));
+      // At the circle every sequence is in the same place, so switching here is seamless.
+      if (back === 'direct') this._mode = 'direct';
+      this.want = false; this.kick();
+      await this._until(() => this.p === 0 && this.phase === 'idle');
+    }
+    play({ turns = 1, speed = 1.8, back = 'direct' } = {}) { return this._drive(() => this._show(turns, { speed, back })); }
+    pulse() { return this._drive(() => { this._mode = 'direct'; return this._show(0.4, { speed: 2.5 }); }); }
+    spin() { this._mode = 'direct'; this.want = true; this.kick(); return this._until(() => this.p === 1); }
+    async stop() {
+      this._mode = 'direct'; this._speed = 1.4;
+      this.want = false; this.kick();
+      await this._until(() => this.p === 0 && this.phase === 'idle');
+      this._mode = null; this._speed = 1;
+    }
     kick() { if (!this.raf) { this.last = null; this.raf = requestAnimationFrame((t) => this.tick(t)); } }
 
     tick(now) {
       const dt = this.last == null ? 1 / 60 : Math.min(0.05, (now - this.last) / 1000);
       this.last = now;
-      const dur = this.reduce ? 0.3 : this.seq.length > 2 ? 2.4 : 0.9;
-      const VMAX = 150, ACC = 220; // deg/s, deg/s²
+      const k = this._speed || 1;
+      const dur = (this.reduce ? 0.3 : this.seq.length > 2 ? 2.4 : 0.9) / k;
+      const VMAX = 150 * k, ACC = 220 * k * k; // deg/s, deg/s²
+      const wasOpen = this.p === 1;
 
       if (this.want) {
         if (this.p < 1) {
@@ -163,7 +214,7 @@
         if (this.phase !== 'settling') {
           const from = this.theta, to = Math.ceil(from / 360) * 360;
           const r = to - from, v = Math.max(this.v, 60);
-          this.settle = { from, to, T: Math.min(1.2, Math.max(0.35, (2 * r) / v)), e: 0 };
+          this.settle = { from, to, T: Math.min(1.2, Math.max(0.35, (2 * r) / v)) / Math.sqrt(k), e: 0 };
           this.phase = 'settling';
         }
         const s = this.settle;
@@ -178,10 +229,22 @@
       }
 
       this.render();
+      if (!wasOpen && this.p === 1) this.dispatchEvent(new CustomEvent('lpm:open'));
       const atRest = !this.want && this.p === 0;
       const parked = this.want && this.p === 1 && this.reduce;
-      if (atRest || parked) { this.raf = null; this.phase = 'idle'; return; }
+      if (atRest || parked) {
+        this.raf = null; this.phase = 'idle';
+        if (atRest) this.dispatchEvent(new CustomEvent('lpm:rest'));
+        this._check();
+        return;
+      }
+      this._check();
       this.raf = requestAnimationFrame((t) => this.tick(t));
+    }
+
+    _check() {
+      if (!this._waiters || !this._waiters.length) return;
+      this._waiters = this._waiters.filter((w) => (w.cond() ? (w.res(), false) : true));
     }
 
     render() {
