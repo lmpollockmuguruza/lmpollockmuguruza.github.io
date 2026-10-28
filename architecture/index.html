@@ -505,7 +505,11 @@ function buildMap(list){
   if(!list.length){container.innerHTML='<div class="empty-state" style="height:100%;display:flex;align-items:center;justify-content:center">No works to show</div>';return}
   map=L.map(container,{scrollWheelZoom:true,zoomControl:true}).setView([25,0],2);
   var isDark=window.SitePalette?SitePalette.isDark():document.documentElement.getAttribute('data-theme')==='dark';
-  L.tileLayer(isDark?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',subdomains:'abcd',maxZoom:19}).addTo(map);
+  /* Esri Canvas tiles: keyless (CARTO basemaps now require an API key) */
+  var canvas='https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_'+(isDark?'Dark':'Light')+'_Gray_';
+  var tileOpts={maxNativeZoom:16,maxZoom:19};
+  L.tileLayer(canvas+'Base/MapServer/tile/{z}/{y}/{x}',L.extend({attribution:'Tiles &copy; <a href="https://www.esri.com/">Esri</a> &mdash; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> contributors'},tileOpts)).addTo(map);
+  L.tileLayer(canvas+'Reference/MapServer/tile/{z}/{y}/{x}',tileOpts).addTo(map);
   var burg=getComputedStyle(document.documentElement).getPropertyValue('--burgundy').trim()||(isDark?'#c4707f':'#6b2737');
   markers=[];
   list.forEach(function(w){
