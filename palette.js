@@ -154,13 +154,14 @@
         return SCHEMES.hasOwnProperty(sc) ? sc : 'og';
     }
 
-    /* light or dark — 'auto' (an older setting) follows the system */
+    /* light or dark. With nothing chosen yet (or the older 'auto'), the site
+       is dark unless the reader's system asks for light. */
     function mode() {
         var t = get('theme');
         if (t === 'dark') return 'dark';
-        if (t === 'auto') return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        if (t === 'light') return 'light';
         if (t === 'custom' && on) return isDark() ? 'dark' : 'light';
-        return 'light';
+        return matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
     }
 
     /* paint whatever is saved: a custom palette, or a scheme in light/dark */

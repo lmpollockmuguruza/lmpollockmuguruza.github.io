@@ -213,12 +213,12 @@
         .substack-list a:hover{background:var(--burgundy-wash)}
         .substack-title{display:block;font-size:.86rem;font-weight:500;color:var(--ink);transition:color var(--transition)}
         .substack-list a:hover .substack-title{color:var(--burgundy)}
+        .project-item>.substack-list:first-child{margin-top:-.2rem}
+        .project-item>.substack-list:last-child{margin-bottom:-.2rem}
+        .substack-meta{display:block;font-size:.7rem;letter-spacing:.02em;color:var(--ink-faint);margin-top:.15rem}
         .substack-sub{display:block;font-family:'EB Garamond',Georgia,serif;font-size:.92rem;line-height:1.5;color:var(--ink-muted);margin-top:.1rem}
 
         /* OF INTEREST — moved in from its own page; cards and list as they were */
-        .oi-intro{font-size:.92rem;line-height:1.7;color:var(--ink-muted)}
-        .oi-intro a{color:var(--burgundy);font-weight:500;text-decoration:none;border-bottom:1px solid var(--burgundy-glow);transition:color .35s var(--ease),border-color .35s var(--ease)}
-        .oi-intro a:hover{color:var(--burgundy-soft);border-bottom-color:var(--burgundy-soft)}
         /* ─── Section headings ─── */
         .section-marker {
             display: flex;
@@ -454,176 +454,8 @@
         .built-card:hover .built-card-tag {
             background: var(--burgundy-glow);
         }
-        /* ─── FOUND section (curated items) ─── */
-        .found-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            padding-bottom: 1rem;
-        }
-        .found-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 1.25rem;
-            text-decoration: none;
-            color: inherit;
-            padding: 1.15rem 1.4rem;
-            background:
-                url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E") repeat,
-                var(--bg-glass);
-            background-size: 128px, auto;
-            backdrop-filter: blur(12px) saturate(1.2);
-            -webkit-backdrop-filter: blur(12px) saturate(1.2);
-            border: var(--glass-border);
-            border-radius: var(--radius-sm);
-            box-shadow: var(--glass-shadow);
-            transition:
-                background 0s,
-                border-color 0s,
-                box-shadow 0s,
-                transform 0s;
-            position: relative;
-            overflow: hidden;
-            opacity: 0;
-            transform: translateY(14px);
-        }
-        .found-item.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        /* Rim light — found items */
-        .found-item::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 8%;
-            right: 8%;
-            height: 1px;
-            background: linear-gradient(
-                90deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.7) 25%,
-                rgba(255, 255, 255, 0.95) 50%,
-                rgba(255, 255, 255, 0.7) 75%,
-                transparent 100%
-            );
-            opacity: 0.6;
-            pointer-events: none;
-            transition: opacity 0s;
-        }
-        [data-theme="dark"] .found-item::after {
-            background: linear-gradient(
-                90deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.12) 25%,
-                rgba(255, 255, 255, 0.22) 50%,
-                rgba(255, 255, 255, 0.12) 75%,
-                transparent 100%
-            );
-            opacity: 0.45;
-        }
-        .found-item:hover {
-            background:
-                url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E") repeat,
-                var(--bg-card-hover);
-            background-size: 128px, auto;
-            border-color: var(--border-hover);
-            box-shadow: var(--glass-shadow-hover);
-            transform: translateY(-2px);
-        }
-        .found-item:hover::after {
-            opacity: 0.9;
-        }
-        [data-theme="dark"] .found-item:hover::after {
-            opacity: 0.65;
-        }
-        .found-item:active {
-            transform: translateY(0);
-        }
-        .found-item-number {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1.4rem;
-            font-weight: 400;
-            color: var(--ink-ghost);
-            line-height: 1;
-            min-width: 1.6rem;
-            padding-top: 0.15rem;
-            transition: color 0s;
-        }
-        .found-item:hover .found-item-number {
-            color: var(--burgundy);
-            opacity: 0.5;
-        }
-        .found-item-content {
-            flex: 1;
-            min-width: 0;
-        }
-        .found-item-title {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 1.1rem;
-            font-weight: 500;
-            line-height: 1.35;
-            color: var(--ink);
-            transition: color 0s;
-            margin-bottom: 0.25rem;
-        }
-        .found-item:hover .found-item-title {
-            color: var(--burgundy);
-        }
-        .found-item-meta {
-            font-size: 0.72rem;
-            color: var(--ink-faint);
-            letter-spacing: 0.015em;
-            margin-bottom: 0.45rem;
-        }
-        .found-item-note {
-            font-family: 'EB Garamond', Georgia, serif;
-            font-size: 0.92rem;
-            font-style: italic;
-            line-height: 1.55;
-            color: var(--ink-muted);
-        }
-        .found-item-right {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 0.5rem;
-            flex-shrink: 0;
-            padding-top: 0.1rem;
-        }
-        .found-item-tag {
-            font-size: 0.58rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--ink-faint);
-            background: var(--bg-glass-strong);
-            border: 1px solid var(--border-subtle);
-            padding: 0.18rem 0.45rem;
-            border-radius: 100px;
-            transition: all 0s;
-            white-space: nowrap;
-        }
-        .found-item:hover .found-item-tag {
-            color: var(--burgundy);
-            border-color: var(--burgundy-glow);
-            background: var(--burgundy-wash);
-        }
-        .found-item-arrow {
-            width: 16px; height: 16px;
-            stroke: var(--ink-ghost);
-            fill: none;
-            stroke-width: 1.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            transition: all 0s;
-        }
-        .found-item:hover .found-item-arrow {
-            stroke: var(--burgundy);
-            transform: translate(2px, -2px);
-        }
+
         @media (max-width: 640px) {
-            .oi-intro { font-size: 0.88rem; }
             .built-grid {
                 grid-template-columns: 1fr;
             }
@@ -637,35 +469,8 @@
             .built-card.visible {
                 transform: translateY(0) !important;
             }
-            .found-item {
-                padding: 1rem 1.15rem;
-                gap: 0.85rem;
-            }
-            .found-item-number { display: none; }
-            .found-item-title { font-size: 1.02rem; }
-            .found-item-note { font-size: 0.88rem; }
-            .found-item-right { display: none; }
-            .found-item-tag-mobile {
-                display: inline-block !important;
-            }
             .section-marker { margin: 2.5rem 0 1.5rem; }
         }
-        /* Mobile-only tag display */
-        .found-item-tag-mobile {
-            display: none;
-            font-size: 0.55rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--ink-faint);
-            background: var(--bg-glass-strong);
-            border: 1px solid var(--border-subtle);
-            padding: 0.15rem 0.4rem;
-            border-radius: 100px;
-            margin-top: 0.4rem;
-        }
-        .found-item-tag-mobile{display:none;font-size:.55rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);background:var(--bg-glass-strong);border:1px solid var(--border-subtle);padding:.15rem .4rem;border-radius:100px;margin-top:.4rem}
-        @media (max-width: 640px){.found-item-tag-mobile{display:inline-block}}
 
         /* CV */
         .cv-link{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;font-weight:500;color:var(--burgundy);letter-spacing:.02em;text-decoration:none;border-bottom:1px solid var(--burgundy-glow);padding-bottom:2px;transition:color var(--transition),border-color var(--transition);margin-top:.5rem}
@@ -836,7 +641,7 @@
                 <p class="scroll-animate">Hey!</p>
                 <p class="scroll-animate">I'm Lucas.</p>
                 <p class="scroll-animate">Since January 2026, I am an Associate within the Commercial, Spend, and Impact team at <a href="https://www.public.io/" target="_blank">PUBLIC, a Solita company</a>.</p>
-                <p class="scroll-animate">I am also an <a href="https://www.lse.ac.uk/study-at-lse/graduate/msc-political-science-political-science-and-political-economy" target="_blank">MSc in Political Science and Political Economy</a> graduate from the London School of Economics, where I received a Distinction and finished with the second best overall and dissertation, right behind two of my best friends, Don <a href="https://kevinli03.github.io" target="_blank">Kevin Li</a> and Don Juan David Montoya. Feel free to give my dissertation a look <a href="papers/msc-dissertation/">here</a> :)</p>
+                <p class="scroll-animate">I am also an <a href="https://www.lse.ac.uk/study-at-lse/graduate/msc-political-science-political-science-and-political-economy" target="_blank">MSc in Political Science and Political Economy</a> graduate from the London School of Economics, where I received a Distinction and finished with the second best overall and dissertation. Feel free to give my dissertation a look <a href="papers/msc-dissertation/">here</a> :)</p>
                 <p class="scroll-animate">From September to December 2025 I worked as a Public Finance and Policy Evaluation Intern at <a href="https://www.afi.es/" target="_blank">Afi</a>, a leading economic consulting firm in Spain. Previously, I worked as a Policy Analyst at <a href="https://broadpeak.ch/blog/" target="_blank">Broadpeak</a>, a Swiss-based international advisory firm specialised in impact finance. I also hold a <a href="https://www.manchester.ac.uk/study/undergraduate/courses/2025/00675/bsocsc-politics-and-international-relations/course-details/" target="_blank">BSocSc (Hons) in Politics and International Relations</a> from the University of Manchester.</p>
                 <p class="scroll-animate">My work focuses on causal inference, corruption, and inequality, with extensive training in quantitative political economy. I work primarily in R for data analysis and visualisation. This site was built from scratch by me, with help from Claude. Here you'll find examples of my projects, things I find interesting, and my curriculum vitae.</p>
                 <p class="scroll-animate">I am currently open to part-time (5-10h/week) Research Assistant positions in Political Economy. Please feel free to <a href="#" class="ra-email-link">contact me via email</a> if you have any opportunities or would like to discuss potential collaboration.</p>
@@ -859,72 +664,38 @@
             </div>
             <div class="section-divider scroll-animate"><span class="section-divider-line"></span><span class="section-divider-text">Working papers</span><span class="section-divider-line"></span></div>
             <div class="project-item scroll-animate">
-                <h3>"Why Matching Platforms Go Unregulated: Traceability, Retrospective Voting and Platform Disclosure" (2026)</h3>
-                <p><i>Abstract:</i> Matching platforms in partner and labour markets earn revenue while users search, and therefore have weak incentives to disclose information that would shorten search. I ask why this inefficiency persists politically, despite intense public grievance about both markets. I embed a reduced-form platform in the canonical sanctioning model of retrospective voting. Because voters evaluate incumbents through realised market outcomes, the electoral return to mandating disclosure depends on the platform's effect relative to outcome noise, which I call the traceability ratio, and not on how poor outcomes are on average. When the platform can lobby, regulation occurs only for intermediate stakes: the electoral return to regulation is bounded by the value of office, while the platform's opposition grows with what disclosure would cost it, so the most consequential mandates are the least likely to pass. Preliminary and incomplete; comments welcome.</p>
-                <a href="papers/matching-platforms/" class="project-link">View Paper</a>
-            </div>
-            <div class="project-item scroll-animate">
-                <h3>"Seeing Only the Winners: Selective Visibility, Congested Routes and Disappointment in Entry Markets" (2026)</h3>
-                <p><i>Abstract:</i> Graduates learn how hard it is to enter a career partly by watching the outcomes of others, and online those outcomes are selectively visible: offers are announced, rejections are not. I study the consequences in a simple model of an entry market with a scarce prestige route and an abundant core route. Applicants who take the visible share of successes at face value overestimate their chances of entering the prestige route. In the unique steady state, more selective visibility raises applications to the prestige route, lowers its acceptance rate, leaves more core vacancies unfilled, and widens the gap between how easy the route looks and how hard it is. A rise in the status of the prestige route also congests it, but applicants with accurate beliefs anticipate their rejections, so aggregate disappointment arises only from distorted beliefs, and status magnifies it. Informing some graduates of true acceptance rates raises the success rate of all applicants, so accurate information about entry routes is a public good. Preliminary and incomplete; comments welcome.</p>
-                <a href="papers/seeing-only-the-winners/" class="project-link">View Paper</a>
+                <ul class="substack-list">
+                    <li><a href="papers/seeing-only-the-winners/"><span class="substack-title">Seeing Only the Winners: Selective Visibility, Congested Routes and Disappointment in Entry Markets</span><span class="substack-meta">2026 · preliminary and incomplete; comments welcome</span><span class="substack-sub">Graduates learn how hard it is to enter a career partly by watching the outcomes of others, and online those outcomes are selectively visible: offers are announced, rejections are not.</span></a></li>
+                </ul>
             </div>
             <div class="section-divider scroll-animate"><span class="section-divider-line"></span><span class="section-divider-text">MSc coursework</span><span class="section-divider-line"></span></div>
             <div class="project-item scroll-animate">
-                <h3>"Corruption, Social Networks, and School Cheating" — MSc PSPE Dissertation (Department of Government, LSE, 2024-25)</h3>
-                <p><i>Abstract:</i> Do social networks moderate the effects of corruption on exam cheating? How do rural localities differ from urban localities in their response to corruption revelations? Using a novel dataset with locality-level family network measures for rural Mexico, I provide a compelling answer to these two questions, with additional data from Mexico's municipal audits and secondary school exam cheating rates. Using a staggered difference-in-differences identification strategy with modern estimators, I find that family networks moderate the effect of corruption revelations on exam cheating rates, with a positive, non-monotonic relationship between network strength and effect size. The analysis reveals that average degree (local connectivity) drives stronger effects than largest eigenvalue (global centrality), providing suggestive evidence that peer coordination rather than information cascades explains network moderation.</p>
-                <a href="papers/msc-dissertation/" class="project-link">View Paper</a>
-            </div>
-            <div class="project-item scroll-animate">
-                <h3>Tellez, 2022 — Empirical Reappraisal</h3>
-                <p>Empirical reappraisal of <i>Land, Opportunism, and Displacement in Civil Wars: Evidence from Colombia</i> by Tellez (<a href="https://doi.org/10.1017/S0003055421001003" target="_blank">2022</a>) with modern difference-in-differences estimators. Completed as part of MSc programme.</p>
-                <a href="papers/causal-inference-reappraisal/" class="project-link">View Paper</a>
-            </div>
-            <div class="project-item scroll-animate">
-                <h3>Cultural Backlash Theory — Empirical Assessment</h3>
-                <p>Empirical assessment of cultural backlash theory with European data and modern difference-in-differences estimators. Completed as part of MSc programme.</p>
-                <a href="papers/cultural-backlash/" class="project-link">View Paper</a>
+                <ul class="substack-list">
+                    <li><a href="papers/msc-dissertation/"><span class="substack-title">Corruption, Social Networks, and School Cheating</span><span class="substack-meta">MSc PSPE Dissertation · Department of Government, LSE, 2024-25</span><span class="substack-sub">Do social networks moderate the effects of corruption on exam cheating? How do rural localities differ from urban localities in their response to corruption revelations?</span></a></li>
+                    <li><a href="papers/causal-inference-reappraisal/"><span class="substack-title">Tellez, 2022 — Empirical Reappraisal</span><span class="substack-meta">MSc coursework</span><span class="substack-sub">Empirical reappraisal of <i>Land, Opportunism, and Displacement in Civil Wars: Evidence from Colombia</i> by Tellez (2022) with modern difference-in-differences estimators.</span></a></li>
+                    <li><a href="papers/cultural-backlash/"><span class="substack-title">Cultural Backlash Theory — Empirical Assessment</span><span class="substack-meta">MSc coursework</span><span class="substack-sub">Empirical assessment of cultural backlash theory with European data and modern difference-in-differences estimators.</span></a></li>
+                </ul>
             </div>
             <div class="section-divider scroll-animate"><span class="section-divider-line"></span><span class="section-divider-text">Publications</span><span class="section-divider-line"></span></div>
             <div class="project-item scroll-animate">
-                <h3>AI and the future of policy evaluation (PUBLIC)</h3>
-                <p>A short blog with some thoughts on the use of AI and the future of policy evaluation, in preparation for PUBLIC's 3rd Evaluation Guidebook.</p>
-                <a href="https://www.public.io/blog-post/ai-and-the-future-of-policy-evaluation" class="project-link" target="_blank">Read on PUBLIC.io</a>
-            </div>
-            <div class="project-item scroll-animate">
-                <h3>AI & Inequality Trilogy (Broadpeak)</h3>
-                <p>Covering public interests, economic expectations, and governance solutions to distributional concerns regarding artificial intelligence (AI) development. Interviewed professionals and academics in AI sphere. Completed as part of Policy Analyst role at Broadpeak.</p>
-                <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">Read on Broadpeak</a>
-            </div>
-            <div class="project-item scroll-animate">
-                <h3>Migration Trilogy (Broadpeak)</h3>
-                <p>Discussing legal debates, economic impact and the use of data in the context of refugees and migration. Interviewed thought-leaders, academics and practitioners working on refugees and migration. Completed as part of Policy Analyst role at Broadpeak.</p>
-                <a href="https://broadpeak.ch/blog/" class="project-link" target="_blank">Read on Broadpeak</a>
-            </div>
-            <div class="project-item scroll-animate">
-                <h3>Indian Monsoon Article (Broadpeak)</h3>
-                <p>Exploring socioeconomic impacts and political considerations of the Indian-South Asian Monsoon's potential tipping point, making use of the most recent evidence on its variability and importance. Completed as part of Policy Analyst role at Broadpeak.</p>
-                <a href="https://broadpeak.ch/mother-of-rains/" class="project-link" target="_blank">Read on Broadpeak</a>
-            </div>
-            <div class="project-item scroll-animate">
-                <h3>West African Monsoon Article (Broadpeak)</h3>
-                <p>Exploring socioeconomic impacts and political considerations of the West African Monsoon's potential tipping point, making use of the most recent evidence on its variability and importance. Completed as part of Policy Analyst role at Broadpeak.</p>
-                <a href="https://broadpeak.ch/keeping-rainy-beats/" class="project-link" target="_blank">Read on Broadpeak</a>
-            </div>
-            <div class="project-item scroll-animate">
-                <h3>AMOC Article (Broadpeak)</h3>
-                <p>Exploring socioeconomic impacts and political considerations of the Atlantic Meridional Overturning Circulation's (AMOC) weakening, making use of the most recent evidence on its potential collapse. Completed as part of Policy Analyst role at Broadpeak.</p>
-                <a href="https://broadpeak.ch/amoc/" class="project-link" target="_blank">Read on Broadpeak</a>
+                <ul class="substack-list">
+                    <li><a href="https://www.public.io/blog-post/ai-and-the-future-of-policy-evaluation" target="_blank" rel="noopener"><span class="substack-title">AI and the future of policy evaluation</span><span class="substack-meta">PUBLIC</span><span class="substack-sub">A short blog with some thoughts on the use of AI and the future of policy evaluation, in preparation for PUBLIC's 3rd Evaluation Guidebook.</span></a></li>
+                    <li><a href="https://broadpeak.ch/blog/" target="_blank" rel="noopener"><span class="substack-title">AI &amp; Inequality Trilogy</span><span class="substack-meta">Broadpeak · Policy Analyst</span><span class="substack-sub">Covering public interests, economic expectations, and governance solutions to distributional concerns regarding artificial intelligence (AI) development. Interviewed professionals and academics in AI sphere.</span></a></li>
+                    <li><a href="https://broadpeak.ch/blog/" target="_blank" rel="noopener"><span class="substack-title">Migration Trilogy</span><span class="substack-meta">Broadpeak · Policy Analyst</span><span class="substack-sub">Discussing legal debates, economic impact and the use of data in the context of refugees and migration. Interviewed thought-leaders, academics and practitioners working on refugees and migration.</span></a></li>
+                    <li><a href="https://broadpeak.ch/mother-of-rains/" target="_blank" rel="noopener"><span class="substack-title">Indian Monsoon Article</span><span class="substack-meta">Broadpeak · Policy Analyst</span><span class="substack-sub">Exploring socioeconomic impacts and political considerations of the Indian-South Asian Monsoon's potential tipping point, making use of the most recent evidence on its variability and importance.</span></a></li>
+                    <li><a href="https://broadpeak.ch/keeping-rainy-beats/" target="_blank" rel="noopener"><span class="substack-title">West African Monsoon Article</span><span class="substack-meta">Broadpeak · Policy Analyst</span><span class="substack-sub">Exploring socioeconomic impacts and political considerations of the West African Monsoon's potential tipping point, making use of the most recent evidence on its variability and importance.</span></a></li>
+                    <li><a href="https://broadpeak.ch/amoc/" target="_blank" rel="noopener"><span class="substack-title">AMOC Article</span><span class="substack-meta">Broadpeak · Policy Analyst</span><span class="substack-sub">Exploring socioeconomic impacts and political considerations of the Atlantic Meridional Overturning Circulation's (AMOC) weakening, making use of the most recent evidence on its potential collapse.</span></a></li>
+                </ul>
             </div>
         </section>
 
         <section id="ofinterest" class="content-section">
             <h2>Of Interest</h2>
-            <p class="oi-intro scroll-animate">I sometimes build things — or rather, tell Claude to build them, and then revise them, play with them, change my mind, burn tokens, and exploit whatever creativity or taste I have left to make sure they are something I want to share with curious minds. I also try to stay somewhat connected to the world, and find some really cool things along the way. I've included a few below, so I hope you like them, though I will almost surely share more through <a href="https://www.linkedin.com/in/lucaspollockmuguruza/" target="_blank" rel="noopener">LinkedIn</a>.</p>
 
         <!-- ═══ THINGS I BUILT ═══ -->
         <div class="section-marker" data-anim="marker">
             <span class="section-marker-line"></span>
-            <span class="section-marker-text">Things I built <span class="section-count">· 8</span></span>
+            <span class="section-marker-text">Things I built <span class="section-count">· 7</span></span>
             <span class="section-marker-line"></span>
         </div>
 
@@ -935,7 +706,7 @@
                     <span class="built-card-title">Prior</span>
                     <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
                 </div>
-                <p class="built-card-note">A workbench for research ideas — from the moment one occurs to you until it earns a real literature review, a real data request, or a real model. Capture takes one keystroke and no fields; the questions unfold only when you ask for them; and it versions your answers, so you can see how the thinking moved. It is named after the field it locks: what you thought the literature said <i>before</i> you read any of it, kept honest and comparable against what you later found. Identifying assumptions stay claims about institutions rather than properties of a file, and closing an idea is made to feel like the work it is. Local-first — no account, no server, no network calls at all.</p>
+                <p class="built-card-note">An attempt to build something useful for researchers with lots of ideas in a long but unstructured pipeline</p>
                 <div class="built-card-footer">
                     <span class="built-card-meta">2026 · added 3 Aug 2026</span>
                     <span class="built-card-tag">vibe-coded</span>
@@ -947,21 +718,9 @@
                     <span class="built-card-title">Cinefilematic</span>
                     <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
                 </div>
-                <p class="built-card-note">A film questionnaire for people who've already seen the obvious ones — now in a second edition, for one screen or a whole film club. It interviews you properly, then composes a numbered, one-of-a-kind brief: hand it to any LLM and ask for five films for tonight, or a programmed season. The taste stays yours; only the legwork is outsourced.</p>
+                <p class="built-card-note">A fun side-project that tries to combine my love for film with vibe-coding quizzes</p>
                 <div class="built-card-footer">
                     <span class="built-card-meta">2026 · added 2 Jun 2026</span>
-                    <span class="built-card-tag">vibe-coded</span>
-                </div>
-            </a>
-
-            <a href="https://verso-nextjs.vercel.app/" target="_blank" rel="noopener" class="built-card featured" data-anim="card">
-                <div class="built-card-top">
-                    <span class="built-card-title">verso</span>
-                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </div>
-                <p class="built-card-note">A tool I am currently developing, hosted on Vercel. Next steps include greater AI integration, expanding onto other fields, and newsletter</p>
-                <div class="built-card-footer">
-                    <span class="built-card-meta">2026 · added 4 Feb 2026 (in production)</span>
                     <span class="built-card-tag">vibe-coded</span>
                 </div>
             </a>
@@ -1035,121 +794,18 @@
             <span class="section-marker-line"></span>
         </div>
 
-        <div class="found-list">
-
-            <a href="https://danioffline.substack.com/p/everyone-wants-to-be-a-dj-no-one" target="_blank" rel="noopener" class="found-item" data-anim="card">
-                <span class="found-item-number">1</span>
-                <div class="found-item-content">
-                    <div class="found-item-title">everyone wants to be a DJ, no one wants to dance</div>
-                    <div class="found-item-meta">by Dani Offline · 2025 · added 29 Dec 2025</div>
-                    <p class="found-item-note">A wonderful essay I have interpreted as a call to enjoy art rather than use it for the well-intentioned goal of being artists.</p>
-                    <span class="found-item-tag-mobile">essay</span>
-                </div>
-                <div class="found-item-right">
-                    <span class="found-item-tag">essay</span>
-                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </div>
-            </a>
-
-            <a href="https://www.newyorker.com/culture/open-questions/should-you-just-give-up" target="_blank" rel="noopener" class="found-item" data-anim="card">
-                <span class="found-item-number">2</span>
-                <div class="found-item-content">
-                    <div class="found-item-title">Should you just give up?</div>
-                    <div class="found-item-meta">by Joshua Rothman · 2024 · added 29 Dec 2025</div>
-                    <p class="found-item-note">An article that is best described by its deck: Sisyphus couldn't stop pushing his boulder — but you can.</p>
-                    <span class="found-item-tag-mobile">article</span>
-                </div>
-                <div class="found-item-right">
-                    <span class="found-item-tag">article</span>
-                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </div>
-            </a>
-
-            <a href="https://www.are.na/" target="_blank" rel="noopener" class="found-item" data-anim="card">
-                <span class="found-item-number">3</span>
-                <div class="found-item-content">
-                    <div class="found-item-title">Are.na</div>
-                    <div class="found-item-meta">by various · 2014 · added 12 Feb 2026</div>
-                    <p class="found-item-note">A philosophical and design inspiration I didn't know I had until I saw it today</p>
-                    <span class="found-item-tag-mobile">website</span>
-                </div>
-                <div class="found-item-right">
-                    <span class="found-item-tag">website</span>
-                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </div>
-            </a>
-
-            <a href="https://sublime.app/" target="_blank" rel="noopener" class="found-item" data-anim="card">
-                <span class="found-item-number">4</span>
-                <div class="found-item-content">
-                    <div class="found-item-title">Sublime</div>
-                    <div class="found-item-meta">by Sari Azout · 2025 · added 12 Feb 2026</div>
-                    <p class="found-item-note">A different yet familiar approach to content I encourage people to try out. Also, I wish I knew how to add those sounds after clicking</p>
-                    <span class="found-item-tag-mobile">website</span>
-                </div>
-                <div class="found-item-right">
-                    <span class="found-item-tag">website</span>
-                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </div>
-            </a>
-            
-              <a href="https://ape.socialcatalystlab.org/" target="_blank" rel="noopener" class="found-item" data-anim="card">
-                <span class="found-item-number">5</span>
-                <div class="found-item-content">
-                    <div class="found-item-title">Project APE (Autonomous Policy Evaluation)</div>
-                    <div class="found-item-meta">by Social Catalyst Lab (University of Zurich) · 2026 · added 14 Feb 2026</div>
-                    <p class="found-item-note">One of the most interesting projects right now in the AI + social science world. I remain agnostic on what it will find, but if you pinch me I’d say it will not be able to create novel ideas, not necessarily because it is bad at doing so even with proper supervision, but because novel ideas are often papers someone decided not to try (or tried) for a variety of reasons (e.g., lack of quality data, inappropriate methods, null results), and an AI may overestimate it’s capacity to go beyond these (or simply lacks the private information of select researchers).</p>
-                    <span class="found-item-tag-mobile">project</span>
-                </div>
-                <div class="found-item-right">
-                    <span class="found-item-tag">project</span>
-                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </div>
-            </a>
-
-            <a href="https://cicl.stanford.edu/papers/gerstenberg2021csm.pdf" target="_blank" rel="noopener" class="found-item" data-anim="card">
-                <span class="found-item-number">6</span>
-                <div class="found-item-content">
-                    <div class="found-item-title">A Counterfactual Simulation Model of Causal Judgments for Physical Events</div>
-                    <div class="found-item-meta">by Gerstenberg et al. · 2021 · added 2 Apr 2026</div>
-                    <p class="found-item-note">A paper which I found by accident but interestingly provides a well-explained theory from psychology for causal judgements of physical events. Too often we err on the side of knowledge, mistaking its edge for the end</p>
-                    <span class="found-item-tag-mobile">paper</span>
-                </div>
-                <div class="found-item-right">
-                    <span class="found-item-tag">article</span>
-                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </div>
-            </a>
-
-            <a href="https://www.aeaweb.org/articles?id=10.1257/jel.20241665" target="_blank" rel="noopener" class="found-item" data-anim="card">
-                <span class="found-item-number">7</span>
-                <div class="found-item-content">
-                    <div class="found-item-title">The Economics of Attention</div>
-                    <div class="found-item-meta">by Loewenstein & Wojtowicz · 2025 · added 11 Apr 2026</div>
-                    <p class="found-item-note">A paper I somehow always come back to in gloomy days</p>
-                    <span class="found-item-tag-mobile">paper</span>
-                </div>
-                <div class="found-item-right">
-                    <span class="found-item-tag">article</span>
-                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </div>
-            </a>
-
-            <a href="https://cruxevals.com/open-world-evaluations.pdf" target="_blank" rel="noopener" class="found-item" data-anim="card">
-                <span class="found-item-number">8</span>
-                <div class="found-item-content">
-                    <div class="found-item-title">Open-world evaluations for measuring frontier AI capabilities</div>
-                    <div class="found-item-meta">by Kapoor et al. · 2026 · added 17 Apr 2026</div>
-                    <p class="found-item-note">A very interesting take on how we can start testing AI capabilities beyond benchmarks.</p>
-                    <span class="found-item-tag-mobile">paper</span>
-                </div>
-                <div class="found-item-right">
-                    <span class="found-item-tag">paper</span>
-                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </div>
-            </a>
-            
-        </div>
+        <div class="project-item scroll-animate">
+                <ul class="substack-list">
+                    <li><a href="https://danioffline.substack.com/p/everyone-wants-to-be-a-dj-no-one" target="_blank" rel="noopener"><span class="substack-title">everyone wants to be a DJ, no one wants to dance</span><span class="substack-meta">essay · by Dani Offline · 2025 · added 29 Dec 2025</span><span class="substack-sub">A wonderful essay I have interpreted as a call to enjoy art rather than use it for the well-intentioned goal of being artists.</span></a></li>
+                    <li><a href="https://www.newyorker.com/culture/open-questions/should-you-just-give-up" target="_blank" rel="noopener"><span class="substack-title">Should you just give up?</span><span class="substack-meta">article · by Joshua Rothman · 2024 · added 29 Dec 2025</span><span class="substack-sub">An article that is best described by its deck: Sisyphus couldn't stop pushing his boulder — but you can.</span></a></li>
+                    <li><a href="https://www.are.na/" target="_blank" rel="noopener"><span class="substack-title">Are.na</span><span class="substack-meta">website · by various · 2014 · added 12 Feb 2026</span><span class="substack-sub">A philosophical and design inspiration I didn't know I had until I saw it today</span></a></li>
+                    <li><a href="https://sublime.app/" target="_blank" rel="noopener"><span class="substack-title">Sublime</span><span class="substack-meta">website · by Sari Azout · 2025 · added 12 Feb 2026</span><span class="substack-sub">A different yet familiar approach to content I encourage people to try out. Also, I wish I knew how to add those sounds after clicking</span></a></li>
+                    <li><a href="https://ape.socialcatalystlab.org/" target="_blank" rel="noopener"><span class="substack-title">Project APE (Autonomous Policy Evaluation)</span><span class="substack-meta">project · by Social Catalyst Lab (University of Zurich) · 2026 · added 14 Feb 2026</span><span class="substack-sub">One of the most interesting projects right now in the AI + social science world. I remain agnostic on what it will find, but if you pinch me I’d say it will not be able to create novel ideas, not necessarily because it is bad at doing so even with proper supervision, but because novel ideas are often papers someone decided not to try (or tried) for a variety of reasons (e.g., lack of quality data, inappropriate methods, null results), and an AI may overestimate it’s capacity to go beyond these (or simply lacks the private information of select researchers).</span></a></li>
+                    <li><a href="https://cicl.stanford.edu/papers/gerstenberg2021csm.pdf" target="_blank" rel="noopener"><span class="substack-title">A Counterfactual Simulation Model of Causal Judgments for Physical Events</span><span class="substack-meta">paper · by Gerstenberg et al. · 2021 · added 2 Apr 2026</span><span class="substack-sub">A paper which I found by accident but interestingly provides a well-explained theory from psychology for causal judgements of physical events. Too often we err on the side of knowledge, mistaking its edge for the end</span></a></li>
+                    <li><a href="https://www.aeaweb.org/articles?id=10.1257/jel.20241665" target="_blank" rel="noopener"><span class="substack-title">The Economics of Attention</span><span class="substack-meta">paper · by Loewenstein & Wojtowicz · 2025 · added 11 Apr 2026</span><span class="substack-sub">A paper I somehow always come back to in gloomy days</span></a></li>
+                    <li><a href="https://cruxevals.com/open-world-evaluations.pdf" target="_blank" rel="noopener"><span class="substack-title">Open-world evaluations for measuring frontier AI capabilities</span><span class="substack-meta">paper · by Kapoor et al. · 2026 · added 17 Apr 2026</span><span class="substack-sub">A very interesting take on how we can start testing AI capabilities beyond benchmarks.</span></a></li>
+                </ul>
+            </div>
         </section>
 
         <section id="cv" class="content-section">
@@ -1347,7 +1003,7 @@
         document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pOverlay.classList.contains('open'))closePalette()});
         document.getElementById('paletteSave').addEventListener('click',()=>{const p=readInputs();applyPalette(p);localStorage.setItem('customPalette',JSON.stringify(p));localStorage.setItem('theme','custom');pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');syncThemeUI()});
         document.getElementById('paletteReset').addEventListener('click',()=>{clearPalette();if(localStorage.getItem('theme')==='custom')localStorage.setItem('theme','light');SitePalette.setScheme('og');writeInputs(PALETTE_DEFAULT);syncThemeUI()});
-        window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{if(localStorage.getItem('theme')==='auto'){SitePalette.render();syncThemeUI()}});
+        window.matchMedia('(prefers-color-scheme:light)').addEventListener('change',()=>{const t=localStorage.getItem('theme');if(!t||t==='auto'){SitePalette.render();syncThemeUI()}});
 
         const topbar=document.getElementById('topbar');let ticking=false;
         window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(()=>{topbar.classList.toggle('scrolled',window.scrollY>40);navScroll();ticking=false});ticking=true}},{passive:true});
