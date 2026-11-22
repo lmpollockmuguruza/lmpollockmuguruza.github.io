@@ -535,6 +535,25 @@
         .palette-preview .pp-body{font-family:'EB Garamond',serif;font-size:.92rem;line-height:1.7;color:var(--ink-soft);margin-bottom:.7rem}
         .palette-preview .pp-src{font-size:.7rem;font-style:italic;color:var(--ink-faint);margin-bottom:.7rem}
         .palette-preview .pp-hint{font-size:.68rem;letter-spacing:.08em;color:var(--burgundy);text-transform:uppercase}
+        /* the cursor line, in the same panel */
+        .trace-ctl{margin:-.2rem 0 1.6rem;padding-top:1.3rem;border-top:1px solid var(--border-subtle)}
+        .trace-ctl h4{font-family:'EB Garamond',serif;font-size:1.15rem;font-weight:500;color:var(--ink);margin-bottom:.3rem}
+        .trace-ctl>p{font-size:.8rem;color:var(--ink-muted);margin-bottom:.9rem}
+        .trace-presets{display:flex;flex-wrap:wrap;gap:.5rem}
+        .trace-presets button{padding:.42rem .8rem;border:1px solid var(--border-subtle);border-radius:var(--radius-xs);background:var(--bg-card);font-family:inherit;font-size:.72rem;letter-spacing:.04em;color:var(--ink-muted);cursor:pointer;transition:all var(--transition)}
+        .trace-presets button:hover{border-color:var(--border-hover);color:var(--ink)}
+        .trace-presets button[aria-pressed=true]{border-color:var(--burgundy);color:var(--burgundy);background:var(--burgundy-wash)}
+        .trace-tune{margin-top:.9rem}
+        .trace-tune summary{font-size:.74rem;letter-spacing:.03em;color:var(--ink-muted);cursor:pointer;width:max-content;text-decoration:underline;text-underline-offset:3px}
+        .trace-tune summary:hover{color:var(--burgundy)}
+        .trace-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem 1.4rem;margin-top:.9rem}
+        .trace-grid label{display:flex;flex-direction:column;gap:.25rem;font-size:.7rem;color:var(--ink-muted)}
+        .trace-grid label>span{display:flex;justify-content:space-between;gap:.5rem}
+        .trace-grid label>span b{font-weight:500;color:var(--burgundy);font-variant-numeric:tabular-nums}
+        .trace-grid input[type=range]{width:100%;accent-color:var(--burgundy);margin:0}
+        .trace-grid select{font:inherit;font-size:.72rem;color:var(--ink);background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:6px;padding:.25rem .4rem}
+        @media(max-width:520px){.trace-grid{grid-template-columns:1fr}}
+        @media(pointer:coarse),(prefers-reduced-motion:reduce){.trace-ctl{display:none}}
         .palette-actions{display:flex;gap:.7rem;flex-wrap:wrap}
         .palette-btn{padding:.6rem 1.2rem;font-family:inherit;font-size:.78rem;letter-spacing:.03em;color:var(--ink-muted);background:none;border:1px solid var(--border-subtle);border-radius:var(--radius-xs);cursor:pointer;transition:all var(--transition)}
         .palette-btn:hover{border-color:var(--border-hover);color:var(--burgundy)}
@@ -790,7 +809,7 @@
         <!-- ═══ THINGS I FOUND ═══ -->
         <div class="section-marker" data-anim="marker">
             <span class="section-marker-line"></span>
-            <span class="section-marker-text">Things I found <span class="section-count">· 8</span></span>
+            <span class="section-marker-text">Things I found <span class="section-count">· 9</span></span>
             <span class="section-marker-line"></span>
         </div>
 
@@ -804,6 +823,7 @@
                     <li><a href="https://cicl.stanford.edu/papers/gerstenberg2021csm.pdf" target="_blank" rel="noopener"><span class="substack-title">A Counterfactual Simulation Model of Causal Judgments for Physical Events</span><span class="substack-meta">paper · by Gerstenberg et al. · 2021 · added 2 Apr 2026</span><span class="substack-sub">A paper which I found by accident but interestingly provides a well-explained theory from psychology for causal judgements of physical events. Too often we err on the side of knowledge, mistaking its edge for the end</span></a></li>
                     <li><a href="https://www.aeaweb.org/articles?id=10.1257/jel.20241665" target="_blank" rel="noopener"><span class="substack-title">The Economics of Attention</span><span class="substack-meta">paper · by Loewenstein & Wojtowicz · 2025 · added 11 Apr 2026</span><span class="substack-sub">A paper I somehow always come back to in gloomy days</span></a></li>
                     <li><a href="https://cruxevals.com/open-world-evaluations.pdf" target="_blank" rel="noopener"><span class="substack-title">Open-world evaluations for measuring frontier AI capabilities</span><span class="substack-meta">paper · by Kapoor et al. · 2026 · added 17 Apr 2026</span><span class="substack-sub">A very interesting take on how we can start testing AI capabilities beyond benchmarks.</span></a></li>
+                    <li><a href="https://www.hup.harvard.edu/file/feeds/PDF/9780674302457_sample.pdf" target="_blank" rel="noopener"><span class="substack-title">The Riddle of Poetry</span><span class="substack-meta">lecture · by Jorge Luis Borges · 1967 · added 22 Nov 2026</span><span class="substack-sub">The first of Borges' Norton lectures at Harvard, free to read as a sample of <i>This Craft of Verse</i>. Absolutely incredible.</span></a></li>
                 </ul>
             </div>
         </section>
@@ -876,7 +896,7 @@
         <div class="palette-modal" role="dialog" aria-modal="true" aria-label="Your mode">
             <button class="palette-close" id="paletteClose" aria-label="Close">&times;</button>
             <h3 class="palette-title">Your mode</h3>
-            <p class="palette-sub">Three colours make this site — paper, ink, and an accent, which is also what lights up the text you select. Pick your own; everything else follows. The whole page changes as you play, and if you keep it, the rest of the site comes along.</p>
+            <p class="palette-sub">Three colours make this site — paper, ink, and an accent, which is also what lights up the text you select. Pick your own; everything else follows. The whole page changes as you play, and if you keep it, the rest of the site comes along. So does the line that follows your cursor, further down.</p>
             <div class="palette-swatches">
                 <label class="palette-swatch"><input type="color" id="pcPaper" value="#f2efe9"><span>paper</span></label>
                 <label class="palette-swatch"><input type="color" id="pcInk" value="#1a1816"><span>ink</span></label>
@@ -890,9 +910,18 @@
                 <p class="pp-src">—Suárez Miranda, <em>Viajes de varones prudentes</em>, Libro IV, Cap. XLV, Lérida, 1658</p>
                 <p class="pp-hint">try selecting the text</p>
             </div>
+            <div class="trace-ctl" id="traceCtl">
+                <h4>The cursor</h4>
+                <p>Pick a style for the line that follows your cursor, and move it around to try it. It always takes the accent colour.</p>
+                <div class="trace-presets" id="tracePresets"></div>
+                <details class="trace-tune">
+                    <summary>fine-tune it</summary>
+                    <div class="trace-grid" id="traceGrid"></div>
+                </details>
+            </div>
             <div class="palette-actions">
                 <button class="palette-btn palette-btn-save" id="paletteSave">keep it</button>
-                <button class="palette-reset-link" id="paletteReset">back to lucas' colours</button>
+                <button class="palette-reset-link" id="paletteReset">back to lucas' colours and cursor</button>
             </div>
         </div>
     </div>
@@ -992,17 +1021,45 @@
         const readInputs=()=>({paper:pInputs.paper.value,ink:pInputs.ink.value,accent:pInputs.accent.value});
         const writeInputs=p=>{pInputs.paper.value=p.paper;pInputs.ink.value=p.ink;pInputs.accent.value=p.accent};
         const savedPalette=()=>{const raw=localStorage.getItem('customPalette');return raw?SitePalette.upgrade(JSON.parse(raw)):null};
-        Object.values(pInputs).forEach(el=>el.addEventListener('input',()=>applyPalette(readInputs())));
+        let colourDirty=false;
+        Object.values(pInputs).forEach(el=>el.addEventListener('input',()=>{colourDirty=true;applyPalette(readInputs())}));
+
+        /* THE CURSOR — styles from cursor-trace.js, previewed live, kept with "keep it" */
+        const TRACE_PRESETS=[['circoloco','CircoLoco'],['tight','Tight'],['whip','Long whip'],['scribble','Scribble'],['silk','Silk'],['neon','Neon'],['off','Off']];
+        const TRACE_FIELDS=[
+            ['life','Trail life',60,1200,10,v=>v+' ms'],['maxPoints','Max points',4,200,1,v=>v],
+            ['minStep','Segment length',1,40,1,v=>v+' px'],['smooth','Smoothing',0,1,.05,v=>(+v).toFixed(2)],
+            ['strands','Strands',1,8,1,v=>v],['jitter','Spread',0,40,.5,v=>v+' px'],
+            ['mainTight','Main strand tightness',0,1,.05,v=>(+v).toFixed(2)],['wobble','Wobble',0,10,.5,v=>v+' px'],
+            ['lag','Lag between strands',0,6,1,v=>v],['width','Line width',.5,8,.1,v=>(+v).toFixed(1)+' px'],
+            ['taper','Taper',0,1,.05,v=>(+v).toFixed(2)],['glow','Glow',0,30,1,v=>v+' px'],
+            ['mainAlpha','Main strand opacity',.05,1,.05,v=>(+v).toFixed(2)],['alpha','Other strands opacity',.05,1,.05,v=>(+v).toFixed(2)]
+        ];
+        const TRACE_SELECTS=[['join','Corners',[['miter','Sharp'],['round','Round'],['bevel','Bevel']]],['blend','Blend',[['source-over','Normal'],['multiply','Multiply'],['difference','Difference'],['lighter','Additive']]]];
+        let traceBuilt=false;
+        function buildTrace(){
+            if(traceBuilt||!window.CursorTrace)return;traceBuilt=true;
+            const wrap=document.getElementById('tracePresets'),grid=document.getElementById('traceGrid');
+            TRACE_PRESETS.forEach(([k,l])=>{const b=document.createElement('button');b.type='button';b.dataset.trace=k;b.textContent=l;b.addEventListener('click',()=>{CursorTrace.preset(k);syncTrace()});wrap.appendChild(b)});
+            TRACE_FIELDS.forEach(([k,l,min,max,step])=>{const lab=document.createElement('label');lab.innerHTML=`<span>${l}<b data-v="${k}"></b></span><input type="range" min="${min}" max="${max}" step="${step}" data-k="${k}">`;lab.querySelector('input').addEventListener('input',e=>{CursorTrace.set({[k]:parseFloat(e.target.value),preset:'custom',enabled:true});syncTrace()});grid.appendChild(lab)});
+            TRACE_SELECTS.forEach(([k,l,opts])=>{const lab=document.createElement('label');lab.innerHTML=`<span>${l}</span><select data-k="${k}">${opts.map(([v,t])=>`<option value="${v}">${t}</option>`).join('')}</select>`;lab.querySelector('select').addEventListener('change',e=>{CursorTrace.set({[k]:e.target.value,preset:'custom',enabled:true});syncTrace()});grid.appendChild(lab)});
+        }
+        function syncTrace(){
+            if(!window.CursorTrace)return;buildTrace();const c=CursorTrace.get();
+            document.querySelectorAll('#tracePresets [data-trace]').forEach(b=>b.setAttribute('aria-pressed',c.enabled===false?b.dataset.trace==='off':b.dataset.trace===c.preset));
+            TRACE_FIELDS.forEach(([k,,,,,fmt])=>{const i=document.querySelector(`#traceGrid [data-k="${k}"]`);i.value=c[k];document.querySelector(`#traceGrid [data-v="${k}"]`).textContent=fmt(c[k])});
+            TRACE_SELECTS.forEach(([k])=>{document.querySelector(`#traceGrid [data-k="${k}"]`).value=c[k]});
+        }
         const presetWrap=document.getElementById('palettePresets');
-        PALETTE_PRESETS.forEach(p=>{const b=document.createElement('button');b.className='palette-preset';b.innerHTML=`<span class="palette-preset-dots"><i style="background:${p.paper}"></i><i style="background:${p.accent}"></i><i style="background:${p.ink}"></i></span>${p.name}`;b.addEventListener('click',()=>{writeInputs(p);applyPalette(p)});presetWrap.appendChild(b)});
-        function openPalette(){writeInputs(savedPalette()||PALETTE_DEFAULT);pOverlay.classList.add('open');pOverlay.setAttribute('aria-hidden','false')}
-        function closePalette(){pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');const saved=savedPalette();if(saved&&localStorage.getItem('theme')==='custom')applyPalette(saved);else SitePalette.render();syncThemeUI()}
+        PALETTE_PRESETS.forEach(p=>{const b=document.createElement('button');b.className='palette-preset';b.innerHTML=`<span class="palette-preset-dots"><i style="background:${p.paper}"></i><i style="background:${p.accent}"></i><i style="background:${p.ink}"></i></span>${p.name}`;b.addEventListener('click',()=>{colourDirty=true;writeInputs(p);applyPalette(p)});presetWrap.appendChild(b)});
+        function openPalette(){colourDirty=false;syncTrace();writeInputs(savedPalette()||PALETTE_DEFAULT);pOverlay.classList.add('open');pOverlay.setAttribute('aria-hidden','false')}
+        function closePalette(){pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');if(window.CursorTrace)CursorTrace.load();const saved=savedPalette();if(saved&&localStorage.getItem('theme')==='custom')applyPalette(saved);else SitePalette.render();syncThemeUI()}
         document.getElementById('paletteOpen').addEventListener('click',e=>{e.preventDefault();openPalette()});
         document.getElementById('paletteClose').addEventListener('click',closePalette);
         pOverlay.addEventListener('click',e=>{if(e.target===pOverlay)closePalette()});
         document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pOverlay.classList.contains('open'))closePalette()});
-        document.getElementById('paletteSave').addEventListener('click',()=>{const p=readInputs();applyPalette(p);localStorage.setItem('customPalette',JSON.stringify(p));localStorage.setItem('theme','custom');pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');syncThemeUI()});
-        document.getElementById('paletteReset').addEventListener('click',()=>{clearPalette();if(localStorage.getItem('theme')==='custom')localStorage.setItem('theme','light');SitePalette.setScheme('og');writeInputs(PALETTE_DEFAULT);syncThemeUI()});
+        document.getElementById('paletteSave').addEventListener('click',()=>{if(window.CursorTrace)CursorTrace.save();if(colourDirty){const p=readInputs();applyPalette(p);localStorage.setItem('customPalette',JSON.stringify(p));localStorage.setItem('theme','custom')}pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');syncThemeUI()});
+        document.getElementById('paletteReset').addEventListener('click',()=>{clearPalette();if(localStorage.getItem('theme')==='custom')localStorage.setItem('theme','light');SitePalette.setScheme('og');writeInputs(PALETTE_DEFAULT);colourDirty=false;if(window.CursorTrace){CursorTrace.reset();syncTrace()}syncThemeUI()});
         window.matchMedia('(prefers-color-scheme:light)').addEventListener('change',()=>{const t=localStorage.getItem('theme');if(!t||t==='auto'){SitePalette.render();syncThemeUI()}});
 
         const topbar=document.getElementById('topbar');let ticking=false;
