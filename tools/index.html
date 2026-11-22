@@ -386,7 +386,7 @@ function updateFooter(){
     } else if(oiSub==='built'){
         ft.innerHTML='paste into <a href="https://github.com/lmpollockmuguruza/lmpollockmuguruza.github.io" target="_blank">index.html</a> — inside the <code>.built-grid</code> div of the Of Interest section';
     } else {
-        ft.innerHTML='paste into <a href="https://github.com/lmpollockmuguruza/lmpollockmuguruza.github.io" target="_blank">index.html</a> — inside the <code>.found-list</code> div of the Of Interest section · update the section count';
+        ft.innerHTML='paste into <a href="https://github.com/lmpollockmuguruza/lmpollockmuguruza.github.io" target="_blank">index.html</a> — inside the <code>Things I found</code> list (the <code>.substack-list</code> under it) · update the section count';
     }
 }
 
@@ -479,37 +479,17 @@ function generateFound(){
     if(!url){showToast('Add a link');document.getElementById('of-url').focus();return}
     const mp=[];if(author)mp.push(`by ${author}`);if(date)mp.push(`added ${date}`);
     const metaStr=mp.join(' \u00b7 ');
-    const tl=tag?`\n                    <span class="found-item-tag-mobile">${tag}</span>`:'';
-    const tagHtml=tag?`<span class="found-item-tag">${tag}</span>`:'';
-    const mobileTag=tag?`\n                    <span class="found-item-tag-mobile">${tag}</span>`:'';
-    const raw=`            <a href="${url}" target="_blank" rel="noopener" class="found-item" data-anim="card">
-                <span class="found-item-number">${num}</span>
-                <div class="found-item-content">
-                    <div class="found-item-title">${title}</div>
-                    <div class="found-item-meta">${metaStr}</div>
-                    <p class="found-item-note">${note||''}</p>${mobileTag}
-                </div>
-                <div class="found-item-right">
-                    ${tagHtml}
-                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                </div>
-            </a>`;
+    const mf=[];if(tag)mf.push(tag);if(author)mf.push(`by ${author}`);if(date)mf.push(`added ${date}`);
+    const listMeta=mf.join(' \u00b7 ');
+    const raw=`                    <li><a href="${url}" target="_blank" rel="noopener"><span class="substack-title">${title}</span><span class="substack-meta">${listMeta}</span><span class="substack-sub">${note||''}</span></a></li>`;
     const e=escapeHtml;
-    const th=tag?`<span class="tag">&lt;span</span> <span class="attr">class=</span><span class="str">"found-item-tag"</span><span class="tag">&gt;</span><span class="text">${e(tag)}</span><span class="tag">&lt;/span&gt;</span>`:'';
+    const span=(c,t)=>`<span class="tag">&lt;span</span> <span class="attr">class=</span><span class="str">"${c}"</span><span class="tag">&gt;</span><span class="text">${e(t)}</span><span class="tag">&lt;/span&gt;</span>`;
     const hl=[
-        `<span class="tag">&lt;a</span> <span class="attr">href=</span><span class="str">"${e(url)}"</span> <span class="attr">target=</span><span class="str">"_blank"</span>`,
-        `   <span class="attr">class=</span><span class="str">"found-item"</span> <span class="attr">data-anim=</span><span class="str">"card"</span><span class="tag">&gt;</span>`,
-        `  <span class="tag">&lt;span</span> <span class="attr">class=</span><span class="str">"found-item-number"</span><span class="tag">&gt;</span><span class="text">${e(num)}</span><span class="tag">&lt;/span&gt;</span>`,
-        `  <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"found-item-content"</span><span class="tag">&gt;</span>`,
-        `    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"found-item-title"</span><span class="tag">&gt;</span><span class="text">${e(title)}</span><span class="tag">&lt;/div&gt;</span>`,
-        `    <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"found-item-meta"</span><span class="tag">&gt;</span><span class="text">${e(metaStr)}</span><span class="tag">&lt;/div&gt;</span>`,
-        `    <span class="tag">&lt;p</span> <span class="attr">class=</span><span class="str">"found-item-note"</span><span class="tag">&gt;</span><span class="text">${e(note||'')}</span><span class="tag">&lt;/p&gt;</span>`,
-        `  <span class="tag">&lt;/div&gt;</span>`,
-        `  <span class="tag">&lt;div</span> <span class="attr">class=</span><span class="str">"found-item-right"</span><span class="tag">&gt;</span>`,
-        `    ${th}`,
-        `    <span class="tag">&lt;svg</span> <span class="attr">class=</span><span class="str">"found-item-arrow"</span> ...<span class="tag">&gt;&lt;/svg&gt;</span>`,
-        `  <span class="tag">&lt;/div&gt;</span>`,
-        `<span class="tag">&lt;/a&gt;</span>`
+        `<span class="tag">&lt;li&gt;&lt;a</span> <span class="attr">href=</span><span class="str">"${e(url)}"</span> <span class="attr">target=</span><span class="str">"_blank"</span> <span class="attr">rel=</span><span class="str">"noopener"</span><span class="tag">&gt;</span>`,
+        `  ${span('substack-title',title)}`,
+        `  ${span('substack-meta',listMeta)}`,
+        `  ${span('substack-sub',note||'')}`,
+        `<span class="tag">&lt;/a&gt;&lt;/li&gt;</span>`
     ].join('\n');
     document.getElementById('pfTitle').textContent=title;
     document.getElementById('pfMeta').textContent=metaStr;
@@ -517,7 +497,7 @@ function generateFound(){
     document.getElementById('pfNum').textContent=num;
     const pt=document.getElementById('pfTag');
     if(tag){pt.textContent=tag;pt.style.display='inline-block'}else{pt.style.display='none'}
-    showOutput(raw,hl,'HTML snippet — paste inside .found-list','found');
+    showOutput(raw,hl,'HTML snippet — paste inside the Things I found list','found');
     btnFeedback(document.querySelector('#oi-found .generate-btn'));
 }
 
