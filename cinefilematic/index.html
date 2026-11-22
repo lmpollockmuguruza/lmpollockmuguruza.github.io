@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="color-scheme" content="light dark">
-    <title>Cinefilematic — a film questionnaire for tonight, or for a season</title>
-    <meta name="description" content="A psychologically literate film questionnaire. It interviews you — or your film club — and composes a one-of-a-kind brief: hand it to any LLM and ask for five films for tonight, or a whole season.">
+    <title>Cinefilematic — five films for tonight</title>
+    <meta name="description" content="Eight quick questions about tonight. Cinefilematic turns your answers into a brief you send to Claude, ChatGPT or Gemini — and five films come back.">
     <meta property="og:title" content="Cinefilematic">
-    <meta property="og:description" content="A questionnaire for cinephiles and film clubs. It composes a unique, numbered brief — you hand it to an LLM and ask for five films, or a season.">
+    <meta property="og:description" content="Eight quick questions about tonight. One brief for Claude, ChatGPT or Gemini. Five films back.">
     <meta property="og:type" content="website">
 
     <!-- Favicon (shared with main site) -->
@@ -17,18 +17,16 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=6">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=EB+Garamond:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=7">
     <script src="../palette.js"></script>
     <script src="../lpm-mark.js" defer></script>
     <script src="../cursor-trace.js" defer></script>
 </head>
 <body>
-    <div class="ambient"><div class="ambient-orb"></div><div class="ambient-orb"></div><div class="ambient-orb"></div></div>
-    <div class="vignette"></div>
-    <div class="progress"><div class="progress-bar" id="bar"></div></div>
+    <div class="progress" aria-hidden="true"><div class="progress-bar" id="bar"></div></div>
 
-    <nav class="topbar">
+    <nav class="topbar" id="topbar">
         <a href="../" class="back-link">
             <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
             <lpm-mark class="brandmark" trigger="a" aria-hidden="true" weight="9"></lpm-mark>
@@ -40,366 +38,272 @@
         </button>
     </nav>
 
-    <main class="stage">
-        <!-- ═══ COVER ═══ -->
-        <section class="screen cover" id="scr-cover">
-            <lpm-mark class="cover-mark" weight="5" aria-hidden="true"></lpm-mark>
-            <div class="masthead">
-                <span class="k">A film questionnaire · second edition</span>
-                <span class="rule"></span>
-            </div>
+    <main class="page">
+
+        <!-- ═══ HERO ═══ -->
+        <header class="hero">
+            <lpm-mark class="hero-mark" weight="5" aria-hidden="true"></lpm-mark>
             <h1>Cinefilematic</h1>
-            <p class="cover-tag">For people who've already seen the obvious ones — and still scrolled the library for forty minutes and watched nothing.</p>
-            <p class="cover-body">It won't recommend you a film. It does something better: it interviews you properly — where you're arriving from, what tonight should do to you, how close to the bone it's allowed to cut — then composes a <em>brief</em>: a precise, faintly opinionated dossier. Hand it to the LLM of your choice and ask for five. What comes back is discovery, not dispensation: each film arrives with its provenance — where it came from, what shaped it — and the curator is even allowed to say that tonight, no film fits. Every brief is a numbered <em>print</em> — a different curator, a different house rule — so no two evenings come back the same. The taste stays yours; only the legwork is outsourced.</p>
+            <p class="hero-lede">Eight quick questions about tonight. One brief for your AI of choice. <em>Five films back.</em></p>
+            <ol class="hero-steps">
+                <li><span>01</span>Answer what you like</li>
+                <li><span>02</span>Your brief writes itself</li>
+                <li><span>03</span>Send it to Claude, ChatGPT or Gemini</li>
+            </ol>
+            <a href="#q1" class="hero-cue">
+                Begin
+                <svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg>
+            </a>
+            <p class="hero-meta">About three minutes · Skip anything · Nothing leaves this device</p>
+        </header>
 
-            <div class="cover-meta"><span>Two editions</span><span class="dot"></span><span>Nothing leaves this device</span><span class="dot"></span><span>Works with any model</span></div>
-
-            <div class="mode-grid">
-                <button class="mode-card" id="modeEvening">
-                    <span class="mode-kicker">For one screen</span>
-                    <span class="mode-title">An evening</span>
-                    <span class="mode-gloss">Five films for tonight, chosen for the exact state you're in — not the person you are in general.</span>
-                    <span class="mode-meta">Ten questions · about five minutes</span>
-                </button>
-                <button class="mode-card" id="modeClub">
-                    <span class="mode-kicker">For a room of people</span>
-                    <span class="mode-title">A film club season</span>
-                    <span class="mode-gloss">A programmed season for your club — sequenced, annotated, with discussion questions that start arguments.</span>
-                    <span class="mode-meta">Seven questions · about four minutes</span>
-                </button>
+        <!-- 01 · OCCASION -->
+        <section class="q" id="q1" data-q="1">
+            <div class="q-head">
+                <span class="q-num">01</span>
+                <h2>Why tonight?</h2>
+                <p class="q-sub">A nightcap, a date and a bout of insomnia all want very different films.</p>
             </div>
-            <p class="cover-hint">Answer what you like; skip what you don't. The more you give it, the sharper the cut.</p>
+            <div class="q-body">
+                <div class="chips" data-group data-key="occasion" data-select="single" data-build="OCCASION"></div>
+            </div>
         </section>
 
-        <!-- ════════════════════════════════════════════
-             TRACK ONE · AN EVENING
-             ════════════════════════════════════════════ -->
-
-        <!-- E1 · THE OCCASION -->
-        <section class="screen step" id="scr-e1" data-fig="01">
-            <div class="step-label"><span class="num">01</span> The occasion</div>
-            <h2>Why tonight?</h2>
-            <p class="step-sub">Be honest about the assignment. A nightcap, a date and a bout of insomnia all want very different films.</p>
-            <div class="chips" id="occasion" data-group data-key="evening.occasion" data-select="single"></div>
-        </section>
-
-        <!-- E2 · ARRIVAL -->
-        <section class="screen step" id="scr-e2" data-fig="02">
-            <div class="step-label"><span class="num">02</span> Arrival</div>
-            <h2>Where are you <em>arriving</em> from?</h2>
-            <p class="step-sub">Not what you want yet — what you're carrying in. Tap the map where tonight finds you: how much charge you have left, and how heavy or light the day sits.</p>
-            <div class="pad-wrap">
-                <div class="pad" id="pad" tabindex="0" role="slider" aria-label="Where you are arriving from: vertical is energy, horizontal is how heavy or light you feel">
-                    <span class="pad-axis h"></span><span class="pad-axis v"></span>
-                    <span class="pad-corner n">Charged · wired</span>
-                    <span class="pad-corner s">Running on empty</span>
-                    <span class="pad-corner w">Heavy · clouded</span>
-                    <span class="pad-corner e">Light · clear</span>
-                    <span class="pad-dot" id="padDot"></span>
+        <!-- 02 · WHERE YOU'RE AT -->
+        <section class="q" id="q2" data-q="2">
+            <div class="q-head">
+                <span class="q-num">02</span>
+                <h2>How are you, really?</h2>
+                <p class="q-sub">Not what you want yet — what you're bringing to the sofa.</p>
+            </div>
+            <div class="q-body">
+                <div class="field">
+                    <p class="label">Energy</p>
+                    <div class="seg" data-group data-key="energy" data-select="single" data-build="ENERGY"></div>
                 </div>
-                <div class="pad-phrase" id="padPhrase"></div>
-                <button class="pad-clear" id="padClear">Skip — leave me unplaced</button>
-            </div>
-
-            <label class="glabel">And the film should…</label>
-            <div class="chips" id="trajectory" data-group data-key="evening.trajectory" data-select="single"></div>
-            <p class="field-help">This is the most useful answer on the page. Wanting a film to <strong>sit with you</strong> in a heavy mood is as legitimate as wanting one to lift you out — they lead to opposite shelves.</p>
-        </section>
-
-        <!-- E3 · THE FEELING -->
-        <section class="screen step" id="scr-e3" data-fig="03">
-            <div class="step-label"><span class="num">03</span> The feeling</div>
-            <h2>What should it leave <em>behind</em>?</h2>
-            <p class="step-sub">Pick one or two. There's no wrong answer — wanting to wallow is as valid as wanting to be lifted.</p>
-            <div class="mood-grid" id="moods" data-group data-key="evening.moods" data-select="multi" data-max="2"></div>
-            <p class="field-help">Two clashing moods is fine — it tells the curator your range, not a contradiction.</p>
-
-            <label class="glabel">How much should it ask of you?</label>
-            <div class="dial">
-                <div class="dial-ends"><span class="l">Hold me — easy to fall into</span><span class="r">Challenge me — I'll lean in</span></div>
-                <input type="range" id="energy" data-path="evening.energy" min="0" max="100" value="50" aria-label="How much the film should ask of you">
-                <div class="dial-phrase" id="phrase-energy"></div>
+                <div class="field">
+                    <p class="label">Mood</p>
+                    <div class="seg" data-group data-key="mood" data-select="single" data-build="MOOD"></div>
+                </div>
+                <div class="field">
+                    <p class="label">So the film should…</p>
+                    <div class="chips" data-group data-key="trajectory" data-select="single" data-build="TRAJECTORY"></div>
+                    <p class="help">Wanting a film that sits with a low mood is as fair as wanting one that lifts you out of it. They lead to very different shelves.</p>
+                </div>
             </div>
         </section>
 
-        <!-- E4 · THE NERVE -->
-        <section class="screen step" id="scr-e4" data-fig="04">
-            <div class="step-label"><span class="num">04</span> The nerve</div>
-            <h2>How close to the bone?</h2>
-            <p class="step-sub">Tolerance isn't taste — it's a setting, and it changes nightly. Tonight's reading, not your biography.</p>
-
-            <label class="glabel">Emotional distance</label>
-            <div class="dial">
-                <div class="dial-ends"><span class="l">Keep it at arm's length</span><span class="r">Let it cut close</span></div>
-                <input type="range" id="proximity" data-path="evening.proximity" min="0" max="100" value="50" aria-label="How emotionally close the film may cut">
-                <div class="dial-phrase" id="phrase-proximity"></div>
+        <!-- 03 · THE MOOD -->
+        <section class="q" id="q3" data-q="3">
+            <div class="q-head">
+                <span class="q-num">03</span>
+                <h2>What are you in the mood for?</h2>
+                <p class="q-sub">The way you'd put it to a friend. Pick up to three. Clashing picks are fine.</p>
             </div>
-
-            <label class="glabel">How dark may it go?</label>
-            <div class="dial">
-                <div class="dial-ends"><span class="l">Keep a floor under me</span><span class="r">No floor needed tonight</span></div>
-                <input type="range" id="darkness" data-path="evening.darkness" min="0" max="100" value="50" aria-label="How dark the film may go">
-                <div class="dial-phrase" id="phrase-darkness"></div>
-            </div>
-
-            <label class="glabel">Endings</label>
-            <div class="chips" id="endings" data-group data-key="evening.endings" data-select="single"></div>
-        </section>
-
-        <!-- E5 · ANCHORS -->
-        <section class="screen step" id="scr-e5" data-fig="05">
-            <div class="step-label"><span class="num">05</span> Anchors</div>
-            <h2>The last one that really hit you?</h2>
-            <p class="step-sub">Name a film you saw recently — loved, hated, couldn't shake. It tells the curator where your head is, and which way to push.</p>
-            <label class="glabel">Recent film <span class="opt">a title, and a word on how it landed</span></label>
-            <input class="text" type="text" id="lastFilm" autocomplete="off" placeholder="e.g. The Zone of Interest — it hasn't left me">
-            <label class="glabel">And tonight…</label>
-            <div class="chips" id="lastDir" data-group data-key="evening.lastDir" data-select="single"></div>
-
-            <label class="glabel">One that bounced off you <span class="opt">optional — and worth more than another favourite</span></label>
-            <input class="text" type="text" id="bounced" autocomplete="off" placeholder="e.g. Everyone loves Dune; I admired it from a great distance">
-            <p class="field-help">A precise miss teaches the curator more than a tenth love. Say <strong>why</strong> it missed if you can — too cold, too long, too pleased with itself.</p>
-        </section>
-
-        <!-- E6 · THE REEL -->
-        <section class="screen step" id="scr-e6" data-fig="06">
-            <div class="step-label"><span class="num">06</span> The reel</div>
-            <h2>Which image pulls at you?</h2>
-            <p class="step-sub">Don't reason about it. These were dealt from a larger deck for this print — pick the one you'd walk into right now.</p>
-            <div class="stills" id="stills" data-group data-key="evening.still" data-select="single"></div>
-
-            <label class="glabel">And a texture <span class="opt">pick up to two</span></label>
-            <div class="chips" id="textures" data-group data-key="evening.textures" data-select="multi" data-max="2"></div>
-        </section>
-
-        <!-- E7 · THE ROOM -->
-        <section class="screen step" id="scr-e7" data-fig="07">
-            <div class="step-label"><span class="num">07</span> The room</div>
-            <h2>Set the scene.</h2>
-            <p class="step-sub">The constraints the curator has to actually respect — no point recommending a three-hour fast for a restless table of four.</p>
-
-            <label class="glabel">How long have you got?</label>
-            <div class="chips" id="runtime" data-group data-key="evening.runtime" data-select="single"></div>
-
-            <label class="glabel">Who's watching?</label>
-            <div class="chips" id="company" data-group data-key="evening.company" data-select="single"></div>
-
-            <label class="glabel">Subtitles</label>
-            <div class="toggle-row">
-                <span class="toggle-text" id="subText">Happy to read tonight</span>
-                <label class="toggle"><input type="checkbox" id="subtitles" checked><span class="toggle-track"></span></label>
-            </div>
-
-            <label class="glabel">Where can you watch? <span class="opt">optional</span></label>
-            <div class="chips" id="services" data-group data-key="evening.services" data-select="multi"></div>
-        </section>
-
-        <!-- E8 · RANGE -->
-        <section class="screen step" id="scr-e8" data-fig="08">
-            <div class="step-label"><span class="num">08</span> Range</div>
-            <h2>How deep do you swim?</h2>
-            <p class="step-sub">So the curator knows how far past the canon to reach — and never, ever condescends.</p>
-            <div class="options" id="depth" data-group data-key="evening.depth" data-select="single"></div>
-
-            <label class="glabel">Tick the ones you've seen <span class="opt">a hand dealt for this print, from easy to deep</span></label>
-            <div class="seen-grid" id="seen" data-group data-key="evening.seen" data-select="multi"></div>
-        </section>
-
-        <!-- E9 · COORDINATES -->
-        <section class="screen step" id="scr-e9" data-fig="09">
-            <div class="step-label"><span class="num">09</span> Coordinates</div>
-            <h2>Where's your taste pointed?</h2>
-            <p class="step-sub">A few fixed stars. Free text reads best — be specific, be unguarded, name names.</p>
-
-            <label class="glabel">Films or directors you love</label>
-            <textarea id="loved" placeholder="e.g. In the Mood for Love. Anything by Kiarostami. Paris, Texas. I'd follow Lucrecia Martel anywhere."></textarea>
-
-            <label class="glabel">National cinemas &amp; traditions you're drawn to</label>
-            <div class="chips" id="cinemas" data-group data-key="evening.cinemas" data-select="multi"></div>
-
-            <label class="glabel">Tonight's leanings <span class="opt">soft dials, not targets — the centre keeps the field open</span></label>
-            <div id="dials"></div>
-        </section>
-
-        <!-- E10 · THE CONTRACT -->
-        <section class="screen step" id="scr-e10" data-fig="10">
-            <div class="step-label"><span class="num">10</span> The contract</div>
-            <h2>How much rope?</h2>
-            <p class="step-sub">You've drawn the picture. Now decide how literally the curator should take it — this is the biggest lever on what comes back.</p>
-
-            <label class="glabel">How closely should it follow your answers?</label>
-            <div class="chips" id="leash" data-group data-key="evening.leash" data-select="single"></div>
-            <p class="field-help"><strong>Loose</strong> reads your overall mood and will surprise you — it's where the best picks tend to come from. <strong>Strict</strong> follows each answer closely, which is precise but can feel boxed-in. When in doubt, stay loose.</p>
-
-            <label class="glabel">Please avoid</label>
-            <div class="chips" id="avoid" data-group data-key="evening.avoid" data-select="multi"></div>
-            <p class="field-help">Only your genuine hard-nos. Over-avoiding strands the curator — if you'd merely prefer less of something, leave it unchecked and let the mood handle it.</p>
-
-            <label class="glabel">A note for the curator <span class="opt">optional, and the most useful box on the page</span></label>
-            <textarea id="note" placeholder="A curiosity you've been circling. Something happening tonight. A director you've meant to start. A line you can't shake. Anything you'd tell a friend behind the counter at the video shop."></textarea>
-        </section>
-
-        <!-- ════════════════════════════════════════════
-             TRACK TWO · A FILM CLUB SEASON
-             ════════════════════════════════════════════ -->
-
-        <!-- C1 · THE CLUB -->
-        <section class="screen step" id="scr-c1" data-fig="01">
-            <div class="step-label"><span class="num">01</span> The club</div>
-            <h2>Who's in the room?</h2>
-            <p class="step-sub">A season is programmed for a room, not a person. Describe yours honestly — including the ones who only come for the wine.</p>
-
-            <label class="glabel">The club's name <span class="opt">optional, but it makes the brief feel like yours</span></label>
-            <input class="text" type="text" id="clubName" autocomplete="off" placeholder="e.g. The Wednesday Cinematheque">
-
-            <label class="glabel">How many usually come?</label>
-            <div class="chips" id="clubSize" data-group data-key="club.size" data-select="single"></div>
-
-            <label class="glabel">The range in the room</label>
-            <div class="chips" id="clubRange" data-group data-key="club.range" data-select="single"></div>
-
-            <label class="glabel">How long has it been running?</label>
-            <div class="chips" id="clubAge" data-group data-key="club.age" data-select="single"></div>
-        </section>
-
-        <!-- C2 · THE SEASON -->
-        <section class="screen step" id="scr-c2" data-fig="02">
-            <div class="step-label"><span class="num">02</span> The season</div>
-            <h2>Shape of the season.</h2>
-            <p class="step-sub">The practical skeleton — how many nights, how often, on what screen.</p>
-
-            <label class="glabel">How many films?</label>
-            <div class="chips" id="clubCount" data-group data-key="club.count" data-select="single"></div>
-
-            <label class="glabel">How often?</label>
-            <div class="chips" id="clubCadence" data-group data-key="club.cadence" data-select="single"></div>
-
-            <label class="glabel">On what?</label>
-            <div class="chips" id="clubFormat" data-group data-key="club.format" data-select="single"></div>
-
-            <label class="glabel">After the credits…</label>
-            <div class="chips" id="clubTalk" data-group data-key="club.talk" data-select="single"></div>
-        </section>
-
-        <!-- C3 · THE MISSION -->
-        <section class="screen step" id="scr-c3" data-fig="03">
-            <div class="step-label"><span class="num">03</span> The mission</div>
-            <h2>What should this season <em>do</em>?</h2>
-            <p class="step-sub">A season is an argument made over several weeks. Pick up to three things it should accomplish.</p>
-            <div class="chips" id="clubMission" data-group data-key="club.mission" data-select="multi" data-max="3"></div>
-
-            <label class="glabel">Where should it sit?</label>
-            <div class="dial">
-                <div class="dial-ends"><span class="l">Crowd-pleasing — keep the room full</span><span class="r">Demanding — trust the room</span></div>
-                <input type="range" id="clubPitch" data-path="club.pitch" min="0" max="100" value="50" aria-label="Crowd-pleasing versus demanding">
-                <div class="dial-phrase" id="phrase-clubPitch"></div>
+            <div class="q-body">
+                <div class="field">
+                    <p class="label">The vibe <span class="opt" id="vibeCount">up to three</span></p>
+                    <div class="tiles" data-group data-key="vibes" data-select="multi" data-max="3" data-build="VIBES"></div>
+                </div>
+                <div class="field">
+                    <p class="label">Brain</p>
+                    <div class="seg" data-group data-key="effort" data-select="single" data-build="EFFORT"></div>
+                </div>
+                <div class="field">
+                    <p class="label">From when? <span class="opt">pick any</span></p>
+                    <div class="chips" data-group data-key="era" data-select="multi" data-exclusive="Any era" data-build="ERA"></div>
+                </div>
             </div>
         </section>
 
-        <!-- C4 · THE HISTORY -->
-        <section class="screen step" id="scr-c4" data-fig="04">
-            <div class="step-label"><span class="num">04</span> The history</div>
-            <h2>What has the room already had?</h2>
-            <p class="step-sub">The programmer needs your hits and your misses — the misses most of all.</p>
-
-            <label class="glabel">Recent screenings that landed</label>
-            <textarea class="short" id="clubShown" placeholder="e.g. Aftersun emptied the tissue box. Seven Samurai ran long but nobody moved. The Lobster split the room beautifully."></textarea>
-
-            <label class="glabel">And what flopped <span class="opt">be honest — this is the most useful box on the page</span></label>
-            <textarea class="short" id="clubFlopped" placeholder="e.g. We lost half the room to a three-hour slow-cinema night in week two. Never again in week two."></textarea>
-        </section>
-
-        <!-- C5 · THE APPETITE -->
-        <section class="screen step" id="scr-c5" data-fig="05">
-            <div class="step-label"><span class="num">05</span> The appetite</div>
-            <h2>How far can a club night go?</h2>
-            <p class="step-sub">What the room can take, and the limits the programmer has to actually respect.</p>
-
-            <label class="glabel">Distance from the canon</label>
-            <div class="dial">
-                <div class="dial-ends"><span class="l">The loved &amp; the legible</span><span class="r">The far shelves</span></div>
-                <input type="range" id="clubCanon" data-path="club.canon" min="0" max="100" value="50" aria-label="How far from the canon the season may reach">
-                <div class="dial-phrase" id="phrase-clubCanon"></div>
+        <!-- 04 · THE NERVE -->
+        <section class="q" id="q4" data-q="4">
+            <div class="q-head">
+                <span class="q-num">04</span>
+                <h2>How far can it go?</h2>
+                <p class="q-sub">Tonight's limits, not your usual ones. They change night to night.</p>
             </div>
-
-            <label class="glabel">How dark may a night go?</label>
-            <div class="dial">
-                <div class="dial-ends"><span class="l">Send them home warm</span><span class="r">Send them home shaken</span></div>
-                <input type="range" id="clubDark" data-path="club.dark" min="0" max="100" value="50" aria-label="How dark a club night may go">
-                <div class="dial-phrase" id="phrase-clubDark"></div>
+            <div class="q-body">
+                <div class="field">
+                    <p class="label">How personal</p>
+                    <div class="slider">
+                        <input type="range" id="proximity" data-path="proximity" min="0" max="100" value="50" aria-label="How personal the film may get">
+                        <div class="slider-ends"><span>Keep it at arm's length</span><span>Let it get personal</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <p class="label">How dark</p>
+                    <div class="slider">
+                        <input type="range" id="darkness" data-path="darkness" min="0" max="100" value="50" aria-label="How dark the film may go">
+                        <div class="slider-ends"><span>Keep some hope in it</span><span>As bleak as it likes</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <p class="label">Endings</p>
+                    <div class="seg" data-group data-key="endings" data-select="single" data-build="ENDINGS"></div>
+                </div>
             </div>
-
-            <label class="glabel">Hard limits <span class="opt">only the real ones</span></label>
-            <div class="chips" id="clubLimits" data-group data-key="club.limits" data-select="multi"></div>
         </section>
 
-        <!-- C6 · THE THREAD -->
-        <section class="screen step" id="scr-c6" data-fig="06">
-            <div class="step-label"><span class="num">06</span> The thread</div>
-            <h2>Should it hang on a thread?</h2>
-            <p class="step-sub">The best seasons are about something — even if the audience only works it out by week four.</p>
-            <div class="chips" id="clubThread" data-group data-key="club.thread" data-select="multi" data-max="2"></div>
-
-            <label class="glabel">A thread you've been circling <span class="opt">optional free text — it outranks the chips</span></label>
-            <textarea class="short" id="clubThreadNote" placeholder="e.g. Films about work. The sea. Mothers and daughters. Cities at night. One great film from every decade since 1950."></textarea>
+        <!-- 05 · ANCHORS -->
+        <section class="q" id="q5" data-q="5">
+            <div class="q-head">
+                <span class="q-num">05</span>
+                <h2>The last one that really hit you?</h2>
+                <p class="q-sub">Loved it, hated it, couldn't shake it. It shows where your head is.</p>
+            </div>
+            <div class="q-body">
+                <div class="field">
+                    <p class="label">A recent film <span class="opt">and a word on how it landed</span></p>
+                    <input class="text" type="text" id="lastFilm" data-text="lastFilm" autocomplete="off" placeholder="The Zone of Interest — it hasn't left me">
+                </div>
+                <div class="field">
+                    <p class="label">Tonight, give me…</p>
+                    <div class="seg" data-group data-key="lastDir" data-select="single" data-build="LAST_DIR"></div>
+                </div>
+                <div class="field">
+                    <p class="label">One that bounced off you <span class="opt">optional</span></p>
+                    <input class="text" type="text" id="bounced" data-text="bounced" autocomplete="off" placeholder="Everyone loves Dune. I admired it from a great distance.">
+                    <p class="help">A precise miss says more than another favourite. Add <strong>why</strong> if you can: too cold, too long, too pleased with itself.</p>
+                </div>
+            </div>
         </section>
 
-        <!-- C7 · THE CONTRACT -->
-        <section class="screen step" id="scr-c7" data-fig="07">
-            <div class="step-label"><span class="num">07</span> The contract</div>
-            <h2>How much rope?</h2>
-            <p class="step-sub">Decide how literally the programmer should take all this — then add anything you'd say across a table.</p>
-
-            <label class="glabel">How closely should it follow your answers?</label>
-            <div class="chips" id="clubLeash" data-group data-key="club.leash" data-select="single"></div>
-
-            <label class="glabel">A note for the programmer <span class="opt">optional</span></label>
-            <textarea id="clubNote" placeholder="The committee's politics. A retrospective you've been promising. The projector's quirks. The night the cinema double-booked you. Anything a programmer should know."></textarea>
+        <!-- 06 · THE REEL -->
+        <section class="q" id="q6" data-q="6">
+            <div class="q-head">
+                <span class="q-num">06</span>
+                <h2>Which image pulls at you?</h2>
+                <p class="q-sub">Don't think. Pick the one you'd walk into right now.</p>
+            </div>
+            <div class="q-body">
+                <div class="field">
+                    <div class="stills" id="stills" data-group data-key="still" data-select="single"></div>
+                </div>
+                <div class="field">
+                    <p class="label">And a texture <span class="opt">up to two</span></p>
+                    <div class="chips" data-group data-key="textures" data-select="multi" data-max="2" data-build="TEXTURES"></div>
+                </div>
+            </div>
         </section>
 
-        <!-- ═══ OUTPUT ═══ -->
-        <section class="screen output" id="scr-out">
-            <h2 id="outTitle">Your brief is ready.</h2>
-            <p class="print-line">Print <span class="no" id="printNo">№ 0000</span> · <span id="printDate"></span></p>
+        <!-- 07 · THE PRACTICAL BIT -->
+        <section class="q" id="q7" data-q="7">
+            <div class="q-head">
+                <span class="q-num">07</span>
+                <h2>The practical bit.</h2>
+                <p class="q-sub">The rules the picks have to stick to, and how far past the famous ones to go.</p>
+            </div>
+            <div class="q-body">
+                <div class="field">
+                    <p class="label">How long have you got?</p>
+                    <div class="seg" data-group data-key="runtime" data-select="single" data-build="RUNTIME"></div>
+                </div>
+                <div class="field">
+                    <p class="label">Who's watching?</p>
+                    <div class="seg" data-group data-key="company" data-select="single" data-build="COMPANY"></div>
+                </div>
+                <div class="field">
+                    <label class="switch-row">
+                        <span>
+                            <span class="switch-title">Subtitles</span>
+                            <span class="switch-state" id="subText">Happy to read tonight</span>
+                        </span>
+                        <span class="switch"><input type="checkbox" id="subtitles" checked><span class="switch-track"></span></span>
+                    </label>
+                </div>
+                <div class="field">
+                    <p class="label">How much film have you seen?</p>
+                    <div class="tiles tiles-2" data-group data-key="depth" data-select="single" data-build="DEPTH"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 08 · THE CONTRACT -->
+        <section class="q" id="q8" data-q="8">
+            <div class="q-head">
+                <span class="q-num">08</span>
+                <h2>How much rope?</h2>
+                <p class="q-sub">How literally to take all this. It changes what comes back more than anything else here.</p>
+            </div>
+            <div class="q-body">
+                <div class="field">
+                    <p class="label">Follow my answers…</p>
+                    <div class="seg" data-group data-key="leash" data-select="single" data-build="LEASH"></div>
+                    <p class="help"><strong>Surprise me</strong> reads your overall mood and takes risks. That's where the best picks usually come from. <strong>Stick to it</strong> is precise, but can feel boxed in.</p>
+                </div>
+                <div class="field">
+                    <p class="label">Hard no's <span class="opt">only the real ones</span></p>
+                    <div class="chips" data-group data-key="avoid" data-select="multi" data-build="AVOID"></div>
+                </div>
+                <div class="field">
+                    <p class="label">Anything else? <span class="opt">optional, and the most useful box here</span></p>
+                    <textarea id="note" data-text="note" rows="4" placeholder="A director you've meant to start. Something happening tonight. Anything you'd tell a friend behind the counter at the video shop."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ THE BRIEF ═══ -->
+        <section class="brief" id="brief">
+            <p class="brief-kicker">Your brief</p>
+            <h2>Ready when you are.</h2>
             <p class="portrait" id="portrait"></p>
-            <div class="out-actions">
-                <button class="btn btn-primary" id="downloadBtn">
-                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
-                    Download .md
-                </button>
-                <button class="btn btn-ghost" id="copyBtn">
-                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+
+            <div class="send-row">
+                <a class="send" id="sendClaude" data-llm="claude" target="_blank" rel="noopener">
+                    <span class="send-pre">Send to</span>
+                    <span class="send-name">Claude</span>
+                    <svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
+                </a>
+                <a class="send" id="sendChatgpt" data-llm="chatgpt" target="_blank" rel="noopener">
+                    <span class="send-pre">Send to</span>
+                    <span class="send-name">ChatGPT</span>
+                    <svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
+                </a>
+                <a class="send" id="sendGemini" data-llm="gemini" target="_blank" rel="noopener">
+                    <span class="send-pre">Copy &amp; open</span>
+                    <span class="send-name">Gemini</span>
+                    <svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
+                </a>
+            </div>
+            <p class="send-note">Opens a new tab with your brief ready to send. It's copied to your clipboard too, so if the box comes up empty, just paste. Gemini can't be pre-filled, so paste it there.</p>
+
+            <div class="util-row">
+                <button class="util" id="copyBtn">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M5 15H4.5A1.5 1.5 0 013 13.5v-9A1.5 1.5 0 014.5 3h9A1.5 1.5 0 0115 4.5V5"/></svg>
                     Copy
                 </button>
-                <button class="btn btn-ghost" id="rerollBtn" title="Same answers — a different curator and a different house rule">
-                    <svg viewBox="0 0 24 24"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10"/><path d="M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-                    Strike another print
+                <button class="util" id="downloadBtn">
+                    <svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>
+                    Download .md
+                </button>
+                <button class="util" id="rerollBtn" title="Same answers, a different curator and house rule">
+                    <svg viewBox="0 0 24 24"><path d="M20 5v5h-5"/><path d="M4 19v-5h5"/><path d="M5.6 9a7 7 0 0112-2.2L20 10"/><path d="M4 14l2.4 3.2A7 7 0 0018.4 15"/></svg>
+                    New print
                 </button>
             </div>
-            <div class="tabs" role="tablist">
-                <button class="tab active" id="tabReading" role="tab">Reading copy</button>
-                <button class="tab" id="tabSource" role="tab">Plain markdown</button>
-            </div>
-            <div class="reading" id="mdReading"></div>
-            <div class="code-block" id="mdSource" style="display:none"><pre id="mdPreview"></pre></div>
-            <div class="out-foot">
-                <a id="editLink">← Edit answers</a>
-                <a id="restartLink">Start over</a>
-            </div>
-            <p class="colophon">Works with any model — Claude, ChatGPT, Gemini. Nothing was sent anywhere; the whole brief was set by hand, here, on your machine. Each print draws its own curator and house rule, so the same answers never quite repeat.</p>
+
+            <details class="reading-wrap">
+                <summary><span class="summary-open">Read the brief</span><span class="summary-close">Hide the brief</span> <span class="print-no" id="printNo"></span></summary>
+                <div class="reading" id="mdReading"></div>
+            </details>
+
+            <p class="colophon">Each brief is a numbered <em>print</em> with its own curator and house rule, so the same answers never quite repeat. Nothing was sent anywhere. It was all put together here, on your device.</p>
+            <button class="restart" id="restartBtn">Start over</button>
         </section>
+
         <div class="theme-toggle-end"><button class="theme-toggle" id="themeToggleEnd" aria-label="Toggle theme"><svg class="icon-moon" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg><svg class="icon-sun" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg></button></div>
     </main>
 
-    <!-- Bottom nav -->
-    <div class="nav" id="nav">
-        <button class="nav-back" id="navBack"><svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg> Back</button>
-        <button class="nav-next" id="navNext">Continue <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></button>
+    <!-- Floating pill: progress + jump to the brief -->
+    <div class="dock" id="dock">
+        <span class="dock-count"><span id="dockCount">0</span> of 8</span>
+        <a href="#brief" class="dock-go">Get my brief <svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></a>
     </div>
 
-    <div class="toast" id="toast">Copied to clipboard</div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
 <script>document.getElementById("themeToggleEnd").addEventListener("click",function(){document.getElementById("themeToggle").click()});</script>
 <script>(function(){if(!('highlights' in CSS)||typeof Highlight!=='function')return;var iOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);if(!iOS)return;document.addEventListener('selectionchange',function(){var s=document.getSelection();if(!s||s.isCollapsed||!s.rangeCount){CSS.highlights.delete('selmirror');return}var h=new Highlight();for(var i=0;i<s.rangeCount;i++)h.add(s.getRangeAt(i));CSS.highlights.set('selmirror',h)})})();</script>
 </body>
