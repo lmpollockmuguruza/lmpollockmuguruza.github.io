@@ -94,14 +94,30 @@
         .topbar-nav a.active{color:var(--burgundy)}
         .topbar-nav a.active::after{transform:scaleX(1)}
         .topbar-right{display:flex;align-items:center;gap:.5rem}
-        .theme-toggle{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border:var(--glass-border);border-radius:50%;background:var(--bg-glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);cursor:pointer;transition:all var(--transition);color:var(--ink-muted)}
-        .theme-toggle:hover{border-color:var(--border-hover);color:var(--burgundy);background:var(--bg-glass-strong);box-shadow:0 2px 12px rgba(107,39,55,.08)}
-        .theme-toggle svg{width:14px;height:14px;fill:currentColor;transition:transform .5s var(--ease-spring)}
-        .theme-toggle:hover svg{transform:rotate(30deg)}
-        .theme-toggle .icon-sun{display:none}.theme-toggle .icon-moon{display:block}
-        [data-theme="dark"] .theme-toggle .icon-sun{display:block}
-        [data-theme="dark"] .theme-toggle .icon-moon{display:none}
-        .theme-toggle-end{display:none;justify-content:center;padding:0 0 1.5rem}
+        /* THEME — a Light/Dark switch and a colour-scheme picker (OG, Vercel, LSE) */
+        .theme-ctl{display:flex;align-items:center;gap:.5rem}
+        .mode-switch{display:inline-flex;padding:3px;border:var(--glass-border);border-radius:999px;background:var(--bg-glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+        .mode-switch button{min-height:28px;padding:0 .8rem;border:0;border-radius:999px;background:none;font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.02em;color:var(--ink-muted);cursor:pointer;transition:color var(--transition),background var(--transition)}
+        .mode-switch button:hover{color:var(--burgundy)}
+        .mode-switch button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+        .scheme{position:relative;display:flex}
+        .scheme i,.scheme-btn i{display:block;flex:none;width:16px;height:16px;border-radius:50%;border:1px solid var(--border-subtle);background:linear-gradient(135deg,var(--sp,var(--bg)) 50%,var(--sa,var(--burgundy)) 50%)}
+        .scheme-btn{display:grid;place-items:center;width:36px;height:36px;padding:0;border:var(--glass-border);border-radius:50%;background:var(--bg-glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);cursor:pointer;transition:border-color var(--transition),box-shadow var(--transition)}
+        .scheme-btn:hover,.scheme.open .scheme-btn{border-color:var(--border-hover);box-shadow:0 2px 12px var(--burgundy-glow)}
+        .scheme-btn i{width:18px;height:18px;background:linear-gradient(135deg,var(--bg) 50%,var(--burgundy) 50%);border-color:var(--ink-ghost)}
+        .scheme-pop{position:absolute;right:0;top:calc(100% + 10px);z-index:5;min-width:190px;padding:6px;display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--border-subtle);border-radius:14px;box-shadow:0 18px 40px -16px rgba(0,0,0,.35);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .2s var(--ease),transform .3s var(--ease-spring),visibility 0s .3s}
+        .scheme.open .scheme-pop{opacity:1;visibility:visible;transform:none;transition:opacity .2s var(--ease),transform .3s var(--ease-spring)}
+        .scheme-pop button{display:flex;align-items:center;gap:.7rem;min-height:40px;padding:0 .75rem;border:0;border-radius:9px;background:none;font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--ink-soft);text-align:left;white-space:nowrap;cursor:pointer;transition:background var(--transition),color var(--transition)}
+        .scheme-pop button:hover{background:var(--burgundy-wash);color:var(--ink)}
+        .scheme-pop button[aria-pressed=true]{color:var(--burgundy);font-weight:500}
+        .scheme-pop button[aria-pressed=true] i{box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--burgundy)}
+        .scheme-pop small{margin-left:auto;padding-left:.8rem;font-size:.66rem;color:var(--ink-faint)}
+        /* inside the floating menu: the picker lies flat as a row of chips */
+        .theme-ctl.flat{flex-direction:column;align-items:flex-start;gap:.75rem;margin-top:14px}
+        .theme-ctl.flat .scheme-btn{display:none}
+        .theme-ctl.flat .scheme-pop{position:static;flex-direction:row;flex-wrap:wrap;gap:6px;min-width:0;padding:0;background:none;border:0;box-shadow:none;opacity:1;visibility:visible;transform:none}
+        .theme-ctl.flat .scheme-pop button{min-height:34px;padding:0 .8rem 0 .5rem;border:1px solid var(--fnav-rule,var(--border-subtle));border-radius:999px;font-size:.74rem;gap:.5rem}
+        .theme-ctl.flat .scheme-pop small{display:none}
         .topbar.away{transform:translateY(-100%);opacity:0;pointer-events:none}
 
         /* FLOATING NAV — once you scroll down, the top bar slides away and a small
@@ -128,7 +144,6 @@
         .fnav-links a::before{counter-increment:n;content:counter(n,decimal-leading-zero);width:2.6em;flex:none;font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.04em;color:var(--ink-faint);font-variant-numeric:tabular-nums;transition:color var(--transition)}
         .fnav-links a:hover,.fnav-links a.active{color:var(--burgundy)}
         .fnav-links a:hover::before,.fnav-links a.active::before{color:var(--burgundy)}
-        .fnav-foot{display:flex;align-items:center;gap:.65rem;margin-top:14px;font-size:.74rem;letter-spacing:.02em;color:var(--ink-muted)}
         .fnav-scrim{position:fixed;inset:0;z-index:110;background:rgba(26,24,22,.22);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
         body.fnav-menu .fnav-scrim{opacity:1;pointer-events:auto}
 
@@ -145,17 +160,12 @@
         .profile-role a{color:var(--burgundy);text-decoration:none;transition:color var(--transition)}
         .profile-role a:hover{color:var(--burgundy-soft)}
         .profile-edu{font-size:.8rem;color:var(--ink-faint);line-height:1.5;padding-top:.5rem;border-top:1px solid var(--border-subtle)}
-        .social-row{display:flex;align-items:center;gap:1rem;margin-top:.8rem;opacity:0;animation:fadeUp .6s var(--ease-spring) .25s forwards}
+        .social-row{display:flex;align-items:center;gap:1rem;margin-top:.8rem;padding-bottom:1.6rem;border-bottom:1px solid var(--border-subtle);opacity:0;animation:fadeUp .6s var(--ease-spring) .25s forwards}
         .social-link{display:flex;align-items:center;justify-content:center;width:28px;height:28px;transition:all var(--transition)}
         .social-link svg{width:18px;height:18px;fill:var(--ink-faint);transition:all var(--transition)}
         .social-link:hover svg{fill:var(--burgundy);transform:translateY(-2px)}
 
         /* SECTION TABS */
-        .section-tabs{display:flex;align-items:center;gap:0;margin:2rem 0 0;border-bottom:1px solid var(--border-subtle);opacity:0;animation:fadeUp .6s var(--ease-spring) .35s forwards}
-        .section-tab{padding:.7rem 1.1rem;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);background:none;border:none;cursor:pointer;position:relative;transition:color var(--transition)}
-        .section-tab:hover{color:var(--ink-muted)}
-        .section-tab.active{color:var(--burgundy)}
-        .section-tab.active::after{content:'';position:absolute;bottom:-1px;left:.5rem;right:.5rem;height:2px;background:var(--burgundy);border-radius:1px}
 
         /* CONTENT SECTIONS */
         .content-section{display:none;padding:2.5rem 0 6rem}
@@ -206,8 +216,7 @@
         .substack-sub{display:block;font-family:'EB Garamond',Georgia,serif;font-size:.92rem;line-height:1.5;color:var(--ink-muted);margin-top:.1rem}
 
         /* OF INTEREST — moved in from its own page; cards and list as they were */
-        .content-section>h2 em{font-style:italic;color:var(--burgundy)}
-        .oi-intro{font-size:.92rem;line-height:1.8;color:var(--ink-muted);max-width:620px;margin-top:-.75rem;opacity:0;animation:fadeUp .7s var(--ease-spring) .2s forwards}
+        .oi-intro{font-size:.92rem;line-height:1.7;color:var(--ink-muted)}
         .oi-intro a{color:var(--burgundy);font-weight:500;text-decoration:none;border-bottom:1px solid var(--burgundy-glow);transition:color .35s var(--ease),border-color .35s var(--ease)}
         .oi-intro a:hover{color:var(--burgundy-soft);border-bottom-color:var(--burgundy-soft)}
         /* ─── Section headings ─── */
@@ -732,15 +741,12 @@
             .palette-modal{padding:1.6rem 1.4rem 1.4rem}
             .palette-swatches{gap:1.2rem}
             .topbar{display:none}
-            .fnav,.fnav-scrim{display:none}
-            .theme-toggle-end{display:flex;padding:0 0 calc(6rem + env(safe-area-inset-bottom))}
+            .fnav{top:10px}
             .page{padding:0 1.5rem}
             .profile-hero{flex-direction:column;gap:1.25rem;padding-top:5rem}
             .profile-img{width:90px;height:90px}
             .profile-text h1{font-size:1.6rem}
-            .section-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch}
-            .section-tab{font-size:.68rem;padding:.6rem .8rem;white-space:nowrap}
-            .content-section{padding-bottom:5rem}
+            .content-section{padding-bottom:calc(7rem + env(safe-area-inset-bottom))}
             .footer{padding:.8rem 1.5rem calc(.8rem + env(safe-area-inset-bottom));flex-direction:column;gap:.3rem;text-align:center}
             .project-item{padding:1rem 1.2rem}
         }
@@ -771,10 +777,17 @@
             <li><a href="#cv" class="nav-link">CV</a></li>
         </ul>
         <div class="topbar-right">
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                <svg class="icon-moon" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
-                <svg class="icon-sun" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
-            </button>
+            <div class="theme-ctl">
+                <div class="mode-switch" role="group" aria-label="Light or dark"><button type="button" data-mode="light" aria-pressed="false">Light</button><button type="button" data-mode="dark" aria-pressed="false">Dark</button></div>
+                <div class="scheme" id="schemeTop">
+                    <button type="button" class="scheme-btn" id="schemeBtn" aria-expanded="false" aria-controls="schemePop" aria-label="Colour scheme"><i></i></button>
+                    <div class="scheme-pop" id="schemePop" role="group" aria-label="Colour scheme">
+                    <button type="button" data-scheme="og" aria-pressed="false"><i></i><span>OG</span><small>lucas' colours</small></button>
+                    <button type="button" data-scheme="vercel" aria-pressed="false"><i></i><span>Vercel</span></button>
+                    <button type="button" data-scheme="lse" aria-pressed="false"><i></i><span>LSE</span></button>
+                </div>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -791,7 +804,14 @@
                 <a href="#ofinterest" data-section="ofinterest">Of Interest</a>
                 <a href="#cv" data-section="cv">CV</a>
             </nav>
-            <div class="fnav-foot"><button class="theme-toggle" id="themeToggleFloat" aria-label="Toggle theme"><svg class="icon-moon" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg><svg class="icon-sun" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg></button>theme</div>
+            <div class="theme-ctl flat">
+                <div class="mode-switch" role="group" aria-label="Light or dark"><button type="button" data-mode="light" aria-pressed="false">Light</button><button type="button" data-mode="dark" aria-pressed="false">Dark</button></div>
+                <div class="scheme"><div class="scheme-pop" role="group" aria-label="Colour scheme">
+                    <button type="button" data-scheme="og" aria-pressed="false"><i></i><span>OG</span><small>lucas' colours</small></button>
+                    <button type="button" data-scheme="vercel" aria-pressed="false"><i></i><span>Vercel</span></button>
+                    <button type="button" data-scheme="lse" aria-pressed="false"><i></i><span>LSE</span></button>
+                </div></div>
+            </div>
         </div>
     </div>
 
@@ -810,14 +830,8 @@
             <a href="https://lucaspollockmuguruza.substack.com/?utm_campaign=profile_chips" target="_blank" class="social-link" title="Substack"><svg viewBox="0 0 24 24"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg></a>
         </div>
 
-        <div class="section-tabs">
-            <button class="section-tab active" data-section="about">About</button>
-            <button class="section-tab" data-section="projects">Research & Publications</button>
-            <button class="section-tab" data-section="ofinterest">Of Interest</button>
-            <button class="section-tab" data-section="cv">CV</button>
-        </div>
-
         <section id="about" class="content-section active">
+            <h2>About</h2>
             <div class="about-content">
                 <p class="scroll-animate">Hey!</p>
                 <p class="scroll-animate">I'm Lucas.</p>
@@ -904,8 +918,8 @@
         </section>
 
         <section id="ofinterest" class="content-section">
-            <h2>Of <em>interest</em></h2>
-            <p class="oi-intro">I sometimes build things — or rather, tell Claude to build them, and then revise them, play with them, change my mind, burn tokens, and exploit whatever creativity or taste I have left to make sure they are something I want to share with curious minds. I also try to stay somewhat connected to the world, and find some really cool things along the way. I've included a few below, so I hope you like them, though I will almost surely share more through <a href="https://www.linkedin.com/in/lucaspollockmuguruza/" target="_blank" rel="noopener">LinkedIn</a>.</p>
+            <h2>Of Interest</h2>
+            <p class="oi-intro scroll-animate">I sometimes build things — or rather, tell Claude to build them, and then revise them, play with them, change my mind, burn tokens, and exploit whatever creativity or taste I have left to make sure they are something I want to share with curious minds. I also try to stay somewhat connected to the world, and find some really cool things along the way. I've included a few below, so I hope you like them, though I will almost surely share more through <a href="https://www.linkedin.com/in/lucaspollockmuguruza/" target="_blank" rel="noopener">LinkedIn</a>.</p>
 
         <!-- ═══ THINGS I BUILT ═══ -->
         <div class="section-marker" data-anim="marker">
@@ -1200,7 +1214,6 @@
                 </div>
             </div>
         </section>
-        <div class="theme-toggle-end"><button class="theme-toggle" id="themeToggleEnd" aria-label="Toggle theme"><svg class="icon-moon" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg><svg class="icon-sun" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg></button></div>
     </div>
 
     <div class="palette-overlay" id="paletteOverlay" aria-hidden="true">
@@ -1285,11 +1298,24 @@
             await flyToHeader();
         }).catch(()=>{}).finally(()=>endIntro());
 
-        const toggle=document.getElementById('themeToggle'),html=document.documentElement,themeOrder=['light','dark','auto'];
-        function getEffectiveTheme(t){return t==='auto'?window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light':t}
-        function applyTheme(t){const e=getEffectiveTheme(t);e==='dark'?html.setAttribute('data-theme','dark'):html.removeAttribute('data-theme');localStorage.setItem('theme',t)}
-        const savedTheme=localStorage.getItem('theme')||'light';if(savedTheme!=='custom')applyTheme(savedTheme);
-        toggle.addEventListener('click',()=>{let c=localStorage.getItem('theme')||'light';if(c==='custom'){clearPalette();applyTheme('light');return}const i=themeOrder.indexOf(c),n=themeOrder[(i+1)%themeOrder.length];applyTheme(n)});
+        /* THEME — Light/Dark and the scheme (OG, Vercel, LSE) live in palette.js,
+           so the choice follows the reader to every other page. */
+        const html=document.documentElement;
+        const OG={light:{paper:'#f2efe9',accent:'#6b2737'},dark:{paper:'#111110',accent:'#c4707f'}};
+        function syncThemeUI(){
+            const custom=SitePalette.custom(),m=SitePalette.mode(),sc=custom?null:SitePalette.scheme();
+            document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',!custom&&b.dataset.mode===m));
+            document.querySelectorAll('[data-scheme]').forEach(b=>{const k=b.dataset.scheme,p=(SitePalette.SCHEMES[k]||OG)[m];b.setAttribute('aria-pressed',k===sc);b.style.setProperty('--sp',p.paper);b.style.setProperty('--sa',p.accent)});
+        }
+        const schemeTop=document.getElementById('schemeTop'),schemeBtn=document.getElementById('schemeBtn');
+        const setSchemePop=on=>{schemeTop.classList.toggle('open',on);schemeBtn.setAttribute('aria-expanded',on)};
+        schemeBtn.addEventListener('click',e=>{e.stopPropagation();setSchemePop(!schemeTop.classList.contains('open'))});
+        document.addEventListener('click',e=>{if(!schemeTop.contains(e.target))setSchemePop(false)});
+        document.addEventListener('keydown',e=>{if(e.key==='Escape'&&schemeTop.classList.contains('open')){setSchemePop(false);schemeBtn.focus()}});
+        document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{SitePalette.setMode(b.dataset.mode);syncThemeUI()}));
+        document.querySelectorAll('[data-scheme]').forEach(b=>b.addEventListener('click',()=>{SitePalette.setScheme(b.dataset.scheme);setSchemePop(false);syncThemeUI()}));
+        document.addEventListener('palettechange',syncThemeUI);
+        SitePalette.render();syncThemeUI();
 
         /* YOUR MODE — custom palette. The colours themselves live in palette.js,
            which every page sharing this scheme loads, so a choice made here
@@ -1314,29 +1340,29 @@
         const presetWrap=document.getElementById('palettePresets');
         PALETTE_PRESETS.forEach(p=>{const b=document.createElement('button');b.className='palette-preset';b.innerHTML=`<span class="palette-preset-dots"><i style="background:${p.paper}"></i><i style="background:${p.accent}"></i><i style="background:${p.ink}"></i></span>${p.name}`;b.addEventListener('click',()=>{writeInputs(p);applyPalette(p)});presetWrap.appendChild(b)});
         function openPalette(){writeInputs(savedPalette()||PALETTE_DEFAULT);pOverlay.classList.add('open');pOverlay.setAttribute('aria-hidden','false')}
-        function closePalette(){pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');const saved=savedPalette();if(saved)applyPalette(saved);else{clearPalette();applyTheme(localStorage.getItem('theme')==='custom'?'light':(localStorage.getItem('theme')||'light'))}}
+        function closePalette(){pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');const saved=savedPalette();if(saved&&localStorage.getItem('theme')==='custom')applyPalette(saved);else SitePalette.render();syncThemeUI()}
         document.getElementById('paletteOpen').addEventListener('click',e=>{e.preventDefault();openPalette()});
         document.getElementById('paletteClose').addEventListener('click',closePalette);
         pOverlay.addEventListener('click',e=>{if(e.target===pOverlay)closePalette()});
         document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pOverlay.classList.contains('open'))closePalette()});
-        document.getElementById('paletteSave').addEventListener('click',()=>{const p=readInputs();applyPalette(p);localStorage.setItem('customPalette',JSON.stringify(p));localStorage.setItem('theme','custom');pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true')});
-        document.getElementById('paletteReset').addEventListener('click',()=>{clearPalette();writeInputs(PALETTE_DEFAULT);applyTheme('light')});
-        if(savedTheme==='custom'){const sp=savedPalette();if(sp)applyPalette(sp);else applyTheme('light')}
-        window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{if(localStorage.getItem('theme')==='auto')applyTheme('auto')});
+        document.getElementById('paletteSave').addEventListener('click',()=>{const p=readInputs();applyPalette(p);localStorage.setItem('customPalette',JSON.stringify(p));localStorage.setItem('theme','custom');pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');syncThemeUI()});
+        document.getElementById('paletteReset').addEventListener('click',()=>{clearPalette();if(localStorage.getItem('theme')==='custom')localStorage.setItem('theme','light');SitePalette.setScheme('og');writeInputs(PALETTE_DEFAULT);syncThemeUI()});
+        window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{if(localStorage.getItem('theme')==='auto'){SitePalette.render();syncThemeUI()}});
 
         const topbar=document.getElementById('topbar');let ticking=false;
         window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(()=>{topbar.classList.toggle('scrolled',window.scrollY>40);navScroll();ticking=false});ticking=true}},{passive:true});
 
         /* FLOATING NAV — past the fold on wide screens the top bar slides away and
-           the floating pill takes its place; back near the top, the bar returns. */
+           the floating pill takes its place; back near the top, the bar returns.
+           Phones have no top bar, so there the pill is always on. */
         const fnavBtn=document.getElementById('fnavBtn'),fnavBrand=document.getElementById('fnavBrand'),fnavLinks=document.querySelectorAll('.fnav-links a'),wideNav=window.matchMedia('(min-width:769px)');
         const FNAV_AT=220;
         function setFnavMenu(on){document.body.classList.toggle('fnav-menu',on);fnavBtn.setAttribute('aria-expanded',on);fnavBtn.querySelector('span').textContent=on?'Close':'Menu'}
         function navScroll(){
-            const on=wideNav.matches&&window.scrollY>FNAV_AT,b=document.body;
+            const on=!wideNav.matches||window.scrollY>FNAV_AT,b=document.body;
             if(on===b.classList.contains('fnav-on'))return;
             if(!on)setFnavMenu(false);
-            b.classList.toggle('fnav-on',on);topbar.classList.toggle('away',on);
+            b.classList.toggle('fnav-on',on);topbar.classList.toggle('away',on&&wideNav.matches);
             [fnavBrand,fnavBtn].forEach(el=>el.tabIndex=on?0:-1);
         }
         fnavBtn.addEventListener('click',()=>setFnavMenu(!document.body.classList.contains('fnav-menu')));
@@ -1344,13 +1370,11 @@
         document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('fnav-menu')){setFnavMenu(false);fnavBtn.focus()}});
         fnavBrand.addEventListener('click',e=>{e.preventDefault();setFnavMenu(false);window.scrollTo({top:0,behavior:'smooth'})});
         fnavLinks.forEach(l=>l.addEventListener('click',e=>{e.preventDefault();setFnavMenu(false);switchSection(l.dataset.section)}));
-        document.getElementById('themeToggleFloat').addEventListener('click',()=>toggle.click());
         wideNav.addEventListener('change',navScroll);
 
-        const sectionTabs=document.querySelectorAll('.section-tab'),topbarLinks=document.querySelectorAll('.topbar-nav .nav-link'),sections=document.querySelectorAll('.content-section');
+        const topbarLinks=document.querySelectorAll('.topbar-nav .nav-link'),sections=document.querySelectorAll('.content-section');
         const SECTION_IDS=[...sections].map(s=>s.id);
-        function switchSection(id){if(!SECTION_IDS.includes(id))return;const current=document.querySelector('.content-section.active');if(current&&current.id!==id&&headerMark.pulse)headerMark.pulse();sectionTabs.forEach(t=>t.classList.toggle('active',t.dataset.section===id));topbarLinks.forEach(l=>{const h=l.getAttribute('href');if(h&&h.startsWith('#'))l.classList.toggle('active',h.substring(1)===id)});fnavLinks.forEach(l=>l.classList.toggle('active',l.dataset.section===id));sections.forEach(s=>s.classList.toggle('active',s.id===id));history.replaceState(null,'',id==='about'?location.pathname+location.search:'#'+id);window.scrollTo({top:0,behavior:'smooth'});setTimeout(observeElements,100);if(id==='ofinterest')animateOfInterest()}
-        sectionTabs.forEach(t=>t.addEventListener('click',()=>switchSection(t.dataset.section)));
+        function switchSection(id){if(!SECTION_IDS.includes(id))return;const current=document.querySelector('.content-section.active');if(current&&current.id!==id&&headerMark.pulse)headerMark.pulse();topbarLinks.forEach(l=>{const h=l.getAttribute('href');if(h&&h.startsWith('#'))l.classList.toggle('active',h.substring(1)===id)});fnavLinks.forEach(l=>l.classList.toggle('active',l.dataset.section===id));sections.forEach(s=>s.classList.toggle('active',s.id===id));history.replaceState(null,'',id==='about'?location.pathname+location.search:'#'+id);window.scrollTo({top:0,behavior:'smooth'});setTimeout(observeElements,100);if(id==='ofinterest')animateOfInterest()}
         topbarLinks.forEach(l=>l.addEventListener('click',e=>{e.preventDefault();switchSection(l.getAttribute('href').substring(1))}));
 
         const scrollIndicator=document.getElementById('scrollIndicator');
@@ -1383,7 +1407,7 @@
 
         /* a link to #projects, #ofinterest or #cv opens that section */
         const hashSection=()=>location.hash.slice(1);
-        if(SECTION_IDS.includes(hashSection())&&hashSection()!=='about')switchSection(hashSection());
+        if(SECTION_IDS.includes(hashSection())){if(hashSection()!=='about')switchSection(hashSection());if('scrollRestoration' in history)history.scrollRestoration='manual';const toTop=()=>window.scrollTo(0,0);toTop();window.addEventListener('load',()=>requestAnimationFrame(toTop),{once:true})}
         window.addEventListener('hashchange',()=>{if(SECTION_IDS.includes(hashSection()))switchSection(hashSection())});
         navScroll();
 
@@ -1400,7 +1424,6 @@
         + '&body='    + encodeURIComponent(b);
 });
     </script>
-<script>document.getElementById("themeToggleEnd").addEventListener("click",function(){document.getElementById("themeToggle").click()});</script>
 <script>(function(){if(!('highlights' in CSS)||typeof Highlight!=='function')return;var iOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);if(!iOS)return;document.addEventListener('selectionchange',function(){var s=document.getSelection();if(!s||s.isCollapsed||!s.rangeCount){CSS.highlights.delete('selmirror');return}var h=new Highlight();for(var i=0;i<s.rangeCount;i++)h.add(s.getRangeAt(i));CSS.highlights.set('selmirror',h)})})();</script>
 </body>
 </html>
