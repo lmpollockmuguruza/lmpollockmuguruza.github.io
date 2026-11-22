@@ -139,11 +139,30 @@
         .fnav-panel{position:absolute;top:calc(100% + 8px);left:0;right:0;padding:16px 20px 18px;background:var(--fnav-bg);backdrop-filter:blur(var(--glass-blur)) saturate(1.4);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.4);border:1px solid var(--fnav-rule);border-radius:18px;box-shadow:0 18px 40px -16px rgba(0,0,0,.35);max-height:calc(100vh - 110px);overflow-y:auto;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .2s var(--ease),transform .3s var(--ease-spring),visibility 0s .3s}
         body.fnav-menu .fnav-panel{opacity:1;visibility:visible;transform:none;transition:opacity .2s var(--ease),transform .3s var(--ease-spring)}
         .fnav-links{display:flex;flex-direction:column;counter-reset:n}
-        .fnav-links a{display:flex;align-items:center;min-height:52px;border-bottom:1px solid var(--fnav-rule);font-family:'EB Garamond',Georgia,serif;font-size:1.35rem;font-weight:400;letter-spacing:-.015em;color:var(--ink);text-decoration:none;transition:color var(--transition)}
-        .fnav-links a:first-child{border-top:1px solid var(--fnav-rule)}
-        .fnav-links a::before{counter-increment:n;content:counter(n,decimal-leading-zero);width:2.6em;flex:none;font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.04em;color:var(--ink-faint);font-variant-numeric:tabular-nums;transition:color var(--transition)}
-        .fnav-links a:hover,.fnav-links a.active{color:var(--burgundy)}
-        .fnav-links a:hover::before,.fnav-links a.active::before{color:var(--burgundy)}
+        .fnav-links a[data-section]{display:flex;align-items:center;min-height:52px;border-bottom:1px solid var(--fnav-rule);font-family:'EB Garamond',Georgia,serif;font-size:1.35rem;font-weight:400;letter-spacing:-.015em;color:var(--ink);text-decoration:none;transition:color var(--transition)}
+        .fnav-links>a:first-child{border-top:1px solid var(--fnav-rule)}
+        .fnav-links a[data-section]::before{counter-increment:n;content:counter(n,decimal-leading-zero);width:2.6em;flex:none;font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.04em;color:var(--ink-faint);font-variant-numeric:tabular-nums;transition:color var(--transition)}
+        .fnav-links a[data-section]:hover,.fnav-links a[data-section].active{color:var(--burgundy)}
+        .fnav-links a[data-section]:hover::before,.fnav-links a[data-section].active::before{color:var(--burgundy)}
+        /* Of Interest opens a compact list of the things I built — on hover, or with the chevron on touch */
+        .fnav-group{border-bottom:1px solid var(--fnav-rule)}
+        .fnav-row{display:flex;align-items:center}
+        .fnav-row a[data-section]{flex:1;border-bottom:0}
+        .fnav-sub-btn{display:grid;place-items:center;flex:none;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:none;color:var(--ink-faint);cursor:pointer;transition:color var(--transition),background var(--transition)}
+        .fnav-sub-btn:hover{color:var(--burgundy);background:var(--burgundy-wash)}
+        .fnav-sub-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease-spring)}
+        .fnav-group.open .fnav-sub-btn svg{transform:rotate(180deg)}
+        .fnav-sub{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s var(--ease-spring)}
+        .fnav-group.open .fnav-sub{grid-template-rows:1fr}
+        .fnav-sub-in{min-height:0;overflow:hidden;visibility:hidden;transition:visibility 0s .3s}
+        .fnav-group.open .fnav-sub-in{visibility:visible;transition:none}
+        .fnav-sub-list{display:flex;flex-direction:column;padding:0 0 8px calc(.72rem * 2.6)}
+        .fnav-sub-list a{display:flex;align-items:center;gap:.6rem;min-height:30px;padding:0 .5rem;margin-left:-.5rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--ink-muted);text-decoration:none;transition:color var(--transition),background var(--transition)}
+        .fnav-sub-list a span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .fnav-sub-list a svg{flex:none;width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;opacity:.45;transition:opacity var(--transition),transform .3s var(--ease-spring)}
+        .fnav-sub-list a:hover,.fnav-sub-list a:focus-visible{color:var(--burgundy);background:var(--burgundy-wash)}
+        .fnav-sub-list a:hover svg{opacity:1;transform:translate(1px,-1px)}
+        @media (pointer:coarse){.fnav-sub-list a{min-height:38px}.fnav-sub-btn{width:44px;height:44px}}
         .fnav-scrim{position:fixed;inset:0;z-index:110;background:rgba(26,24,22,.22);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
         body.fnav-menu .fnav-scrim{opacity:1;pointer-events:auto}
 
@@ -625,7 +644,13 @@
             <nav class="fnav-links" aria-label="Sections">
                 <a href="#about" data-section="about" class="active">About</a>
                 <a href="#projects" data-section="projects">Research &amp; Publications</a>
-                <a href="#ofinterest" data-section="ofinterest">Of Interest</a>
+                <div class="fnav-group" id="fnavOI">
+                    <div class="fnav-row">
+                        <a href="#ofinterest" data-section="ofinterest">Of Interest</a>
+                        <button type="button" class="fnav-sub-btn" id="fnavSubBtn" aria-expanded="false" aria-controls="fnavSub" aria-label="Show things I built"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+                    </div>
+                    <div class="fnav-sub" id="fnavSub"><div class="fnav-sub-in"><div class="fnav-sub-list" id="fnavSubList"></div></div></div>
+                </div>
                 <a href="#cv" data-section="cv">CV</a>
             </nav>
             <div class="theme-ctl flat">
@@ -1068,9 +1093,25 @@
         /* FLOATING NAV — past the fold on wide screens the top bar slides away and
            the floating pill takes its place; back near the top, the bar returns.
            Phones have no top bar, so there the pill is always on. */
-        const fnavBtn=document.getElementById('fnavBtn'),fnavBrand=document.getElementById('fnavBrand'),fnavLinks=document.querySelectorAll('.fnav-links a'),wideNav=window.matchMedia('(min-width:769px)');
+        const fnavBtn=document.getElementById('fnavBtn'),fnavBrand=document.getElementById('fnavBrand'),fnavLinks=document.querySelectorAll('.fnav-links a[data-section]'),wideNav=window.matchMedia('(min-width:769px)');
         const FNAV_AT=220;
-        function setFnavMenu(on){document.body.classList.toggle('fnav-menu',on);fnavBtn.setAttribute('aria-expanded',on);fnavBtn.querySelector('span').textContent=on?'Close':'Menu'}
+        function setFnavMenu(on){document.body.classList.toggle('fnav-menu',on);fnavBtn.setAttribute('aria-expanded',on);fnavBtn.querySelector('span').textContent=on?'Close':'Menu';if(!on)setFnavSub(false)}
+
+        /* Of Interest submenu — built from the cards in .built-grid, so new ones show up on their own.
+           Hovering opens it (after a short pause, so passing over doesn't jolt the list) and it stays
+           open until the menu closes; the chevron toggles it for touch and keyboard. */
+        const fnavOI=document.getElementById('fnavOI'),fnavSubBtn=document.getElementById('fnavSubBtn'),fnavSubList=document.getElementById('fnavSubList');
+        document.querySelectorAll('#ofinterest .built-grid .built-card').forEach(card=>{
+            const t=card.querySelector('.built-card-title'),a=document.createElement('a');
+            a.href=card.getAttribute('href');a.target='_blank';a.rel='noopener';
+            const span=document.createElement('span');span.textContent=t?t.textContent.trim():a.href;
+            a.append(span);a.insertAdjacentHTML('beforeend','<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>');
+            a.addEventListener('click',()=>setFnavMenu(false));
+            fnavSubList.append(a);
+        });
+        function setFnavSub(on){fnavOI.classList.toggle('open',on);fnavSubBtn.setAttribute('aria-expanded',on);fnavSubBtn.setAttribute('aria-label',on?'Hide things I built':'Show things I built')}
+        fnavSubBtn.addEventListener('click',()=>setFnavSub(!fnavOI.classList.contains('open')));
+        if(window.matchMedia('(hover:hover)').matches){let subT;fnavOI.addEventListener('mouseenter',()=>{subT=setTimeout(()=>setFnavSub(true),140)});fnavOI.addEventListener('mouseleave',()=>clearTimeout(subT))}
         function navScroll(){
             const on=!wideNav.matches||window.scrollY>FNAV_AT,b=document.body;
             if(on===b.classList.contains('fnav-on'))return;
