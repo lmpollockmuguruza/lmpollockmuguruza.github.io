@@ -119,11 +119,78 @@
         emit();
     }
 
-    function clear() {
+    /* take the painted colours off, leaving what is saved alone */
+    function unpaint() {
         VARS.forEach(function (k) { html.style.removeProperty('--' + k); });
-        try { localStorage.removeItem('customPalette'); } catch (e) {}
         on = false;
+    }
+
+    function clear() {
+        unpaint();
+        try { localStorage.removeItem('customPalette'); } catch (e) {}
         emit();
+    }
+
+    /* ── Colour schemes ──────────────────────────────────────────────────
+       Picked from the top bar: lucas' own colours (og), Vercel and LSE.
+       Each comes in light and dark; the Light/Dark switch picks which.
+       og is the stylesheet itself, so it paints nothing. */
+    var SCHEMES = {
+        og: null,
+        vercel: {
+            light: { paper: '#ffffff', ink: '#0a0a0a', accent: '#6b7a00' },
+            dark:  { paper: '#0a0a0a', ink: '#ededed', accent: '#eaff00' }
+        },
+        lse: {
+            light: { paper: '#ffffff', ink: '#14171c', accent: '#e0112b' },
+            dark:  { paper: '#0f1115', ink: '#ebedf0', accent: '#ff4d5e' }
+        }
+    };
+    var get = function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } };
+    var put = function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} };
+
+    function scheme() {
+        var sc = get('scheme');
+        return SCHEMES.hasOwnProperty(sc) ? sc : 'og';
+    }
+
+    /* light or dark — 'auto' (an older setting) follows the system */
+    function mode() {
+        var t = get('theme');
+        if (t === 'dark') return 'dark';
+        if (t === 'auto') return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        if (t === 'custom' && on) return isDark() ? 'dark' : 'light';
+        return 'light';
+    }
+
+    /* paint whatever is saved: a custom palette, or a scheme in light/dark */
+    function render() {
+        if (get('theme') === 'custom') {
+            var p = stored();
+            if (p) { apply(p); return; }
+            put('theme', 'light');
+        }
+        var sc = scheme(), m = mode();
+        if (SCHEMES[sc]) apply(SCHEMES[sc][m]);
+        else { unpaint(); emit(); }
+        if (m === 'dark') html.setAttribute('data-theme', 'dark');
+        else html.removeAttribute('data-theme');
+    }
+
+    function setMode(m) {
+        if (get('theme') === 'custom') clear();
+        put('theme', m === 'dark' ? 'dark' : 'light');
+        if (get('gallery-theme')) put('gallery-theme', m === 'dark' ? 'dark' : 'light');
+        render();
+    }
+
+    function setScheme(sc) {
+        if (!SCHEMES.hasOwnProperty(sc)) sc = 'og';
+        var m = mode();
+        if (get('theme') === 'custom') clear();
+        put('scheme', sc);
+        put('theme', m);
+        render();
     }
 
     /* for anything that paints its own colours (canvas, map tiles, markers) */
@@ -165,25 +232,35 @@
         stored: stored,
         isDark: isDark,
         upgrade: upgrade,
+        SCHEMES: SCHEMES,
+        scheme: scheme,
+        mode: mode,
+        render: render,
+        setMode: setMode,
+        setScheme: setScheme,
+        custom: function () { return get('theme') === 'custom' && on; },
         active: function () { return on; }
     };
 
-    /* Apply before first paint. */
-    apply(stored());
+    /* Apply before first paint. On lucas' own colours each page keeps its
+       own light/dark start-up, so there is nothing to do here. */
+    if (get('theme') === 'custom' || scheme() !== 'og') render();
 
-    /* While a custom palette is on, the theme toggle drops it and goes back to
-       lucas' colours — same as the toggle does on the home page. Capture the
-       click before each page's own handler sees it. */
+    /* The theme toggles on the other pages: under a custom palette they drop it
+       and go back to lucas' colours; under Vercel or LSE they flip that scheme
+       between light and dark. Capture the click before the page's own handler. */
     document.addEventListener('click', function (e) {
         if (!on || !e.target || !e.target.closest) return;
-        if (!e.target.closest('.theme-toggle,#themeToggle,#themeToggleEnd')) return;
+        if (!e.target.closest('.theme-toggle,#themeToggle')) return;
         e.preventDefault();
         e.stopPropagation();
-        clear();
-        try {
-            localStorage.setItem('theme', 'light');
-            if (localStorage.getItem('gallery-theme')) localStorage.setItem('gallery-theme', 'light');
-        } catch (err) {}
-        html.removeAttribute('data-theme');
+        if (get('theme') === 'custom') {
+            clear();
+            put('theme', 'light');
+            if (get('gallery-theme')) put('gallery-theme', 'light');
+            html.removeAttribute('data-theme');
+        } else {
+            setMode(mode() === 'dark' ? 'light' : 'dark');
+        }
     }, true);
 }());
