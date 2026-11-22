@@ -31,7 +31,7 @@
         'shadow-photo', 'shadow-photo-hover', 'shadow-cluster',
         'selection'
     ];
-    var DEFAULT = { paper: '#f2efe9', ink: '#1a1816', accent: '#6b2737', sel: '#6b2737' };
+    var DEFAULT = { paper: '#f2efe9', ink: '#1a1816', accent: '#6b2737' };
     var WHITE = [255, 255, 255];
 
     var hx = function (h) { h = String(h).replace('#', ''); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; };
@@ -44,7 +44,8 @@
 
     function apply(p) {
         if (!p || !p.paper || !p.ink || !p.accent) return;
-        var bg = hx(p.paper), ink = hx(p.ink), ac = hx(p.accent), se = hx(p.sel || p.accent);
+        /* the selection highlight is the accent — one colour, not two */
+        var bg = hx(p.paper), ink = hx(p.ink), ac = hx(p.accent);
         var light = lum(bg) > 0.5;
         var s = html.style;
         var set = function (k, v) { s.setProperty('--' + k, v); };
@@ -66,7 +67,7 @@
         set('burgundy-glow', rgba(ac, light ? 0.10 : 0.13));
         set('border-hover', rgba(ac, light ? 0.2 : 0.22));
         set('border-focus', rgba(ac, light ? 0.25 : 0.28));
-        set('selection', rgb(se));
+        set('selection', rgb(ac));
 
         /* surfaces — opaque on solid pages, floating glass elsewhere */
         var cardSolid = light ? rgb(mix(bg, WHITE, 0.55)) : rgb(mix(bg, ink, 0.055));
@@ -130,12 +131,21 @@
         try { document.dispatchEvent(new CustomEvent('palettechange')); } catch (e) {}
     }
 
+    /* palettes saved when accent and selection were separate: the old vercel
+       preset kept its neon yellow in the selection, so that becomes the accent */
+    function upgrade(p) {
+        if (p && p.sel && String(p.sel).toLowerCase() === '#eaff00' &&
+            String(p.accent).toLowerCase() === '#fafafa') p.accent = '#eaff00';
+        if (p) delete p.sel;
+        return p;
+    }
+
     /* the saved palette, or null when the reader is on light/dark/auto */
     function stored() {
         try {
             if (localStorage.getItem('theme') !== 'custom') return null;
             var raw = localStorage.getItem('customPalette');
-            return raw ? JSON.parse(raw) : null;
+            return raw ? upgrade(JSON.parse(raw)) : null;
         } catch (e) { return null; }
     }
 
@@ -154,6 +164,7 @@
         clear: clear,
         stored: stored,
         isDark: isDark,
+        upgrade: upgrade,
         active: function () { return on; }
     };
 

@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
     <script src="palette.js"></script>
     <script src="lpm-mark.js" defer></script>
+    <script src="cursor-trace.js" defer></script>
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         :root{
@@ -28,6 +29,7 @@
             --glass-blur:20px;--glass-border:1px solid rgba(255,255,255,0.55);
             --glass-shadow:0 4px 24px rgba(26,24,22,0.04),0 1px 3px rgba(26,24,22,0.03);
             --glass-shadow-hover:0 8px 32px rgba(107,39,55,0.07),0 2px 8px rgba(107,39,55,0.04);
+            --glass-shadow-elevated:0 12px 44px rgba(107,39,55,0.1),0 4px 12px rgba(107,39,55,0.05),0 6px 20px rgba(26,24,22,0.04);
             --radius:20px;--radius-sm:12px;--radius-xs:8px;
             --ease:cubic-bezier(0.4,0,0.2,1);--ease-spring:cubic-bezier(0.16,1,0.3,1);
             --transition:0.35s cubic-bezier(0.4,0,0.2,1);
@@ -44,6 +46,7 @@
             --glass-border:1px solid rgba(255,255,255,0.08);
             --glass-shadow:0 4px 24px rgba(0,0,0,0.15),0 1px 3px rgba(0,0,0,0.1);
             --glass-shadow-hover:0 8px 32px rgba(196,112,127,0.12),0 2px 8px rgba(196,112,127,0.06);
+            --glass-shadow-elevated:0 12px 44px rgba(196,112,127,0.15),0 4px 12px rgba(196,112,127,0.08),0 6px 20px rgba(0,0,0,0.15);
         }
         html{font-size:16px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:smooth}
         body{font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--ink-soft);min-height:100vh;min-height:100dvh;line-height:1.65;transition:background-color .5s var(--ease),color .5s var(--ease);overflow-x:hidden}
@@ -99,6 +102,35 @@
         [data-theme="dark"] .theme-toggle .icon-sun{display:block}
         [data-theme="dark"] .theme-toggle .icon-moon{display:none}
         .theme-toggle-end{display:none;justify-content:center;padding:0 0 1.5rem}
+        .topbar.away{transform:translateY(-100%);opacity:0;pointer-events:none}
+
+        /* FLOATING NAV — once you scroll down, the top bar slides away and a small
+           floating pill (mark + Menu) drops in. Menu opens the sections as a panel. */
+        .fnav{--fnav-bg:var(--bg);--fnav-rule:var(--border-subtle);position:fixed;top:14px;left:50%;z-index:120;width:min(420px,calc(100vw - 32px));opacity:0;visibility:hidden;pointer-events:none;transform:translate(-50%,-14px);transition:opacity .25s var(--ease),transform .35s var(--ease-spring),visibility 0s .35s}
+        @supports(background:color-mix(in srgb,red 50%,blue)){.fnav{--fnav-bg:color-mix(in srgb,var(--bg) 84%,transparent);--fnav-rule:color-mix(in srgb,var(--ink) 12%,transparent)}}
+        body.fnav-on .fnav{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0);transition:opacity .25s var(--ease),transform .35s var(--ease-spring)}
+        .fnav-pill{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:8px 8px 8px 16px;background:var(--fnav-bg);backdrop-filter:blur(var(--glass-blur)) saturate(1.4);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.4);border:1px solid var(--fnav-rule);border-radius:18px;box-shadow:0 10px 30px -12px rgba(0,0,0,.28)}
+        .fnav-brand{display:inline-flex;align-items:center;gap:10px;min-width:0;font-family:'EB Garamond',Georgia,serif;font-size:1rem;font-weight:500;color:var(--ink);text-decoration:none;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;transition:color var(--transition)}
+        .fnav-brand span{overflow:hidden;text-overflow:ellipsis}
+        .fnav-brand:hover{color:var(--burgundy)}
+        .fnav-btn{display:inline-flex;align-items:center;gap:8px;flex:none;min-height:40px;padding:0 14px;border:1px solid var(--fnav-rule);border-radius:999px;background:none;font-family:'DM Sans',sans-serif;font-size:.78rem;letter-spacing:.02em;color:var(--ink-soft);cursor:pointer;transition:color var(--transition),border-color var(--transition),background var(--transition)}
+        .fnav-btn:hover{color:var(--burgundy);border-color:var(--border-hover);background:var(--burgundy-wash)}
+        .fnav-btn i{position:relative;display:block;width:14px;height:10px}
+        .fnav-btn i::before,.fnav-btn i::after{content:'';position:absolute;left:0;right:0;height:1.5px;border-radius:1px;background:currentColor;transition:transform .25s var(--ease-spring),top .25s var(--ease-spring)}
+        .fnav-btn i::before{top:1px}.fnav-btn i::after{top:7.5px}
+        body.fnav-menu .fnav-btn i::before{top:4.25px;transform:rotate(45deg)}
+        body.fnav-menu .fnav-btn i::after{top:4.25px;transform:rotate(-45deg)}
+        .fnav-panel{position:absolute;top:calc(100% + 8px);left:0;right:0;padding:16px 20px 18px;background:var(--fnav-bg);backdrop-filter:blur(var(--glass-blur)) saturate(1.4);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.4);border:1px solid var(--fnav-rule);border-radius:18px;box-shadow:0 18px 40px -16px rgba(0,0,0,.35);max-height:calc(100vh - 110px);overflow-y:auto;opacity:0;visibility:hidden;transform:translateY(-8px);transition:opacity .2s var(--ease),transform .3s var(--ease-spring),visibility 0s .3s}
+        body.fnav-menu .fnav-panel{opacity:1;visibility:visible;transform:none;transition:opacity .2s var(--ease),transform .3s var(--ease-spring)}
+        .fnav-links{display:flex;flex-direction:column;counter-reset:n}
+        .fnav-links a{display:flex;align-items:center;min-height:52px;border-bottom:1px solid var(--fnav-rule);font-family:'EB Garamond',Georgia,serif;font-size:1.35rem;font-weight:400;letter-spacing:-.015em;color:var(--ink);text-decoration:none;transition:color var(--transition)}
+        .fnav-links a:first-child{border-top:1px solid var(--fnav-rule)}
+        .fnav-links a::before{counter-increment:n;content:counter(n,decimal-leading-zero);width:2.6em;flex:none;font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.04em;color:var(--ink-faint);font-variant-numeric:tabular-nums;transition:color var(--transition)}
+        .fnav-links a:hover,.fnav-links a.active{color:var(--burgundy)}
+        .fnav-links a:hover::before,.fnav-links a.active::before{color:var(--burgundy)}
+        .fnav-foot{display:flex;align-items:center;gap:.65rem;margin-top:14px;font-size:.74rem;letter-spacing:.02em;color:var(--ink-muted)}
+        .fnav-scrim{position:fixed;inset:0;z-index:110;background:rgba(26,24,22,.22);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
+        body.fnav-menu .fnav-scrim{opacity:1;pointer-events:auto}
 
         /* PAGE */
         .page{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:0 2rem}
@@ -124,9 +156,6 @@
         .section-tab:hover{color:var(--ink-muted)}
         .section-tab.active{color:var(--burgundy)}
         .section-tab.active::after{content:'';position:absolute;bottom:-1px;left:.5rem;right:.5rem;height:2px;background:var(--burgundy);border-radius:1px}
-        .section-tab-link{display:inline-flex;align-items:center;gap:.3rem;padding:.7rem 1.1rem;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);text-decoration:none;transition:color var(--transition)}
-        .section-tab-link:hover{color:var(--burgundy)}
-        .section-tab-link svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 
         /* CONTENT SECTIONS */
         .content-section{display:none;padding:2.5rem 0 6rem}
@@ -175,6 +204,459 @@
         .substack-title{display:block;font-size:.86rem;font-weight:500;color:var(--ink);transition:color var(--transition)}
         .substack-list a:hover .substack-title{color:var(--burgundy)}
         .substack-sub{display:block;font-family:'EB Garamond',Georgia,serif;font-size:.92rem;line-height:1.5;color:var(--ink-muted);margin-top:.1rem}
+
+        /* OF INTEREST — moved in from its own page; cards and list as they were */
+        .content-section>h2 em{font-style:italic;color:var(--burgundy)}
+        .oi-intro{font-size:.92rem;line-height:1.8;color:var(--ink-muted);max-width:620px;margin-top:-.75rem;opacity:0;animation:fadeUp .7s var(--ease-spring) .2s forwards}
+        .oi-intro a{color:var(--burgundy);font-weight:500;text-decoration:none;border-bottom:1px solid var(--burgundy-glow);transition:color .35s var(--ease),border-color .35s var(--ease)}
+        .oi-intro a:hover{color:var(--burgundy-soft);border-bottom-color:var(--burgundy-soft)}
+        /* ─── Section headings ─── */
+        .section-marker {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 3.5rem 0 2rem;
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        .section-marker.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section-marker-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--border-subtle) 0%, transparent 100%);
+        }
+        .section-marker-line:first-child {
+            background: linear-gradient(90deg, transparent 0%, var(--border-subtle) 100%);
+        }
+        .section-marker-text {
+            font-size: 0.58rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--ink-faint);
+            white-space: nowrap;
+            padding: 0.35rem 0.9rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: var(--glass-border);
+            border-radius: 100px;
+        }
+        .section-count {
+            font-variant-numeric: tabular-nums;
+            font-size: 0.55rem;
+            color: var(--burgundy);
+            opacity: 0.7;
+            margin-left: 0.1rem;
+        }
+        /* ─── BUILT section (vibe-coded projects) ─── */
+        .built-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            padding-bottom: 0.5rem;
+        }
+        .built-card {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            padding: 1.5rem;
+            background:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E") repeat,
+                var(--bg-card);
+            background-size: 128px, auto;
+            backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+            border: var(--glass-border);
+            border-radius: var(--radius);
+            box-shadow: var(--glass-shadow);
+            transition:
+                background 0s,
+                border-color 0s,
+                box-shadow 0s;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            will-change: transform;
+        }
+        .built-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Glass sheen */
+        .built-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.12) 0%,
+                rgba(255, 255, 255, 0) 40%,
+                rgba(255, 255, 255, 0) 60%,
+                rgba(255, 255, 255, 0.04) 100%
+            );
+            pointer-events: none;
+            border-radius: inherit;
+            transition: opacity 0s;
+        }
+        [data-theme="dark"] .built-card::before {
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.04) 0%,
+                rgba(255, 255, 255, 0) 40%,
+                rgba(255, 255, 255, 0) 60%,
+                rgba(255, 255, 255, 0.02) 100%
+            );
+        }
+        /* Rim light — top edge highlight */
+        .built-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 6%;
+            right: 6%;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.8) 25%,
+                rgba(255, 255, 255, 1) 50%,
+                rgba(255, 255, 255, 0.8) 75%,
+                transparent 100%
+            );
+            opacity: 0.75;
+            pointer-events: none;
+            transition: opacity 0s;
+        }
+        [data-theme="dark"] .built-card::after {
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.15) 25%,
+                rgba(255, 255, 255, 0.28) 50%,
+                rgba(255, 255, 255, 0.15) 75%,
+                transparent 100%
+            );
+            opacity: 0.55;
+        }
+        .built-card:hover {
+            background:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E") repeat,
+                var(--bg-card-hover);
+            background-size: 128px, auto;
+            border-color: var(--border-hover);
+            box-shadow: var(--glass-shadow-elevated);
+        }
+        .built-card:hover::after {
+            opacity: 1;
+        }
+        [data-theme="dark"] .built-card:hover::after {
+            opacity: 0.8;
+        }
+        .built-card:active {
+            box-shadow: var(--glass-shadow);
+        }
+        /* Full-width card for featured project */
+        .built-card.featured {
+            grid-column: 1 / -1;
+        }
+        .built-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 0.65rem;
+        }
+        .built-card-title {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.3rem;
+            font-weight: 500;
+            line-height: 1.25;
+            color: var(--ink);
+            transition: color 0s;
+        }
+        .built-card:hover .built-card-title {
+            color: var(--burgundy);
+        }
+        .built-card-arrow {
+            flex-shrink: 0;
+            width: 20px; height: 20px;
+            stroke: var(--ink-ghost);
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all 0s;
+            margin-top: 0.15rem;
+        }
+        .built-card:hover .built-card-arrow {
+            stroke: var(--burgundy);
+            transform: translate(3px, -3px);
+        }
+        .built-card-note {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 0.95rem;
+            font-style: italic;
+            line-height: 1.55;
+            color: var(--ink-muted);
+            flex: 1;
+        }
+        .built-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-top: 1.1rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+        .built-card-meta {
+            font-size: 0.68rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.02em;
+        }
+        .built-card-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.58rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--burgundy);
+            background: var(--burgundy-wash);
+            border: 1px solid var(--burgundy-glow);
+            padding: 0.2rem 0.5rem;
+            border-radius: 100px;
+            transition: all 0s;
+        }
+        .built-card-tag::before {
+            content: '';
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: var(--burgundy);
+            opacity: 0.5;
+        }
+        .built-card:hover .built-card-tag {
+            background: var(--burgundy-glow);
+        }
+        /* ─── FOUND section (curated items) ─── */
+        .found-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding-bottom: 1rem;
+        }
+        .found-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            text-decoration: none;
+            color: inherit;
+            padding: 1.15rem 1.4rem;
+            background:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E") repeat,
+                var(--bg-glass);
+            background-size: 128px, auto;
+            backdrop-filter: blur(12px) saturate(1.2);
+            -webkit-backdrop-filter: blur(12px) saturate(1.2);
+            border: var(--glass-border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--glass-shadow);
+            transition:
+                background 0s,
+                border-color 0s,
+                box-shadow 0s,
+                transform 0s;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(14px);
+        }
+        .found-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Rim light — found items */
+        .found-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 8%;
+            right: 8%;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.7) 25%,
+                rgba(255, 255, 255, 0.95) 50%,
+                rgba(255, 255, 255, 0.7) 75%,
+                transparent 100%
+            );
+            opacity: 0.6;
+            pointer-events: none;
+            transition: opacity 0s;
+        }
+        [data-theme="dark"] .found-item::after {
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.12) 25%,
+                rgba(255, 255, 255, 0.22) 50%,
+                rgba(255, 255, 255, 0.12) 75%,
+                transparent 100%
+            );
+            opacity: 0.45;
+        }
+        .found-item:hover {
+            background:
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 128 128' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E") repeat,
+                var(--bg-card-hover);
+            background-size: 128px, auto;
+            border-color: var(--border-hover);
+            box-shadow: var(--glass-shadow-hover);
+            transform: translateY(-2px);
+        }
+        .found-item:hover::after {
+            opacity: 0.9;
+        }
+        [data-theme="dark"] .found-item:hover::after {
+            opacity: 0.65;
+        }
+        .found-item:active {
+            transform: translateY(0);
+        }
+        .found-item-number {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: var(--ink-ghost);
+            line-height: 1;
+            min-width: 1.6rem;
+            padding-top: 0.15rem;
+            transition: color 0s;
+        }
+        .found-item:hover .found-item-number {
+            color: var(--burgundy);
+            opacity: 0.5;
+        }
+        .found-item-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .found-item-title {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            line-height: 1.35;
+            color: var(--ink);
+            transition: color 0s;
+            margin-bottom: 0.25rem;
+        }
+        .found-item:hover .found-item-title {
+            color: var(--burgundy);
+        }
+        .found-item-meta {
+            font-size: 0.72rem;
+            color: var(--ink-faint);
+            letter-spacing: 0.015em;
+            margin-bottom: 0.45rem;
+        }
+        .found-item-note {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 0.92rem;
+            font-style: italic;
+            line-height: 1.55;
+            color: var(--ink-muted);
+        }
+        .found-item-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+            flex-shrink: 0;
+            padding-top: 0.1rem;
+        }
+        .found-item-tag {
+            font-size: 0.58rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--ink-faint);
+            background: var(--bg-glass-strong);
+            border: 1px solid var(--border-subtle);
+            padding: 0.18rem 0.45rem;
+            border-radius: 100px;
+            transition: all 0s;
+            white-space: nowrap;
+        }
+        .found-item:hover .found-item-tag {
+            color: var(--burgundy);
+            border-color: var(--burgundy-glow);
+            background: var(--burgundy-wash);
+        }
+        .found-item-arrow {
+            width: 16px; height: 16px;
+            stroke: var(--ink-ghost);
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all 0s;
+        }
+        .found-item:hover .found-item-arrow {
+            stroke: var(--burgundy);
+            transform: translate(2px, -2px);
+        }
+        @media (max-width: 640px) {
+            .oi-intro { font-size: 0.88rem; }
+            .built-grid {
+                grid-template-columns: 1fr;
+            }
+            .built-card { padding: 1.25rem; }
+            .built-card-title { font-size: 1.15rem; }
+            .built-card-note { font-size: 0.9rem; }
+            /* Disable tilt on mobile */
+            .built-card {
+                transform: translateY(20px) !important;
+            }
+            .built-card.visible {
+                transform: translateY(0) !important;
+            }
+            .found-item {
+                padding: 1rem 1.15rem;
+                gap: 0.85rem;
+            }
+            .found-item-number { display: none; }
+            .found-item-title { font-size: 1.02rem; }
+            .found-item-note { font-size: 0.88rem; }
+            .found-item-right { display: none; }
+            .found-item-tag-mobile {
+                display: inline-block !important;
+            }
+            .section-marker { margin: 2.5rem 0 1.5rem; }
+        }
+        /* Mobile-only tag display */
+        .found-item-tag-mobile {
+            display: none;
+            font-size: 0.55rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--ink-faint);
+            background: var(--bg-glass-strong);
+            border: 1px solid var(--border-subtle);
+            padding: 0.15rem 0.4rem;
+            border-radius: 100px;
+            margin-top: 0.4rem;
+        }
+        .found-item-tag-mobile{display:none;font-size:.55rem;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);background:var(--bg-glass-strong);border:1px solid var(--border-subtle);padding:.15rem .4rem;border-radius:100px;margin-top:.4rem}
+        @media (max-width: 640px){.found-item-tag-mobile{display:inline-block}}
 
         /* CV */
         .cv-link{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;font-weight:500;color:var(--burgundy);letter-spacing:.02em;text-decoration:none;border-bottom:1px solid var(--burgundy-glow);padding-bottom:2px;transition:color var(--transition),border-color var(--transition);margin-top:.5rem}
@@ -250,6 +732,7 @@
             .palette-modal{padding:1.6rem 1.4rem 1.4rem}
             .palette-swatches{gap:1.2rem}
             .topbar{display:none}
+            .fnav,.fnav-scrim{display:none}
             .theme-toggle-end{display:flex;padding:0 0 calc(6rem + env(safe-area-inset-bottom))}
             .page{padding:0 1.5rem}
             .profile-hero{flex-direction:column;gap:1.25rem;padding-top:5rem}
@@ -257,7 +740,6 @@
             .profile-text h1{font-size:1.6rem}
             .section-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch}
             .section-tab{font-size:.68rem;padding:.6rem .8rem;white-space:nowrap}
-            .section-tab-link{font-size:.68rem;padding:.6rem .8rem;white-space:nowrap}
             .content-section{padding-bottom:5rem}
             .footer{padding:.8rem 1.5rem calc(.8rem + env(safe-area-inset-bottom));flex-direction:column;gap:.3rem;text-align:center}
             .project-item{padding:1rem 1.2rem}
@@ -285,7 +767,7 @@
         <ul class="topbar-nav">
             <li><a href="#about" class="nav-link active">About</a></li>
             <li><a href="#projects" class="nav-link">Research</a></li>
-            <li><a href="./ofinterest/" class="nav-link nav-link-external">Of Interest</a></li>
+            <li><a href="#ofinterest" class="nav-link">Of Interest</a></li>
             <li><a href="#cv" class="nav-link">CV</a></li>
         </ul>
         <div class="topbar-right">
@@ -295,6 +777,23 @@
             </button>
         </div>
     </nav>
+
+    <div class="fnav-scrim" id="fnavScrim"></div>
+    <div class="fnav" id="fnav">
+        <div class="fnav-pill">
+            <a href="#" class="fnav-brand" id="fnavBrand" tabindex="-1"><lpm-mark class="brandmark" trigger="a" aria-hidden="true" weight="8"></lpm-mark><span>Lucas Pollock Muguruza</span></a>
+            <button type="button" class="fnav-btn" id="fnavBtn" aria-expanded="false" aria-controls="fnavPanel" tabindex="-1"><i aria-hidden="true"></i><span>Menu</span></button>
+        </div>
+        <div class="fnav-panel" id="fnavPanel">
+            <nav class="fnav-links" aria-label="Sections">
+                <a href="#about" data-section="about" class="active">About</a>
+                <a href="#projects" data-section="projects">Research &amp; Publications</a>
+                <a href="#ofinterest" data-section="ofinterest">Of Interest</a>
+                <a href="#cv" data-section="cv">CV</a>
+            </nav>
+            <div class="fnav-foot"><button class="theme-toggle" id="themeToggleFloat" aria-label="Toggle theme"><svg class="icon-moon" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg><svg class="icon-sun" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg></button>theme</div>
+        </div>
+    </div>
 
     <div class="page">
         <div class="profile-hero">
@@ -314,7 +813,7 @@
         <div class="section-tabs">
             <button class="section-tab active" data-section="about">About</button>
             <button class="section-tab" data-section="projects">Research & Publications</button>
-            <a href="./ofinterest/" class="section-tab-link">Of Interest <svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>
+            <button class="section-tab" data-section="ofinterest">Of Interest</button>
             <button class="section-tab" data-section="cv">CV</button>
         </div>
 
@@ -404,6 +903,241 @@
             </div>
         </section>
 
+        <section id="ofinterest" class="content-section">
+            <h2>Of <em>interest</em></h2>
+            <p class="oi-intro">I sometimes build things — or rather, tell Claude to build them, and then revise them, play with them, change my mind, burn tokens, and exploit whatever creativity or taste I have left to make sure they are something I want to share with curious minds. I also try to stay somewhat connected to the world, and find some really cool things along the way. I've included a few below, so I hope you like them, though I will almost surely share more through <a href="https://www.linkedin.com/in/lucaspollockmuguruza/" target="_blank" rel="noopener">LinkedIn</a>.</p>
+
+        <!-- ═══ THINGS I BUILT ═══ -->
+        <div class="section-marker" data-anim="marker">
+            <span class="section-marker-line"></span>
+            <span class="section-marker-text">Things I built <span class="section-count">· 8</span></span>
+            <span class="section-marker-line"></span>
+        </div>
+
+        <div class="built-grid">
+
+            <a href="https://lmpollockmuguruza.github.io/prior/" target="_blank" rel="noopener" class="built-card featured" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">Prior</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <p class="built-card-note">A workbench for research ideas — from the moment one occurs to you until it earns a real literature review, a real data request, or a real model. Capture takes one keystroke and no fields; the questions unfold only when you ask for them; and it versions your answers, so you can see how the thinking moved. It is named after the field it locks: what you thought the literature said <i>before</i> you read any of it, kept honest and comparable against what you later found. Identifying assumptions stay claims about institutions rather than properties of a file, and closing an idea is made to feel like the work it is. Local-first — no account, no server, no network calls at all.</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2026 · added 3 Aug 2026</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
+            </a>
+
+            <a href="https://lmpollockmuguruza.github.io/cinefilematic/" target="_blank" rel="noopener" class="built-card featured" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">Cinefilematic</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <p class="built-card-note">A film questionnaire for people who've already seen the obvious ones — now in a second edition, for one screen or a whole film club. It interviews you properly, then composes a numbered, one-of-a-kind brief: hand it to any LLM and ask for five films for tonight, or a programmed season. The taste stays yours; only the legwork is outsourced.</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2026 · added 2 Jun 2026</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
+            </a>
+
+            <a href="https://verso-nextjs.vercel.app/" target="_blank" rel="noopener" class="built-card featured" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">verso</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <p class="built-card-note">A tool I am currently developing, hosted on Vercel. Next steps include greater AI integration, expanding onto other fields, and newsletter</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2026 · added 4 Feb 2026 (in production)</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
+            </a>
+            
+            <a href="https://lmpollockmuguruza.github.io/gallery/" target="_blank" rel="noopener" class="built-card" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">Gallery</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <p class="built-card-note">A gallery of my own pictures with a scrolling and visualisation idea that helps you actually look at pictures rather than scroll past them</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2026 · added 12 Feb 2026</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
+            </a>
+
+            <a href="https://lmpollockmuguruza.github.io/did-it-rain/" target="_blank" rel="noopener" class="built-card" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">Did it rain?</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <p class="built-card-note">A tool that tells you how long it's been raining straight in London and Manchester, plus 200 other cities around the world</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2026 · added 12 Feb 2026</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
+            </a>
+
+            <a href="https://lmpollockmuguruza.github.io/architecture/" target="_blank" rel="noopener" class="built-card" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">Architecture</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <p class="built-card-note">An unprincipled idea of what I think architecture should be (or at least from what my eyes have seen)</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2026 · added 7 Feb 2026</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
+            </a>
+
+            <a href="https://lmpollockmuguruza.github.io/pl-vibe-quiz/" target="_blank" rel="noopener" class="built-card" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">Premier League Quiz</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <p class="built-card-note">A "what's my team" quiz I vibe coded with Claude. It's really worth a click, even if just for the vibes yk?</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2026 · added 10 Jan 2026</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
+            </a>
+
+                        <a href="https://lmpollockmuguruza.github.io/fund-strategy-game/" target="_blank" rel="noopener" class="built-card featured" data-anim="card">
+                <div class="built-card-top">
+                    <span class="built-card-title">Fund Strategy — Private Markets Simulator</span>
+                    <svg class="built-card-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+                <p class="built-card-note">A simulator of being your own VC/PE fund. Buy companies, improve your fund, make your investors happy. For feedback, reach out to Claude.</p>
+                <div class="built-card-footer">
+                    <span class="built-card-meta">2026 · added 10 Jan 2026</span>
+                    <span class="built-card-tag">vibe-coded</span>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- ═══ THINGS I FOUND ═══ -->
+        <div class="section-marker" data-anim="marker">
+            <span class="section-marker-line"></span>
+            <span class="section-marker-text">Things I found <span class="section-count">· 8</span></span>
+            <span class="section-marker-line"></span>
+        </div>
+
+        <div class="found-list">
+
+            <a href="https://danioffline.substack.com/p/everyone-wants-to-be-a-dj-no-one" target="_blank" rel="noopener" class="found-item" data-anim="card">
+                <span class="found-item-number">1</span>
+                <div class="found-item-content">
+                    <div class="found-item-title">everyone wants to be a DJ, no one wants to dance</div>
+                    <div class="found-item-meta">by Dani Offline · 2025 · added 29 Dec 2025</div>
+                    <p class="found-item-note">A wonderful essay I have interpreted as a call to enjoy art rather than use it for the well-intentioned goal of being artists.</p>
+                    <span class="found-item-tag-mobile">essay</span>
+                </div>
+                <div class="found-item-right">
+                    <span class="found-item-tag">essay</span>
+                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+            </a>
+
+            <a href="https://www.newyorker.com/culture/open-questions/should-you-just-give-up" target="_blank" rel="noopener" class="found-item" data-anim="card">
+                <span class="found-item-number">2</span>
+                <div class="found-item-content">
+                    <div class="found-item-title">Should you just give up?</div>
+                    <div class="found-item-meta">by Joshua Rothman · 2024 · added 29 Dec 2025</div>
+                    <p class="found-item-note">An article that is best described by its deck: Sisyphus couldn't stop pushing his boulder — but you can.</p>
+                    <span class="found-item-tag-mobile">article</span>
+                </div>
+                <div class="found-item-right">
+                    <span class="found-item-tag">article</span>
+                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+            </a>
+
+            <a href="https://www.are.na/" target="_blank" rel="noopener" class="found-item" data-anim="card">
+                <span class="found-item-number">3</span>
+                <div class="found-item-content">
+                    <div class="found-item-title">Are.na</div>
+                    <div class="found-item-meta">by various · 2014 · added 12 Feb 2026</div>
+                    <p class="found-item-note">A philosophical and design inspiration I didn't know I had until I saw it today</p>
+                    <span class="found-item-tag-mobile">website</span>
+                </div>
+                <div class="found-item-right">
+                    <span class="found-item-tag">website</span>
+                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+            </a>
+
+            <a href="https://sublime.app/" target="_blank" rel="noopener" class="found-item" data-anim="card">
+                <span class="found-item-number">4</span>
+                <div class="found-item-content">
+                    <div class="found-item-title">Sublime</div>
+                    <div class="found-item-meta">by Sari Azout · 2025 · added 12 Feb 2026</div>
+                    <p class="found-item-note">A different yet familiar approach to content I encourage people to try out. Also, I wish I knew how to add those sounds after clicking</p>
+                    <span class="found-item-tag-mobile">website</span>
+                </div>
+                <div class="found-item-right">
+                    <span class="found-item-tag">website</span>
+                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+            </a>
+            
+              <a href="https://ape.socialcatalystlab.org/" target="_blank" rel="noopener" class="found-item" data-anim="card">
+                <span class="found-item-number">5</span>
+                <div class="found-item-content">
+                    <div class="found-item-title">Project APE (Autonomous Policy Evaluation)</div>
+                    <div class="found-item-meta">by Social Catalyst Lab (University of Zurich) · 2026 · added 14 Feb 2026</div>
+                    <p class="found-item-note">One of the most interesting projects right now in the AI + social science world. I remain agnostic on what it will find, but if you pinch me I’d say it will not be able to create novel ideas, not necessarily because it is bad at doing so even with proper supervision, but because novel ideas are often papers someone decided not to try (or tried) for a variety of reasons (e.g., lack of quality data, inappropriate methods, null results), and an AI may overestimate it’s capacity to go beyond these (or simply lacks the private information of select researchers).</p>
+                    <span class="found-item-tag-mobile">project</span>
+                </div>
+                <div class="found-item-right">
+                    <span class="found-item-tag">project</span>
+                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+            </a>
+
+            <a href="https://cicl.stanford.edu/papers/gerstenberg2021csm.pdf" target="_blank" rel="noopener" class="found-item" data-anim="card">
+                <span class="found-item-number">6</span>
+                <div class="found-item-content">
+                    <div class="found-item-title">A Counterfactual Simulation Model of Causal Judgments for Physical Events</div>
+                    <div class="found-item-meta">by Gerstenberg et al. · 2021 · added 2 Apr 2026</div>
+                    <p class="found-item-note">A paper which I found by accident but interestingly provides a well-explained theory from psychology for causal judgements of physical events. Too often we err on the side of knowledge, mistaking its edge for the end</p>
+                    <span class="found-item-tag-mobile">paper</span>
+                </div>
+                <div class="found-item-right">
+                    <span class="found-item-tag">article</span>
+                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+            </a>
+
+            <a href="https://www.aeaweb.org/articles?id=10.1257/jel.20241665" target="_blank" rel="noopener" class="found-item" data-anim="card">
+                <span class="found-item-number">7</span>
+                <div class="found-item-content">
+                    <div class="found-item-title">The Economics of Attention</div>
+                    <div class="found-item-meta">by Loewenstein & Wojtowicz · 2025 · added 11 Apr 2026</div>
+                    <p class="found-item-note">A paper I somehow always come back to in gloomy days</p>
+                    <span class="found-item-tag-mobile">paper</span>
+                </div>
+                <div class="found-item-right">
+                    <span class="found-item-tag">article</span>
+                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+            </a>
+
+            <a href="https://cruxevals.com/open-world-evaluations.pdf" target="_blank" rel="noopener" class="found-item" data-anim="card">
+                <span class="found-item-number">8</span>
+                <div class="found-item-content">
+                    <div class="found-item-title">Open-world evaluations for measuring frontier AI capabilities</div>
+                    <div class="found-item-meta">by Kapoor et al. · 2026 · added 17 Apr 2026</div>
+                    <p class="found-item-note">A very interesting take on how we can start testing AI capabilities beyond benchmarks.</p>
+                    <span class="found-item-tag-mobile">paper</span>
+                </div>
+                <div class="found-item-right">
+                    <span class="found-item-tag">paper</span>
+                    <svg class="found-item-arrow" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+                </div>
+            </a>
+            
+        </div>
+        </section>
+
         <section id="cv" class="content-section">
             <h2>Curriculum Vitae</h2>
             <p class="scroll-animate" style="font-size:.92rem;color:var(--ink-muted);line-height:1.7">Read my complete CV for details on education, experience, and research — in the browser, in a separate window, or as a PDF.</p>
@@ -473,12 +1207,11 @@
         <div class="palette-modal" role="dialog" aria-modal="true" aria-label="Your mode">
             <button class="palette-close" id="paletteClose" aria-label="Close">&times;</button>
             <h3 class="palette-title">Your mode</h3>
-            <p class="palette-sub">Four colours make this site — paper, ink, an accent, and the selection highlight. Pick your own; everything else follows. The whole page changes as you play, and if you keep it, the rest of the site comes along.</p>
+            <p class="palette-sub">Three colours make this site — paper, ink, and an accent, which is also what lights up the text you select. Pick your own; everything else follows. The whole page changes as you play, and if you keep it, the rest of the site comes along.</p>
             <div class="palette-swatches">
                 <label class="palette-swatch"><input type="color" id="pcPaper" value="#f2efe9"><span>paper</span></label>
                 <label class="palette-swatch"><input type="color" id="pcInk" value="#1a1816"><span>ink</span></label>
                 <label class="palette-swatch"><input type="color" id="pcAccent" value="#6b2737"><span>accent</span></label>
-                <label class="palette-swatch"><input type="color" id="pcSel" value="#6b2737"><span>selection</span></label>
             </div>
             <div class="palette-presets" id="palettePresets"></div>
             <div class="palette-preview">
@@ -560,40 +1293,63 @@
 
         /* YOUR MODE — custom palette. The colours themselves live in palette.js,
            which every page sharing this scheme loads, so a choice made here
-           follows the reader into Of Interest, the gallery, and the rest. */
+           follows the reader into the gallery, the papers, and the rest.
+           The accent doubles as the selection highlight. */
         const PALETTE_DEFAULT=SitePalette.DEFAULT;
         const PALETTE_PRESETS=[
-            {name:'olive grove',paper:'#edefe6',ink:'#1d201b',accent:'#3f5e46',sel:'#3f5e46'},
-            {name:'prussian',paper:'#f3f1ea',ink:'#191c24',accent:'#23456e',sel:'#23456e'},
-            {name:'violet hour',paper:'#141220',ink:'#e8e4f2',accent:'#a48fe0',sel:'#a48fe0'},
-            {name:'ember',paper:'#161210',ink:'#ece2d8',accent:'#cd8b62',sel:'#cd8b62'},
-            {name:'vercel',paper:'#0a0a0a',ink:'#ededed',accent:'#fafafa',sel:'#eaff00'},
-            {name:'lse',paper:'#ffffff',ink:'#14171c',accent:'#e0112b',sel:'#e0112b'}
+            {name:'olive grove',paper:'#edefe6',ink:'#1d201b',accent:'#3f5e46'},
+            {name:'prussian',paper:'#f3f1ea',ink:'#191c24',accent:'#23456e'},
+            {name:'violet hour',paper:'#141220',ink:'#e8e4f2',accent:'#a48fe0'},
+            {name:'ember',paper:'#161210',ink:'#ece2d8',accent:'#cd8b62'},
+            {name:'vercel',paper:'#0a0a0a',ink:'#ededed',accent:'#eaff00'},
+            {name:'lse',paper:'#ffffff',ink:'#14171c',accent:'#e0112b'}
         ];
         const applyPalette=p=>SitePalette.apply(p);
         const clearPalette=()=>SitePalette.clear();
-        const pOverlay=document.getElementById('paletteOverlay'),pInputs={paper:document.getElementById('pcPaper'),ink:document.getElementById('pcInk'),accent:document.getElementById('pcAccent'),sel:document.getElementById('pcSel')};
-        const readInputs=()=>({paper:pInputs.paper.value,ink:pInputs.ink.value,accent:pInputs.accent.value,sel:pInputs.sel.value});
-        const writeInputs=p=>{pInputs.paper.value=p.paper;pInputs.ink.value=p.ink;pInputs.accent.value=p.accent;pInputs.sel.value=p.sel||p.accent};
+        const pOverlay=document.getElementById('paletteOverlay'),pInputs={paper:document.getElementById('pcPaper'),ink:document.getElementById('pcInk'),accent:document.getElementById('pcAccent')};
+        const readInputs=()=>({paper:pInputs.paper.value,ink:pInputs.ink.value,accent:pInputs.accent.value});
+        const writeInputs=p=>{pInputs.paper.value=p.paper;pInputs.ink.value=p.ink;pInputs.accent.value=p.accent};
+        const savedPalette=()=>{const raw=localStorage.getItem('customPalette');return raw?SitePalette.upgrade(JSON.parse(raw)):null};
         Object.values(pInputs).forEach(el=>el.addEventListener('input',()=>applyPalette(readInputs())));
         const presetWrap=document.getElementById('palettePresets');
-        PALETTE_PRESETS.forEach(p=>{const b=document.createElement('button');b.className='palette-preset';b.innerHTML=`<span class="palette-preset-dots"><i style="background:${p.paper}"></i><i style="background:${p.accent}"></i><i style="background:${p.sel}"></i><i style="background:${p.ink}"></i></span>${p.name}`;b.addEventListener('click',()=>{writeInputs(p);applyPalette(p)});presetWrap.appendChild(b)});
-        function openPalette(){const saved=localStorage.getItem('customPalette');writeInputs(saved?JSON.parse(saved):PALETTE_DEFAULT);pOverlay.classList.add('open');pOverlay.setAttribute('aria-hidden','false')}
-        function closePalette(){pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');const saved=localStorage.getItem('customPalette');if(saved)applyPalette(JSON.parse(saved));else{clearPalette();applyTheme(localStorage.getItem('theme')==='custom'?'light':(localStorage.getItem('theme')||'light'))}}
+        PALETTE_PRESETS.forEach(p=>{const b=document.createElement('button');b.className='palette-preset';b.innerHTML=`<span class="palette-preset-dots"><i style="background:${p.paper}"></i><i style="background:${p.accent}"></i><i style="background:${p.ink}"></i></span>${p.name}`;b.addEventListener('click',()=>{writeInputs(p);applyPalette(p)});presetWrap.appendChild(b)});
+        function openPalette(){writeInputs(savedPalette()||PALETTE_DEFAULT);pOverlay.classList.add('open');pOverlay.setAttribute('aria-hidden','false')}
+        function closePalette(){pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true');const saved=savedPalette();if(saved)applyPalette(saved);else{clearPalette();applyTheme(localStorage.getItem('theme')==='custom'?'light':(localStorage.getItem('theme')||'light'))}}
         document.getElementById('paletteOpen').addEventListener('click',e=>{e.preventDefault();openPalette()});
         document.getElementById('paletteClose').addEventListener('click',closePalette);
         pOverlay.addEventListener('click',e=>{if(e.target===pOverlay)closePalette()});
         document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pOverlay.classList.contains('open'))closePalette()});
         document.getElementById('paletteSave').addEventListener('click',()=>{const p=readInputs();applyPalette(p);localStorage.setItem('customPalette',JSON.stringify(p));localStorage.setItem('theme','custom');pOverlay.classList.remove('open');pOverlay.setAttribute('aria-hidden','true')});
         document.getElementById('paletteReset').addEventListener('click',()=>{clearPalette();writeInputs(PALETTE_DEFAULT);applyTheme('light')});
-        if(savedTheme==='custom'){const sp=localStorage.getItem('customPalette');if(sp)applyPalette(JSON.parse(sp));else applyTheme('light')}
+        if(savedTheme==='custom'){const sp=savedPalette();if(sp)applyPalette(sp);else applyTheme('light')}
         window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{if(localStorage.getItem('theme')==='auto')applyTheme('auto')});
 
         const topbar=document.getElementById('topbar');let ticking=false;
-        window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(()=>{topbar.classList.toggle('scrolled',window.scrollY>40);ticking=false});ticking=true}});
+        window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(()=>{topbar.classList.toggle('scrolled',window.scrollY>40);navScroll();ticking=false});ticking=true}},{passive:true});
 
-        const sectionTabs=document.querySelectorAll('.section-tab'),topbarLinks=document.querySelectorAll('.topbar-nav .nav-link:not(.nav-link-external)'),sections=document.querySelectorAll('.content-section');
-        function switchSection(id){const current=document.querySelector('.content-section.active');if(current&&current.id!==id&&headerMark.pulse)headerMark.pulse();sectionTabs.forEach(t=>t.classList.toggle('active',t.dataset.section===id));topbarLinks.forEach(l=>{const h=l.getAttribute('href');if(h&&h.startsWith('#'))l.classList.toggle('active',h.substring(1)===id)});sections.forEach(s=>s.classList.toggle('active',s.id===id));window.scrollTo({top:0,behavior:'smooth'});setTimeout(observeElements,100)}
+        /* FLOATING NAV — past the fold on wide screens the top bar slides away and
+           the floating pill takes its place; back near the top, the bar returns. */
+        const fnavBtn=document.getElementById('fnavBtn'),fnavBrand=document.getElementById('fnavBrand'),fnavLinks=document.querySelectorAll('.fnav-links a'),wideNav=window.matchMedia('(min-width:769px)');
+        const FNAV_AT=220;
+        function setFnavMenu(on){document.body.classList.toggle('fnav-menu',on);fnavBtn.setAttribute('aria-expanded',on);fnavBtn.querySelector('span').textContent=on?'Close':'Menu'}
+        function navScroll(){
+            const on=wideNav.matches&&window.scrollY>FNAV_AT,b=document.body;
+            if(on===b.classList.contains('fnav-on'))return;
+            if(!on)setFnavMenu(false);
+            b.classList.toggle('fnav-on',on);topbar.classList.toggle('away',on);
+            [fnavBrand,fnavBtn].forEach(el=>el.tabIndex=on?0:-1);
+        }
+        fnavBtn.addEventListener('click',()=>setFnavMenu(!document.body.classList.contains('fnav-menu')));
+        document.getElementById('fnavScrim').addEventListener('click',()=>setFnavMenu(false));
+        document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('fnav-menu')){setFnavMenu(false);fnavBtn.focus()}});
+        fnavBrand.addEventListener('click',e=>{e.preventDefault();setFnavMenu(false);window.scrollTo({top:0,behavior:'smooth'})});
+        fnavLinks.forEach(l=>l.addEventListener('click',e=>{e.preventDefault();setFnavMenu(false);switchSection(l.dataset.section)}));
+        document.getElementById('themeToggleFloat').addEventListener('click',()=>toggle.click());
+        wideNav.addEventListener('change',navScroll);
+
+        const sectionTabs=document.querySelectorAll('.section-tab'),topbarLinks=document.querySelectorAll('.topbar-nav .nav-link'),sections=document.querySelectorAll('.content-section');
+        const SECTION_IDS=[...sections].map(s=>s.id);
+        function switchSection(id){if(!SECTION_IDS.includes(id))return;const current=document.querySelector('.content-section.active');if(current&&current.id!==id&&headerMark.pulse)headerMark.pulse();sectionTabs.forEach(t=>t.classList.toggle('active',t.dataset.section===id));topbarLinks.forEach(l=>{const h=l.getAttribute('href');if(h&&h.startsWith('#'))l.classList.toggle('active',h.substring(1)===id)});fnavLinks.forEach(l=>l.classList.toggle('active',l.dataset.section===id));sections.forEach(s=>s.classList.toggle('active',s.id===id));history.replaceState(null,'',id==='about'?location.pathname+location.search:'#'+id);window.scrollTo({top:0,behavior:'smooth'});setTimeout(observeElements,100);if(id==='ofinterest')animateOfInterest()}
         sectionTabs.forEach(t=>t.addEventListener('click',()=>switchSection(t.dataset.section)));
         topbarLinks.forEach(l=>l.addEventListener('click',e=>{e.preventDefault();switchSection(l.getAttribute('href').substring(1))}));
 
@@ -603,6 +1359,33 @@
 
         function observeElements(){const o=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){en.target.classList.add('visible');o.unobserve(en.target)}})},{threshold:.08,rootMargin:'0px 0px -40px 0px'});const a=document.querySelector('.content-section.active');if(a)a.querySelectorAll('.scroll-animate').forEach(el=>{if(!el.classList.contains('visible'))o.observe(el)})}
         document.addEventListener('DOMContentLoaded',observeElements);
+
+        /* OF INTEREST — staggered entrance, and the cursor tilt on the built cards */
+        const oiObserver=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(!entry.isIntersecting)return;const el=entry.target;el.classList.add('visible');oiObserver.unobserve(el);const delay=parseFloat(el.style.transitionDelay||'0')*1000;setTimeout(()=>{el.style.transitionDuration='';el.style.transitionTimingFunction='';el.style.transitionProperty='';el.style.transitionDelay=''},delay+800)})},{threshold:.06,rootMargin:'0px 0px -30px 0px'});
+        function animateOfInterest(){
+            let built=0,found=0,marker=0;
+            document.querySelectorAll('#ofinterest [data-anim]:not(.visible)').forEach(el=>{
+                if(el.dataset.anim==='marker')el.style.transitionDelay=`${.15+marker++*.5}s`;
+                else if(el.closest('.built-grid'))el.style.transitionDelay=`${.25+built++*.06}s`;
+                else el.style.transitionDelay=`${.2+found++*.06}s`;
+                el.style.transitionDuration='.7s';el.style.transitionTimingFunction='cubic-bezier(0.16,1,0.3,1)';el.style.transitionProperty='opacity, transform';
+                oiObserver.observe(el);
+            });
+        }
+        if(!window.matchMedia('(max-width: 640px)').matches&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+            const MAX_TILT=3.5;
+            document.querySelectorAll('#ofinterest .built-card').forEach(card=>{
+                let springRaf=null,cx=0,cy=0;
+                card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect(),x=((e.clientX-r.left)/r.width-.5)*2,y=((e.clientY-r.top)/r.height-.5)*2;cx=-y*MAX_TILT;cy=x*MAX_TILT;card.style.transform=`perspective(600px) rotateX(${cx}deg) rotateY(${cy}deg) translateY(-5px) scale(1.012)`});
+                card.addEventListener('mouseleave',()=>{if(springRaf)cancelAnimationFrame(springRaf);(function springBack(){cx*=.88;cy*=.88;if(Math.abs(cx)>.02||Math.abs(cy)>.02){card.style.transform=`perspective(600px) rotateX(${cx}deg) rotateY(${cy}deg)`;springRaf=requestAnimationFrame(springBack)}else{card.style.transform='';springRaf=null}})()});
+            });
+        }
+
+        /* a link to #projects, #ofinterest or #cv opens that section */
+        const hashSection=()=>location.hash.slice(1);
+        if(SECTION_IDS.includes(hashSection())&&hashSection()!=='about')switchSection(hashSection());
+        window.addEventListener('hashchange',()=>{if(SECTION_IDS.includes(hashSection()))switchSection(hashSection())});
+        navScroll();
 
         let showGreeting=false,footerSwapping=false;const footerInfo=document.getElementById('footerInfo');const LAST_UPDATED='Last updated: July 2026';
         setInterval(()=>{if(document.hidden||footerSwapping)return;footerSwapping=true;footerInfo.classList.add('fade-out');setTimeout(()=>{footerInfo.textContent=showGreeting?LAST_UPDATED:getTimeBasedGreeting();showGreeting=!showGreeting;requestAnimationFrame(()=>requestAnimationFrame(()=>{footerInfo.classList.remove('fade-out');footerSwapping=false}))},650)},7500);
