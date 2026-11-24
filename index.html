@@ -160,6 +160,7 @@
         .fnav-sub-list{display:flex;flex-direction:column;padding:0 0 8px calc(.72rem * 2.6)}
         .fnav-sub-list a{display:flex;align-items:center;gap:.6rem;min-height:30px;padding:0 .5rem;margin-left:-.5rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.8rem;color:var(--ink-muted);text-decoration:none;transition:color var(--transition),background var(--transition)}
         .fnav-sub-list a span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .fnav-new{font-style:normal;font-size:.62rem;font-weight:500;letter-spacing:.06em;color:var(--burgundy);margin-left:.3rem}
         .fnav-sub-list a svg{flex:none;width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;opacity:.45;transition:opacity var(--transition),transform .3s var(--ease-spring)}
         .fnav-sub-list a:hover,.fnav-sub-list a:focus-visible{color:var(--burgundy);background:var(--burgundy-wash)}
         .fnav-sub-list a:hover svg{opacity:1;transform:translate(1px,-1px)}
@@ -236,13 +237,27 @@
         .tc-note .tc-ns{display:block;margin:0;font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:.95rem;line-height:1.5;color:var(--ink-soft)}
         .tc-note .tc-ns i{font-style:normal}
         .tc-note .tc-nm{display:block;margin:.5rem 0 0;font-size:.72rem;line-height:1.4;color:var(--ink-muted)}
-        .tc-hint{margin:0;font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:.95rem;line-height:1.5;color:var(--ink-faint)}
         .stag{display:inline-block;margin-top:.5rem;font-family:'DM Sans',sans-serif;font-size:.66rem;line-height:1.6;letter-spacing:.02em;color:var(--burgundy);border:1px solid var(--burgundy);border-radius:3px;padding:0 .4rem;transform:rotate(-2deg)}
+        .tc{position:relative}
+        .tc-new{display:inline-block;margin-left:.45rem;font-family:'DM Sans',sans-serif;font-size:.62rem;font-weight:500;line-height:1.5;letter-spacing:.06em;text-transform:lowercase;color:var(--burgundy);border:1px solid var(--burgundy-glow);background:var(--burgundy-wash);border-radius:100px;padding:0 .45rem;vertical-align:.15em;white-space:nowrap}
+        .tc-new-note{margin:0 0 .45rem;vertical-align:0}
+        .tc-note .tc-new-note{display:inline-block}
+        .tc-d{display:block;font-family:'DM Sans',sans-serif;font-size:.72rem;line-height:1.4;color:var(--ink-muted);margin-top:.15rem}
+        .tc-static{cursor:default}
+        .tc-static:hover .tc-lead{opacity:.9}
+        .tc-group{font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin:1.1rem 0 .1rem}
+        .tc-sec h3+.tc-group{margin-top:.8rem}
+        .tc-foot{font-size:.78rem;font-style:italic;color:var(--ink-faint);margin-top:.6rem}
+        .tc-aside{align-self:start;position:sticky;top:5.5rem;padding-left:.9rem;border-left:1px solid var(--burgundy)}
+        .tc-aside-lede{font-family:'EB Garamond',Georgia,serif;font-style:italic;font-size:.95rem;line-height:1.5;color:var(--ink-soft);margin-bottom:.8rem}
+        .tc-aside .cv-links{flex-direction:column;align-items:flex-start;gap:.55rem;margin-top:0}
+        .tc-aside .cv-update{font-size:.72rem;margin-top:.9rem}
         @media(max-width:700px){
             .tc{grid-template-columns:1fr}
             .tc-margin{display:none}
             .tc-note{position:static;margin:.1rem 0 .7rem;transition:none}
             .tc-row{padding:.55rem 0}
+            .tc-cv .tc-aside{position:static;order:-1;margin-bottom:.4rem}
         }
 
         /* CV */
@@ -256,18 +271,6 @@
         .cv-link-secondary:hover{color:var(--burgundy);border-bottom-color:var(--burgundy-glow)}
         .cv-link-secondary svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
         .cv-update{font-size:.82rem;color:var(--ink-faint);margin-top:.75rem;font-style:italic}
-        .cv-content-wrapper{display:grid;grid-template-columns:1fr;gap:2.5rem;margin-top:2.5rem}
-        @media(min-width:640px){.cv-content-wrapper{grid-template-columns:1fr 1px 1fr;gap:2rem;align-items:start}}
-        .cv-divider{display:none}
-        @media(min-width:640px){.cv-divider{display:block;width:1px;background:var(--border-subtle);height:100%;min-height:280px}}
-        .coursework-section h3{font-family:'EB Garamond',Georgia,serif;font-size:1.15rem;font-weight:500;color:var(--ink);margin-bottom:.75rem;margin-top:0}
-        .coursework-section p{font-size:.88rem;color:var(--ink-muted);line-height:1.7;margin-bottom:.75rem}
-        .coursework-section p strong{color:var(--ink-soft);font-weight:500}
-        .coursework-list{list-style:none;font-size:.88rem;line-height:1.85}
-        .coursework-list li{color:var(--ink-muted);padding-left:1.2rem;position:relative}
-        .coursework-list li::before{content:'▸';position:absolute;left:0;color:var(--burgundy);font-weight:bold;font-size:.85rem}
-        .coursework-note{font-size:.8rem;color:var(--ink-faint);margin-top:.75rem;font-style:italic}
-        @media(max-width:639px){.coursework-section:first-child{padding-bottom:2rem;border-bottom:1px solid var(--border-subtle)}}
 
         /* FOOTER */
         .footer{position:fixed;bottom:0;left:0;right:0;padding:1.1rem 2.5rem calc(1.1rem + env(safe-area-inset-bottom));z-index:100;background:var(--bg-glass);backdrop-filter:blur(var(--glass-blur)) saturate(1.4);-webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.4);border-top:var(--glass-border);box-shadow:0 -1px 8px rgba(0,0,0,.02);display:flex;justify-content:space-between;align-items:center;font-size:.78rem;color:var(--ink-muted);transition:all .3s ease}
@@ -479,7 +482,7 @@
                 <a class="tc-row" href="https://broadpeak.ch/amoc/" target="_blank" rel="noopener"><span class="tc-t">AMOC Article</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Broadpeak</span><span class="tc-src"><span class="tc-ns">Exploring socioeconomic impacts and political considerations of the Atlantic Meridional Overturning Circulation's (AMOC) weakening, making use of the most recent evidence on its potential collapse.</span><span class="tc-nm">Broadpeak · Policy Analyst</span></span></a>
             </section>
             </div>
-            <div class="tc-margin" aria-hidden="true"><div class="tc-note"><p class="tc-hint">Hover over a line and its note appears here, in the margin.</p></div></div>
+            <div class="tc-margin" aria-hidden="true"><div class="tc-note"></div></div>
             </div>
         </section>
 
@@ -490,7 +493,7 @@
             <section class="tc-sec scroll-animate" data-built>
                 <h3>Things I built<span class="tc-count">7</span></h3>
                 <a class="tc-row" href="https://lmpollockmuguruza.github.io/prior/" target="_blank" rel="noopener"><span class="tc-t">Prior</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">added 3 Aug 2026</span><span class="tc-src"><span class="tc-ns">An attempt to build something useful for researchers with lots of ideas in a long but unstructured pipeline</span><span class="tc-nm">2026 · added 3 Aug 2026</span><span class="stag">vibe-coded</span></span></a>
-                <a class="tc-row" href="https://lmpollockmuguruza.github.io/cinefilematic/" target="_blank" rel="noopener"><span class="tc-t">Cinefilematic</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">added 2 Jun 2026</span><span class="tc-src"><span class="tc-ns">A fun side-project that tries to combine my love for film with vibe-coding quizzes</span><span class="tc-nm">2026 · added 2 Jun 2026</span><span class="stag">vibe-coded</span></span></a>
+                <a class="tc-row" data-new="2026-11-22" href="https://lmpollockmuguruza.github.io/cinefilematic/" target="_blank" rel="noopener"><span class="tc-t">Cinefilematic</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">redesigned 22 Nov 2026</span><span class="tc-src"><span class="tc-ns">A fun side-project that tries to combine my love for film with vibe-coding quizzes</span><span class="tc-nm">2026 · added 2 Jun 2026 · redesigned 22 Nov 2026</span><span class="stag">vibe-coded</span></span></a>
                 <a class="tc-row" href="https://lmpollockmuguruza.github.io/gallery/" target="_blank" rel="noopener"><span class="tc-t">Gallery</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">added 12 Feb 2026</span><span class="tc-src"><span class="tc-ns">A gallery of my own pictures with a scrolling and visualisation idea that helps you actually look at pictures rather than scroll past them</span><span class="tc-nm">2026 · added 12 Feb 2026</span><span class="stag">vibe-coded</span></span></a>
                 <a class="tc-row" href="https://lmpollockmuguruza.github.io/did-it-rain/" target="_blank" rel="noopener"><span class="tc-t">Did it rain?</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">added 12 Feb 2026</span><span class="tc-src"><span class="tc-ns">A tool that tells you how long it's been raining straight in London and Manchester, plus 200 other cities around the world</span><span class="tc-nm">2026 · added 12 Feb 2026</span><span class="stag">vibe-coded</span></span></a>
                 <a class="tc-row" href="https://lmpollockmuguruza.github.io/architecture/" target="_blank" rel="noopener"><span class="tc-t">Architecture</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">added 7 Feb 2026</span><span class="tc-src"><span class="tc-ns">An unprincipled idea of what I think architecture should be (or at least from what my eyes have seen)</span><span class="tc-nm">2026 · added 7 Feb 2026</span><span class="stag">vibe-coded</span></span></a>
@@ -507,73 +510,68 @@
                 <a class="tc-row" href="https://cicl.stanford.edu/papers/gerstenberg2021csm.pdf" target="_blank" rel="noopener"><span class="tc-t">A Counterfactual Simulation Model of Causal Judgments for Physical Events</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Gerstenberg et al., 2021</span><span class="tc-src"><span class="tc-ns">A paper which I found by accident but interestingly provides a well-explained theory from psychology for causal judgements of physical events. Too often we err on the side of knowledge, mistaking its edge for the end</span><span class="tc-nm">paper · by Gerstenberg et al. · 2021 · added 2 Apr 2026</span></span></a>
                 <a class="tc-row" href="https://www.aeaweb.org/articles?id=10.1257/jel.20241665" target="_blank" rel="noopener"><span class="tc-t">The Economics of Attention</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Loewenstein &amp; Wojtowicz, 2025</span><span class="tc-src"><span class="tc-ns">A paper I somehow always come back to in gloomy days</span><span class="tc-nm">paper · by Loewenstein &amp; Wojtowicz · 2025 · added 11 Apr 2026</span></span></a>
                 <a class="tc-row" href="https://cruxevals.com/open-world-evaluations.pdf" target="_blank" rel="noopener"><span class="tc-t">Open-world evaluations for measuring frontier AI capabilities</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Kapoor et al., 2026</span><span class="tc-src"><span class="tc-ns">A very interesting take on how we can start testing AI capabilities beyond benchmarks.</span><span class="tc-nm">paper · by Kapoor et al. · 2026 · added 17 Apr 2026</span></span></a>
-                <a class="tc-row" href="https://www.hup.harvard.edu/file/feeds/PDF/9780674302457_sample.pdf" target="_blank" rel="noopener"><span class="tc-t">The Riddle of Poetry</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Jorge Luis Borges, 1967</span><span class="tc-src"><span class="tc-ns">The first of Borges' Norton lectures at Harvard, free to read as a sample of <i>This Craft of Verse</i>. Absolutely incredible.</span><span class="tc-nm">lecture · by Jorge Luis Borges · 1967 · added 22 Nov 2026</span></span></a>
+                <a class="tc-row" data-new="2026-11-22" href="https://www.hup.harvard.edu/file/feeds/PDF/9780674302457_sample.pdf" target="_blank" rel="noopener"><span class="tc-t">The Riddle of Poetry</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Jorge Luis Borges, 1967</span><span class="tc-src"><span class="tc-ns">The first of Borges' Norton lectures at Harvard, free to read as a sample of <i>This Craft of Verse</i>. Absolutely incredible.</span><span class="tc-nm">lecture · by Jorge Luis Borges · 1967 · added 22 Nov 2026</span></span></a>
             </section>
             </div>
-            <div class="tc-margin" aria-hidden="true"><div class="tc-note"><p class="tc-hint">Hover over a line and its note appears here, in the margin.</p></div></div>
+            <div class="tc-margin" aria-hidden="true"><div class="tc-note"></div></div>
             </div>
         </section>
 
         <section id="cv" class="content-section">
             <h2><span class="reink">Curriculum Vitae</span></h2>
-            <p class="scroll-animate" style="font-size:.92rem;color:var(--ink-muted);line-height:1.7">Read my complete CV for details on education, experience, and research — in the browser, in a separate window, or as a PDF.</p>
-            <div class="cv-links scroll-animate">
-                <a href="cv/" class="cv-link">Read CV</a>
-                <a href="cv/Lucas-Pollock-Muguruza-CV.pdf" class="cv-link-secondary" target="_blank" rel="noopener">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
-                    Open the PDF in a new window
-                </a>
-                <a href="cv/Lucas-Pollock-Muguruza-CV.pdf" class="cv-link-secondary" download>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
-                    Download
-                </a>
-            </div>
-            <p class="cv-update scroll-animate">Last updated: July 2026</p>
-            <div class="cv-content-wrapper">
-                <div class="coursework-section scroll-animate">
+            <div class="tc tc-cv">
+                <div class="tc-main">
+                <section class="tc-sec scroll-animate">
                     <h3>MSc Coursework</h3>
-                    <p>During my MSc studies I have undertaken the following coursework:</p>
-                    <ul class="coursework-list">
-                        <li>MY452 Applied Regression Analysis (R)</li>
-                        <li>MY457 Causal Inference for Observational and Experimental Studies (R)</li>
-                        <li>ST442 Longitudinal Data Analysis* (R)</li>
-                        <li>GV481 Quantitative Analysis for Political Science (R)</li>
-                        <li>GV4C8 Game Theory for Political Science</li>
-                        <li>GV4L6 Political Economy of Inequality</li>
-                        <li>GV482 Political Science and Political Economy: Current Issues (R)</li>
-                        <li>GV499 Dissertation (Department of Government) - "Corruption, Social Networks, and School Cheating" - supervised by Prof Sarah Brierley</li>
-                        <li>PP440 Micro and Macro Economics (for Public Policy)*</li>
-                        <li>GV4L8/9 Intro to Maths/R for Political Science*</li>
-                    </ul>
-                    <p class="coursework-note">(* Indicates audited or non-assessed courses)</p>
-                </div>
-                <div class="cv-divider"></div>
-                <div class="coursework-section scroll-animate">
+                    <p class="tc-intro">During my MSc studies I have undertaken the following coursework:</p>
+                    <div class="tc-row tc-static"><span class="tc-t">Applied Regression Analysis</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">MY452 · R</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Causal Inference for Observational and Experimental Studies</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">MY457 · R</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Longitudinal Data Analysis*</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">ST442 · R</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Quantitative Analysis for Political Science</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">GV481 · R</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Game Theory for Political Science</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">GV4C8</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Political Economy of Inequality</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">GV4L6</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Political Science and Political Economy: Current Issues</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">GV482 · R</span></div>
+                    <a class="tc-row" href="papers/msc-dissertation/"><span class="tc-t">Dissertation: “Corruption, Social Networks, and School Cheating”<span class="tc-d">Department of Government · supervised by Prof Sarah Brierley</span></span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">GV499</span></a>
+                    <div class="tc-row tc-static"><span class="tc-t">Micro and Macro Economics (for Public Policy)*</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">PP440</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Intro to Maths/R for Political Science*</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">GV4L8/9</span></div>
+                    <p class="tc-foot">(* Indicates audited or non-assessed courses)</p>
+                </section>
+                <section class="tc-sec scroll-animate">
                     <h3>Skills</h3>
-                    <p><strong>Quantitative & Statistical Methods:</strong></p>
-                    <ul class="coursework-list">
-                        <li>Causal Inference (experimental & observational designs) – Advanced</li>
-                        <li>Panel / Longitudinal Data Analysis – Advanced</li>
-                        <li>Cross-sectional Survey Analysis – Advanced</li>
-                        <li>Applied Regression Modelling – Advanced</li>
-                        <li>Data Cleaning & Preprocessing – Advanced</li>
-                        <li>Time Series Analysis – Foundational</li>
-                    </ul>
-                    <p><strong>Programming & Software:</strong></p>
-                    <ul class="coursework-list">
-                        <li>R / RStudio (dplyr, ggplot2, fixest, fect, did, etc.) – Advanced</li>
-                        <li>LaTeX – Proficient</li>
-                        <li>Microsoft Excel / Power BI – Proficient</li>
-                        <li>Version Control / GitHub – Foundational</li>
-                        <li>IBM SPSS – Foundational</li>
-                        <li>Adobe Photoshop – Foundational</li>
-                    </ul>
-                    <p><strong>Languages:</strong></p>
-                    <ul class="coursework-list">
-                        <li>English – Native</li>
-                        <li>Spanish – Native</li>
-                    </ul>
+                    <h4 class="tc-group">Quantitative &amp; Statistical Methods</h4>
+                    <div class="tc-row tc-static"><span class="tc-t">Causal Inference (experimental &amp; observational designs)</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Advanced</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Panel / Longitudinal Data Analysis</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Advanced</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Cross-sectional Survey Analysis</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Advanced</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Applied Regression Modelling</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Advanced</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Data Cleaning &amp; Preprocessing</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Advanced</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Time Series Analysis</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Foundational</span></div>
+                    <h4 class="tc-group">Programming &amp; Software</h4>
+                    <div class="tc-row tc-static"><span class="tc-t">R / RStudio (dplyr, ggplot2, fixest, fect, did, etc.)</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Advanced</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">LaTeX</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Proficient</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Microsoft Excel / Power BI</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Proficient</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Version Control / GitHub</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Foundational</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">IBM SPSS</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Foundational</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Adobe Photoshop</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Foundational</span></div>
+                    <h4 class="tc-group">Languages</h4>
+                    <div class="tc-row tc-static"><span class="tc-t">English</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Native</span></div>
+                    <div class="tc-row tc-static"><span class="tc-t">Spanish</span><span class="tc-lead" aria-hidden="true"></span><span class="tc-m">Native</span></div>
+                </section>
                 </div>
+                <aside class="tc-aside scroll-animate">
+                    <p class="tc-aside-lede">Read my complete CV for details on education, experience, and research — in the browser, in a separate window, or as a PDF.</p>
+                    <div class="cv-links">
+                        <a href="cv/" class="cv-link">Read CV</a>
+                        <a href="cv/Lucas-Pollock-Muguruza-CV.pdf" class="cv-link-secondary" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
+                            Open the PDF in a new window
+                        </a>
+                        <a href="cv/Lucas-Pollock-Muguruza-CV.pdf" class="cv-link-secondary" download>
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+                            Download
+                        </a>
+                    </div>
+                    <p class="cv-update">Last updated: July 2026</p>
+                </aside>
             </div>
         </section>
     </div>
@@ -768,6 +766,7 @@
             const span=document.createElement('span');span.textContent=t?t.textContent.trim():a.href;
             a.append(span);a.insertAdjacentHTML('beforeend','<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>');
             a.addEventListener('click',()=>setFnavMenu(false));
+            if(tcIsNew(card))span.insertAdjacentHTML('beforeend',' <em class="fnav-new">new</em>');
             fnavSubList.append(a);
         });
         function setFnavSub(on){fnavOI.classList.toggle('open',on);fnavSubBtn.setAttribute('aria-expanded',on);fnavSubBtn.setAttribute('aria-label',on?'Hide things I built':'Show things I built')}
@@ -789,7 +788,7 @@
 
         const topbarLinks=document.querySelectorAll('.topbar-nav .nav-link'),sections=document.querySelectorAll('.content-section');
         const SECTION_IDS=[...sections].map(s=>s.id);
-        function switchSection(id){if(!SECTION_IDS.includes(id))return;const current=document.querySelector('.content-section.active');if(current&&current.id!==id&&headerMark.pulse)headerMark.pulse();topbarLinks.forEach(l=>{const h=l.getAttribute('href');if(h&&h.startsWith('#'))l.classList.toggle('active',h.substring(1)===id)});fnavLinks.forEach(l=>l.classList.toggle('active',l.dataset.section===id));sections.forEach(s=>s.classList.toggle('active',s.id===id));history.replaceState(null,'',id==='about'?location.pathname+location.search:'#'+id);window.scrollTo({top:0,behavior:'smooth'});setTimeout(observeElements,100)}
+        function switchSection(id){if(!SECTION_IDS.includes(id))return;const current=document.querySelector('.content-section.active');if(current&&current.id!==id&&headerMark.pulse)headerMark.pulse();topbarLinks.forEach(l=>{const h=l.getAttribute('href');if(h&&h.startsWith('#'))l.classList.toggle('active',h.substring(1)===id)});fnavLinks.forEach(l=>l.classList.toggle('active',l.dataset.section===id));sections.forEach(s=>s.classList.toggle('active',s.id===id));history.replaceState(null,'',id==='about'?location.pathname+location.search:'#'+id);window.scrollTo({top:0,behavior:'smooth'});setTimeout(observeElements,100);const tcSec=document.getElementById(id).querySelector('.tc');if(tcSec)tcDefault(tcSec)}
         topbarLinks.forEach(l=>l.addEventListener('click',e=>{e.preventDefault();switchSection(l.getAttribute('href').substring(1))}));
 
         const scrollIndicator=document.getElementById('scrollIndicator');
@@ -799,26 +798,46 @@
         function observeElements(){const o=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){en.target.classList.add('visible');o.unobserve(en.target)}})},{threshold:.08,rootMargin:'0px 0px -40px 0px'});const a=document.querySelector('.content-section.active');if(a)a.querySelectorAll('.scroll-animate').forEach(el=>{if(!el.classList.contains('visible'))o.observe(el)})}
         document.addEventListener('DOMContentLoaded',observeElements);
 
-        /* CONTENTS PAGE — Research and Of Interest. Hovering (or focusing) a line moves
-           its note into the margin beside it; on narrow screens the note opens under the
-           line. With touch, the first tap shows the note and the second follows the link. */
+        /* CONTENTS PAGE — Research, Of Interest and the CV. Hovering (or focusing) a line
+           moves its note into the margin beside it; when nothing has been hovered yet the
+           margin holds the newest entry's note. On narrow screens the note opens under the
+           line, and with touch the first tap shows the note and the second follows the link. */
         const tcNarrow=window.matchMedia('(max-width:700px)');
+        function tcIsNew(r){const d=r.dataset.new&&new Date(r.dataset.new+'T00:00:00');return !!d&&!isNaN(d)&&(Date.now()-d)/864e5<45}
         document.querySelectorAll('.tc-sec').forEach(s=>{const c=s.querySelector('.tc-count');if(c)c.textContent=s.querySelectorAll('.tc-row').length});
+        /* NEW — give a line data-new="YYYY-MM-DD" (the day it was added or redesigned) and it
+           wears a small "new" mark for 45 days, then drops it on its own */
+        document.querySelectorAll('.tc-row[data-new]').forEach(r=>{if(tcIsNew(r)){r.classList.add('is-new');r.querySelector('.tc-t').insertAdjacentHTML('beforeend','<span class="tc-new">new</span>')}});
+        const tcPos=(row,margin)=>row.offsetTop-margin.offsetTop;   /* offsets ignore the entrance slide */
         function tcShow(row){
-            const tc=row.closest('.tc'),note=tc.querySelector('.tc-note'),margin=tc.querySelector('.tc-margin');
+            const tc=row.closest('.tc'),note=tc.querySelector('.tc-note'),margin=tc.querySelector('.tc-margin'),src=row.querySelector('.tc-src');
+            if(!note||!src)return;
             tc.querySelectorAll('.tc-row').forEach(r=>r.classList.toggle('on',r===row));
-            note.innerHTML=row.querySelector('.tc-src').innerHTML;
+            note.innerHTML=src.innerHTML;
+            if(row.classList.contains('is-new'))note.insertAdjacentHTML('afterbegin','<span class="tc-new tc-new-note">new</span>');
             if(tcNarrow.matches){row.after(note);note.style.top='';return}
             if(note.parentNode!==margin)margin.append(note);
-            const top=row.getBoundingClientRect().top-margin.getBoundingClientRect().top;
-            note.style.top=Math.max(0,Math.min(top,margin.clientHeight-note.offsetHeight))+'px';
+            note.style.top=Math.max(0,Math.min(tcPos(row,margin),margin.clientHeight-note.offsetHeight))+'px';
         }
+        /* the opening note: the most recent "new" line, else the first line */
+        function tcDefault(tc){
+            if(!tc.querySelector('.tc-note')||!tc.offsetParent)return;
+            const on=tc.querySelector('.tc-row.on');
+            if(on){if(!tcNarrow.matches)tcShow(on);return}
+            if(tcNarrow.matches)return;
+            const fresh=[...tc.querySelectorAll('.tc-row.is-new')].sort((a,b)=>b.dataset.new.localeCompare(a.dataset.new))[0];
+            const row=fresh||tc.querySelector('.tc-row');if(row)tcShow(row);
+        }
+        const tcRefresh=()=>document.querySelectorAll('.tc').forEach(tcDefault);
         const tcHit=e=>{const r=e.target.closest('.tc-row');if(r&&!r.classList.contains('on'))tcShow(r)};
         document.querySelectorAll('.tc').forEach(tc=>{tc.addEventListener('pointerover',e=>{if(e.pointerType==='mouse')tcHit(e)});tc.addEventListener('focusin',tcHit)});
         let tcTouch=false,tcWasOn=false;
         document.addEventListener('pointerdown',e=>{const r=e.target.closest('.tc-row');tcTouch=e.pointerType==='touch'||e.pointerType==='pen';tcWasOn=!!(r&&r.classList.contains('on'))},true);
-        document.addEventListener('click',e=>{const r=e.target.closest('.tc-row');if(r&&tcTouch&&!tcWasOn){e.preventDefault();tcShow(r)}},true);
-        tcNarrow.addEventListener('change',()=>document.querySelectorAll('.tc').forEach(tc=>{const note=tc.querySelector('.tc-note'),margin=tc.querySelector('.tc-margin');tc.querySelectorAll('.tc-row.on').forEach(r=>r.classList.remove('on'));note.style.top='';note.innerHTML='<p class="tc-hint">Hover over a line and its note appears here, in the margin.</p>';margin.append(note)}));
+        document.addEventListener('click',e=>{const r=e.target.closest('.tc-row');if(r&&r.querySelector('.tc-src')&&tcTouch&&!tcWasOn){e.preventDefault();tcShow(r)}},true);
+        tcNarrow.addEventListener('change',()=>document.querySelectorAll('.tc').forEach(tc=>{const note=tc.querySelector('.tc-note'),margin=tc.querySelector('.tc-margin');if(!note)return;tc.querySelectorAll('.tc-row.on').forEach(r=>r.classList.remove('on'));note.style.top='';note.innerHTML='';margin.append(note);tcDefault(tc)}));
+        let tcResize;window.addEventListener('resize',()=>{clearTimeout(tcResize);tcResize=setTimeout(tcRefresh,150)});
+        if(document.fonts)document.fonts.ready.then(tcRefresh);
+        tcRefresh();
 
         /* a link to #projects, #ofinterest or #cv opens that section */
         const hashSection=()=>location.hash.slice(1);
