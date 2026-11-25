@@ -17,7 +17,7 @@
  *   autospin                      start spinning immediately; pair with start="circle" for a loader (v2)
  *
  * Methods (v2) — all return Promises
- *   el.play({turns=1, speed=1.8, back='direct'})
+ *   el.play({turns=1, speed=1.8, back='direct'})   (each turn one quick eased round)
  *                                 the show: L→P→M→○, spin `turns` times, settle, fold back to L
  *                                 (back='direct' goes ○→L straight; 'same' unwinds through M, P).
  *                                 ~3.5s with defaults. Resolves at rest. Use for the welcome intro.
@@ -86,6 +86,7 @@
 
   const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
   const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+  const easeInOut = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
   const HOLD = 0.72; // share of each segment spent morphing; rest is a pause on the letter
   const pToT = (p, n) => {
     if (n < 3) return p;
@@ -171,18 +172,24 @@
       this._busy = (async () => { try { await fn(); } finally { this._busy = null; this._mode = null; this._speed = 1; } })();
       return this._busy;
     }
-    async _show(turns, { speed = 1, back = 'same' } = {}) {
+    async _show(turns, { speed = 1, back = 'same', lap = false } = {}) {
       this._speed = speed;
       this.want = true; this.kick();
       await this._until(() => this.p === 1);
-      if (!this.reduce) { const start = this.theta; await this._until(() => this.theta - start >= turns * 360 - 1); }
+      if (!this.reduce && lap) {
+        // exactly `turns` quick, eased rounds that land back where they started, so there is
+        // nothing left to settle (an open-ended spin overshoots and settles into a second round)
+        const from = this.theta;
+        this._lap = { from, to: from + turns * 360, T: (0.85 * turns) / Math.sqrt(speed), e: 0 };
+        await this._until(() => !this._lap);
+      } else if (!this.reduce) { const start = this.theta; await this._until(() => this.theta - start >= turns * 360 - 1); }
       else await new Promise((r) => setTimeout(r, 400));
       // At the circle every sequence is in the same place, so switching here is seamless.
       if (back === 'direct') this._mode = 'direct';
       this.want = false; this.kick();
       await this._until(() => this.p === 0 && this.phase === 'idle');
     }
-    play({ turns = 1, speed = 1.8, back = 'direct' } = {}) { return this._drive(() => this._show(turns, { speed, back })); }
+    play({ turns = 1, speed = 1.8, back = 'direct' } = {}) { return this._drive(() => this._show(turns, { speed, back, lap: true })); }
     pulse() { return this._drive(() => { this._mode = 'direct'; return this._show(0.4, { speed: 2.5 }); }); }
     spin() { this._mode = 'direct'; this.want = true; this.kick(); return this._until(() => this.p === 1); }
     async stop() {
@@ -205,6 +212,13 @@
         if (this.p < 1) {
           this.p = Math.min(1, this.p + dt / dur);
           if (this.p === 1) { this.phase = 'spinning'; this.v = 0; }
+        } else if (this._lap) {
+          const L = this._lap;
+          this.phase = 'spinning';
+          L.e += dt;
+          const u = Math.min(1, L.e / L.T);
+          this.theta = L.from + (L.to - L.from) * easeInOut(u);
+          if (u === 1) { this.theta = L.to; this.v = 0; this._lap = null; }
         } else if (!this.reduce) {
           this.phase = 'spinning';
           this.v = Math.min(VMAX, this.v + ACC * dt);
