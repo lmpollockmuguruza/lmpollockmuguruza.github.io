@@ -612,7 +612,7 @@
 
     <footer class="footer">
         <span class="footer-email">lucas-pollock[at]outlook[dot]com</span>
-        <span class="footer-info" id="footerInfo">Last updated: July 2026</span>
+        <span class="footer-info" id="footerInfo">Last updated: November 2026</span>
     </footer>
 
     <script>
@@ -848,7 +848,7 @@
         window.addEventListener('hashchange',()=>{if(SECTION_IDS.includes(hashSection()))switchSection(hashSection())});
         navScroll();
 
-        let showGreeting=false,footerSwapping=false;const footerInfo=document.getElementById('footerInfo');const LAST_UPDATED='Last updated: July 2026';
+        let showGreeting=false,footerSwapping=false;const footerInfo=document.getElementById('footerInfo');const LAST_UPDATED='Last updated: November 2026';
         setInterval(()=>{if(document.hidden||footerSwapping)return;footerSwapping=true;footerInfo.classList.add('fade-out');setTimeout(()=>{footerInfo.textContent=showGreeting?LAST_UPDATED:getTimeBasedGreeting();showGreeting=!showGreeting;requestAnimationFrame(()=>requestAnimationFrame(()=>{footerInfo.classList.remove('fade-out');footerSwapping=false}))},650)},7500);
 
         document.querySelector('.ra-email-link').addEventListener('click', function(e) {
