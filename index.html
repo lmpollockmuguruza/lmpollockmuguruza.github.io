@@ -808,7 +808,10 @@
         /* NEW — give a line data-new="YYYY-MM-DD" (the day it was added or redesigned) and it
            wears a small "new" mark for 45 days, then drops it on its own */
         document.querySelectorAll('.tc-row[data-new]').forEach(r=>{if(tcIsNew(r)){r.classList.add('is-new');r.querySelector('.tc-t').insertAdjacentHTML('beforeend','<span class="tc-new">new</span>')}});
-        const tcPos=(row,margin)=>row.offsetTop-margin.offsetTop;   /* offsets ignore the entrance slide */
+        /* the line's distance from the top of the contents, from layout offsets so the
+           entrance slide doesn't skew it; each category's slide makes it an offsetParent
+           of its own, so walk up to the contents adding each step */
+        const tcPos=(row,margin)=>{const tc=margin.parentNode;let y=0,el=row;while(el&&el!==tc){y+=el.offsetTop;el=el.offsetParent}return y-margin.offsetTop};
         function tcShow(row){
             const tc=row.closest('.tc'),note=tc.querySelector('.tc-note'),margin=tc.querySelector('.tc-margin'),src=row.querySelector('.tc-src');
             if(!note||!src)return;
